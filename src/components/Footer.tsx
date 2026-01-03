@@ -77,7 +77,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-lada-gray flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-3">
-            <img src="/assets/logo.jpg" alt="Lada N" className="h-8 w-auto" />
+            <img src="/assets/logo.jpg" alt="Lada N" className="h-8 w-auto brightness-75 contrast-125" />
             <span className="text-white/60">|</span>
             <span className="text-white/60">Lada N</span>
           </div>

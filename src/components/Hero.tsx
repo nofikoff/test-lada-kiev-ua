@@ -18,7 +18,7 @@ export function Hero() {
       <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         {/* Logo mark */}
         <div className="mb-8">
-          <img src="/assets/logo.jpg" alt="Lada N" className="h-24 md:h-32 w-auto mx-auto" />
+          <img src="/assets/logo.jpg" alt="Lada N" className="h-24 md:h-32 w-auto mx-auto brightness-75 contrast-125" />
         </div>
 
         {/* Title */}
