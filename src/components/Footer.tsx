@@ -36,9 +36,12 @@ export function Footer() {
               </div>
 
               {/* Schedule */}
-              <div className="flex items-center space-x-4">
-                <Clock className="w-6 h-6 text-lada-gold flex-shrink-0" />
-                <p className="text-white">{t.footer.schedule}</p>
+              <div className="flex items-start space-x-4">
+                <Clock className="w-6 h-6 text-lada-gold flex-shrink-0 mt-1" />
+                <div>
+                  <p className="text-white">{t.footer.schedule}</p>
+                  <p className="text-white/50 text-sm">{t.footer.appointment}</p>
+                </div>
               </div>
 
               {/* Instagram */}
@@ -73,8 +76,8 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-lada-gray flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl font-serif font-bold text-lada-gold">LN</span>
+          <div className="flex items-center space-x-3">
+            <img src="/assets/logo.jpg" alt="Lada N" className="h-8 w-auto" />
             <span className="text-white/60">|</span>
             <span className="text-white/60">Lada N</span>
           </div>

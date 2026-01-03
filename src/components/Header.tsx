@@ -25,9 +25,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <a href="#" className="flex items-center">
-            <span className="text-2xl md:text-3xl font-serif font-bold text-lada-gold">
-              LN
-            </span>
+            <img src="/assets/logo.jpg" alt="Lada N" className="h-10 md:h-12 w-auto" />
           </a>
 
           {/* Desktop Navigation */}
