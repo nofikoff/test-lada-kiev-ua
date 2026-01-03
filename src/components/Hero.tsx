@@ -15,7 +15,7 @@ export function Hero() {
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-lada-red/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         {/* Logo mark */}
         <div className="mb-8">
           <span className="inline-block text-6xl md:text-8xl font-serif font-bold text-lada-gold">
@@ -24,17 +24,17 @@ export function Hero() {
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-4">
+        <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-4 [text-wrap:balance]">
           {t.hero.title}
         </h1>
 
         {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-lada-gold font-light mb-8">
+        <p className="text-xl md:text-2xl text-lada-gold font-light mb-8 [text-wrap:balance]">
           {t.hero.subtitle}
         </p>
 
         {/* Description */}
-        <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-12 leading-relaxed">
+        <p className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto mb-12 leading-relaxed [text-wrap:balance]">
           {t.hero.description}
         </p>
 
