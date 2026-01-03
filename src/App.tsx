@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { LanguageContext, translations, Language } from './i18n';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -8,8 +9,27 @@ import { PriceList } from './components/PriceList';
 import { Certificates } from './components/Certificates';
 import { Footer } from './components/Footer';
 
-function App() {
-  const [language, setLanguage] = useState<Language>('ru');
+const urlToLang: Record<string, Language> = {
+  '/': 'ru',
+  '/uk': 'ua',
+  '/en': 'en',
+};
+
+const langToUrl: Record<Language, string> = {
+  'ru': '/',
+  'ua': '/uk',
+  'en': '/en',
+};
+
+function LandingPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const language: Language = urlToLang[location.pathname] || 'ru';
+
+  const setLanguage = useCallback((newLang: Language) => {
+    navigate(langToUrl[newLang]);
+  }, [navigate]);
 
   const contextValue = useMemo(
     () => ({
@@ -17,7 +37,7 @@ function App() {
       setLanguage,
       t: translations[language],
     }),
-    [language]
+    [language, setLanguage]
   );
 
   return (
@@ -34,6 +54,19 @@ function App() {
         <Footer />
       </div>
     </LanguageContext.Provider>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/uk" element={<LandingPage />} />
+        <Route path="/en" element={<LandingPage />} />
+        <Route path="/:lang" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

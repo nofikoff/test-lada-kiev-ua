@@ -1,15 +1,16 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, X, Phone } from 'lucide-react';
 import { useLanguage, Language } from '../i18n';
 
 export function Header() {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const languages: { code: Language; label: string }[] = [
-    { code: 'ru', label: 'RU' },
-    { code: 'ua', label: 'UA' },
-    { code: 'en', label: 'EN' },
+  const languages: { code: Language; label: string; url: string }[] = [
+    { code: 'ru', label: 'RU', url: '/' },
+    { code: 'ua', label: 'UA', url: '/uk' },
+    { code: 'en', label: 'EN', url: '/en' },
   ];
 
   const navItems = [
@@ -46,9 +47,9 @@ export function Header() {
             {/* Language Switcher */}
             <div className="flex items-center space-x-2">
               {languages.map((lang) => (
-                <button
+                <Link
                   key={lang.code}
-                  onClick={() => setLanguage(lang.code)}
+                  to={lang.url}
                   className={`text-sm font-medium transition-colors duration-300 ${
                     language === lang.code
                       ? 'text-lada-gold'
@@ -56,7 +57,7 @@ export function Header() {
                   }`}
                 >
                   {lang.label}
-                </button>
+                </Link>
               ))}
             </div>
 
@@ -99,9 +100,10 @@ export function Header() {
             <div className="mt-6 pt-4 border-t border-lada-gray">
               <div className="flex items-center space-x-4 mb-4">
                 {languages.map((lang) => (
-                  <button
+                  <Link
                     key={lang.code}
-                    onClick={() => setLanguage(lang.code)}
+                    to={lang.url}
+                    onClick={() => setIsMenuOpen(false)}
                     className={`text-sm font-medium ${
                       language === lang.code
                         ? 'text-lada-gold'
@@ -109,7 +111,7 @@ export function Header() {
                     }`}
                   >
                     {lang.label}
-                  </button>
+                  </Link>
                 ))}
               </div>
               <a
