@@ -6,8 +6,13 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-lada-darker via-lada-dark to-lada-gray-light" />
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/assets/massage-kiev-lada-novikova.jpg)' }}
+      />
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-gradient-to-br from-lada-darker/90 via-lada-dark/85 to-lada-gray-light/80" />
 
       {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
