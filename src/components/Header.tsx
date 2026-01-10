@@ -8,8 +8,8 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const languages: { code: Language; label: string; url: string }[] = [
-    { code: 'ru', label: 'RU', url: '/' },
-    { code: 'ua', label: 'UA', url: '/uk' },
+    { code: 'ua', label: 'UA', url: '/' },
+    { code: 'ru', label: 'RU', url: '/ru' },
     { code: 'en', label: 'EN', url: '/en' },
   ];
 

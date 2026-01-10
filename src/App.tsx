@@ -10,14 +10,14 @@ import { Certificates } from './components/Certificates';
 import { Footer } from './components/Footer';
 
 const urlToLang: Record<string, Language> = {
-  '/': 'ru',
-  '/uk': 'ua',
+  '/': 'ua',
+  '/ru': 'ru',
   '/en': 'en',
 };
 
 const langToUrl: Record<Language, string> = {
-  'ru': '/',
-  'ua': '/uk',
+  'ua': '/',
+  'ru': '/ru',
   'en': '/en',
 };
 
@@ -25,7 +25,7 @@ function LandingPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const language: Language = urlToLang[location.pathname] || 'ru';
+  const language: Language = urlToLang[location.pathname] || 'ua';
 
   const setLanguage = useCallback((newLang: Language) => {
     navigate(langToUrl[newLang]);
@@ -62,7 +62,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/uk" element={<LandingPage />} />
+        <Route path="/ru" element={<LandingPage />} />
         <Route path="/en" element={<LandingPage />} />
         <Route path="/:lang" element={<Navigate to="/" replace />} />
       </Routes>
