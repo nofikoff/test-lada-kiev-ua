@@ -1,0 +1,23 @@
+# Lada N — Massage & Beauty Studio
+
+> Professional massage and beauty services in the heart of Kyiv, Ukraine. Located at Maidan Nezalezhnosti.
+
+Lada N is a massage and beauty studio offering a wide range of services including therapeutic massage, exotic massage techniques, hair removal (depilation), and permanent makeup. We are conveniently located in central Kyiv at 10 Mala Zhytomyrska Street, near Maidan Nezalezhnosti.
+
+## Services
+
+- **Massage**: Relaxation, therapeutic, sports, four-hands, and exotic techniques (Gua Sha, stone therapy, Ayurvedic, etc.)
+- **Hair Removal**: Wax and sugar depilation for women and men
+- **Beauty**: Brow and lash treatments, makeup, hair styling
+- **Permanent Makeup**: Brows, lips, eyeliner
+
+## Contact
+
+- **Phone**: +380 99 557 00 45
+- **Address**: Kyiv, 10 Mala Zhytomyrska St. (Maidan Nezalezhnosti)
+- **Hours**: Daily 10:00 AM - 9:00 PM
+- **Appointment**: Required
+
+## Languages
+
+Site available in Ukrainian (default), Russian, and English.
