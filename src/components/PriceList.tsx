@@ -240,6 +240,27 @@ export function PriceList() {
     { name: language === 'en' ? 'Legs (full) + Deep Bikini + Underarms' : language === 'ua' ? 'Ноги повністю + Глибоке бікіні + Пахви' : 'Ноги полностью + Глубокое бикини + Подмышки', price: 1800 },
   ];
 
+  const maleDepilationZones: { name: string; price: number }[] = [
+    { name: language === 'en' ? 'Deep Bikini' : language === 'ua' ? 'Глибоке бікіні' : 'Глубокое бикини', price: 1100 },
+    { name: language === 'en' ? 'Classic Bikini' : language === 'ua' ? 'Класичне бікіні' : 'Классическое бикини', price: 950 },
+    { name: language === 'en' ? 'Underarms' : language === 'ua' ? 'Пахви' : 'Подмышки', price: 450 },
+    { name: language === 'en' ? 'Full Back' : language === 'ua' ? 'Спина повністю' : 'Спина полностью', price: 850 },
+    { name: language === 'en' ? 'Shoulder Blades' : language === 'ua' ? 'Лопатки' : 'Лопатки', price: 550 },
+    { name: language === 'en' ? 'Shoulders' : language === 'ua' ? 'Плечі' : 'Плечи', price: 600 },
+    { name: language === 'en' ? 'Lower Back' : language === 'ua' ? 'Поперек' : 'Поясница', price: 650 },
+    { name: language === 'en' ? 'Full Belly' : language === 'ua' ? 'Живіт повністю' : 'Живот полностью', price: 750 },
+    { name: language === 'en' ? 'Belly Strip' : language === 'ua' ? 'Смужка на животі' : 'Полоска на животе', price: 250 },
+    { name: language === 'en' ? 'Intergluteal Strip' : language === 'ua' ? 'Міжсіднична смужка' : 'Межъягодичная полоска', price: 500 },
+    { name: language === 'en' ? 'Full Buttocks' : language === 'ua' ? 'Сідниці повністю' : 'Ягодицы полностью', price: 750 },
+    { name: language === 'en' ? 'Full Chest' : language === 'ua' ? 'Груди повністю' : 'Грудь полностью', price: 800 },
+    { name: language === 'en' ? 'Arms to Elbow' : language === 'ua' ? 'Руки до ліктя' : 'Руки до локтя', price: 650 },
+    { name: language === 'en' ? 'Full Arms' : language === 'ua' ? 'Руки повністю' : 'Руки полностью', price: 750 },
+    { name: language === 'en' ? 'Legs to Knee' : language === 'ua' ? 'Ноги до коліна' : 'Ноги до колена', price: 800 },
+    { name: language === 'en' ? 'Full Legs' : language === 'ua' ? 'Ноги повністю' : 'Ноги полностью', price: 1200 },
+    { name: language === 'en' ? 'Ears / Nose / Brows / Cheeks / Areolas' : language === 'ua' ? 'Вуха / Ніс / Брови / Щоки / Ореоли' : 'Уши / Нос / Брови / Щёки / Ореолы', price: 200 },
+    { name: language === 'en' ? 'Neck' : language === 'ua' ? 'Шия' : 'Шея', price: 250 },
+  ];
+
   const beautyData = {
     browsLashes: [
       { name: language === 'en' ? 'Brow shaping' : language === 'ua' ? 'Корекція брів' : 'Коррекция бровей', price: 350 },
@@ -252,12 +273,21 @@ export function PriceList() {
       { name: language === 'en' ? 'Hair styling' : language === 'ua' ? 'Зачіски, локони, укладки' : 'Стрижки, локоны, укладки', price: 1000 },
       { name: language === 'en' ? 'Mobile service' : language === 'ua' ? 'Виїзд майстра' : 'Выезд мастера', price: 1000 },
     ],
-    permanent: [
-      { name: language === 'en' ? 'Powder brows' : language === 'ua' ? 'Пудрові брови' : 'Пудровые брови', price: 2500 },
-      { name: language === 'en' ? 'Lips (Aquarelle / Lipstick)' : language === 'ua' ? 'Губи (Акварельна / Помадна техніка)' : 'Губы (Акварельная / Помадная техника)', price: 2500 },
-      { name: language === 'en' ? 'Eyeliner' : language === 'ua' ? 'Міжвійкова' : 'Межресничка', price: 1900 },
-      { name: language === 'en' ? 'Cover-up / Correction' : language === 'ua' ? 'Перекриття / Виправлення' : 'Перекрытие / Исправление', price: 2800 },
-      { name: language === 'en' ? 'Touch-up (28-60 days)' : language === 'ua' ? 'Корекція (28-60 днів)' : 'Коррекция (28-60 дней)', price: 0 },
+    permanentBrows: [
+      { name: language === 'en' ? 'Powder brows' : language === 'ua' ? 'Пудрові бровки' : 'Пудровые брови', price: 2500 },
+      { name: language === 'en' ? 'Old PMU cover-up / refresh / correction' : language === 'ua' ? 'Перекриття старого перманенту, оновлення, виправлення' : 'Перекрытие старого перманента, обновление, исправление', price: 2800 },
+      { name: language === 'en' ? 'Touch-up (28-60 days) 50%' : language === 'ua' ? 'Корекція (28-60 днів) 50%' : 'Коррекция (28-60 дней) 50%', price: 0 },
+    ],
+    permanentLips: [
+      { name: language === 'en' ? 'Aquarelle technique' : language === 'ua' ? 'Акварельна техніка губ' : 'Акварельная техника губ', price: 2500 },
+      { name: language === 'en' ? 'Lipstick technique' : language === 'ua' ? 'Помадна техніка' : 'Помадная техника', price: 2500 },
+      { name: language === 'en' ? 'Old PMU cover-up / refresh / correction' : language === 'ua' ? 'Перекриття старого перманенту, оновлення, виправлення' : 'Перекрытие старого перманента, обновление, исправление', price: 2800 },
+      { name: language === 'en' ? 'Touch-up (28-60 days) 50%' : language === 'ua' ? 'Корекція (28-60 днів) 50%' : 'Коррекция (28-60 дней) 50%', price: 0 },
+    ],
+    permanentEyeliner: [
+      { name: language === 'en' ? 'Eyeliner / Lash line' : language === 'ua' ? 'Міжвійковий простір' : 'Межресничное пространство', price: 1900 },
+      { name: language === 'en' ? 'Old PMU cover-up / refresh / correction' : language === 'ua' ? 'Перекриття старого перманенту, оновлення, виправлення' : 'Перекрытие старого перманента, обновление, исправление', price: 2200 },
+      { name: language === 'en' ? 'Touch-up (28-60 days) 50%' : language === 'ua' ? 'Корекція (28-60 днів) 50%' : 'Коррекция (28-60 дней) 50%', price: 0 },
     ],
   };
 
@@ -343,7 +373,7 @@ export function PriceList() {
           {activeTab === 'depilation' && (
             <div>
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Zones' : language === 'ua' ? 'Зони' : 'Зоны'}
+                {language === 'en' ? 'Women\'s Hair Removal' : language === 'ua' ? 'Жіноча депіляція' : 'Женская депиляция'}
               </h3>
               <div className="card mb-8">
                 {depilationZones.map((item, i) => renderPriceRow(item, i))}
@@ -352,8 +382,15 @@ export function PriceList() {
               <h3 className="text-xl font-serif text-lada-gold mb-6">
                 {language === 'en' ? 'Combos (Save!)' : language === 'ua' ? 'Комплекси (Вигідно!)' : 'Комплексы (Выгодно!)'}
               </h3>
-              <div className="card">
+              <div className="card mb-8">
                 {depilationCombos.map((item, i) => renderPriceRow(item, i))}
+              </div>
+
+              <h3 className="text-xl font-serif text-lada-gold mb-6">
+                {language === 'en' ? 'Men\'s Hair Removal (Wax / Sugar / Razor / Trim)' : language === 'ua' ? 'Чоловіча депіляція (Віск / Цукор / Бритва / Стрижка)' : 'Мужская депиляция (Воск / Сахар / Бритва / Стрижка)'}
+              </h3>
+              <div className="card">
+                {maleDepilationZones.map((item, i) => renderPriceRow(item, i))}
               </div>
             </div>
           )}
@@ -375,11 +412,29 @@ export function PriceList() {
               </div>
 
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Permanent Makeup' : language === 'ua' ? 'Перманентний макіяж' : 'Перманентный макияж'}
+                {language === 'en' ? 'Permanent Makeup — Brows' : language === 'ua' ? 'Перманентний макіяж — Брови' : 'Перманентный макияж — Брови'}
               </h3>
-              <div className="card">
-                {beautyData.permanent.map((item, i) => renderPriceRow(item, i))}
+              <div className="card mb-8">
+                {beautyData.permanentBrows.map((item, i) => renderPriceRow(item, i))}
               </div>
+
+              <h3 className="text-xl font-serif text-lada-gold mb-6">
+                {language === 'en' ? 'Permanent Makeup — Lips' : language === 'ua' ? 'Перманентний макіяж — Губи' : 'Перманентный макияж — Губы'}
+              </h3>
+              <div className="card mb-8">
+                {beautyData.permanentLips.map((item, i) => renderPriceRow(item, i))}
+              </div>
+
+              <h3 className="text-xl font-serif text-lada-gold mb-6">
+                {language === 'en' ? 'Permanent Makeup — Eyeliner' : language === 'ua' ? 'Перманентний макіяж — Стрілка/Міжвійка' : 'Перманентный макияж — Стрелка/Межресничка'}
+              </h3>
+              <div className="card mb-4">
+                {beautyData.permanentEyeliner.map((item, i) => renderPriceRow(item, i))}
+              </div>
+
+              <p className="text-white/50 text-sm text-center">
+                {language === 'en' ? '* Refresh up to 6 months — 80% of original price' : language === 'ua' ? '* Оновлення до 6 місяців — 80% від вартості' : '* Обновление до 6 месяцев — 80% от стоимости'}
+              </p>
             </div>
           )}
         </div>
