@@ -11,7 +11,7 @@ interface PriceItem {
 
 
 export function PriceList() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabId>('bodyMassage');
 
   const tabs: { id: TabId; label: string }[] = [
@@ -23,8 +23,8 @@ export function PriceList() {
 
   const bodyMassageData: PriceItem[] = [
     {
-      name: language === 'en' ? 'Harmony Massage (Relax)' : language === 'ua' ? 'Масаж Гармонія (Relax)' : 'Массаж Гармония (Relax)',
-      description: language === 'en' ? 'Stress relief, emotional balance' : language === 'ua' ? 'Зняття втоми, емоційний баланс' : 'Снятие усталости, эмоциональный баланс',
+      name: t.priceList.bodyMassage.harmony.name,
+      description: t.priceList.bodyMassage.harmony.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 1600 },
         { duration: t.priceList.duration.min90, price: 2300 },
@@ -32,8 +32,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Classic Therapeutic' : language === 'ua' ? 'Класичний оздоровчий' : 'Классический оздоровительный',
-      description: language === 'en' ? 'Improves circulation, relaxes muscles' : language === 'ua' ? 'Покращує кровообіг, розслаблює м\'язи' : 'Улучшает кровообращение, расслабляет мышцы',
+      name: t.priceList.bodyMassage.classic.name,
+      description: t.priceList.bodyMassage.classic.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 1800 },
         { duration: t.priceList.duration.min90, price: 2500 },
@@ -41,8 +41,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Signature Massage (Exclusive)' : language === 'ua' ? 'Авторський масаж (Exclusive)' : 'Авторский массаж (Exclusive)',
-      description: language === 'en' ? 'Unique techniques for your body, deep work' : language === 'ua' ? 'Унікальні методики під ваше тіло, глибоке опрацювання' : 'Уникальные методики под ваше тело, глубокая проработка',
+      name: t.priceList.bodyMassage.signature.name,
+      description: t.priceList.bodyMassage.signature.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 2500 },
         { duration: t.priceList.duration.min90, price: 2900 },
@@ -50,8 +50,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Sports Massage' : language === 'ua' ? 'Спортивний' : 'Спортивный',
-      description: language === 'en' ? 'Intensive, removes lactic acid' : language === 'ua' ? 'Інтенсивний, виводить молочну кислоту' : 'Интенсивный, выводит молочную кислоту',
+      name: t.priceList.bodyMassage.sports.name,
+      description: t.priceList.bodyMassage.sports.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 1900 },
         { duration: t.priceList.duration.min90, price: 2300 },
@@ -59,8 +59,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Four Hands Massage' : language === 'ua' ? 'Масаж у 4 руки' : 'Массаж в 4 руки',
-      description: language === 'en' ? 'Two therapists synchronously' : language === 'ua' ? 'Два майстри синхронно' : 'Два мастера синхронно',
+      name: t.priceList.bodyMassage.fourHands.name,
+      description: t.priceList.bodyMassage.fourHands.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 3800 },
         { duration: t.priceList.duration.min90, price: 4900 },
@@ -71,32 +71,32 @@ export function PriceList() {
 
   const localMassageData: PriceItem[] = [
     {
-      name: language === 'en' ? 'Neck & Shoulders' : language === 'ua' ? 'Шийно-комірцева зона' : 'Шейно-воротниковая зона',
+      name: t.priceList.localMassage.neck,
       prices: [
         { duration: t.priceList.duration.min45, price: 900 },
         { duration: t.priceList.duration.min60, price: 1200 },
       ],
     },
     {
-      name: language === 'en' ? 'Back' : language === 'ua' ? 'Спина' : 'Спина',
+      name: t.priceList.localMassage.back,
       prices: [
         { duration: t.priceList.duration.min60, price: 1100 },
         { duration: t.priceList.duration.min90, price: 1500 },
       ],
     },
     {
-      name: language === 'en' ? 'Face' : language === 'ua' ? 'Обличчя' : 'Лицо',
+      name: t.priceList.localMassage.face,
       prices: [{ duration: t.priceList.duration.min60, price: 850 }],
     },
     {
-      name: language === 'en' ? 'Head' : language === 'ua' ? 'Голова' : 'Голова',
+      name: t.priceList.localMassage.head,
       prices: [
         { duration: t.priceList.duration.min30, price: 800 },
         { duration: t.priceList.duration.min45, price: 1200 },
       ],
     },
     {
-      name: language === 'en' ? 'Feet (Padabhyanga)' : language === 'ua' ? 'Стопи (Падабхьянга)' : 'Стопы (Падабхьянга)',
+      name: t.priceList.localMassage.feet,
       prices: [
         { duration: t.priceList.duration.min30, price: 900 },
         { duration: t.priceList.duration.min45, price: 1200 },
@@ -104,7 +104,7 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Hands' : language === 'ua' ? 'Руки' : 'Руки',
+      name: t.priceList.localMassage.hands,
       prices: [
         { duration: t.priceList.duration.min30, price: 700 },
         { duration: t.priceList.duration.min45, price: 900 },
@@ -114,8 +114,8 @@ export function PriceList() {
 
   const exoticData: PriceItem[] = [
     {
-      name: language === 'en' ? 'Gua Sha' : language === 'ua' ? 'Гуаша' : 'Гуаша',
-      description: language === 'en' ? 'Chinese scraping technique' : language === 'ua' ? 'Китайська техніка скребками' : 'Китайская техника скребками',
+      name: t.priceList.exotic.guasha.name,
+      description: t.priceList.exotic.guasha.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 2500 },
         { duration: t.priceList.duration.min90, price: 2900 },
@@ -123,8 +123,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Coconut Shells' : language === 'ua' ? 'Кокосовими чашами' : 'Кокосовыми чашами',
-      description: language === 'en' ? 'Relaxation with warm shells' : language === 'ua' ? 'Релакс теплими чашами' : 'Релакс теплыми чашами',
+      name: t.priceList.exotic.coconut.name,
+      description: t.priceList.exotic.coconut.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 2100 },
         { duration: t.priceList.duration.min90, price: 2500 },
@@ -132,8 +132,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Anti-cellulite (legs & belly)' : language === 'ua' ? 'Антицелюлітний (ноги і живіт)' : 'Антицеллюлитный (ноги и живот)',
-      description: language === 'en' ? 'Manual + gua sha + bamboo' : language === 'ua' ? 'Ручна техніка + гуаша + бамбук' : 'Ручная техника + гуаша + бамбук',
+      name: t.priceList.exotic.antiCellulite.name,
+      description: t.priceList.exotic.antiCellulite.desc,
       prices: [
         { duration: t.priceList.session, price: 950 },
         { duration: t.priceList.sessions5, price: 4500 },
@@ -141,7 +141,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Cupping + Stone Therapy' : language === 'ua' ? 'Баночний + Стоун терапія' : 'Баночный + Стоун терапия',
+      name: t.priceList.exotic.cupping.name,
+      description: t.priceList.exotic.cupping.desc || undefined,
       prices: [
         { duration: t.priceList.duration.min60, price: 2500 },
         { duration: t.priceList.duration.min90, price: 2900 },
@@ -149,7 +150,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Acupressure' : language === 'ua' ? 'Точковий масаж' : 'Точечный массаж',
+      name: t.priceList.exotic.acupressure.name,
+      description: t.priceList.exotic.acupressure.desc || undefined,
       prices: [
         { duration: t.priceList.duration.min60, price: 2100 },
         { duration: t.priceList.duration.min90, price: 2400 },
@@ -157,8 +159,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Yumeiho Therapy' : language === 'ua' ? 'Юмейхо-терапія' : 'Юмейхо-терапия',
-      description: language === 'en' ? 'Pelvis/spine correction' : language === 'ua' ? 'Правка тазу/хребта' : 'Правка таза/позвоночника',
+      name: t.priceList.exotic.yumeiho.name,
+      description: t.priceList.exotic.yumeiho.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 2500 },
         { duration: t.priceList.duration.min90, price: 2900 },
@@ -166,7 +168,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Tibetan Honey' : language === 'ua' ? 'Тибетський медовий' : 'Тибетский медовый',
+      name: t.priceList.exotic.honey.name,
+      description: t.priceList.exotic.honey.desc || undefined,
       prices: [
         { duration: t.priceList.duration.min60, price: 2500 },
         { duration: t.priceList.duration.min90, price: 2900 },
@@ -174,7 +177,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Chocolate' : language === 'ua' ? 'Шоколадний' : 'Шоколадный',
+      name: t.priceList.exotic.chocolate.name,
+      description: t.priceList.exotic.chocolate.desc || undefined,
       prices: [
         { duration: t.priceList.duration.min60, price: 2800 },
         { duration: t.priceList.duration.min90, price: 3200 },
@@ -182,8 +186,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Ayurvedic Abhyanga' : language === 'ua' ? 'Аюрведичний Абх\'янга' : 'Аюрведический Абхьянга',
-      description: language === 'en' ? 'Warm oils' : language === 'ua' ? 'Теплі олії' : 'Теплые масла',
+      name: t.priceList.exotic.abhyanga.name,
+      description: t.priceList.exotic.abhyanga.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 1800 },
         { duration: t.priceList.duration.min90, price: 2300 },
@@ -191,8 +195,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Shirodhara' : language === 'ua' ? 'Широдхара' : 'Широдхара',
-      description: language === 'en' ? 'Oil pouring' : language === 'ua' ? 'Проливання олії' : 'Проливание масла',
+      name: t.priceList.exotic.shirodhara.name,
+      description: t.priceList.exotic.shirodhara.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 1900 },
         { duration: t.priceList.duration.min90, price: 2400 },
@@ -200,8 +204,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Lymphatic Drainage' : language === 'ua' ? 'Лімфодренажний' : 'Лимфодренажный',
-      description: language === 'en' ? 'Bamboo whisk' : language === 'ua' ? 'Бамбуковий віник' : 'Бамбуковый веник',
+      name: t.priceList.exotic.lymphatic.name,
+      description: t.priceList.exotic.lymphatic.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 1800 },
         { duration: t.priceList.duration.min90, price: 2200 },
@@ -209,8 +213,8 @@ export function PriceList() {
       ],
     },
     {
-      name: language === 'en' ? 'Stone Therapy' : language === 'ua' ? 'Стоун терапія' : 'Стоун терапия',
-      description: language === 'en' ? 'Hot stones' : language === 'ua' ? 'Гарячі камені' : 'Горячие камни',
+      name: t.priceList.exotic.stone.name,
+      description: t.priceList.exotic.stone.desc,
       prices: [
         { duration: t.priceList.duration.min60, price: 2500 },
         { duration: t.priceList.duration.min90, price: 2800 },
@@ -220,74 +224,74 @@ export function PriceList() {
   ];
 
   const depilationZones: { name: string; price: number }[] = [
-    { name: language === 'en' ? 'Deep Bikini' : language === 'ua' ? 'Глибоке бікіні' : 'Глубокое бикини', price: 850 },
-    { name: language === 'en' ? 'Classic Bikini' : language === 'ua' ? 'Класичне бікіні' : 'Классическое бикини', price: 750 },
-    { name: language === 'en' ? 'Underarms' : language === 'ua' ? 'Пахви' : 'Подмышки', price: 400 },
-    { name: language === 'en' ? 'Legs (to knee)' : language === 'ua' ? 'Ноги до коліна' : 'Ноги до колена', price: 650 },
-    { name: language === 'en' ? 'Legs (full)' : language === 'ua' ? 'Ноги повністю' : 'Ноги полностью', price: 850 },
-    { name: language === 'en' ? 'Arms (to elbow)' : language === 'ua' ? 'Руки до ліктя' : 'Руки до локтя', price: 450 },
-    { name: language === 'en' ? 'Arms (full)' : language === 'ua' ? 'Руки повністю' : 'Руки полностью', price: 650 },
-    { name: language === 'en' ? 'Buttocks' : language === 'ua' ? 'Сідниці' : 'Ягодицы', price: 550 },
-    { name: language === 'en' ? 'Belly' : language === 'ua' ? 'Живіт' : 'Живот', price: 500 },
-    { name: language === 'en' ? 'Back' : language === 'ua' ? 'Спина' : 'Спина', price: 650 },
-    { name: language === 'en' ? 'Upper lip / Brows / Nose' : language === 'ua' ? 'Вусики / Брови / Ніс' : 'Усики / Брови / Нос', price: 200 },
+    { name: t.priceList.depilation.deepBikini, price: 850 },
+    { name: t.priceList.depilation.classicBikini, price: 750 },
+    { name: t.priceList.depilation.underarms, price: 400 },
+    { name: t.priceList.depilation.legsToKnee, price: 650 },
+    { name: t.priceList.depilation.legsFull, price: 850 },
+    { name: t.priceList.depilation.armsToElbow, price: 450 },
+    { name: t.priceList.depilation.armsFull, price: 650 },
+    { name: t.priceList.depilation.buttocks, price: 550 },
+    { name: t.priceList.depilation.belly, price: 500 },
+    { name: t.priceList.depilation.back, price: 650 },
+    { name: t.priceList.depilation.upperLip, price: 200 },
   ];
 
   const depilationCombos: { name: string; price: number }[] = [
-    { name: language === 'en' ? 'Deep Bikini + Underarms' : language === 'ua' ? 'Глибоке бікіні + Пахви' : 'Глубокое бикини + Подмышки', price: 1000 },
-    { name: language === 'en' ? 'Classic Bikini + Underarms' : language === 'ua' ? 'Класичне бікіні + Пахви' : 'Классическое бикини + Подмышки', price: 900 },
-    { name: language === 'en' ? 'Legs (to knee) + Deep Bikini + Underarms' : language === 'ua' ? 'Ноги до коліна + Глибоке бікіні + Пахви' : 'Ноги до колена + Глубокое бикини + Подмышки', price: 1500 },
-    { name: language === 'en' ? 'Legs (full) + Deep Bikini + Underarms' : language === 'ua' ? 'Ноги повністю + Глибоке бікіні + Пахви' : 'Ноги полностью + Глубокое бикини + Подмышки', price: 1800 },
+    { name: t.priceList.depilationCombos.deepBikiniUnderarms, price: 1000 },
+    { name: t.priceList.depilationCombos.classicBikiniUnderarms, price: 900 },
+    { name: t.priceList.depilationCombos.legsKneeDeepUnderarms, price: 1500 },
+    { name: t.priceList.depilationCombos.legsFullDeepUnderarms, price: 1800 },
   ];
 
   const maleDepilationZones: { name: string; price: number }[] = [
-    { name: language === 'en' ? 'Deep Bikini' : language === 'ua' ? 'Глибоке бікіні' : 'Глубокое бикини', price: 1100 },
-    { name: language === 'en' ? 'Classic Bikini' : language === 'ua' ? 'Класичне бікіні' : 'Классическое бикини', price: 950 },
-    { name: language === 'en' ? 'Underarms' : language === 'ua' ? 'Пахви' : 'Подмышки', price: 450 },
-    { name: language === 'en' ? 'Full Back' : language === 'ua' ? 'Спина повністю' : 'Спина полностью', price: 850 },
-    { name: language === 'en' ? 'Shoulder Blades' : language === 'ua' ? 'Лопатки' : 'Лопатки', price: 550 },
-    { name: language === 'en' ? 'Shoulders' : language === 'ua' ? 'Плечі' : 'Плечи', price: 600 },
-    { name: language === 'en' ? 'Lower Back' : language === 'ua' ? 'Поперек' : 'Поясница', price: 650 },
-    { name: language === 'en' ? 'Full Belly' : language === 'ua' ? 'Живіт повністю' : 'Живот полностью', price: 750 },
-    { name: language === 'en' ? 'Belly Strip' : language === 'ua' ? 'Смужка на животі' : 'Полоска на животе', price: 250 },
-    { name: language === 'en' ? 'Intergluteal Strip' : language === 'ua' ? 'Міжсіднична смужка' : 'Межъягодичная полоска', price: 500 },
-    { name: language === 'en' ? 'Full Buttocks' : language === 'ua' ? 'Сідниці повністю' : 'Ягодицы полностью', price: 750 },
-    { name: language === 'en' ? 'Full Chest' : language === 'ua' ? 'Груди повністю' : 'Грудь полностью', price: 800 },
-    { name: language === 'en' ? 'Arms to Elbow' : language === 'ua' ? 'Руки до ліктя' : 'Руки до локтя', price: 650 },
-    { name: language === 'en' ? 'Full Arms' : language === 'ua' ? 'Руки повністю' : 'Руки полностью', price: 750 },
-    { name: language === 'en' ? 'Legs to Knee' : language === 'ua' ? 'Ноги до коліна' : 'Ноги до колена', price: 800 },
-    { name: language === 'en' ? 'Full Legs' : language === 'ua' ? 'Ноги повністю' : 'Ноги полностью', price: 1200 },
-    { name: language === 'en' ? 'Ears / Nose / Brows / Cheeks / Areolas' : language === 'ua' ? 'Вуха / Ніс / Брови / Щоки / Ореоли' : 'Уши / Нос / Брови / Щёки / Ореолы', price: 200 },
-    { name: language === 'en' ? 'Neck' : language === 'ua' ? 'Шия' : 'Шея', price: 250 },
+    { name: t.priceList.maleDepilation.deepBikini, price: 1100 },
+    { name: t.priceList.maleDepilation.classicBikini, price: 950 },
+    { name: t.priceList.maleDepilation.underarms, price: 450 },
+    { name: t.priceList.maleDepilation.fullBack, price: 850 },
+    { name: t.priceList.maleDepilation.shoulderBlades, price: 550 },
+    { name: t.priceList.maleDepilation.shoulders, price: 600 },
+    { name: t.priceList.maleDepilation.lowerBack, price: 650 },
+    { name: t.priceList.maleDepilation.fullBelly, price: 750 },
+    { name: t.priceList.maleDepilation.bellyStrip, price: 250 },
+    { name: t.priceList.maleDepilation.interglutealStrip, price: 500 },
+    { name: t.priceList.maleDepilation.fullButtocks, price: 750 },
+    { name: t.priceList.maleDepilation.fullChest, price: 800 },
+    { name: t.priceList.maleDepilation.armsToElbow, price: 650 },
+    { name: t.priceList.maleDepilation.armsFull, price: 750 },
+    { name: t.priceList.maleDepilation.legsToKnee, price: 800 },
+    { name: t.priceList.maleDepilation.legsFull, price: 1200 },
+    { name: t.priceList.maleDepilation.faceZones, price: 200 },
+    { name: t.priceList.maleDepilation.neck, price: 250 },
   ];
 
   const beautyData = {
     browsLashes: [
-      { name: language === 'en' ? 'Brow shaping' : language === 'ua' ? 'Корекція брів' : 'Коррекция бровей', price: 350 },
-      { name: language === 'en' ? 'Brow tinting + shaping' : language === 'ua' ? 'Фарбування + корекція' : 'Окрашивание + коррекция', price: 650 },
-      { name: language === 'en' ? 'Brow lamination InLei (+tint +shape)' : language === 'ua' ? 'Ламінування брів InLei (+фарбування +корекція)' : 'Ламинирование бровей InLei (+окрашивание +коррекция)', price: 750 },
-      { name: language === 'en' ? 'Lash lamination InLei (+tint +botox)' : language === 'ua' ? 'Ламінування вій InLei (+фарбування +ботокс)' : 'Ламинирование ресниц InLei (+окрашивание +ботокс)', price: 650 },
+      { name: t.priceList.beauty.browShaping, price: 350 },
+      { name: t.priceList.beauty.browTinting, price: 650 },
+      { name: t.priceList.beauty.browLamination, price: 750 },
+      { name: t.priceList.beauty.lashLamination, price: 650 },
     ],
     makeup: [
-      { name: language === 'en' ? 'Any makeup' : language === 'ua' ? 'Будь-який макіяж' : 'Любой макияж', price: 1000 },
-      { name: language === 'en' ? 'Hair styling' : language === 'ua' ? 'Зачіски, локони, укладки' : 'Стрижки, локоны, укладки', price: 1000 },
-      { name: language === 'en' ? 'Mobile service' : language === 'ua' ? 'Виїзд майстра' : 'Выезд мастера', price: 1000 },
+      { name: t.priceList.beauty.anyMakeup, price: 1000 },
+      { name: t.priceList.beauty.hairStyling, price: 1000 },
+      { name: t.priceList.beauty.mobileService, price: 1000 },
     ],
     permanentBrows: [
-      { name: language === 'en' ? 'Powder brows' : language === 'ua' ? 'Пудрові бровки' : 'Пудровые брови', price: 2500 },
-      { name: language === 'en' ? 'Old PMU cover-up / refresh / correction' : language === 'ua' ? 'Перекриття старого перманенту, оновлення, виправлення' : 'Перекрытие старого перманента, обновление, исправление', price: 2800 },
-      { name: language === 'en' ? 'Touch-up (28-60 days) 50%' : language === 'ua' ? 'Корекція (28-60 днів) 50%' : 'Коррекция (28-60 дней) 50%', price: 0 },
+      { name: t.priceList.beauty.powderBrows, price: 2500 },
+      { name: t.priceList.beauty.oldPmuCoverup, price: 2800 },
+      { name: t.priceList.beauty.touchUp50, price: 0 },
     ],
     permanentLips: [
-      { name: language === 'en' ? 'Aquarelle technique' : language === 'ua' ? 'Акварельна техніка губ' : 'Акварельная техника губ', price: 2500 },
-      { name: language === 'en' ? 'Lipstick technique' : language === 'ua' ? 'Помадна техніка' : 'Помадная техника', price: 2500 },
-      { name: language === 'en' ? 'Old PMU cover-up / refresh / correction' : language === 'ua' ? 'Перекриття старого перманенту, оновлення, виправлення' : 'Перекрытие старого перманента, обновление, исправление', price: 2800 },
-      { name: language === 'en' ? 'Touch-up (28-60 days) 50%' : language === 'ua' ? 'Корекція (28-60 днів) 50%' : 'Коррекция (28-60 дней) 50%', price: 0 },
+      { name: t.priceList.beauty.aquarelleLips, price: 2500 },
+      { name: t.priceList.beauty.lipstickTechnique, price: 2500 },
+      { name: t.priceList.beauty.oldPmuCoverup, price: 2800 },
+      { name: t.priceList.beauty.touchUp50, price: 0 },
     ],
     permanentEyeliner: [
-      { name: language === 'en' ? 'Eyeliner / Lash line' : language === 'ua' ? 'Міжвійковий простір' : 'Межресничное пространство', price: 1900 },
-      { name: language === 'en' ? 'Old PMU cover-up / refresh / correction' : language === 'ua' ? 'Перекриття старого перманенту, оновлення, виправлення' : 'Перекрытие старого перманента, обновление, исправление', price: 2200 },
-      { name: language === 'en' ? 'Touch-up (28-60 days) 50%' : language === 'ua' ? 'Корекція (28-60 днів) 50%' : 'Коррекция (28-60 дней) 50%', price: 0 },
+      { name: t.priceList.beauty.eyeliner, price: 1900 },
+      { name: t.priceList.beauty.oldPmuCoverup, price: 2200 },
+      { name: t.priceList.beauty.touchUp50, price: 0 },
     ],
   };
 
@@ -353,12 +357,12 @@ export function PriceList() {
           {activeTab === 'bodyMassage' && (
             <div>
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Full Body Massage' : language === 'ua' ? 'Основні масажі тіла' : 'Основные массажи тела'}
+                {t.priceList.sections.fullBodyMassage}
               </h3>
               {bodyMassageData.map((item, i) => renderPriceRow(item, i))}
 
               <h3 className="text-xl font-serif text-lada-gold mb-6 mt-12">
-                {language === 'en' ? 'Local Massage' : language === 'ua' ? 'Локальні масажі' : 'Локальные массажи'}
+                {t.priceList.sections.localMassage}
               </h3>
               {localMassageData.map((item, i) => renderPriceRow(item, i))}
             </div>
@@ -373,21 +377,21 @@ export function PriceList() {
           {activeTab === 'depilation' && (
             <div>
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Women\'s Hair Removal' : language === 'ua' ? 'Жіноча депіляція' : 'Женская депиляция'}
+                {t.priceList.sections.womenDepilation}
               </h3>
               <div className="card mb-8">
                 {depilationZones.map((item, i) => renderPriceRow(item, i))}
               </div>
 
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Combos (Save!)' : language === 'ua' ? 'Комплекси (Вигідно!)' : 'Комплексы (Выгодно!)'}
+                {t.priceList.sections.combos}
               </h3>
               <div className="card mb-8">
                 {depilationCombos.map((item, i) => renderPriceRow(item, i))}
               </div>
 
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Men\'s Hair Removal (Wax / Sugar / Razor / Trim)' : language === 'ua' ? 'Чоловіча депіляція (Віск / Цукор / Бритва / Стрижка)' : 'Мужская депиляция (Воск / Сахар / Бритва / Стрижка)'}
+                {t.priceList.sections.menDepilation}
               </h3>
               <div className="card">
                 {maleDepilationZones.map((item, i) => renderPriceRow(item, i))}
@@ -398,42 +402,42 @@ export function PriceList() {
           {activeTab === 'beauty' && (
             <div>
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Brows & Lashes' : language === 'ua' ? 'Брови та Вії' : 'Брови и Ресницы'}
+                {t.priceList.sections.browsLashes}
               </h3>
               <div className="card mb-8">
                 {beautyData.browsLashes.map((item, i) => renderPriceRow(item, i))}
               </div>
 
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Makeup & Hair' : language === 'ua' ? 'Макіяж та Зачіски' : 'Макияж и Прически'}
+                {t.priceList.sections.makeupHair}
               </h3>
               <div className="card mb-8">
                 {beautyData.makeup.map((item, i) => renderPriceRow(item, i))}
               </div>
 
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Permanent Makeup — Brows' : language === 'ua' ? 'Перманентний макіяж — Брови' : 'Перманентный макияж — Брови'}
+                {t.priceList.sections.permanentBrows}
               </h3>
               <div className="card mb-8">
                 {beautyData.permanentBrows.map((item, i) => renderPriceRow(item, i))}
               </div>
 
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Permanent Makeup — Lips' : language === 'ua' ? 'Перманентний макіяж — Губи' : 'Перманентный макияж — Губы'}
+                {t.priceList.sections.permanentLips}
               </h3>
               <div className="card mb-8">
                 {beautyData.permanentLips.map((item, i) => renderPriceRow(item, i))}
               </div>
 
               <h3 className="text-xl font-serif text-lada-gold mb-6">
-                {language === 'en' ? 'Permanent Makeup — Eyeliner' : language === 'ua' ? 'Перманентний макіяж — Стрілка/Міжвійка' : 'Перманентный макияж — Стрелка/Межресничка'}
+                {t.priceList.sections.permanentEyeliner}
               </h3>
               <div className="card mb-4">
                 {beautyData.permanentEyeliner.map((item, i) => renderPriceRow(item, i))}
               </div>
 
               <p className="text-white/50 text-sm text-center">
-                {language === 'en' ? '* Refresh up to 6 months — 80% of original price' : language === 'ua' ? '* Оновлення до 6 місяців — 80% від вартості' : '* Обновление до 6 месяцев — 80% от стоимости'}
+                {t.priceList.sections.permanentNote}
               </p>
             </div>
           )}
