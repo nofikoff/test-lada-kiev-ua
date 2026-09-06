@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  // .tsx и index.html остаются до Step 7.3: пока старое дерево живо, его классы нужны в сборке,
+  // иначе сверка отображения пойдёт против страницы без стилей.
+  content: ['./index.html', './src/**/*.{astro,js,ts,jsx,tsx,md}'],
   theme: {
     extend: {
       colors: {

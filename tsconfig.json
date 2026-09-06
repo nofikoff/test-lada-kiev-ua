@@ -1,7 +1,14 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "astro/tsconfigs/strict",
+  // Старое React-дерево выведено из проверки типов до своего удаления в Step 7.3: оно больше не
+  // собирается, а `verbatimModuleSyntax` из конфигурации Astro делает его импорты ошибкой
+  // (`src/i18n/index.ts:2` — TS1484). Эти строки уходят вместе с файлами, а не остаются насовсем.
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/**/*.tsx",
+    "src/i18n/index.ts",
+    "vite.config.ts"
   ]
 }
