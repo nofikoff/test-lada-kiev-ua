@@ -8,6 +8,7 @@
  * к которым не применена ни одна утилита — research.md §R9.
  */
 import '../index.css';
+import Footer from '../components/Footer.astro';
 import SeoHead from '../components/SeoHead.astro';
 import { type Locale } from '../i18n/ui';
 import { type ServiceCategory } from '../i18n/paths';
@@ -55,7 +56,10 @@ const { locale, category } = Astro.props;
   </head>
   <body>
     <div class="min-h-screen bg-lada-dark">
-      <slot />
+      <main>
+        <slot />
+      </main>
+      <Footer locale={locale} />
     </div>
   </body>
 </html>

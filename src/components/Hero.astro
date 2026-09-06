@@ -1,0 +1,72 @@
+---
+/**
+ * Первый экран. Вёрстка перенесена из `Hero.tsx` один в один: любое расхождение в отображении —
+ * дефект переноса, а не улучшение. Фоновое изображение остаётся CSS-свойством до Step 4.1,
+ * где оно переводится на компонент изображения с генерацией форматов и размеров.
+ */
+import Icon from './Icon.astro';
+import heroImage from '../assets/massage-kiev-lada-novikova.jpg';
+import logo from '../assets/logo.jpg';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui[locale];
+---
+
+<section class="relative min-h-screen flex items-center justify-center pt-20">
+  <div
+    class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+    style={`background-image: url(${heroImage.src})`}
+  >
+  </div>
+  <div
+    class="absolute inset-0 bg-gradient-to-br from-lada-darker/90 via-lada-dark/85 to-lada-gray-light/80"
+  >
+  </div>
+
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-lada-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-lada-red/5 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
+    <div class="mb-8">
+      <img
+        src={logo.src}
+        alt="Lada N"
+        class="h-24 md:h-32 w-auto mx-auto brightness-75 contrast-125"
+      />
+    </div>
+
+    <h1 class="text-4xl md:text-6xl font-serif font-bold text-white mb-4 [text-wrap:balance]">
+      {t.hero.title}
+    </h1>
+
+    <p class="text-xl md:text-2xl text-lada-gold font-light mb-8 [text-wrap:balance]">
+      {t.hero.subtitle}
+    </p>
+
+    <p class="text-lg md:text-xl text-white/70 max-w-3xl mx-auto mb-12 leading-relaxed [text-wrap:balance]">
+      {t.hero.description}
+    </p>
+
+    <a href="tel:+380995570045" class="inline-flex items-center space-x-3 btn-primary text-lg">
+      <Icon name="phone" size={20} />
+      <span>{t.hero.cta}</span>
+    </a>
+
+    <p class="mt-8 text-white/50 text-sm">
+      {t.footer.address} {t.footer.landmark}
+    </p>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <div class="w-6 h-10 border-2 border-lada-gold/50 rounded-full flex justify-center">
+      <div class="w-1 h-3 bg-lada-gold/50 rounded-full mt-2"></div>
+    </div>
+  </div>
+</section>

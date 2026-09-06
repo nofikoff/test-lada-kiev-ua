@@ -1,0 +1,37 @@
+---
+/** Перенос `Certificates.tsx` один в один. */
+import Icon from './Icon.astro';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui[locale];
+---
+
+<section id="certificates" class="py-20 md:py-32 bg-lada-dark">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <div class="card py-12 px-8 md:px-16 border border-lada-gold/20">
+      <div class="mb-6 flex justify-center">
+        <div class="w-20 h-20 rounded-full bg-lada-gold/10 flex items-center justify-center">
+          <Icon name="gift" class="w-10 h-10 text-lada-gold" />
+        </div>
+      </div>
+
+      <h2 class="text-3xl md:text-4xl font-serif font-semibold text-lada-gold mb-6">
+        {t.certificates.title}
+      </h2>
+
+      <p class="text-lg text-white/70 mb-8 max-w-xl mx-auto">
+        {t.certificates.text}
+      </p>
+
+      <a href="tel:+380995570045" class="inline-flex items-center space-x-3 btn-secondary text-lg">
+        <Icon name="phone" size={20} />
+        <span>{t.certificates.cta}</span>
+      </a>
+    </div>
+  </div>
+</section>
