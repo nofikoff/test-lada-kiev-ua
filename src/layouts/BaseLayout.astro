@@ -1,0 +1,61 @@
+---
+/**
+ * Каркас всех страниц сайта.
+ *
+ * Импорт `../index.css` — единственное подключение Tailwind к сборке: интеграция
+ * `@astrojs/tailwind` в проект не встала, а её вторая работа (подстановка базового стиля)
+ * ничем другим не заменена. Без этой строки сборка проходит зелёной и отдаёт страницы,
+ * к которым не применена ни одна утилита — research.md §R9.
+ */
+import '../index.css';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui[locale];
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💆</text></svg>"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+
+    <!-- Сторонний домен шрифтов уходит в Step 4.2 вместе с переводом на Fonts API. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <slot name="head" />
+
+    <!-- Google Analytics. Переносится без изменений: отложенная загрузка потеряла бы визиты
+         и сделала статистику до и после миграции несопоставимой (research.md §R16). -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WZT8TJLSDP"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        window.dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-WZT8TJLSDP');
+    </script>
+  </head>
+  <body>
+    <div class="min-h-screen bg-lada-dark">
+      <slot />
+    </div>
+  </body>
+</html>

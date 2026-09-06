@@ -42,4 +42,14 @@ export default defineConfig(
       globals: { ...globals.node, ...globals.browser },
     },
   },
+  {
+    // Инлайн-скрипты .astro плагин выносит в виртуальные файлы вида `Component.astro/1_1.js`.
+    // Сниппет счётчика — чужой код, который обязан остаться прежним (research.md §R16):
+    // gtag.js читает из dataLayer объект `arguments`, а не массив, поэтому переписать его
+    // на остаточные параметры значило бы менять поведение аналитики ради правила стиля.
+    files: ['src/layouts/BaseLayout.astro/**'],
+    rules: {
+      'prefer-rest-params': 'off',
+    },
+  },
 );
