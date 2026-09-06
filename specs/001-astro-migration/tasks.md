@@ -70,11 +70,13 @@ gate_commands:
   test_quick: "npx astro --version"
 -->
 
-- [x] T001 `npm i astro@7.3.1 @astrojs/sitemap@3.7.4 @astrojs/tailwind@6.0.2`, `npm rm @supabase/supabase-js react-router-dom`
+- [x] T001 `npm i astro@7.3.1 @astrojs/sitemap@3.7.4`, `npm rm @supabase/supabase-js react-router-dom`
 - [x] T002 Создать `astro.config.mjs`: `site: 'https://www.lada.kiev.ua'`, `output: 'static'`, `build.format: 'directory'`, блок `i18n` с `defaultLocale: 'uk'`, `locales: ['uk','ru','en']`, `routing.prefixDefaultLocale: false`
-- [x] T003 Подключить интеграцию sitemap с блоком `i18n` (`uk: 'uk-UA'`, `ru: 'ru-UA'`, `en: 'en'`) и интеграцию Tailwind
+- [x] T003 Подключить интеграцию sitemap с блоком `i18n` (`uk: 'uk-UA'`, `ru: 'ru-UA'`, `en: 'en'`). Tailwind подключается через `postcss.config.js`, а не интеграцией
 
-**Done when**: `npx astro --version` печатает 7.3.1, конфигурация читается без ошибок.
+**Поправка по факту выполнения**: изначально T001 и T003 требовали `@astrojs/tailwind@6.0.2`. Её peer-диапазон заканчивается на Astro 5, установка против седьмой версии останавливается на ERESOLVE. Интеграция делает ровно две вещи — регистрирует плагин PostCSS и подставляет базовый стиль; первое уже обеспечено лежащим в проекте `postcss.config.js`, второе — импортом `src/index.css` в макете. Подробности в [research.md](./research.md) §R9, следствие для удаления файлов — в Step 7.3.
+
+**Done when**: `npx astro --version` печатает 7.3.1, конфигурация читается без ошибок, утилиты Tailwind применяются в собранной странице.
 
 ### Step 1.2: Tailwind, TypeScript, скрипты
 
