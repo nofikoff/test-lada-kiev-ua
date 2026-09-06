@@ -135,6 +135,7 @@ type PriceValue =
 interface PriceRecord {
   id: string;
   group: string;
+  name: Record<Locale, string>;
   price: PriceValue;
 }
 
