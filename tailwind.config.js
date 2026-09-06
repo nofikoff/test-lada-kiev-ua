@@ -14,9 +14,11 @@ export default {
         'lada-gray': '#1a1a1a',
         'lada-gray-light': '#2a2a2a',
       },
+      // Значение переменной объявляет компонент <Font> в разметке страницы: там же лежат
+      // и запасные семейства с подогнанными метриками, поэтому список здесь ими не дублируется.
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ['var(--font-inter)'],
+        serif: ['var(--font-playfair)'],
       },
     },
   },

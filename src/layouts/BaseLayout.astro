@@ -8,6 +8,7 @@
  * к которым не применена ни одна утилита — research.md §R9.
  */
 import '../index.css';
+import { Font } from 'astro:assets';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import SeoHead from '../components/SeoHead.astro';
@@ -20,6 +21,20 @@ interface Props {
 }
 
 const { locale, category } = Astro.props;
+
+/**
+ * Предзагружается подмножество языка страницы: английская версия не тянет кириллицу, и наоборот.
+ * Предзагрузка обоих подмножеств обеих гарнитур соревновалась бы за канал с изображением
+ * первого экрана, которое и есть самый крупный элемент отрисовки.
+ *
+ * Отбор идёт только по подмножеству, и начертание в нём не участвует намеренно: Google отдаёт
+ * одну переменную гарнитуру на подмножество, объявляя её несколькими правилами @font-face
+ * с разным `font-weight` и одним и тем же файлом. Astro складывает в список предзагрузки один
+ * элемент на файл и запоминает у него начертание первого попавшегося правила — для Inter это
+ * 300, для Playfair 400. Отбор `{ weight: 700 }` поэтому не находит ничего и молча оставляет
+ * страницу вообще без предзагрузки.
+ */
+const subset = locale === 'en' ? 'latin' : 'cyrillic';
 ---
 
 <!doctype html>
@@ -35,13 +50,10 @@ const { locale, category } = Astro.props;
 
     <SeoHead locale={locale} category={category} />
 
-    <!-- Сторонний домен шрифтов уходит в Step 4.2 вместе с переводом на Fonts API. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Шрифты отдаются с собственного домена: файлы скачаны на сборке, объявления @font-face
+         и метрики запасного шрифта Astro выводит сюда сам. Сторонних доменов в загрузке нет. -->
+    <Font cssVariable="--font-inter" preload={[{ subset }]} />
+    <Font cssVariable="--font-playfair" preload={[{ subset }]} />
 
     <!-- Google Analytics. Переносится без изменений: отложенная загрузка потеряла бы визиты
          и сделала статистику до и после миграции несопоставимой (research.md §R16). -->
