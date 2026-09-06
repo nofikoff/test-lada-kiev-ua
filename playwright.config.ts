@@ -31,5 +31,14 @@ export default defineConfig({
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    env: {
+      // Astro 7 сам уводит preview в фоновый процесс, если распознал запуск из-под агента
+      // (`cli/preview/index.js`: `!process.env.ASTRO_PREVIEW_BACKGROUND && isRunByAgent()`).
+      // Запускающий процесс тогда завершается сразу, и Playwright останавливается на
+      // «webServer exited early». Переменная гасит распознавание — проверяется её наличие,
+      // а не значение, поэтому здесь она несёт то, что и означает: фоновый режим не нужен.
+      // Вне агентской среды это ровно поведение по умолчанию.
+      ASTRO_PREVIEW_BACKGROUND: 'false',
+    },
   },
 });

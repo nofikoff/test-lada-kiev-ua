@@ -1,0 +1,11 @@
+---
+/** Украинская версия главной: основная локаль отдаётся на корне без префикса. */
+import HomePage from '../components/HomePage.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const locale = 'uk';
+---
+
+<BaseLayout locale={locale}>
+  <HomePage locale={locale} />
+</BaseLayout>

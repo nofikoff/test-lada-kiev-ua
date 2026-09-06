@@ -8,6 +8,7 @@
  * это одна строка словаря («Корекція (28-60 днів) 50%»), и сверка полноты ищет её целиком.
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
+import priceFile from '../data/prices.json';
 import { formatDuration, formatSessions, ui, type Locale } from '../i18n/ui';
 import type { PriceGroup } from '../data/price-groups';
 
@@ -27,7 +28,19 @@ type PriceValue = CollectionEntry<'prices'>['data']['price'];
 const { locale, group, heading = true, headingClass, cardClass = 'card' } = Astro.props;
 
 const t = ui[locale];
-const items = (await getCollection('prices')).filter((entry) => entry.data.group === group);
+
+/**
+ * Порядок позиций в файле и есть порядок их отображения (data-model.md §Позиция прайса,
+ * research.md §R4), но хранилище коллекции отдаёт записи отсортированными по идентификатору.
+ * Исходный порядок восстанавливается по индексу в самом файле — иначе перенос молча
+ * переставляет прайс местами.
+ */
+const fileOrder = new Map(priceFile.map((item, index) => [item.id, index]));
+
+const items = (await getCollection('prices'))
+  .filter((entry) => entry.data.group === group)
+  .sort((first, second) => (fileOrder.get(first.id) ?? 0) - (fileOrder.get(second.id) ?? 0));
+
 const perItemCards = items.some((entry) => entry.data.price.kind === 'variants');
 
 function variantLabel(unit: 'minutes' | 'sessions', count: number): string {
