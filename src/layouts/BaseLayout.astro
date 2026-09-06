@@ -8,14 +8,16 @@
  * к которым не применена ни одна утилита — research.md §R9.
  */
 import '../index.css';
-import { ui, type Locale } from '../i18n/ui';
+import SeoHead from '../components/SeoHead.astro';
+import { type Locale } from '../i18n/ui';
+import { type ServiceCategory } from '../i18n/paths';
 
 interface Props {
   locale: Locale;
+  category?: ServiceCategory;
 }
 
-const { locale } = Astro.props;
-const t = ui[locale];
+const { locale, category } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,8 +30,8 @@ const t = ui[locale];
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💆</text></svg>"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{t.meta.title}</title>
-    <meta name="description" content={t.meta.description} />
+
+    <SeoHead locale={locale} category={category} />
 
     <!-- Сторонний домен шрифтов уходит в Step 4.2 вместе с переводом на Fonts API. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -38,8 +40,6 @@ const t = ui[locale];
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-
-    <slot name="head" />
 
     <!-- Google Analytics. Переносится без изменений: отложенная загрузка потеряла бы визиты
          и сделала статистику до и после миграции несопоставимой (research.md §R16). -->
