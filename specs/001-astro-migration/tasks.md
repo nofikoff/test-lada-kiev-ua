@@ -34,7 +34,7 @@ gate_commands:
 
 Замер снимается с работающего прода `https://www.lada.kiev.ua`, а не с локальной сборки: локальная перестанет собираться уже на Phase 1, а эталоном для сравнения является то, что видит посетитель.
 
-- [ ] T009 Снять Lighthouse на мобильном профиле для `/`, `/ru`, `/en` — медиана трёх прогонов на адрес, один прогон шумит на десятки пунктов и сравнению не годится. Скриншоты тех же трёх адресов в ширинах 375, 768, 1440. Всё сохранить в `specs/001-astro-migration/baseline/`
+- [x] T009 Снять Lighthouse на мобильном профиле для `/`, `/ru`, `/en` — медиана трёх прогонов на адрес, один прогон шумит на десятки пунктов и сравнению не годится. Скриншоты тех же трёх адресов в ширинах 375, 768, 1440. Всё сохранить в `specs/001-astro-migration/baseline/`
 
 **Done when**: в `baseline/` лежат три отчёта и девять скриншотов, у каждого отчёта указана дата снятия.
 
@@ -48,8 +48,8 @@ gate_commands:
   test_quick: "node scripts/extract-legacy-content.mjs && node -e \"const f=require('./tests/fixtures/legacy-content.json');if(!f.uk?.length||!f.ru?.length||!f.en?.length)throw new Error('fixture incomplete')\""
 -->
 
-- [ ] T010 Написать `scripts/extract-legacy-content.mjs`: рекурсивный обход `src/i18n/translations.ts`, сбор всех строковых значений по локалям, запись в `tests/fixtures/legacy-content.json`. Ручной перенос строк запрещён — он воспроизводит ровно ту ошибку, которую фикстура должна ловить
-- [ ] T011 Выполнить скрипт и закоммитить `tests/fixtures/legacy-content.json`
+- [x] T010 Написать `scripts/extract-legacy-content.mjs`: рекурсивный обход `src/i18n/translations.ts`, сбор всех строковых значений по локалям, запись в `tests/fixtures/legacy-content.json`. Ручной перенос строк запрещён — он воспроизводит ровно ту ошибку, которую фикстура должна ловить
+- [x] T011 Выполнить скрипт и закоммитить `tests/fixtures/legacy-content.json`
 
 **Done when**: фикстура содержит непустые массивы по трём локалям и переживёт удаление `translations.ts` в Step 7.4.
 
@@ -70,9 +70,9 @@ gate_commands:
   test_quick: "npx astro --version"
 -->
 
-- [ ] T001 `npm i astro@7.3.1 @astrojs/sitemap@3.7.4 @astrojs/tailwind@6.0.2`, `npm rm @supabase/supabase-js react-router-dom`
-- [ ] T002 Создать `astro.config.mjs`: `site: 'https://www.lada.kiev.ua'`, `output: 'static'`, `build.format: 'directory'`, блок `i18n` с `defaultLocale: 'uk'`, `locales: ['uk','ru','en']`, `routing.prefixDefaultLocale: false`
-- [ ] T003 Подключить интеграцию sitemap с блоком `i18n` (`uk: 'uk-UA'`, `ru: 'ru-UA'`, `en: 'en'`) и интеграцию Tailwind
+- [x] T001 `npm i astro@7.3.1 @astrojs/sitemap@3.7.4 @astrojs/tailwind@6.0.2`, `npm rm @supabase/supabase-js react-router-dom`
+- [x] T002 Создать `astro.config.mjs`: `site: 'https://www.lada.kiev.ua'`, `output: 'static'`, `build.format: 'directory'`, блок `i18n` с `defaultLocale: 'uk'`, `locales: ['uk','ru','en']`, `routing.prefixDefaultLocale: false`
+- [x] T003 Подключить интеграцию sitemap с блоком `i18n` (`uk: 'uk-UA'`, `ru: 'ru-UA'`, `en: 'en'`) и интеграцию Tailwind
 
 **Done when**: `npx astro --version` печатает 7.3.1, конфигурация читается без ошибок.
 
@@ -87,9 +87,9 @@ gate_commands:
   test_quick: "npx astro --version && node -e \"const p=require('./package.json');['dev','build','preview','check','test:content','test:e2e','test:invalid-data','analyze'].forEach(s=>{if(!p.scripts[s])throw new Error('missing script: '+s)})\""
 -->
 
-- [ ] T004 Расширить `content` в `tailwind.config.js` на `./src/**/*.{astro,ts,md}`, сохранив текущие цвета и шрифтовые семейства без изменений
-- [ ] T005 Заменить `tsconfig.json` на конфигурацию Astro (`extends: 'astro/tsconfigs/strict'`), удалить `tsconfig.app.json` и `tsconfig.node.json`
-- [ ] T006 Заменить скрипты в `package.json`: `dev`, `build`, `preview`, `check` (`astro check`), `test:content`, `test:e2e`, `test:invalid-data`, `analyze`. Набор должен совпадать с командами, на которые ссылается [quickstart.md](./quickstart.md)
+- [x] T004 Расширить `content` в `tailwind.config.js` на `./src/**/*.{astro,ts,md}`, сохранив текущие цвета и шрифтовые семейства без изменений
+- [x] T005 Заменить `tsconfig.json` на конфигурацию Astro (`extends: 'astro/tsconfigs/strict'`), удалить `tsconfig.app.json` и `tsconfig.node.json`
+- [x] T006 Заменить скрипты в `package.json`: `dev`, `build`, `preview`, `check` (`astro check`), `test:content`, `test:e2e`, `test:invalid-data`, `analyze`. Набор должен совпадать с командами, на которые ссылается [quickstart.md](./quickstart.md)
 
 **Done when**: все семь скриптов присутствуют, цветовая палитра в конфигурации Tailwind не изменилась.
 
@@ -105,8 +105,8 @@ gate_commands:
   test_quick: "npx playwright --version"
 -->
 
-- [ ] T007 Настроить eslint под `.astro` в `eslint.config.js`, убрав правила React-плагинов
-- [ ] T008 `npm i -D @playwright/test`, создать `playwright.config.ts` с запуском против `npm run preview`
+- [x] T007 Настроить eslint под `.astro` в `eslint.config.js`, убрав правила React-плагинов
+- [x] T008 `npm i -D @playwright/test`, создать `playwright.config.ts` с запуском против `npm run preview`
 
 **Done when**: `npx eslint .` проходит на текущем дереве, Playwright установлен.
 
@@ -127,9 +127,9 @@ gate_commands:
   test_quick: "npx astro check"
 -->
 
-- [ ] T012 Создать `src/i18n/ui.ts`: перенести все подписи интерфейса из `translations.ts` как объект `as const`, ключ `ua` переименовать в `uk`. Длительности хранить шаблоном, а не готовой строкой ([data-model.md](./data-model.md) §Словарь интерфейса)
-- [ ] T013 Создать `src/i18n/paths.ts`: построение адреса страницы по локали и категории, набор языковых альтернатив, абсолютный канонический адрес с `www` и завершающим слешем
-- [ ] T014 Создать `src/i18n/tabs.ts`: состав вкладок главной страницы поверх групп прайса, ровно как в [data-model.md](./data-model.md) §Конфигурация вкладок
+- [x] T012 Создать `src/i18n/ui.ts`: перенести все подписи интерфейса из `translations.ts` как объект `as const`, ключ `ua` переименовать в `uk`. Длительности хранить шаблоном, а не готовой строкой ([data-model.md](./data-model.md) §Словарь интерфейса)
+- [x] T013 Создать `src/i18n/paths.ts`: построение адреса страницы по локали и категории, набор языковых альтернатив, абсолютный канонический адрес с `www` и завершающим слешем
+- [x] T014 Создать `src/i18n/tabs.ts`: состав вкладок главной страницы поверх групп прайса, ровно как в [data-model.md](./data-model.md) §Конфигурация вкладок
 
 **Done when**: `astro check` проходит; тип словаря выведен из основной локали, поэтому недостающий ключ в `ru` или `en` — ошибка компиляции.
 
@@ -147,7 +147,7 @@ gate_commands:
 
 Самый тяжёлый шаг плана и единственный, где ошибка тиха: перепутанный идентификатор в группе перманента даст не падение сборки, а неверную цену на странице.
 
-- [ ] T015 Перенести данные прайса из `src/components/PriceList.tsx` в `src/data/prices.json` по схеме [data-model.md](./data-model.md) §Позиция прайса. Идентификаторы строить от группы: три позиции повторяются между группами с разными ценами и от названия схлопнутся в одну. Долевые цены (`kind: 'share'`) не хранить нулевой суммой
+- [x] T015 Перенести данные прайса из `src/components/PriceList.tsx` в `src/data/prices.json` по схеме [data-model.md](./data-model.md) §Позиция прайса. Идентификаторы строить от группы: три позиции повторяются между группами с разными ценами и от названия схлопнутся в одну. Долевые цены (`kind: 'share'`) не хранить нулевой суммой
 
 **Done when**: число позиций в JSON равно числу позиций в старом `PriceList.tsx`; идентификаторы уникальны; у каждой позиции есть все три локали.
 
@@ -162,7 +162,7 @@ gate_commands:
   test_quick: "npx astro check"
 -->
 
-- [ ] T016 Создать `src/content.config.ts`: коллекция `prices` через `file()` с zod-схемой (все три локали обязательны, `amount` и `minutes` — целые положительные, `percent` 1–99, `id` уникален) и коллекция `services` через `glob()`
+- [x] T016 Создать `src/content.config.ts`: коллекция `prices` через `file()` с zod-схемой (все три локали обязательны, `amount` и `minutes` — целые положительные, `percent` 1–99, `id` уникален) и коллекция `services` через `glob()`
 
 **Done when**: схема отвергает неполный перевод, отрицательную цену и долю вне диапазона 1–99.
 
@@ -515,7 +515,9 @@ gate_commands:
 
 Выполняется только после того, как Step 3.6 показал зелёную сверку полноты. Фикстура из Step 0.2 — единственное, что делает этот шаг безопасным.
 
-- [ ] T058 Удалить `src/App.tsx`, `src/main.tsx`, `src/components/*.tsx`, `src/i18n/translations.ts`, `src/i18n/index.ts`, `index.html`, `vite.config.ts`, `postcss.config.js`; снять из `package.json` `react`, `react-dom`, `lucide-react`, `@vitejs/plugin-react`, `vite`
+- [ ] T058 Удалить `src/App.tsx`, `src/main.tsx`, `src/components/*.tsx`, `src/i18n/translations.ts`, `src/i18n/index.ts`, `index.html`, `vite.config.ts`, а также одноразовый `scripts/build-prices-from-legacy.mjs` (он читает удаляемый словарь). Снять из `package.json` `react`, `react-dom`, `lucide-react`, `@vitejs/plugin-react`, `vite`. Убрать из `tsconfig.json` исключения `src/**/*.tsx`, `src/i18n/index.ts` и `vite.config.ts` — они существуют только ради удаляемых файлов
+
+  **`postcss.config.js` НЕ удалять.** Интеграция `@astrojs/tailwind` в проект не встала (её peer-диапазон заканчивается на Astro 5), поэтому Tailwind подключён именно через этот файл — см. [research.md](./research.md) §R9. Удалённый, он оставит сборку без единой утилиты и при этом не уронит её: страницы просто отрисуются без стилей.
 - [ ] T059 Прогнать `npm run check`, `npm run build`, `npm run test:content`, `npm run test:e2e` после удаления — сверка полноты обязана пройти на фикстуре, снятой в Step 0.2
 
 **Done when**: в дереве не осталось React-кода, все проверки зелёные.
@@ -592,3 +594,58 @@ Phase 0 (0.1, 0.2)  — эталоны, ничего не ломается
 - [ ] S2 (~590K) Steps 2.4, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6
 - [ ] S3 (~520K) Steps 4.1, 4.2, 4.3, 5.1, 5.2, 5.3
 - [ ] S4 (~550K) Steps 5.4, 6.1, 7.1, 7.2, 7.3, 7.4, 7.5
+
+## Progress Log
+
+### S1.step-0.1 — 2026-09-06
+**Completed steps:** 0.1
+**Commits:** e0d101e
+
+### S1.step-0.2 — 2026-09-06
+**Completed steps:** 0.2
+**Commits:** 9ca038f
+
+### S1.step-1.1 — 2026-09-06
+**Completed steps:** 1.1
+**Commits:** 1733b90
+
+### S1.step-1.2 — 2026-09-06
+**Completed steps:** 1.2
+**Commits:** 38e9e2a
+
+### S1.step-1.3 — 2026-09-06
+**Completed steps:** 1.3
+**Commits:** 1f14dec
+
+### S1.step-2.1 — 2026-09-06
+**Completed steps:** 2.1
+**Commits:** b5da9c4
+
+### S1.step-2.2 — 2026-09-06
+**Completed steps:** 2.2
+**Commits:** 21e2744
+
+### S1.step-2.3 — 2026-09-06
+**Completed steps:** 2.3
+**Commits:** 78089ff
+
+### S1 — observations (2026-09-06, dispatch 1)
+plan-wrong: TaskCreate is not available in this harness — the contract's mandatory first action could not be performed; bundle tracked without it.
+plan-wrong: Step 1.1/1.2/1.3/2.3 allowed_paths list only src/tests/public/scripts/docs, but T002 requires creating astro.config.mjs, T005/T006 require tsconfig.json and package.json, T007/T008 require eslint.config.js and playwright.config.ts — all top-level. The orchestrator's UNION lease covered them; the per-step lists in the plan are unsatisfiable as written.
+plan-wrong: package-lock.json is in no allowed_paths list at all, yet every npm step rewrites it. Committed alongside package.json — a lock left out of the commit would be a worse defect.
+plan-wrong: T003 requires @astrojs/tailwind@6.0.2; its peerDependencies are astro ^3||^4||^5 and npm stops on ERESOLVE against astro 7. Tailwind 3 wired through the pre-existing postcss.config.js instead (that is all the integration does). Consequence recorded in research.md §R9: postcss.config.js must be REMOVED from T058's deletion list in Step 7.3, or the site builds with no utilities at all and does not fail while doing it.
+plan-wrong: research.md §R11 says site: 'https://lada.kiev.ua'; §R15, T002 and contracts/routes.md say www. Used www. §R11 still carries the apex form and will mislead whoever reads it next.
+plan-wrong: data-model.md §Позиция прайса had no price form for exotic-anti-cellulite, which the legacy component prices by session count (950 / 4500 / 8500 via the session/sessions5/sessions10 dictionary keys), not by duration. Storing it as minutes 1/5/10 would render '5 хв' against 4500 грн — exactly the silent error Step 2.2 is flagged for. Extended variants to {count, unit:'minutes'|'sessions'} and wrote the correction into data-model.md. Three price forms still, but Step 3.5 rendering and Step 3.2 structured data must read the unit.
+plan-wrong: eslint-plugin-astro (both 2.x and 3.x) requires eslint >= 10; the project was on eslint 9 with typescript-eslint 8.8.1, and `npx eslint .` was already crashing before I touched it (no-unused-expressions rule schema mismatch). T007 does not mention the eslint 10 upgrade it implies.
+plan-wrong: T006 lists eight scripts but the step's Done-when says seven; the gate command checks all eight. Implemented all eight plus lint.
+plan-wrong: .astro/ is generated by every sync/check/build and is absent from .gitignore, which I may not edit. Parked in .git/info/exclude so the worktree stays clean — a human should add `.astro/` to .gitignore, since the exclude file is local-only and does not survive a fresh clone.
+plan-wrong: astro sync warns that src/content/services/ does not exist (files arrive in Step 5.2). Expected, but it is a warning on every gate run from here to Phase 5.
+redone: prices.json was generated once with the permanent groups before browsLashes/makeupHair; an independent re-extraction of every amount straight out of PriceList.tsx flagged 61 mismatches from index 56 on — all of them the ordering, none of them a value. Reordered to the component's declaration order and the cross-check went clean on all 73 items (names in 3 locales, descriptions, every amount, every unit, order).
+redone: the duplicate-id guard was first written as a throwing `parser` on the file() loader. astro sync exited 0 — the loader catches parser exceptions, logs, and returns, so the whole price collection would have loaded as empty with a green build. Replaced with prerenderConflictBehavior: 'error' in astro.config.mjs, which makes the loader's own duplicate detection throw; re-verified that a duplicated id now exits 1.
+redone: eslint.config.js written twice — tseslint.config() is deprecated in typescript-eslint 8.69 and astro check reported it as a hint; switched to defineConfig from eslint/config.
+decided: prices.json is generated by scripts/build-prices-from-legacy.mjs rather than hand-written. 73 items x 3 locales is 219 strings and hand-copying reproduces exactly the error the fixture exists to catch — the plan makes that argument itself for T010. Only ids, groups and amounts are hand-authored; every name and description is pulled from translations.ts by the same key the component uses. The script is one-shot and should be deleted with translations.ts in Step 7.3.
+decided: the 50% touch-up name is stored without its trailing '50%' (name 'Коррекция (28-60 дней)', note '50%'), since the share note now renders that. If Step 3.5 does not place the note immediately after the name, the content-parity test will fail on the fixture string 'Коррекция (28-60 дней) 50%' — that is the fixture working, not a bug.
+decided: tsconfig.json excludes src/**/*.tsx, src/i18n/index.ts and vite.config.ts. verbatimModuleSyntax from astro/tsconfigs/strict makes src/i18n/index.ts:2 a hard TS1484 error, and that dead React tree would have poisoned every astro check gate from 2.1 to 7.3. The excludes must be deleted together with the files in Step 7.3.
+decided: added src/data/price-groups.ts beyond the three modules T012-T014 name — tabs.ts cannot be typed against price groups without a single home for the group-to-category table from data-model.md §Группа прайса. content.config.ts reads its group enum from the same place.
+decided: ui.ts carries meta (title + description, all three verified inside 120-160 chars) and error-page text, which page-head.md and data-model.md source from the dictionary but T012 does not enumerate; also sections.exotic, which the legacy tab does not render but the /massage/ category page needs, or that block lands unlabelled. Renamed services.makeup to services.beauty so the key matches the category id; displayed text unchanged.
+decided: baseline keeps only the median run per URL (3 reports, not 9) with all nine scores tabulated in baseline/README.md — the six discarded reports were 9.5 MB. Screenshots are full-page captures via CDP, not viewport crops, since Step 7.4 compares block composition and order.
