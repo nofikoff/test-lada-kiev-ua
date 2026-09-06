@@ -22,20 +22,57 @@ export const PHONE = '+380995570045';
 
 export const INSTAGRAM = 'https://www.instagram.com/massage.ln.kyiv/';
 
+export const SERVICE_CATEGORIES = ['massage', 'depilation', 'permanent', 'beauty'] as const;
+
+export type ServiceCategory = (typeof SERVICE_CATEGORIES)[number];
+
 export interface PageUnderTest {
   readonly locale: Locale;
   readonly path: string;
 }
 
-/**
- * Страницы уровня MVP. Двенадцать страниц категорий появляются в Step 5.4 и дописываются
- * сюда же вместе с проверками Step 5.1 — до тех пор их адреса отвечают 404 честно.
- */
+export interface CategoryPageUnderTest extends PageUnderTest {
+  readonly category: ServiceCategory;
+}
+
 export const homePages: readonly PageUnderTest[] = [
   { locale: 'uk', path: '/' },
   { locale: 'ru', path: '/ru/' },
   { locale: 'en', path: '/en/' },
 ];
+
+/** Префикс раздела локали; основная локаль живёт на корне — это действующая схема адресов. */
+function localePrefix(locale: Locale): string {
+  return locale === 'uk' ? '' : `/${locale}`;
+}
+
+/**
+ * Двенадцать страниц категорий: четыре категории × три локали. Адрес категории одинаков во всех
+ * языках, поэтому соответствие языковых версий вычисляется подстановкой префикса
+ * (contracts/page-head.md §Правила языковых альтернатив).
+ *
+ * Сами страницы создаёт **Step 5.4**; до него все двенадцать адресов отвечают 404, и проверки
+ * ниже падают на первой же строке с указанием на этот шаг — это ожидаемое состояние, а не сбой.
+ */
+export const categoryPages: readonly CategoryPageUnderTest[] = LOCALES.flatMap((locale) =>
+  SERVICE_CATEGORIES.map((category) => ({
+    locale,
+    category,
+    path: `${localePrefix(locale)}/${category}/`,
+  })),
+);
+
+/** Пятнадцать страниц сайта: три языковые версии главной и двенадцать страниц категорий. */
+export const allPages: readonly PageUnderTest[] = [...homePages, ...categoryPages];
+
+/**
+ * Контейнер текста страницы категории. Объём и уникальность текста (T044, FR-017) считаются
+ * по нему, а не по всей странице: прайс и подвал набрали бы четыреста слов сами по себе,
+ * и проверка прошла бы на странице вообще без описания услуги.
+ *
+ * Step 5.4 обязан пометить этим атрибутом контейнер, в который выводится текст из коллекции.
+ */
+export const SERVICE_COPY_SELECTOR = '[data-service-copy]';
 
 const NAMED_ENTITIES: Record<string, string> = {
   amp: '&',
@@ -103,6 +140,40 @@ interface PriceRecord {
 
 export function readPrices(): PriceRecord[] {
   return JSON.parse(repoFile('src/data/prices.json')) as PriceRecord[];
+}
+
+/**
+ * Связь группы прайса с категорией по [data-model.md] §Группа прайса. Копия таблицы модели,
+ * а не импорт из `src/`: проверка, читающая ту же таблицу, что и реализация, проверяет
+ * внутреннюю непротиворечивость, а не соответствие модели.
+ */
+const GROUP_CATEGORY: Record<string, ServiceCategory> = {
+  fullBodyMassage: 'massage',
+  localMassage: 'massage',
+  exotic: 'massage',
+  womenDepilation: 'depilation',
+  combos: 'depilation',
+  menDepilation: 'depilation',
+  permanentBrows: 'permanent',
+  permanentLips: 'permanent',
+  permanentEyeliner: 'permanent',
+  browsLashes: 'beauty',
+  makeupHair: 'beauty',
+};
+
+/**
+ * Сколько предложений обязано быть в машиночитаемом описании категории: позиция с фиксированной
+ * ценой даёт одно, позиция с вариантами — по одному на вариант, долевая не даёт ни одного
+ * (contracts/structured-data.md §Предложение).
+ */
+export function expectedOfferCount(category: ServiceCategory): number {
+  return readPrices()
+    .filter((record) => GROUP_CATEGORY[record.group] === category)
+    .reduce((sum, record) => {
+      if (record.price.kind === 'fixed') return sum + 1;
+      if (record.price.kind === 'variants') return sum + record.price.variants.length;
+      return sum;
+    }, 0);
 }
 
 /**

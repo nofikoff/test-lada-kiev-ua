@@ -1,11 +1,17 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
 import {
+  allPages,
   ANALYTICS_ID,
   APEX_ORIGIN,
+  categoryPages,
+  expectedOfferCount,
   homePages,
   INSTAGRAM,
+  normalize,
   PHONE,
   priceRange,
+  SERVICE_CATEGORIES,
+  SERVICE_COPY_SELECTOR,
   SITE_ORIGIN,
   toLocalPath,
   type Locale,
@@ -60,6 +66,20 @@ async function structuredData(page: Page): Promise<Record<string, unknown>[]> {
 
 function asArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [value];
+}
+
+/**
+ * Страницы категорий создаёт **Step 5.4** (T048–T050). До него все двенадцать адресов отвечают
+ * 404, и каждая проверка ниже останавливается здесь — с указанием шага, а не с разбором `null`
+ * там, где ожидалась разметка.
+ */
+async function requireCategoryPage(request: APIRequestContext, path: string): Promise<string> {
+  const response = await request.get(path);
+  expect(
+    response.status(),
+    `${path} не отдаётся: страницы категорий создаёт Step 5.4 (T048–T050)`,
+  ).toBe(200);
+  return response.text();
 }
 
 for (const { locale, path } of homePages) {
@@ -210,12 +230,172 @@ for (const { locale, path } of homePages) {
   });
 }
 
+for (const { locale, category, path } of categoryPages) {
+  test.describe(`страница категории ${path}`, () => {
+    test('язык документа, единственный заголовок и канонический адрес', async ({
+      page,
+      request,
+    }) => {
+      await requireCategoryPage(request, path);
+      await page.goto(path);
+
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        'href',
+        `${SITE_ORIGIN}${path}`,
+      );
+    });
+
+    /** Страница категории ссылается на ту же категорию в других локалях, а не на главную. */
+    test('языковые альтернативы ведут на ту же категорию', async ({ page, request }) => {
+      await requireCategoryPage(request, path);
+      await page.goto(path);
+
+      const alternates = page.locator('link[rel="alternate"][hreflang]');
+      const pairs = await alternates.evaluateAll((links) =>
+        links.map((link) => ({
+          hreflang: link.getAttribute('hreflang'),
+          href: link.getAttribute('href'),
+        })),
+      );
+
+      expect(Object.fromEntries(pairs.map((pair) => [pair.hreflang, pair.href]))).toEqual({
+        uk: `${SITE_ORIGIN}/${category}/`,
+        ru: `${SITE_ORIGIN}/ru/${category}/`,
+        en: `${SITE_ORIGIN}/en/${category}/`,
+        'x-default': `${SITE_ORIGIN}/${category}/`,
+      });
+
+      for (const pair of pairs) {
+        const response = await request.get(toLocalPath(pair.href!), { maxRedirects: 0 });
+        expect(response.status(), `языковая альтернатива ${pair.href}`).toBe(200);
+      }
+    });
+
+    test('описание услуги с перечнем предложений', async ({ page, request }) => {
+      await requireCategoryPage(request, path);
+      await page.goto(path);
+      const nodes = await structuredData(page);
+
+      const service = nodes.find((node) => node['@type'] === 'Service');
+      expect(service, 'нет описания услуги').toBeDefined();
+
+      const heading = await page.locator('h1').innerText();
+      expect([await page.title(), heading.trim()]).toContain(String(service!.name));
+      expect(service!.description).toBe(await metaContent(page, 'meta[name="description"]'));
+
+      // Исполнитель — ссылка на организацию главной страницы своей локали, а не второе её описание.
+      const providerId =
+        typeof service!.provider === 'string'
+          ? service!.provider
+          : (service!.provider as Record<string, unknown>)['@id'];
+      const home = homePages.find((entry) => entry.locale === locale)!;
+      expect(providerId).toBe(`${SITE_ORIGIN}${home.path}#business`);
+
+      expect(JSON.stringify(service!.areaServed ?? '')).not.toBe('""');
+
+      /**
+       * Число предложений равно числу отображаемых позиций за вычетом долевых
+       * (contracts/structured-data.md §Проверка 4): предложение с нулевой ценой описывает
+       * бесплатную услугу, поэтому «коррекция 50%» в перечень не попадает.
+       */
+      const offers = nodes.filter((node) => node['@type'] === 'Offer');
+      expect(offers.length, `предложений на ${path}`).toBe(expectedOfferCount(category));
+      for (const offer of offers) {
+        expect(Number(offer.price), `нулевая цена в ${JSON.stringify(offer)}`).toBeGreaterThan(0);
+        expect(offer.priceCurrency).toBe('UAH');
+      }
+    });
+
+    test('цепочка навигации ведёт с главной на страницу категории', async ({ page, request }) => {
+      await requireCategoryPage(request, path);
+      await page.goto(path);
+      const nodes = await structuredData(page);
+
+      const breadcrumb = nodes.find((node) => node['@type'] === 'BreadcrumbList');
+      expect(breadcrumb, 'нет цепочки навигации').toBeDefined();
+
+      const items = asArray(breadcrumb!.itemListElement) as Record<string, unknown>[];
+      expect(items).toHaveLength(2);
+
+      const home = homePages.find((entry) => entry.locale === locale)!;
+      const addresses = items.map((item) =>
+        typeof item.item === 'string' ? item.item : (item.item as Record<string, unknown>)?.['@id'],
+      );
+      expect(addresses).toEqual([`${SITE_ORIGIN}${home.path}`, `${SITE_ORIGIN}${path}`]);
+      expect(items.map((item) => Number(item.position))).toEqual([1, 2]);
+
+      // Названия — на языке страницы, поэтому берутся с самой страницы, а не из словаря теста.
+      for (const item of items) {
+        expect(String(item.name ?? '').trim().length, 'пустое название в цепочке').toBeGreaterThan(0);
+      }
+    });
+  });
+}
+
+/**
+ * Объём и уникальность текста (T044 по FR-017). Счётчик слов — рабочее определение
+ * «содержательного текста»: четыреста слов нельзя набрать шаблоном с подставленным названием.
+ * Считается только контейнер текста категории — прайс и подвал набрали бы норму сами.
+ */
+test.describe('тексты страниц категорий', () => {
+  for (const locale of ['uk', 'ru', 'en'] as const) {
+    test(`тексты локали ${locale} не короче 400 слов и не повторяют друг друга`, async ({
+      page,
+      request,
+    }) => {
+      const paragraphsByCategory = new Map<string, string[]>();
+
+      for (const entry of categoryPages.filter((candidate) => candidate.locale === locale)) {
+        await requireCategoryPage(request, entry.path);
+        await page.goto(entry.path);
+
+        const copy = page.locator(SERVICE_COPY_SELECTOR);
+        await expect(
+          copy,
+          `${entry.path}: контейнер ${SERVICE_COPY_SELECTOR} — договорённость со Step 5.4`,
+        ).toHaveCount(1);
+
+        const words = normalize(await copy.innerText()).split(' ').filter(Boolean);
+        expect(words.length, `${entry.path}: ${words.length} слов`).toBeGreaterThanOrEqual(400);
+
+        const paragraphs = (await copy.locator('p').allInnerTexts())
+          .map(normalize)
+          .filter((paragraph) => paragraph.length > 0);
+        expect(paragraphs.length, `${entry.path}: текст без абзацев`).toBeGreaterThan(0);
+        paragraphsByCategory.set(entry.category, paragraphs);
+      }
+
+      expect(paragraphsByCategory.size).toBe(SERVICE_CATEGORIES.length);
+
+      const owner = new Map<string, string>();
+      for (const [category, paragraphs] of paragraphsByCategory) {
+        for (const paragraph of paragraphs) {
+          expect(
+            owner.get(paragraph),
+            `абзац повторяется в «${owner.get(paragraph)}» и «${category}»: ${paragraph.slice(0, 60)}…`,
+          ).toBeUndefined();
+          owner.set(paragraph, category);
+        }
+      }
+    });
+  }
+});
+
 test.describe('сквозные требования ко всем страницам', () => {
   test('пара «заголовок + описание» уникальна', async ({ request }) => {
     const pairs: string[] = [];
 
-    for (const { path } of homePages) {
-      const html = await (await request.get(path)).text();
+    // Требование проверяется по всем пятнадцати страницам: нарушение возникает между файлами,
+    // и одна только главная его не покажет (contracts/page-head.md §Заголовки и описания).
+    for (const { path } of allPages) {
+      const response = await request.get(path);
+      expect(response.status(), `${path} не отдаётся: страницы категорий создаёт Step 5.4`).toBe(
+        200,
+      );
+
+      const html = await response.text();
       const title = /<title>([\s\S]*?)<\/title>/.exec(html)?.[1] ?? '';
       const description =
         /<meta\s+name="description"\s+content="([^"]*)"/.exec(html)?.[1] ?? '';
@@ -272,8 +452,13 @@ test.describe('сквозные требования ко всем страни�
   test('все абсолютные адреса используют хост с www и не ведут на перенаправление', async ({
     request,
   }) => {
-    for (const { path } of homePages) {
-      const html = await (await request.get(path)).text();
+    for (const { path } of allPages) {
+      const response = await request.get(path);
+      expect(response.status(), `${path} не отдаётся: страницы категорий создаёт Step 5.4`).toBe(
+        200,
+      );
+
+      const html = await response.text();
       const found = [...html.matchAll(/https?:\/\/[^"'\s<>)\\]+/g)].map((match) => match[0]);
       const own = found.filter((url) => url.includes('lada.kiev.ua'));
 
