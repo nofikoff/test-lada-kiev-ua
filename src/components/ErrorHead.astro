@@ -1,0 +1,19 @@
+---
+/**
+ * Заголовочная часть страницы ошибки — отдельный контракт, а не ветка внутри `SeoHead.astro`.
+ * У страницы ошибки нет собственного адреса: её отдаёт сервер на месте запрошенного, поэтому
+ * канонический адрес, языковые альтернативы и метаданные предпросмотра описывали бы не её.
+ * Из [contracts/page-head.md] здесь остаётся то, что относится к самому документу.
+ */
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const t = ui[Astro.props.locale];
+---
+
+<title>{t.error.title}</title>
+<meta name="description" content={t.error.text} />
+<meta name="robots" content="noindex" />

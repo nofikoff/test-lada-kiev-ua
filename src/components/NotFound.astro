@@ -1,0 +1,36 @@
+---
+/**
+ * Тело страницы ошибки — одно на три языковые версии. Шапка и подвал остаются на месте:
+ * посетитель, попавший сюда с внешней ссылки, должен иметь чем продолжить, а не одну надпись.
+ */
+import Icon from './Icon.astro';
+import { pagePath } from '../i18n/paths';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui[locale];
+---
+
+<section class="flex min-h-screen items-center justify-center bg-lada-dark px-4 py-32">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="mb-6 font-serif text-6xl md:text-8xl text-lada-gold/40">404</p>
+
+    <h1 class="mb-6 font-serif text-3xl md:text-4xl font-semibold text-white [text-wrap:balance]">
+      {t.error.heading}
+    </h1>
+
+    <p class="mb-10 text-lg text-white/70 [text-wrap:balance]">{t.error.text}</p>
+
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <a href={pagePath(locale)} class="btn-secondary">{t.error.cta}</a>
+      <a href="tel:+380995570045" class="inline-flex items-center space-x-3 btn-primary">
+        <Icon name="phone" size={20} />
+        <span>{t.hero.cta}</span>
+      </a>
+    </div>
+  </div>
+</section>

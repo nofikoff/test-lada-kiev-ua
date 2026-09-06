@@ -1,0 +1,14 @@
+---
+/**
+ * Страница ошибки украинского раздела и она же — корневая: `ErrorDocument 404` в `public/.htaccess`
+ * указывает на неё, разделы `/ru/` и `/en/` перекрывают объявление собственными файлами.
+ */
+import NotFound from '../components/NotFound.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const locale = 'uk';
+---
+
+<BaseLayout locale={locale} error>
+  <NotFound locale={locale} />
+</BaseLayout>
