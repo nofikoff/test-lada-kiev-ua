@@ -1,0 +1,145 @@
+---
+/**
+ * Перенос `Header.tsx`. Мобильное меню переведено с состояния React на `<details>`/`<summary>`:
+ * раскрытие блока — ровно семантика этого элемента, поэтому клавиатура и работа без скриптов
+ * достаются бесплатно (research.md §R10).
+ *
+ * Раскрытый блок позиционируется абсолютно, а не в потоке, потому что переключатель обязан
+ * остаться внутри строки фиксированной высоты, а `<summary>` — прямым потомком `<details>`.
+ * Отображение при этом то же: шапка зафиксирована, поэтому и раньше её рост не сдвигал страницу,
+ * а `top-full` отсчитывается от шапки — ближайшего позиционированного предка.
+ */
+import Icon from './Icon.astro';
+import logo from '../assets/logo.jpg';
+import { ui, locales, type Locale } from '../i18n/ui';
+import { pagePath } from '../i18n/paths';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui[locale];
+
+const navItems = [
+  { href: '#about', label: t.nav.about },
+  { href: '#services', label: t.nav.services },
+  { href: '#certificates', label: t.nav.certificates },
+  { href: '#contacts', label: t.nav.contacts },
+];
+
+/** Подписи переключателя — не коды языка, а то, что видит посетитель; в старом коде так же. */
+const LANGUAGE_LABEL: Record<Locale, string> = { uk: 'UA', ru: 'RU', en: 'EN' };
+
+const languages = locales.map((code) => ({
+  code,
+  label: LANGUAGE_LABEL[code],
+  href: pagePath(code),
+}));
+---
+
+<header
+  class="fixed top-0 left-0 right-0 z-50 bg-lada-dark/95 backdrop-blur-sm border-b border-lada-gray"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 md:h-20">
+      <a href={pagePath(locale)} class="flex items-center">
+        <img src={logo.src} alt="Lada N" class="h-10 md:h-12 w-auto brightness-75 contrast-125" />
+      </a>
+
+      <nav class="hidden md:flex items-center space-x-8">
+        {
+          navItems.map((item) => (
+            <a
+              href={item.href}
+              class="text-white/80 hover:text-lada-gold transition-colors duration-300 text-sm font-medium"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="hidden md:flex items-center space-x-6">
+        <div class="flex items-center space-x-2">
+          {
+            languages.map((language) => (
+              <a
+                href={language.href}
+                hreflang={language.code}
+                class:list={[
+                  'text-sm font-medium transition-colors duration-300',
+                  language.code === locale ? 'text-lada-gold' : 'text-white/60 hover:text-white',
+                ]}
+              >
+                {language.label}
+              </a>
+            ))
+          }
+        </div>
+
+        <a
+          href="tel:+380995570045"
+          class="flex items-center space-x-2 text-lada-gold hover:text-lada-gold-light transition-colors"
+        >
+          <Icon name="phone" size={18} />
+          <span class="font-medium">(099) 557-00-45</span>
+        </a>
+      </div>
+
+      <details id="mobile-menu" class="md:hidden group">
+        <summary
+          class="text-white p-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden"
+          aria-label={t.nav.menu}
+        >
+          <Icon name="menu" size={24} class="block group-open:hidden" />
+          <Icon name="x" size={24} class="hidden group-open:block" />
+        </summary>
+
+        <div
+          class="absolute left-0 right-0 top-full bg-lada-dark/95 backdrop-blur-sm border-b border-lada-gray"
+        >
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-4">
+              <nav class="flex flex-col space-y-4">
+                {
+                  navItems.map((item) => (
+                    <a
+                      href={item.href}
+                      class="text-white/80 hover:text-lada-gold transition-colors text-lg"
+                    >
+                      {item.label}
+                    </a>
+                  ))
+                }
+              </nav>
+
+              <div class="mt-6 pt-4 border-t border-lada-gray">
+                <div class="flex items-center space-x-4 mb-4">
+                  {
+                    languages.map((language) => (
+                      <a
+                        href={language.href}
+                        hreflang={language.code}
+                        class:list={[
+                          'text-sm font-medium',
+                          language.code === locale ? 'text-lada-gold' : 'text-white/60',
+                        ]}
+                      >
+                        {language.label}
+                      </a>
+                    ))
+                  }
+                </div>
+                <a href="tel:+380995570045" class="flex items-center space-x-2 text-lada-gold">
+                  <Icon name="phone" size={18} />
+                  <span>(099) 557-00-45</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
