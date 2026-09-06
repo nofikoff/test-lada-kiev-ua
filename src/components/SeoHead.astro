@@ -7,7 +7,10 @@
 import { getCollection } from 'astro:content';
 import logo from '../assets/logo.jpg';
 import hero from '../assets/massage-kiev-lada-novikova.jpg';
-import { ui, locales, type Locale } from '../i18n/ui';
+import { groupsOfCategory } from '../data/price-groups';
+import { pricesOfGroups } from '../data/price-list';
+import { serviceCopy } from '../data/services';
+import { formatDuration, formatSessions, ui, locales, type Locale } from '../i18n/ui';
 import {
   absoluteUrl,
   canonicalUrl,
@@ -51,8 +54,15 @@ const canonical = canonicalUrl(locale, category);
 const { alternates, xDefault } = languageAlternates(category);
 const ogImage = absoluteUrl(OG_IMAGE.path);
 
-const title = t.meta.title;
-const description = t.meta.description;
+/**
+ * Заголовок и описание страницы категории берутся из frontmatter её текста, а не собираются
+ * шаблоном с подставленным названием: одинаково устроенные заголовки на двенадцати страницах —
+ * тот же дубль, только автоматический (contracts/page-head.md §Заголовки и описания).
+ */
+const copy = category ? await serviceCopy(locale, category) : null;
+
+const title = copy ? copy.data.title : t.meta.title;
+const description = copy ? copy.data.description : t.meta.description;
 
 /**
  * Ценовой диапазон считается из прайса, а не вписывается строкой: вписанный вручную он
@@ -104,6 +114,74 @@ const business = category
       sameAs: [INSTAGRAM],
       availableLanguage: [...locales],
     };
+
+/**
+ * Перечень предложений страницы категории. Позиция с фиксированной ценой даёт одно предложение,
+ * позиция с вариантами — по одному на вариант, долевая не даёт ни одного: предложение без суммы
+ * или с нулевой суммой описывает бесплатную услугу (contracts/structured-data.md §Предложение).
+ */
+const priced = category ? await pricesOfGroups(groupsOfCategory(category)) : [];
+
+/** Длительность или число сеансов — свойство самого предложения, а не часть его названия. */
+function quantityOf(unit: 'minutes' | 'sessions', count: number) {
+  return unit === 'minutes'
+    ? { '@type': 'QuantitativeValue', value: count, unitCode: 'MIN' }
+    : { '@type': 'QuantitativeValue', value: count, unitText: t.priceList.sessionOne };
+}
+
+const offers = priced.flatMap(({ data }) => {
+  const price = data.price;
+  const name = data.name[locale];
+  const offer = { '@type': 'Offer', priceCurrency: 'UAH', availability: 'https://schema.org/InStock' };
+
+  if (price.kind === 'fixed') return [{ ...offer, name, price: price.amount }];
+  if (price.kind === 'variants') {
+    return price.variants.map((variant) => ({
+      ...offer,
+      name: `${name} — ${
+        price.unit === 'minutes'
+          ? formatDuration(locale, variant.count)
+          : formatSessions(locale, variant.count)
+      }`,
+      price: variant.amount,
+      eligibleQuantity: quantityOf(price.unit, variant.count),
+    }));
+  }
+  return [];
+});
+
+const home = canonicalUrl(locale);
+
+/** Исполнитель — ссылка на организацию главной страницы своей локали, а не второе её описание. */
+const service = copy
+  ? {
+      '@type': 'Service',
+      '@id': `${canonical}#service`,
+      name: copy.data.heading,
+      description,
+      url: canonical,
+      provider: { '@id': `${home}#business` },
+      areaServed: { '@type': 'City', name: addressLocality },
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: copy.data.heading,
+        itemListElement: offers,
+      },
+    }
+  : null;
+
+const breadcrumb = copy
+  ? {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t.nav.home, item: home },
+        { '@type': 'ListItem', position: 2, name: copy.data.heading, item: canonical },
+      ],
+    }
+  : null;
+
+const serviceGraph =
+  service && breadcrumb ? { '@context': 'https://schema.org', '@graph': [service, breadcrumb] } : null;
 ---
 
 <title>{title}</title>
@@ -138,3 +216,8 @@ const business = category
 <meta name="twitter:image" content={ogImage} />
 
 {business && <script type="application/ld+json" is:inline set:html={JSON.stringify(business)} />}
+{
+  serviceGraph && (
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(serviceGraph)} />
+  )
+}

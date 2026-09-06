@@ -1,0 +1,16 @@
+---
+/** Страницы категорий украинской версии: основная локаль отдаётся на корне без префикса. */
+import type { InferGetStaticParamsType } from 'astro';
+import ServicePage from '../components/ServicePage.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { categoryStaticPaths } from '../i18n/paths';
+
+export const getStaticPaths = categoryStaticPaths;
+
+const locale = 'uk';
+const { category } = Astro.params as InferGetStaticParamsType<typeof getStaticPaths>;
+---
+
+<BaseLayout locale={locale} category={category}>
+  <ServicePage locale={locale} category={category} />
+</BaseLayout>

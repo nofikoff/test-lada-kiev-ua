@@ -10,6 +10,14 @@ export const serviceCategories = ['massage', 'depilation', 'permanent', 'beauty'
 
 export type ServiceCategory = (typeof serviceCategories)[number];
 
+/**
+ * Набор путей страниц категорий — один на все три языковые версии. Перечисление категорий
+ * живёт здесь же, поэтому новая категория появляется во всех локалях сразу или ни в одной.
+ */
+export function categoryStaticPaths(): { params: { category: ServiceCategory } }[] {
+  return serviceCategories.map((category) => ({ params: { category } }));
+}
+
 /** Префикс раздела локали. Основная локаль живёт на корне — это действующая схема адресов. */
 function localePrefix(locale: Locale): string {
   return locale === defaultLocale ? '' : `/${locale}`;

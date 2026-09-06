@@ -14,6 +14,10 @@ type Widen<T> = T extends string ? string : { [K in keyof T]: Widen<T[K]> };
 
 const uk = {
   nav: {
+    // Название главной страницы в цепочке навигации — не подпись кнопки возврата: цепочка
+    // называет страницу, а не действие (contracts/structured-data.md §Цепочка навигации).
+    home: 'Головна',
+    breadcrumb: 'Навігаційний ланцюжок',
     about: 'Про нас',
     services: 'Послуги та Ціни',
     certificates: 'Сертифікати',
@@ -107,6 +111,8 @@ export type UiDictionary = Widen<typeof uk>;
 
 const ru: UiDictionary = {
   nav: {
+    home: 'Главная',
+    breadcrumb: 'Навигационная цепочка',
     about: 'О нас',
     services: 'Услуги и Цены',
     certificates: 'Сертификаты',
@@ -196,6 +202,8 @@ const ru: UiDictionary = {
 
 const en: UiDictionary = {
   nav: {
+    home: 'Home',
+    breadcrumb: 'Breadcrumb',
     about: 'About',
     services: 'Services & Prices',
     certificates: 'Gift Cards',

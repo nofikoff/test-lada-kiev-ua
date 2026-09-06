@@ -1,0 +1,124 @@
+---
+/**
+ * Состав страницы категории — в одном месте на три языковые версии, как и у главной.
+ * Страницы `src/pages/**` остаются объявлением локали и ничем больше.
+ *
+ * Текст берётся из коллекции, цены — из тех же данных, что и прайс главной, по группам
+ * категории (data-model.md §Группа прайса). Второй записи цен на сайте нет, поэтому
+ * страница категории и главная разойтись не могут.
+ */
+import { render } from 'astro:content';
+import Icon from './Icon.astro';
+import PriceGroup from './PriceGroup.astro';
+import { groupsOfCategory } from '../data/price-groups';
+import { pricesOfGroups } from '../data/price-list';
+import { serviceCopy } from '../data/services';
+import { pagePath, type ServiceCategory } from '../i18n/paths';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  category: ServiceCategory;
+}
+
+const { locale, category } = Astro.props;
+const t = ui[locale];
+
+const copy = await serviceCopy(locale, category);
+const { Content } = await render(copy);
+
+const groups = groupsOfCategory(category);
+
+/** Сноска об обновлении относится к перманентному макияжу — ровно как на вкладке главной. */
+const withNote = category === 'permanent';
+
+/** Группа с вариантами занимает по карточке на позицию — следующий за ней заголовок отбивается. */
+const variantGroups = new Set(
+  (await pricesOfGroups(groups))
+    .filter((entry) => entry.data.price.kind === 'variants')
+    .map((entry) => entry.data.group),
+);
+---
+
+<section class="pt-28 pb-16 md:pt-36 md:pb-24 bg-lada-dark">
+  <div class="max-w-4xl mx-auto px-4">
+    <nav aria-label={t.nav.breadcrumb} class="mb-8 text-sm text-white/50">
+      <ol class="flex flex-wrap items-center gap-2">
+        <li>
+          <a href={pagePath(locale)} class="hover:text-lada-gold transition-colors">{t.nav.home}</a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" class="text-white/70">{copy.data.heading}</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-white mb-8 [text-wrap:balance]">
+      {copy.data.heading}
+    </h1>
+
+    <!-- Атрибут — договорённость со сквозной проверкой: объём и уникальность текста считаются
+         по этому контейнеру, иначе в норму попали бы прайс и подвал (tests/support/site.ts). -->
+    <div class="service-copy" data-service-copy>
+      <Content />
+    </div>
+
+    <a
+      href="tel:+380995570045"
+      class="mt-10 inline-flex items-center space-x-3 btn-primary text-lg"
+    >
+      <Icon name="phone" size={20} />
+      <span>{t.hero.cta}</span>
+    </a>
+  </div>
+</section>
+
+<section id="services" class="py-20 md:py-32 bg-lada-darker">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="section-title">{t.priceList.title}</h2>
+
+    <p class="text-center text-lada-gold mb-8">{t.priceList.discount}</p>
+
+    {
+      groups.map((group, index) => (
+        <PriceGroup
+          locale={locale}
+          group={group}
+          headingClass={index > 0 && variantGroups.has(group) ? 'mt-12' : undefined}
+          cardClass={
+            index === groups.length - 1 ? (withNote ? 'card mb-4' : 'card') : 'card mb-8'
+          }
+        />
+      ))
+    }
+
+    {withNote && <p class="text-white/50 text-sm text-center">{t.priceList.permanentNote}</p>}
+  </div>
+</section>
+
+<style>
+  /* Текст приходит из markdown, поэтому классы утилит на его элементы не навесить:
+     плагина типографики в проекте нет, и оформление задаётся здесь. */
+  .service-copy :global(p) {
+    @apply text-lg text-white/70 leading-relaxed mb-6;
+  }
+
+  .service-copy :global(h2) {
+    @apply text-2xl md:text-3xl font-serif text-lada-gold mt-12 mb-6 [text-wrap:balance];
+  }
+
+  .service-copy :global(h3) {
+    @apply text-xl font-serif text-white mt-8 mb-4;
+  }
+
+  .service-copy :global(ul) {
+    @apply mb-6 list-disc space-y-2 pl-6 text-lg text-white/70;
+  }
+
+  .service-copy :global(strong) {
+    @apply font-medium text-white;
+  }
+
+  .service-copy :global(a) {
+    @apply text-lada-gold underline underline-offset-4;
+  }
+</style>
