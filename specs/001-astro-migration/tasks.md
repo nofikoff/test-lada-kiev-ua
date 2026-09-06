@@ -4,168 +4,462 @@ description: "Task list for 001-astro-migration"
 
 # Tasks: Статический многоязычный сайт вместо клиентского SPA
 
+> **Reviewed:** 2026-09-06 by /plan
+> **Fixed:** 2026-09-06 by /plan-fix
+
 **Input**: Design documents from `specs/001-astro-migration/`
 
 **Prerequisites**: [plan.md](./plan.md), [spec.md](./spec.md), [research.md](./research.md), [data-model.md](./data-model.md), [contracts/](./contracts/), [quickstart.md](./quickstart.md)
 
 **Tests**: включены. Спека требует машинных проверок как условия приёмки (FR-036, SC-001, SC-010), поэтому тестовые задачи здесь не опция.
 
-**Organization**: задачи сгруппированы по историям спеки. Порядок историй — приоритетный, но зависимости сильнее приоритета: перенос прайса в данные стоит в основании, потому что без него не собирается ни одна страница.
+**Organization**: шаг — единица коммита. Внутри шага перечислены задачи `T0NN`, они закрываются вместе с шагом. Порядок фаз определяется зависимостями, а не приоритетом историй: эталоны снимаются до того, как что-либо ломается, а перенос прайса в данные стоит в основании, потому что без него не собирается ни одна страница.
 
-## Format: `[ID] [P?] [Story] Description`
+`allowed_paths` во всех шагах, кроме документарных, даны корнем исходников. Миграция по своей природе тянет за собой файлы, которые автор шага перечислить не может: удаляемый компонент тащит за собой всех, кто его импортирует.
 
-- **[P]**: можно выполнять параллельно (разные файлы, нет незакрытых зависимостей)
-- **[Story]**: US1…US4 по историям спеки; задачи фаз Setup, Foundational и Polish метки не несут
+---
 
-```yaml
-plan-meta:
-  allowed_paths:
-    - src/**
-    - tests/**
-    - public/**
-    - scripts/**
-    - docs/**
-    - specs/001-astro-migration/**
-    - "*.json"
-    - "*.js"
-    - "*.mjs"
-    - "*.ts"
-  # Корень исходников целиком, не перечисление подкаталогов по шагам: миграция
-  # по своей природе трогает файлы, которые автор задач перечислить не может —
-  # удаляемый компонент тянет за собой всех, кто его импортирует.
-```
+## Phase 0: Эталоны
 
-## Path Conventions
+**Ничего не ломается до конца этой фазы.** Оба шага снимают то, с чем потом сравнивается результат; снятые позже, они бесполезны.
 
-Один проект, корень репозитория. Исходники — `src/`, проверки — `tests/`, статические файлы — `public/`. Структура задана в [plan.md](./plan.md).
+### Step 0.1: Отправная точка измерений с прода
+
+<!-- plan-meta:
+allowed_paths:
+  - "specs/001-astro-migration/baseline/**"
+gate_commands:
+  test_quick: "test -d specs/001-astro-migration/baseline && test \"$(ls -A specs/001-astro-migration/baseline | wc -l)\" -gt 0"
+-->
+
+Замер снимается с работающего прода `https://www.lada.kiev.ua`, а не с локальной сборки: локальная перестанет собираться уже на Phase 1, а эталоном для сравнения является то, что видит посетитель.
+
+- [ ] T009 Снять Lighthouse на мобильном профиле для `/`, `/ru`, `/en` — медиана трёх прогонов на адрес, один прогон шумит на десятки пунктов и сравнению не годится. Скриншоты тех же трёх адресов в ширинах 375, 768, 1440. Всё сохранить в `specs/001-astro-migration/baseline/`
+
+**Done when**: в `baseline/` лежат три отчёта и девять скриншотов, у каждого отчёта указана дата снятия.
+
+### Step 0.2: Эталонная фикстура контента
+
+<!-- plan-meta:
+allowed_paths:
+  - "scripts/**"
+  - "tests/**"
+gate_commands:
+  test_quick: "node scripts/extract-legacy-content.mjs && node -e \"const f=require('./tests/fixtures/legacy-content.json');if(!f.uk?.length||!f.ru?.length||!f.en?.length)throw new Error('fixture incomplete')\""
+-->
+
+- [ ] T010 Написать `scripts/extract-legacy-content.mjs`: рекурсивный обход `src/i18n/translations.ts`, сбор всех строковых значений по локалям, запись в `tests/fixtures/legacy-content.json`. Ручной перенос строк запрещён — он воспроизводит ровно ту ошибку, которую фикстура должна ловить
+- [ ] T011 Выполнить скрипт и закоммитить `tests/fixtures/legacy-content.json`
+
+**Done when**: фикстура содержит непустые массивы по трём локалям и переживёт удаление `translations.ts` в Step 7.4.
 
 ---
 
 ## Phase 1: Setup
 
-**Purpose**: рабочий каркас Astro рядом с действующим кодом, до его удаления.
+### Step 1.1: Astro, конфигурация, интеграции
 
-- [ ] T001 Установить Astro 7.3.1 и снять неиспользуемые зависимости: `npm i astro@7.3.1 @astrojs/sitemap@3.7.4 @astrojs/tailwind@6.0.2` и `npm rm @supabase/supabase-js react-router-dom` в `package.json`
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "public/**"
+  - "scripts/**"
+  - "docs/**"
+gate_commands:
+  test_quick: "npx astro --version"
+-->
+
+- [ ] T001 `npm i astro@7.3.1 @astrojs/sitemap@3.7.4 @astrojs/tailwind@6.0.2`, `npm rm @supabase/supabase-js react-router-dom`
 - [ ] T002 Создать `astro.config.mjs`: `site: 'https://www.lada.kiev.ua'`, `output: 'static'`, `build.format: 'directory'`, блок `i18n` с `defaultLocale: 'uk'`, `locales: ['uk','ru','en']`, `routing.prefixDefaultLocale: false`
-- [ ] T003 Подключить в `astro.config.mjs` интеграцию sitemap с блоком `i18n` (`uk: 'uk-UA'`, `ru: 'ru-UA'`, `en: 'en'`) и интеграцию Tailwind
-- [ ] T004 [P] Расширить `content` в `tailwind.config.js` на `./src/**/*.{astro,ts,md}`, сохранив текущие цвета и шрифтовые семейства без изменений
-- [ ] T005 [P] Заменить `tsconfig.json` на конфигурацию Astro (`extends: 'astro/tsconfigs/strict'`), удалить `tsconfig.app.json` и `tsconfig.node.json`
-- [ ] T006 [P] Заменить скрипты в `package.json`: `dev`, `build`, `preview`, `check` (`astro check`), `test:content`, `test:e2e`, `analyze` — набор должен совпадать с командами, на которые ссылается [quickstart.md](./quickstart.md)
-- [ ] T007 [P] Настроить eslint под `.astro` в `eslint.config.js`, убрав правила React-плагинов
-- [ ] T008 Установить Playwright: `npm i -D @playwright/test`, создать `playwright.config.ts` с запуском против `npm run preview`
+- [ ] T003 Подключить интеграцию sitemap с блоком `i18n` (`uk: 'uk-UA'`, `ru: 'ru-UA'`, `en: 'en'`) и интеграцию Tailwind
+
+**Done when**: `npx astro --version` печатает 7.3.1, конфигурация читается без ошибок.
+
+### Step 1.2: Tailwind, TypeScript, скрипты
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "scripts/**"
+gate_commands:
+  test_quick: "npx astro --version && node -e \"const p=require('./package.json');['dev','build','preview','check','test:content','test:e2e','test:invalid-data','analyze'].forEach(s=>{if(!p.scripts[s])throw new Error('missing script: '+s)})\""
+-->
+
+- [ ] T004 Расширить `content` в `tailwind.config.js` на `./src/**/*.{astro,ts,md}`, сохранив текущие цвета и шрифтовые семейства без изменений
+- [ ] T005 Заменить `tsconfig.json` на конфигурацию Astro (`extends: 'astro/tsconfigs/strict'`), удалить `tsconfig.app.json` и `tsconfig.node.json`
+- [ ] T006 Заменить скрипты в `package.json`: `dev`, `build`, `preview`, `check` (`astro check`), `test:content`, `test:e2e`, `test:invalid-data`, `analyze`. Набор должен совпадать с командами, на которые ссылается [quickstart.md](./quickstart.md)
+
+**Done when**: все семь скриптов присутствуют, цветовая палитра в конфигурации Tailwind не изменилась.
+
+### Step 1.3: eslint и Playwright
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "scripts/**"
+gate_commands:
+  lint: "npx eslint ."
+  test_quick: "npx playwright --version"
+-->
+
+- [ ] T007 Настроить eslint под `.astro` в `eslint.config.js`, убрав правила React-плагинов
+- [ ] T008 `npm i -D @playwright/test`, создать `playwright.config.ts` с запуском против `npm run preview`
+
+**Done when**: `npx eslint .` проходит на текущем дереве, Playwright установлен.
 
 ---
 
 ## Phase 2: Foundational
 
-**⚠️ Блокирует всё остальное. Первые две задачи блокируют в том числе удаление старого кода — снятые позже, они бесполезны.**
+### Step 2.1: Словарь интерфейса, пути, конфигурация вкладок
 
-- [ ] T009 Снять отправную точку измерений с действующего прода `https://www.lada.kiev.ua`: Lighthouse на мобильном профиле, медиана трёх прогонов на адрес — один прогон шумит на десятки пунктов и сравнению не годится; плюс скриншоты `/`, `/ru`, `/en` в ширинах 375, 768, 1440. Сохранить в `specs/001-astro-migration/baseline/`
-- [ ] T010 Написать скрипт извлечения эталона `scripts/extract-legacy-content.mjs`: рекурсивный обход `src/i18n/translations.ts`, сбор всех строковых значений по локалям, запись в `tests/fixtures/legacy-content.json`. Ручной перенос строк запрещён — он воспроизводит ровно ту ошибку, которую фикстура должна ловить
-- [ ] T011 Выполнить скрипт и закоммитить `tests/fixtures/legacy-content.json` — этот файл переживает удаление `translations.ts`
-- [ ] T012 [P] Создать `src/i18n/ui.ts`: перенести все подписи интерфейса из `translations.ts` как объект `as const`, ключ `ua` переименовать в `uk`. Длительности хранить шаблоном, а не готовой строкой (`data-model.md` §Словарь)
-- [ ] T013 [P] Создать `src/i18n/paths.ts`: построение адреса страницы по локали и категории, набор языковых альтернатив, абсолютный канонический адрес с `www` и завершающим слешем
-- [ ] T014 [P] Создать `src/i18n/tabs.ts`: состав вкладок главной страницы поверх групп прайса, ровно как в `data-model.md` §Конфигурация вкладок
-- [ ] T015 Перенести данные прайса из `src/components/PriceList.tsx` в `src/data/prices.json` по схеме `data-model.md` §Позиция прайса. Идентификаторы строить от группы: три позиции повторяются между группами с разными ценами и от названия схлопнутся в одну
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "scripts/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
+
+- [ ] T012 Создать `src/i18n/ui.ts`: перенести все подписи интерфейса из `translations.ts` как объект `as const`, ключ `ua` переименовать в `uk`. Длительности хранить шаблоном, а не готовой строкой ([data-model.md](./data-model.md) §Словарь интерфейса)
+- [ ] T013 Создать `src/i18n/paths.ts`: построение адреса страницы по локали и категории, набор языковых альтернатив, абсолютный канонический адрес с `www` и завершающим слешем
+- [ ] T014 Создать `src/i18n/tabs.ts`: состав вкладок главной страницы поверх групп прайса, ровно как в [data-model.md](./data-model.md) §Конфигурация вкладок
+
+**Done when**: `astro check` проходит; тип словаря выведен из основной локали, поэтому недостающий ключ в `ru` или `en` — ошибка компиляции.
+
+### Step 2.2: Перенос прайса в данные
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "scripts/**"
+gate_commands:
+  type: "npx astro check"
+  test_quick: "node -e \"const p=require('./src/data/prices.json');const ids=new Set(p.map(x=>x.id));if(ids.size!==p.length)throw new Error('duplicate ids');p.forEach(x=>['uk','ru','en'].forEach(l=>{if(!x.name?.[l])throw new Error('missing '+l+' for '+x.id)}))\""
+-->
+
+Самый тяжёлый шаг плана и единственный, где ошибка тиха: перепутанный идентификатор в группе перманента даст не падение сборки, а неверную цену на странице.
+
+- [ ] T015 Перенести данные прайса из `src/components/PriceList.tsx` в `src/data/prices.json` по схеме [data-model.md](./data-model.md) §Позиция прайса. Идентификаторы строить от группы: три позиции повторяются между группами с разными ценами и от названия схлопнутся в одну. Долевые цены (`kind: 'share'`) не хранить нулевой суммой
+
+**Done when**: число позиций в JSON равно числу позиций в старом `PriceList.tsx`; идентификаторы уникальны; у каждой позиции есть все три локали.
+
+### Step 2.3: Коллекции и схемы валидации
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+gate_commands:
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
+
 - [ ] T016 Создать `src/content.config.ts`: коллекция `prices` через `file()` с zod-схемой (все три локали обязательны, `amount` и `minutes` — целые положительные, `percent` 1–99, `id` уникален) и коллекция `services` через `glob()`
+
+**Done when**: схема отвергает неполный перевод, отрицательную цену и долю вне диапазона 1–99.
+
+### Step 2.4: Каркас страницы, иконки, изображения
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "public/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
+
 - [ ] T017 Создать `src/layouts/BaseLayout.astro`: каркас страницы, счётчик аналитики с прежним идентификатором `G-WZT8TJLSDP` и прежним способом загрузки
-- [ ] T018 [P] Создать `src/components/Icon.astro` с инлайн-SVG вместо `lucide-react`: телефон, меню, крест, карта, часы, Instagram, подарок
+- [ ] T018 Создать `src/components/Icon.astro` с инлайн-SVG вместо `lucide-react`: телефон, меню, крест, карта, часы, Instagram, подарок
 - [ ] T019 Перенести изображения из `public/assets/` в `src/assets/`, кроме изображения предпросмотра — оно остаётся в `public/` с постоянным адресом
 
-**Checkpoint**: данные, словарь и каркас готовы; страницы можно собирать.
+**Done when**: каркас собирается, иконки отрисовываются без внешней библиотеки.
 
 ---
 
-## Phase 3: User Story 1 — Поисковая система индексирует содержимое (P1) 🎯 MVP
+## Phase 3: User Story 1 — Поисковая система индексирует содержимое (P1)
 
 **Goal**: каждая языковая версия отдаётся готовым HTML с собственными метаданными и машиночитаемым описанием.
 
 **Independent Test**: запросить три адреса без выполнения скриптов; весь текст на месте, метаданные уникальны, языковые альтернативы полны.
 
-### Проверки
+### Step 3.1: Тесты SEO-контракта, адресов и интерактива
 
-- [ ] T020 [P] [US1] Написать `tests/content-parity.spec.ts`: каждая строка `tests/fixtures/legacy-content.json` присутствует в HTML своей локали, сравнение по нормализованным пробелам и кавычкам
-- [ ] T021 [P] [US1] Написать `tests/seo-contract.spec.ts` по [contracts/page-head.md](./contracts/page-head.md): язык документа, один заголовок первого уровня, канонический адрес, четыре языковые альтернативы, уникальность пары «заголовок + описание» по всем страницам, метаданные предпросмотра, счётчик аналитики. Отдельной проверкой — что **все** абсолютные адреса в разметке используют хост с `www` и ни один не ведёт на перенаправление, включая адрес изображения предпросмотра и языковые альтернативы (SC-013)
-- [ ] T022 [P] [US1] Дописать в `tests/seo-contract.spec.ts` проверки машиночитаемого описания по [contracts/structured-data.md](./contracts/structured-data.md): разбор разметки, соответствие ценового диапазона данным прайса, отсутствие предложений с нулевой ценой
-- [ ] T022a [P] [US1] Написать `tests/routes.spec.ts` по [contracts/routes.md](./contracts/routes.md): код ответа каждого адреса таблицы, приход `/ru` без слеша на `/ru/`, код 404 на несуществующем адресе, язык страницы ошибки по разделу (SC-008)
-- [ ] T022b [P] [US1] Написать `tests/interaction.spec.ts`: открытие и закрытие мобильного меню, переключение вкладок мышью, стрелками, Home и End, корректность `aria-selected` и `aria-controls` (FR-027, SC-012)
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "scripts/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
 
-### Реализация
+Тесты пишутся до страниц и на этом шаге обязаны падать — падать по существу, а не по синтаксису.
 
-- [ ] T023 [US1] Создать `src/components/SeoHead.astro`: заголовок, описание, канонический адрес, языковые альтернативы с версией по умолчанию, метаданные предпросмотра с локалью страницы
-- [ ] T024 [US1] Добавить в `SeoHead.astro` машиночитаемое описание организации для главной страницы; ценовой диапазон вычислять из `prices.json`, не вписывать строкой
-- [ ] T025 [P] [US1] Перенести `src/components/Hero.tsx` в `src/components/Hero.astro`, вёрстка один в один
-- [ ] T026 [P] [US1] Перенести `src/components/About.tsx` в `src/components/About.astro`
-- [ ] T027 [P] [US1] Перенести `src/components/Certificates.tsx` в `src/components/Certificates.astro`
-- [ ] T028 [P] [US1] Перенести `src/components/Footer.tsx` в `src/components/Footer.astro`, включая встроенную карту
-- [ ] T029 [US1] Перенести `src/components/Header.tsx` в `src/components/Header.astro`: мобильное меню на `<details>`/`<summary>`, переключатель языков на ссылках из `src/i18n/paths.ts`
-- [ ] T030 [US1] Создать `src/components/PriceGroup.astro`: блок группы позиций, обе формы цены и долевая цена с подписью вместо суммы
-- [ ] T031 [US1] Создать `src/components/PriceTabs.astro`: вкладки с `role="tablist"`, `aria-selected`, `aria-controls`; разметка отдаётся со всеми видимыми блоками, скрытие неактивных выполняет скрипт при инициализации — иначе при отключённых скриптах не видно ничего
-- [ ] T032 [US1] Создать `src/components/ServicesOverview.astro` со ссылками на страницы категорий
-- [ ] T033 [US1] Создать `src/pages/index.astro`, `src/pages/ru/index.astro`, `src/pages/en/index.astro` — тонкие обёртки, передающие локаль
-- [ ] T034 [P] [US1] Создать `public/robots.txt` со ссылкой на карту сайта
-- [ ] T035 [US1] Прогнать `npm run check`, `npm run build`, `npm run test:content`, `npm run test:e2e` и предъявить вывод
+- [ ] T020 `tests/content-parity.spec.ts`: каждая строка `tests/fixtures/legacy-content.json` присутствует в HTML своей локали, сравнение по нормализованным пробелам и кавычкам
+- [ ] T021 `tests/seo-contract.spec.ts` по [contracts/page-head.md](./contracts/page-head.md): язык документа, один заголовок первого уровня, канонический адрес, четыре языковые альтернативы, уникальность пары «заголовок + описание» по всем страницам, метаданные предпросмотра, счётчик аналитики. Отдельной проверкой — что **все** абсолютные адреса используют хост с `www` и ни один не ведёт на перенаправление (SC-013)
+- [ ] T022 Дописать в `tests/seo-contract.spec.ts` проверки машиночитаемого описания по [contracts/structured-data.md](./contracts/structured-data.md): разбор разметки, соответствие ценового диапазона данным прайса, отсутствие предложений с нулевой ценой
+- [ ] T022a `tests/routes.spec.ts` по [contracts/routes.md](./contracts/routes.md): код ответа каждого адреса таблицы, приход `/ru` без слеша на `/ru/`, код 404 на несуществующем адресе, язык страницы ошибки по разделу (SC-008)
+- [ ] T022b `tests/interaction.spec.ts`: открытие и закрытие мобильного меню, переключение вкладок мышью, стрелками, Home и End, корректность `aria-selected` и `aria-controls` (FR-027, SC-012)
 
-**Checkpoint**: три языковые версии главной страницы индексируемы и проходят сверку полноты.
+**Done when**: пять файлов проверок написаны и синтаксически валидны; `astro check` проходит.
+
+### Step 3.2: SeoHead и машиночитаемое описание
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
+
+- [ ] T023 Создать `src/components/SeoHead.astro`: заголовок, описание, канонический адрес, языковые альтернативы с версией по умолчанию, метаданные предпросмотра с локалью страницы
+- [ ] T024 Добавить машиночитаемое описание организации для главной страницы; ценовой диапазон вычислять из `prices.json`, не вписывать строкой
+
+**Done when**: компонент принимает локаль и путь, отдаёт полный набор из [contracts/page-head.md](./contracts/page-head.md).
+
+### Step 3.3: Перенос статических компонентов
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
+
+Вёрстка переносится один в один. Любое расхождение в отображении — дефект переноса, а не улучшение.
+
+- [ ] T025 `src/components/Hero.tsx` → `Hero.astro`
+- [ ] T026 `src/components/About.tsx` → `About.astro`
+- [ ] T027 `src/components/Certificates.tsx` → `Certificates.astro`
+- [ ] T028 `src/components/Footer.tsx` → `Footer.astro`, включая встроенную карту
+
+**Done when**: четыре компонента отрисовываются с теми же классами Tailwind, что в исходных `.tsx`.
+
+### Step 3.4: Header с меню на нативном раскрытии
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
+
+- [ ] T029 `src/components/Header.tsx` → `Header.astro`: мобильное меню на `<details>`/`<summary>` без скрипта, переключатель языков на ссылках из `src/i18n/paths.ts`
+
+**Done when**: меню открывается и закрывается без единой строки JavaScript и управляется с клавиатуры.
+
+### Step 3.5: Прайс и обзор услуг
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
+
+- [ ] T030 `src/components/PriceGroup.astro`: блок группы позиций, обе формы цены и долевая цена с подписью вместо суммы
+- [ ] T031 `src/components/PriceTabs.astro`: вкладки с `role="tablist"`, `aria-selected`, `aria-controls`. Разметка отдаётся со всеми видимыми блоками, скрытие неактивных выполняет скрипт при инициализации — иначе при отключённых скриптах не видно ничего
+- [ ] T032 `src/components/ServicesOverview.astro` со ссылками на страницы категорий
+
+**Done when**: при отключённых скриптах виден весь прайс; при включённых работают вкладки и клавиатура.
+
+### Step 3.6: Страницы главной, robots, прогон проверок
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "public/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npm run build"
+  test_full: "npm run build && npm run test:content && npm run test:e2e"
+-->
+
+- [ ] T033 Создать `src/pages/index.astro`, `src/pages/ru/index.astro`, `src/pages/en/index.astro` — тонкие обёртки, передающие локаль
+- [ ] T034 Создать `public/robots.txt` со ссылкой на карту сайта
+- [ ] T035 Прогнать `npm run check`, `npm run build`, `npm run test:content`, `npm run test:e2e` и предъявить вывод
+
+**Done when**: три языковые версии главной собираются, сверка полноты контента и проверки SEO-контракта зелёные.
 
 ---
 
 ## Phase 4: User Story 2 — Посетитель с телефона получает страницу быстро (P2)
 
-**Goal**: ноль фреймворка, оптимизированные изображения, шрифты со своего домена.
-
 **Independent Test**: измерить страницу на мобильном профиле и сравнить с отправной точкой; исполняемый код помимо аналитики не более 5 КБ.
 
-- [ ] T036 [P] [US2] Перевести изображение первого экрана с фонового CSS-свойства на компонент изображения с `priority` в `src/components/Hero.astro`, с абсолютным позиционированием и `object-fit: cover`
-- [ ] T037 [P] [US2] Перевести логотип на компонент изображения в `Header.astro` и `Footer.astro`
-- [ ] T038 [US2] Настроить шрифты в `astro.config.mjs` через Fonts API: Inter и Playfair Display, подмножества `latin` и `cyrillic`; удалить обращения к стороннему домену шрифтов
-- [ ] T039 [US2] Проверить рендером наличие кириллического начертания у Playfair Display на украинском заголовке; при отсутствии — заменить семейство и записать решение в `research.md` §R8
-- [ ] T040 [US2] Пережать изображение предпросмотра до 250 КБ и меньше, положить в `public/` под постоянным именем, обновить ссылки в `SeoHead.astro`
-- [ ] T041 [US2] Добавить в `package.json` скрипт `analyze`, считающий суммарный размер исполняемого кода сборки помимо аналитики
-- [ ] T042 [US2] Снять измерения новой сборки и сравнить с `specs/001-astro-migration/baseline/`; предъявить оба отчёта
+### Step 4.1: Изображения
 
-**Checkpoint**: цели по скорости подтверждены измерением, а не ощущением.
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "public/**"
+gate_commands:
+  type: "npx astro check"
+  test_quick: "npm run build"
+  test_full: "npm run build && npm run test:content && npm run test:e2e"
+-->
+
+- [ ] T036 Перевести изображение первого экрана с фонового CSS-свойства на компонент изображения с `priority` в `Hero.astro`, с абсолютным позиционированием и `object-fit: cover`
+- [ ] T037 Перевести логотип на компонент изображения в `Header.astro` и `Footer.astro`
+- [ ] T040 Пережать изображение предпросмотра до 250 КБ и меньше, положить в `public/` под постоянным именем, обновить ссылки в `SeoHead.astro`
+
+**Done when**: сборка отдаёт AVIF и WebP с набором размеров; изображение предпросмотра весит не больше 300 КБ.
+
+### Step 4.2: Шрифты
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+gate_commands:
+  type: "npx astro check"
+  test_quick: "npm run build"
+  test_full: "npm run build && npm run test:content && npm run test:e2e"
+-->
+
+- [ ] T038 Настроить шрифты в `astro.config.mjs` через Fonts API: Inter и Playfair Display, подмножества `latin` и `cyrillic`; удалить обращения к стороннему домену шрифтов
+- [ ] T039 Проверить рендером наличие кириллического начертания у Playfair Display на украинском заголовке; при отсутствии — заменить семейство и записать решение в [research.md](./research.md) §R8
+
+**Done when**: в собранном HTML нет обращений к `fonts.googleapis.com` и `fonts.gstatic.com`; украинский заголовок отрисован заявленным шрифтом.
+
+### Step 4.3: Измерение веса и скорости
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "scripts/**"
+  - "specs/001-astro-migration/**"
+gate_commands:
+  test_quick: "npm run build && npm run analyze"
+-->
+
+- [ ] T041 Добавить скрипт `analyze`, считающий суммарный размер исполняемого кода сборки помимо аналитики
+- [ ] T042 Снять измерения новой сборки и сравнить с `specs/001-astro-migration/baseline/`; предъявить оба отчёта
+
+**Done when**: исполняемый код помимо аналитики не превышает 5 КБ; сравнение с отправной точкой приложено.
 
 ---
 
 ## Phase 5: User Story 3 — Страницы категорий услуг (P3)
 
-**Goal**: двенадцать страниц с собственным текстом, ценами из общих данных и переключением языка внутри категории.
-
 **Independent Test**: открыть каждую страницу, проверить уникальность текста, совпадение цен с главной и сохранение категории при смене языка.
 
-### Проверки
+### Step 5.1: Проверки страниц категорий и карты сайта
 
-- [ ] T043 [P] [US3] Дописать в `tests/seo-contract.spec.ts` проверки страниц категорий: цепочка навигации, описание услуги с перечнем предложений, языковые альтернативы ведут на ту же категорию
-- [ ] T044 [P] [US3] Написать проверку объёма и уникальности текста: не менее 400 слов на страницу, отсутствие совпадающих абзацев между категориями внутри одной локали. Счётчик слов принимается как рабочее определение «содержательного текста» из FR-017 — иное определение непроверяемо
-- [ ] T044a [P] [US3] Написать `tests/sitemap.spec.ts`: карта сайта отдаёт XML, содержит ровно пятнадцать адресов, у каждого есть три языковые альтернативы, ни один адрес не отвечает кодом, отличным от 200 (FR-040, SC-003, SC-014)
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+gate_commands:
+  type: "npx astro check"
+  test_quick: "npx astro check"
+-->
 
-### Контент
+- [ ] T043 Дописать в `tests/seo-contract.spec.ts`: цепочка навигации, описание услуги с перечнем предложений, языковые альтернативы ведут на ту же категорию
+- [ ] T044 Проверка объёма и уникальности текста: не менее 400 слов на страницу, отсутствие совпадающих абзацев между категориями внутри одной локали. Счётчик слов принимается как рабочее определение «содержательного текста» из FR-017
+- [ ] T044a `tests/sitemap.spec.ts`: карта сайта отдаёт XML, содержит ровно пятнадцать адресов, у каждого есть три языковые альтернативы, ни один адрес не отвечает кодом, отличным от 200 (FR-040, SC-003, SC-014)
 
-- [ ] T045 [US3] Написать украинские тексты четырёх категорий в `src/content/services/uk/{massage,depilation,permanent,beauty}.md` на основе существующих описаний услуг
-- [ ] T046 [P] [US3] Перевести их в `src/content/services/ru/`
-- [ ] T047 [P] [US3] Перевести их в `src/content/services/en/`
+**Done when**: три проверки написаны и падают по существу.
 
-### Реализация
+### Step 5.2: Украинские тексты категорий
 
-- [ ] T048 [US3] Создать `src/pages/[category].astro` с генерацией путей из перечисления категорий: заголовок и текст из коллекции, перечень позиций из `prices.json` по группам категории
-- [ ] T049 [P] [US3] Создать `src/pages/ru/[category].astro` и `src/pages/en/[category].astro`
-- [ ] T050 [US3] Добавить в `SeoHead.astro` описание услуги с перечнем предложений и цепочку навигации; долевые позиции в перечень не включать
-- [ ] T051 [US3] Прогнать полный набор проверок и предъявить вывод
+<!-- plan-meta:
+allowed_paths:
+  - "src/content/**"
+  - "tests/**"
+gate_commands:
+  test_quick: "npx astro check"
+-->
 
-**Checkpoint**: пятнадцать страниц в карте сайта, каждая с собственным содержанием.
+- [ ] T045 Написать `src/content/services/uk/{massage,depilation,permanent,beauty}.md` на основе существующих описаний услуг: не менее 400 слов на страницу, frontmatter с `category`, `title`, `description`, `heading`
+
+**Done when**: четыре файла проходят схему коллекции; тексты не повторяют друг друга.
+
+### Step 5.3: Переводы текстов категорий
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/content/**"
+  - "tests/**"
+gate_commands:
+  test_quick: "npx astro check"
+-->
+
+- [ ] T046 Перевести четыре текста в `src/content/services/ru/`
+- [ ] T047 Перевести четыре текста в `src/content/services/en/`
+
+**Done when**: для каждой из четырёх категорий существуют ровно три файла — по одному на локаль.
+
+### Step 5.4: Страницы категорий
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npm run build"
+  test_full: "npm run build && npm run test:content && npm run test:e2e"
+-->
+
+- [ ] T048 Создать `src/pages/[category].astro` с генерацией путей из перечисления категорий: заголовок и текст из коллекции, перечень позиций из `prices.json` по группам категории
+- [ ] T049 Создать `src/pages/ru/[category].astro` и `src/pages/en/[category].astro`
+- [ ] T050 Добавить в `SeoHead.astro` описание услуги с перечнем предложений и цепочку навигации; долевые позиции в перечень не включать
+- [ ] T051 Прогнать полный набор проверок и предъявить вывод
+
+**Done when**: пятнадцать страниц в карте сайта, каждая с собственным содержанием и своими метаданными.
 
 ---
 
 ## Phase 6: User Story 4 — Правка цены в одном месте (P4)
 
-**Goal**: подтвердить, что модель данных действительно даёт одно место правки и останавливает сборку на неполных данных.
+### Step 6.1: Приёмка модели данных
 
-**Independent Test**: изменить одно значение, пересобрать, увидеть его во всех местах отображения на трёх языках.
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "specs/001-astro-migration/**"
+gate_commands:
+  test_quick: "npm run test:invalid-data"
+  test_full: "npm run build && npm run test:content && npm run test:e2e && npm run test:invalid-data"
+-->
 
-- [ ] T052 [US4] Проверить на копии, что сборка падает при удалённом переводе названия позиции, при отсутствующем файле текста категории и при отрицательной цене; сообщения об ошибке указывают на конкретное поле
-- [ ] T053 [US4] Изменить цену одной позиции, пересобрать и убедиться, что новое значение появилось на главной, на странице категории и в машиночитаемом описании на всех трёх языках; изменение откатить
-- [ ] T054 [US4] Записать результат обеих проверок в `specs/001-astro-migration/quickstart.md` как подтверждённые
+- [ ] T052 Написать `scripts/test-invalid-data.mjs` и скрипт `test:invalid-data`: три случая порчи во временной копии — отсутствующий перевод названия позиции, отсутствующий файл текста категории, отрицательная цена. Каждый ожидает ненулевой код возврата сборки, сообщение указывает на конкретное поле. Порча откатывается автоматически
+- [ ] T053 Изменить цену одной позиции, пересобрать и убедиться, что новое значение появилось на главной, на странице категории и в машиночитаемом описании на всех трёх языках; изменение откатить
+- [ ] T054 Записать результат обеих проверок в [quickstart.md](./quickstart.md) как подтверждённые
+
+**Done when**: три случая порчи данных роняют сборку автоматически; правка одной цены отражается во всех местах отображения.
 
 ---
 
@@ -173,54 +467,121 @@ plan-meta:
 
 **Порядок внутри фазы обязателен: старый код удаляется только после того, как сверка полноты прошла на новом.**
 
-- [ ] T055 Настроить страницы ошибок: `src/pages/404.astro`, `src/pages/ru/404.astro`, `src/pages/en/404.astro`
+### Step 7.1: Страницы ошибок и конфигурация сервера
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "public/**"
+gate_commands:
+  type: "npx astro check"
+  test_quick: "npm run build"
+  test_full: "npm run build && npm run test:content && npm run test:e2e"
+-->
+
+- [ ] T055 Создать `src/pages/404.astro`, `src/pages/ru/404.astro`, `src/pages/en/404.astro`
 - [ ] T056 Переписать `public/.htaccess` по [contracts/routes.md](./contracts/routes.md): удалить подстановку главной страницы, добавить страницы ошибок по разделам, правила кэширования и сжатие
-- [ ] T057 [P] Обновить `public/llms.txt` под новую структуру страниц; контакты, адрес и часы работы сверить с разметкой страниц и машиночитаемым описанием
-- [ ] T058 Удалить старый код: `src/App.tsx`, `src/main.tsx`, `src/components/*.tsx`, `src/i18n/translations.ts`, `src/i18n/index.ts`, `index.html`, `vite.config.ts`, `postcss.config.js`; снять из `package.json` `react`, `react-dom`, `lucide-react`, `@vitejs/plugin-react`, `vite`
-- [ ] T059 Прогнать `npm run check`, `npm run build`, `npm run test:content`, `npm run test:e2e` после удаления — сверка полноты обязана пройти на фикстуре, снятой в T011
+
+**Done when**: несуществующий адрес отвечает кодом 404 и страницей на языке раздела.
+
+### Step 7.2: Файл описания для языковых моделей
+
+<!-- plan-meta:
+allowed_paths:
+  - "public/**"
+  - "tests/**"
+gate_commands:
+  test_quick: "npm run build"
+-->
+
+- [ ] T057 Обновить `public/llms.txt` под новую структуру страниц; контакты, адрес и часы работы сверить с разметкой страниц и машиночитаемым описанием
+
+**Done when**: контактные данные совпадают во всех трёх источниках.
+
+### Step 7.3: Удаление старого кода
+
+<!-- plan-meta:
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "scripts/**"
+gate_commands:
+  lint: "npx eslint ."
+  type: "npx astro check"
+  test_quick: "npm run build"
+  test_full: "npm run build && npm run test:content && npm run test:e2e"
+-->
+
+Выполняется только после того, как Step 3.6 показал зелёную сверку полноты. Фикстура из Step 0.2 — единственное, что делает этот шаг безопасным.
+
+- [ ] T058 Удалить `src/App.tsx`, `src/main.tsx`, `src/components/*.tsx`, `src/i18n/translations.ts`, `src/i18n/index.ts`, `index.html`, `vite.config.ts`, `postcss.config.js`; снять из `package.json` `react`, `react-dom`, `lucide-react`, `@vitejs/plugin-react`, `vite`
+- [ ] T059 Прогнать `npm run check`, `npm run build`, `npm run test:content`, `npm run test:e2e` после удаления — сверка полноты обязана пройти на фикстуре, снятой в Step 0.2
+
+**Done when**: в дереве не осталось React-кода, все проверки зелёные.
+
+### Step 7.4: Ручная приёмка
+
+<!-- plan-meta:
+allowed_paths:
+  - "specs/001-astro-migration/**"
+  - "tests/**"
+gate_commands:
+  test_quick: "npm run build"
+-->
+
 - [ ] T060 Проверить поведение при отключённых скриптах: весь прайс виден, навигация работает
 - [ ] T061 Снять скриншоты новой сборки в трёх ширинах и сверить с отправной точкой; расхождение — дефект переноса, а не улучшение
 - [ ] T062 Прогнать три страницы через валидатор структурированных данных, вывод приложить к приёмке
+
+**Done when**: результаты трёх проверок приложены к пакету.
+
+### Step 7.5: Закрытие пакета
+
+<!-- plan-meta:
+allowed_paths:
+  - "docs/**"
+  - "specs/001-astro-migration/**"
+gate_commands:
+  test_quick: "test -f docs/runbook-deploy.md"
+-->
+
 - [ ] T063 Записать процедуру выкладки в `docs/runbook-deploy.md`: удаление файлов предыдущей сборки, выкладка, сброс кэша сети доставки для постоянных адресов, проверка что отдаётся собственный файл правил для роботов
-- [ ] T064 Закрыть пакет: отметить пункты [checklists/migration-seo.md](./checklists/migration-seo.md), записать в `spec.md` фактический результат по каждому критерию приёмки
+- [ ] T064 Отметить пункты [checklists/migration-seo.md](./checklists/migration-seo.md), записать в [spec.md](./spec.md) фактический результат по каждому критерию приёмки
+
+**Done when**: инструкция по выкладке существует, пакет закрыт фактическими результатами.
 
 ---
 
 ## Dependencies
 
 ```text
-Setup (T001–T008)
-   └─> Foundational (T009–T019)
-          ├─ T009, T010, T011 — блокируют T058: эталон снимается до удаления источника
-          └─> US1 (T020–T035) 🎯 MVP
-                 ├─> US2 (T036–T042)   — оптимизация поверх перенесённой вёрстки
-                 ├─> US3 (T043–T051)   — страницы поверх готового каркаса
-                 └─> US4 (T052–T054)   — проверка модели данных, требует US1 и US3
-                        └─> Polish (T055–T064)
+Phase 0 (0.1, 0.2)  — эталоны, ничего не ломается
+   └─> Phase 1 (1.1 → 1.2 → 1.3)
+          └─> Phase 2 (2.1 → 2.2 → 2.3 → 2.4)
+                 └─> Phase 3 (3.1 → 3.2 → 3.3, 3.4, 3.5 → 3.6)   🎯 MVP
+                        ├─> Phase 4 (4.1, 4.2 → 4.3)
+                        └─> Phase 5 (5.1 → 5.2 → 5.3 → 5.4)
+                               └─> Phase 6 (6.1)
+                                      └─> Phase 7 (7.1 → 7.2 → 7.3 → 7.4 → 7.5)
 ```
 
-Истории независимы по проверке, но не по времени: US2 и US3 обе опираются на компоненты, перенесённые в US1. US4 — приёмочная, ей нужны оба места отображения цены.
+**Единственная жёсткая связь через весь план**: Step 0.2 → Step 7.3. Фикстура снимается со старого словаря; удалённый раньше, он делает проверку полноты невозможной, и потеря текста при переносе останется незамеченной навсегда.
 
-**Единственная жёсткая связь через весь план**: T011 → T058. Фикстура снимается со старого словаря; удалённый раньше, он делает проверку полноты невозможной, и потеря текста при переносе останется незамеченной навсегда.
-
-## Parallel Execution
-
-Внутри Foundational: T012, T013, T014 — разные файлы, зависимостей нет.
-
-Внутри US1: проверки T020–T022b пишутся параллельно — четыре разных файла; перенос компонентов T025–T028 тоже параллелен; T029–T032 последовательны, потому что опираются на общие данные и словарь.
-
-Внутри US3: T046 и T047 параллельны после T045; T049 параллелен T048 только после того, как готов первый языковой вариант страницы.
-
-## Соответствие требованиям
-
-Сквозная сверка выполнена `/speckit-analyze` 2026-09-06. Задачи T022a, T022b и T044a добавлены по её результатам: они закрывают SC-008 (код ответа на несуществующем адресе), FR-027 с SC-012 (клавиатура и объявление состояния) и связку FR-040, SC-003, SC-014 (карта сайта) — требования, которые до сверки имели реализацию, но не имели проверки.
+Вторая по важности: Step 0.1 → Step 4.3. Отправная точка снимается с работающего прода до начала работ; снятая позже, она уже измеряет не то состояние.
 
 ## Implementation Strategy
 
-**MVP — фазы 1–3.** Три языковые версии главной страницы, отдаваемые готовым HTML с корректными метаданными, уже решают главную проблему: сегодня поисковик не видит содержимого вовсе. Это состояние публикуемо само по себе.
+**MVP — фазы 0–3.** Три языковые версии главной страницы, отдаваемые готовым HTML с корректными метаданными, решают главную проблему: сегодня поисковик не видит содержимого вовсе. Это состояние публикуемо само по себе.
 
-**Инкремент 2 — фаза 4.** Скорость. Отделена от MVP намеренно: оптимизация изображений и шрифтов не меняет разметку, поэтому её измеримый эффект виден отдельно от эффекта самой миграции.
+**Инкремент 2 — фаза 4.** Скорость. Отделена намеренно: оптимизация изображений и шрифтов не меняет разметку, поэтому её измеримый эффект виден отдельно от эффекта самой миграции.
 
-**Инкремент 3 — фазы 5–6.** Страницы категорий. Единственная часть, зависящая от готовности текстов и вычитки владельцем; при неготовности публикуется без неё, остальные критерии приёмки от этого не страдают.
+**Инкремент 3 — фазы 5–6.** Страницы категорий. Единственная часть, зависящая от готовности текстов; при неготовности вычитки публикуется без неё, остальные критерии приёмки не страдают.
 
 **Выкладка — фаза 7.** Удаление старого кода и правка конфигурации сервера идут последними, потому что до этого момента откат стоит одну команду.
+
+## Соответствие требованиям
+
+Сквозная сверка выполнена `/speckit-analyze` 2026-09-06: покрытие 100%, нарушений конституции нет. Задачи T022a, T022b и T044a добавлены по её результатам — они закрывают SC-008, FR-027 с SC-012 и связку FR-040, SC-003, SC-014.
+
+Ревью `/plan` 2026-09-06 добавило Phase 0 и пофазные `gate_commands`: эталоны обязаны сниматься до того, как Setup ломает старую сборку, а `astro check` и Playwright не могут быть гейтами шагов, которые их устанавливают.
