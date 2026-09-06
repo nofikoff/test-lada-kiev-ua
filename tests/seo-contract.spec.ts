@@ -228,6 +228,47 @@ test.describe('сквозные требования ко всем страни�
     expect(new Set(pairs).size, 'повторяющаяся пара «заголовок + описание»').toBe(pairs.length);
   });
 
+  /**
+   * Изображение предпросмотра одно на весь сайт и лежит по постоянному адресу, поэтому и вес,
+   * и объявленные размеры проверяются один раз. Объявление размеров без сверки с файлом ничего
+   * не стоит: до Step 4.1 разметка объявляла 1416×840 против файла 2970×1756 весом 3.3 МБ.
+   */
+  test('изображение предпросмотра укладывается в лимит веса и объявлено своими размерами', async ({
+    page,
+    request,
+  }) => {
+    await page.goto('/');
+
+    const url = await metaContent(page, 'meta[property="og:image"]');
+    expect(url).not.toBeNull();
+    const declared = {
+      width: Number(await metaContent(page, 'meta[property="og:image:width"]')),
+      height: Number(await metaContent(page, 'meta[property="og:image:height"]')),
+    };
+
+    const response = await request.get(toLocalPath(url!), { maxRedirects: 0 });
+    expect(response.status(), `изображение предпросмотра ${url}`).toBe(200);
+
+    const bytes = (await response.body()).byteLength;
+    expect(
+      bytes,
+      `изображение предпросмотра весит ${Math.round(bytes / 1024)} КБ при лимите 300 КБ`,
+    ).toBeLessThanOrEqual(300 * 1024);
+
+    // Размеры берутся у самого файла: объявление, разошедшееся с ним, строит неверную карточку.
+    const actual = await page.evaluate(
+      (source) =>
+        new Promise<{ width: number; height: number }>((resolve, reject) => {
+          const probe = new Image();
+          probe.onload = () => resolve({ width: probe.naturalWidth, height: probe.naturalHeight });
+          probe.onerror = () => reject(new Error('изображение предпросмотра не загрузилось'));
+          probe.src = source;
+        }),
+      toLocalPath(url!),
+    );
+    expect(actual).toEqual(declared);
+  });
+
   test('все абсолютные адреса используют хост с www и не ведут на перенаправление', async ({
     request,
   }) => {

@@ -9,6 +9,7 @@
  * Отображение при этом то же: шапка зафиксирована, поэтому и раньше её рост не сдвигал страницу,
  * а `top-full` отсчитывается от шапки — ближайшего позиционированного предка.
  */
+import { Picture } from 'astro:assets';
 import Icon from './Icon.astro';
 import logo from '../assets/logo.jpg';
 import { ui, locales, type Locale } from '../i18n/ui';
@@ -43,8 +44,18 @@ const languages = locales.map((code) => ({
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16 md:h-20">
+      <!-- `block` на изображении: обёртка `<picture>` стала элементом флекс-раскладки вместо
+           самого изображения, и строчное изображение внутри неё добавило бы высоту строки. -->
       <a href={pagePath(locale)} class="flex items-center">
-        <img src={logo.src} alt="Lada N" class="h-10 md:h-12 w-auto brightness-75 contrast-125" />
+        <Picture
+          src={logo}
+          alt="Lada N"
+          formats={['avif', 'webp']}
+          densities={[1, 2]}
+          width={48}
+          height={48}
+          class="block h-10 md:h-12 w-auto brightness-75 contrast-125"
+        />
       </a>
 
       <nav class="hidden md:flex items-center space-x-8">

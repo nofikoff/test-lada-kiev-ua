@@ -1,9 +1,14 @@
 ---
 /**
  * Первый экран. Вёрстка перенесена из `Hero.tsx` один в один: любое расхождение в отображении —
- * дефект переноса, а не улучшение. Фоновое изображение остаётся CSS-свойством до Step 4.1,
- * где оно переводится на компонент изображения с генерацией форматов и размеров.
+ * дефект переноса, а не улучшение.
+ *
+ * Изображение первого экрана переведено с фонового CSS-свойства на тег с абсолютным
+ * позиционированием и `object-fit: cover` — отображение то же, но файл проходит через сборку
+ * и получает AVIF, WebP и набор ширин (research.md §R7). Оно же — самый крупный элемент
+ * первого экрана, поэтому несёт `priority`: единственное такое изображение на странице.
  */
+import { Picture } from 'astro:assets';
 import Icon from './Icon.astro';
 import heroImage from '../assets/massage-kiev-lada-novikova.jpg';
 import logo from '../assets/logo.jpg';
@@ -18,11 +23,20 @@ const t = ui[locale];
 ---
 
 <section class="relative min-h-screen flex items-center justify-center pt-20">
-  <div
-    class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-    style={`background-image: url(${heroImage.src})`}
-  >
-  </div>
+  <!-- alt пуст намеренно: изображение декоративно, поверх него лежит градиент, и весь
+       смысл первого экрана несёт текст. Подпись здесь была бы озвучена как содержание. -->
+  <!-- `display: contents` на обёртке `<picture>`: секция — флекс-контейнер, и обёртка иначе
+       становится в нём отдельным элементом раскладки, которого на месте фонового блока не было. -->
+  <Picture
+    src={heroImage}
+    alt=""
+    formats={['avif', 'webp']}
+    widths={[640, 960, 1280, 1920]}
+    sizes="100vw"
+    priority
+    pictureAttributes={{ class: 'contents' }}
+    class="absolute inset-0 h-full w-full object-cover object-center"
+  />
   <div
     class="absolute inset-0 bg-gradient-to-br from-lada-darker/90 via-lada-dark/85 to-lada-gray-light/80"
   >
@@ -35,9 +49,15 @@ const t = ui[locale];
 
   <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
     <div class="mb-8">
-      <img
-        src={logo.src}
+      <!-- Размеры заданы по наибольшему отображаемому (md:h-32): соотношение сторон известно
+           до загрузки файла, поэтому строка не подпрыгивает. -->
+      <Picture
+        src={logo}
         alt="Lada N"
+        formats={['avif', 'webp']}
+        densities={[1, 2]}
+        width={128}
+        height={128}
         class="h-24 md:h-32 w-auto mx-auto brightness-75 contrast-125"
       />
     </div>
