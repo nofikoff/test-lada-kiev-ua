@@ -1,0 +1,1329 @@
+[
+  {
+    "id": "full-body-massage-harmony",
+    "group": "fullBodyMassage",
+    "name": {
+      "uk": "Масаж Гармонія (Relax)",
+      "ru": "Массаж Гармония (Relax)",
+      "en": "Harmony Massage (Relax)"
+    },
+    "description": {
+      "uk": "Зняття втоми, емоційний баланс",
+      "ru": "Снятие усталости, эмоциональный баланс",
+      "en": "Stress relief, emotional balance"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1600
+        },
+        {
+          "count": 90,
+          "amount": 2300
+        },
+        {
+          "count": 120,
+          "amount": 2800
+        }
+      ]
+    }
+  },
+  {
+    "id": "full-body-massage-classic",
+    "group": "fullBodyMassage",
+    "name": {
+      "uk": "Класичний оздоровчий",
+      "ru": "Классический оздоровительный",
+      "en": "Classic Therapeutic"
+    },
+    "description": {
+      "uk": "Покращує кровообіг, розслаблює м'язи",
+      "ru": "Улучшает кровообращение, расслабляет мышцы",
+      "en": "Improves circulation, relaxes muscles"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1800
+        },
+        {
+          "count": 90,
+          "amount": 2500
+        },
+        {
+          "count": 120,
+          "amount": 2900
+        }
+      ]
+    }
+  },
+  {
+    "id": "full-body-massage-signature",
+    "group": "fullBodyMassage",
+    "name": {
+      "uk": "Авторський масаж (Exclusive)",
+      "ru": "Авторский массаж (Exclusive)",
+      "en": "Signature Massage (Exclusive)"
+    },
+    "description": {
+      "uk": "Унікальні методики під ваше тіло, глибоке опрацювання",
+      "ru": "Уникальные методики под ваше тело, глубокая проработка",
+      "en": "Unique techniques for your body, deep work"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2500
+        },
+        {
+          "count": 90,
+          "amount": 2900
+        },
+        {
+          "count": 120,
+          "amount": 5000
+        }
+      ]
+    }
+  },
+  {
+    "id": "full-body-massage-sports",
+    "group": "fullBodyMassage",
+    "name": {
+      "uk": "Спортивний",
+      "ru": "Спортивный",
+      "en": "Sports Massage"
+    },
+    "description": {
+      "uk": "Інтенсивний, виводить молочну кислоту",
+      "ru": "Интенсивный, выводит молочную кислоту",
+      "en": "Intensive, removes lactic acid"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1900
+        },
+        {
+          "count": 90,
+          "amount": 2300
+        },
+        {
+          "count": 120,
+          "amount": 2800
+        }
+      ]
+    }
+  },
+  {
+    "id": "full-body-massage-four-hands",
+    "group": "fullBodyMassage",
+    "name": {
+      "uk": "Масаж у 4 руки",
+      "ru": "Массаж в 4 руки",
+      "en": "Four Hands Massage"
+    },
+    "description": {
+      "uk": "Два майстри синхронно",
+      "ru": "Два мастера синхронно",
+      "en": "Two therapists synchronously"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 3800
+        },
+        {
+          "count": 90,
+          "amount": 4900
+        },
+        {
+          "count": 120,
+          "amount": 5900
+        }
+      ]
+    }
+  },
+  {
+    "id": "local-massage-neck",
+    "group": "localMassage",
+    "name": {
+      "uk": "Шийно-комірцева зона",
+      "ru": "Шейно-воротниковая зона",
+      "en": "Neck & Shoulders"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 45,
+          "amount": 900
+        },
+        {
+          "count": 60,
+          "amount": 1200
+        }
+      ]
+    }
+  },
+  {
+    "id": "local-massage-back",
+    "group": "localMassage",
+    "name": {
+      "uk": "Спина",
+      "ru": "Спина",
+      "en": "Back"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1100
+        },
+        {
+          "count": 90,
+          "amount": 1500
+        }
+      ]
+    }
+  },
+  {
+    "id": "local-massage-face",
+    "group": "localMassage",
+    "name": {
+      "uk": "Обличчя",
+      "ru": "Лицо",
+      "en": "Face"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 850
+        }
+      ]
+    }
+  },
+  {
+    "id": "local-massage-head",
+    "group": "localMassage",
+    "name": {
+      "uk": "Голова",
+      "ru": "Голова",
+      "en": "Head"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 30,
+          "amount": 800
+        },
+        {
+          "count": 45,
+          "amount": 1200
+        }
+      ]
+    }
+  },
+  {
+    "id": "local-massage-feet",
+    "group": "localMassage",
+    "name": {
+      "uk": "Стопи (Падабхьянга)",
+      "ru": "Стопы (Падабхьянга)",
+      "en": "Feet (Padabhyanga)"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 30,
+          "amount": 900
+        },
+        {
+          "count": 45,
+          "amount": 1200
+        },
+        {
+          "count": 60,
+          "amount": 1400
+        }
+      ]
+    }
+  },
+  {
+    "id": "local-massage-hands",
+    "group": "localMassage",
+    "name": {
+      "uk": "Руки",
+      "ru": "Руки",
+      "en": "Hands"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 30,
+          "amount": 700
+        },
+        {
+          "count": 45,
+          "amount": 900
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-guasha",
+    "group": "exotic",
+    "name": {
+      "uk": "Гуаша",
+      "ru": "Гуаша",
+      "en": "Gua Sha"
+    },
+    "description": {
+      "uk": "Китайська техніка скребками",
+      "ru": "Китайская техника скребками",
+      "en": "Chinese scraping technique"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2500
+        },
+        {
+          "count": 90,
+          "amount": 2900
+        },
+        {
+          "count": 120,
+          "amount": 3500
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-coconut",
+    "group": "exotic",
+    "name": {
+      "uk": "Кокосовими чашами",
+      "ru": "Кокосовыми чашами",
+      "en": "Coconut Shells"
+    },
+    "description": {
+      "uk": "Релакс теплими чашами",
+      "ru": "Релакс теплыми чашами",
+      "en": "Relaxation with warm shells"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2100
+        },
+        {
+          "count": 90,
+          "amount": 2500
+        },
+        {
+          "count": 120,
+          "amount": 2900
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-anti-cellulite",
+    "group": "exotic",
+    "name": {
+      "uk": "Антицелюлітний (ноги і живіт)",
+      "ru": "Антицеллюлитный (ноги и живот)",
+      "en": "Anti-cellulite (legs & belly)"
+    },
+    "description": {
+      "uk": "Ручна техніка + гуаша + бамбук",
+      "ru": "Ручная техника + гуаша + бамбук",
+      "en": "Manual + gua sha + bamboo"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "sessions",
+      "variants": [
+        {
+          "count": 1,
+          "amount": 950
+        },
+        {
+          "count": 5,
+          "amount": 4500
+        },
+        {
+          "count": 10,
+          "amount": 8500
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-cupping",
+    "group": "exotic",
+    "name": {
+      "uk": "Баночний + Стоун терапія",
+      "ru": "Баночный + Стоун терапия",
+      "en": "Cupping + Stone Therapy"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2500
+        },
+        {
+          "count": 90,
+          "amount": 2900
+        },
+        {
+          "count": 120,
+          "amount": 3800
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-acupressure",
+    "group": "exotic",
+    "name": {
+      "uk": "Точковий масаж",
+      "ru": "Точечный массаж",
+      "en": "Acupressure"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2100
+        },
+        {
+          "count": 90,
+          "amount": 2400
+        },
+        {
+          "count": 120,
+          "amount": 2800
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-yumeiho",
+    "group": "exotic",
+    "name": {
+      "uk": "Юмейхо-терапія",
+      "ru": "Юмейхо-терапия",
+      "en": "Yumeiho Therapy"
+    },
+    "description": {
+      "uk": "Правка тазу/хребта",
+      "ru": "Правка таза/позвоночника",
+      "en": "Pelvis/spine correction"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2500
+        },
+        {
+          "count": 90,
+          "amount": 2900
+        },
+        {
+          "count": 120,
+          "amount": 5000
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-honey",
+    "group": "exotic",
+    "name": {
+      "uk": "Тибетський медовий",
+      "ru": "Тибетский медовый",
+      "en": "Tibetan Honey"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2500
+        },
+        {
+          "count": 90,
+          "amount": 2900
+        },
+        {
+          "count": 120,
+          "amount": 3900
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-chocolate",
+    "group": "exotic",
+    "name": {
+      "uk": "Шоколадний",
+      "ru": "Шоколадный",
+      "en": "Chocolate"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2800
+        },
+        {
+          "count": 90,
+          "amount": 3200
+        },
+        {
+          "count": 120,
+          "amount": 3900
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-abhyanga",
+    "group": "exotic",
+    "name": {
+      "uk": "Аюрведичний Абх'янга",
+      "ru": "Аюрведический Абхьянга",
+      "en": "Ayurvedic Abhyanga"
+    },
+    "description": {
+      "uk": "Теплі олії",
+      "ru": "Теплые масла",
+      "en": "Warm oils"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1800
+        },
+        {
+          "count": 90,
+          "amount": 2300
+        },
+        {
+          "count": 120,
+          "amount": 2800
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-shirodhara",
+    "group": "exotic",
+    "name": {
+      "uk": "Широдхара",
+      "ru": "Широдхара",
+      "en": "Shirodhara"
+    },
+    "description": {
+      "uk": "Проливання олії",
+      "ru": "Проливание масла",
+      "en": "Oil pouring"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1900
+        },
+        {
+          "count": 90,
+          "amount": 2400
+        },
+        {
+          "count": 120,
+          "amount": 2900
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-lymphatic",
+    "group": "exotic",
+    "name": {
+      "uk": "Лімфодренажний",
+      "ru": "Лимфодренажный",
+      "en": "Lymphatic Drainage"
+    },
+    "description": {
+      "uk": "Бамбуковий віник",
+      "ru": "Бамбуковый веник",
+      "en": "Bamboo whisk"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1800
+        },
+        {
+          "count": 90,
+          "amount": 2200
+        },
+        {
+          "count": 120,
+          "amount": 2800
+        }
+      ]
+    }
+  },
+  {
+    "id": "exotic-stone",
+    "group": "exotic",
+    "name": {
+      "uk": "Стоун терапія",
+      "ru": "Стоун терапия",
+      "en": "Stone Therapy"
+    },
+    "description": {
+      "uk": "Гарячі камені",
+      "ru": "Горячие камни",
+      "en": "Hot stones"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 2500
+        },
+        {
+          "count": 90,
+          "amount": 2800
+        },
+        {
+          "count": 120,
+          "amount": 3500
+        }
+      ]
+    }
+  },
+  {
+    "id": "women-depilation-deep-bikini",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Глибоке бікіні",
+      "ru": "Глубокое бикини",
+      "en": "Deep Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 850
+    }
+  },
+  {
+    "id": "women-depilation-classic-bikini",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Класичне бікіні",
+      "ru": "Классическое бикини",
+      "en": "Classic Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 750
+    }
+  },
+  {
+    "id": "women-depilation-underarms",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Пахви",
+      "ru": "Подмышки",
+      "en": "Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 400
+    }
+  },
+  {
+    "id": "women-depilation-legs-to-knee",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Ноги до коліна",
+      "ru": "Ноги до колена",
+      "en": "Legs (to knee)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 650
+    }
+  },
+  {
+    "id": "women-depilation-legs-full",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Ноги повністю",
+      "ru": "Ноги полностью",
+      "en": "Legs (full)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 850
+    }
+  },
+  {
+    "id": "women-depilation-arms-to-elbow",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Руки до ліктя",
+      "ru": "Руки до локтя",
+      "en": "Arms (to elbow)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 450
+    }
+  },
+  {
+    "id": "women-depilation-arms-full",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Руки повністю",
+      "ru": "Руки полностью",
+      "en": "Arms (full)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 650
+    }
+  },
+  {
+    "id": "women-depilation-buttocks",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Сідниці",
+      "ru": "Ягодицы",
+      "en": "Buttocks"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 550
+    }
+  },
+  {
+    "id": "women-depilation-belly",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Живіт",
+      "ru": "Живот",
+      "en": "Belly"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 500
+    }
+  },
+  {
+    "id": "women-depilation-back",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Спина",
+      "ru": "Спина",
+      "en": "Back"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 650
+    }
+  },
+  {
+    "id": "women-depilation-upper-lip",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Вусики / Брови / Ніс",
+      "ru": "Усики / Брови / Нос",
+      "en": "Upper lip / Brows / Nose"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 200
+    }
+  },
+  {
+    "id": "combos-deep-bikini-underarms",
+    "group": "combos",
+    "name": {
+      "uk": "Глибоке бікіні + Пахви",
+      "ru": "Глубокое бикини + Подмышки",
+      "en": "Deep Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1000
+    }
+  },
+  {
+    "id": "combos-classic-bikini-underarms",
+    "group": "combos",
+    "name": {
+      "uk": "Класичне бікіні + Пахви",
+      "ru": "Классическое бикини + Подмышки",
+      "en": "Classic Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 900
+    }
+  },
+  {
+    "id": "combos-legs-knee-deep-underarms",
+    "group": "combos",
+    "name": {
+      "uk": "Ноги до коліна + Глибоке бікіні + Пахви",
+      "ru": "Ноги до колена + Глубокое бикини + Подмышки",
+      "en": "Legs (to knee) + Deep Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1500
+    }
+  },
+  {
+    "id": "combos-legs-full-deep-underarms",
+    "group": "combos",
+    "name": {
+      "uk": "Ноги повністю + Глибоке бікіні + Пахви",
+      "ru": "Ноги полностью + Глубокое бикини + Подмышки",
+      "en": "Legs (full) + Deep Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1800
+    }
+  },
+  {
+    "id": "men-depilation-deep-bikini",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Глибоке бікіні",
+      "ru": "Глубокое бикини",
+      "en": "Deep Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1100
+    }
+  },
+  {
+    "id": "men-depilation-classic-bikini",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Класичне бікіні",
+      "ru": "Классическое бикини",
+      "en": "Classic Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 950
+    }
+  },
+  {
+    "id": "men-depilation-underarms",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Пахви",
+      "ru": "Подмышки",
+      "en": "Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 450
+    }
+  },
+  {
+    "id": "men-depilation-full-back",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Спина повністю",
+      "ru": "Спина полностью",
+      "en": "Full Back"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 850
+    }
+  },
+  {
+    "id": "men-depilation-shoulder-blades",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Лопатки",
+      "ru": "Лопатки",
+      "en": "Shoulder Blades"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 550
+    }
+  },
+  {
+    "id": "men-depilation-shoulders",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Плечі",
+      "ru": "Плечи",
+      "en": "Shoulders"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 600
+    }
+  },
+  {
+    "id": "men-depilation-lower-back",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Поперек",
+      "ru": "Поясница",
+      "en": "Lower Back"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 650
+    }
+  },
+  {
+    "id": "men-depilation-full-belly",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Живіт повністю",
+      "ru": "Живот полностью",
+      "en": "Full Belly"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 750
+    }
+  },
+  {
+    "id": "men-depilation-belly-strip",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Смужка на животі",
+      "ru": "Полоска на животе",
+      "en": "Belly Strip"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 250
+    }
+  },
+  {
+    "id": "men-depilation-intergluteal-strip",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Міжсіднична смужка",
+      "ru": "Межъягодичная полоска",
+      "en": "Intergluteal Strip"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 500
+    }
+  },
+  {
+    "id": "men-depilation-full-buttocks",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Сідниці повністю",
+      "ru": "Ягодицы полностью",
+      "en": "Full Buttocks"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 750
+    }
+  },
+  {
+    "id": "men-depilation-full-chest",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Груди повністю",
+      "ru": "Грудь полностью",
+      "en": "Full Chest"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 800
+    }
+  },
+  {
+    "id": "men-depilation-arms-to-elbow",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Руки до ліктя",
+      "ru": "Руки до локтя",
+      "en": "Arms to Elbow"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 650
+    }
+  },
+  {
+    "id": "men-depilation-arms-full",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Руки повністю",
+      "ru": "Руки полностью",
+      "en": "Full Arms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 750
+    }
+  },
+  {
+    "id": "men-depilation-legs-to-knee",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Ноги до коліна",
+      "ru": "Ноги до колена",
+      "en": "Legs to Knee"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 800
+    }
+  },
+  {
+    "id": "men-depilation-legs-full",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Ноги повністю",
+      "ru": "Ноги полностью",
+      "en": "Full Legs"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1200
+    }
+  },
+  {
+    "id": "men-depilation-face-zones",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Вуха / Ніс / Брови / Щоки / Ореоли",
+      "ru": "Уши / Нос / Брови / Щёки / Ореолы",
+      "en": "Ears / Nose / Brows / Cheeks / Areolas"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 200
+    }
+  },
+  {
+    "id": "men-depilation-neck",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Шия",
+      "ru": "Шея",
+      "en": "Neck"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 250
+    }
+  },
+  {
+    "id": "brows-lashes-brow-shaping",
+    "group": "browsLashes",
+    "name": {
+      "uk": "Корекція брів",
+      "ru": "Коррекция бровей",
+      "en": "Brow shaping"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 350
+    }
+  },
+  {
+    "id": "brows-lashes-brow-tinting",
+    "group": "browsLashes",
+    "name": {
+      "uk": "Фарбування + корекція",
+      "ru": "Окрашивание + коррекция",
+      "en": "Brow tinting + shaping"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 650
+    }
+  },
+  {
+    "id": "brows-lashes-brow-lamination",
+    "group": "browsLashes",
+    "name": {
+      "uk": "Ламінування брів InLei (+фарбування +корекція)",
+      "ru": "Ламинирование бровей InLei (+окрашивание +коррекция)",
+      "en": "Brow lamination InLei (+tint +shape)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 750
+    }
+  },
+  {
+    "id": "brows-lashes-lash-lamination",
+    "group": "browsLashes",
+    "name": {
+      "uk": "Ламінування вій InLei (+фарбування +ботокс)",
+      "ru": "Ламинирование ресниц InLei (+окрашивание +ботокс)",
+      "en": "Lash lamination InLei (+tint +botox)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 650
+    }
+  },
+  {
+    "id": "makeup-hair-any-makeup",
+    "group": "makeupHair",
+    "name": {
+      "uk": "Будь-який макіяж",
+      "ru": "Любой макияж",
+      "en": "Any makeup"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1000
+    }
+  },
+  {
+    "id": "makeup-hair-hair-styling",
+    "group": "makeupHair",
+    "name": {
+      "uk": "Зачіски, локони, укладки",
+      "ru": "Стрижки, локоны, укладки",
+      "en": "Hair styling"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1000
+    }
+  },
+  {
+    "id": "makeup-hair-mobile-service",
+    "group": "makeupHair",
+    "name": {
+      "uk": "Виїзд майстра",
+      "ru": "Выезд мастера",
+      "en": "Mobile service"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1000
+    }
+  },
+  {
+    "id": "permanent-brows-powder",
+    "group": "permanentBrows",
+    "name": {
+      "uk": "Пудрові бровки",
+      "ru": "Пудровые брови",
+      "en": "Powder brows"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2500
+    }
+  },
+  {
+    "id": "permanent-brows-coverup",
+    "group": "permanentBrows",
+    "name": {
+      "uk": "Перекриття старого перманенту, оновлення, виправлення",
+      "ru": "Перекрытие старого перманента, обновление, исправление",
+      "en": "Old PMU cover-up / refresh / correction"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2800
+    }
+  },
+  {
+    "id": "permanent-brows-touch-up",
+    "group": "permanentBrows",
+    "name": {
+      "uk": "Корекція (28-60 днів)",
+      "ru": "Коррекция (28-60 дней)",
+      "en": "Touch-up (28-60 days)"
+    },
+    "price": {
+      "kind": "share",
+      "percent": 50,
+      "note": {
+        "uk": "50%",
+        "ru": "50%",
+        "en": "50%"
+      }
+    }
+  },
+  {
+    "id": "permanent-lips-aquarelle",
+    "group": "permanentLips",
+    "name": {
+      "uk": "Акварельна техніка губ",
+      "ru": "Акварельная техника губ",
+      "en": "Aquarelle technique"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2500
+    }
+  },
+  {
+    "id": "permanent-lips-lipstick",
+    "group": "permanentLips",
+    "name": {
+      "uk": "Помадна техніка",
+      "ru": "Помадная техника",
+      "en": "Lipstick technique"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2500
+    }
+  },
+  {
+    "id": "permanent-lips-coverup",
+    "group": "permanentLips",
+    "name": {
+      "uk": "Перекриття старого перманенту, оновлення, виправлення",
+      "ru": "Перекрытие старого перманента, обновление, исправление",
+      "en": "Old PMU cover-up / refresh / correction"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2800
+    }
+  },
+  {
+    "id": "permanent-lips-touch-up",
+    "group": "permanentLips",
+    "name": {
+      "uk": "Корекція (28-60 днів)",
+      "ru": "Коррекция (28-60 дней)",
+      "en": "Touch-up (28-60 days)"
+    },
+    "price": {
+      "kind": "share",
+      "percent": 50,
+      "note": {
+        "uk": "50%",
+        "ru": "50%",
+        "en": "50%"
+      }
+    }
+  },
+  {
+    "id": "permanent-eyeliner-lash-line",
+    "group": "permanentEyeliner",
+    "name": {
+      "uk": "Міжвійковий простір",
+      "ru": "Межресничное пространство",
+      "en": "Eyeliner / Lash line"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1900
+    }
+  },
+  {
+    "id": "permanent-eyeliner-coverup",
+    "group": "permanentEyeliner",
+    "name": {
+      "uk": "Перекриття старого перманенту, оновлення, виправлення",
+      "ru": "Перекрытие старого перманента, обновление, исправление",
+      "en": "Old PMU cover-up / refresh / correction"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2200
+    }
+  },
+  {
+    "id": "permanent-eyeliner-touch-up",
+    "group": "permanentEyeliner",
+    "name": {
+      "uk": "Корекція (28-60 днів)",
+      "ru": "Коррекция (28-60 дней)",
+      "en": "Touch-up (28-60 days)"
+    },
+    "price": {
+      "kind": "share",
+      "percent": 50,
+      "note": {
+        "uk": "50%",
+        "ru": "50%",
+        "en": "50%"
+      }
+    }
+  }
+]
