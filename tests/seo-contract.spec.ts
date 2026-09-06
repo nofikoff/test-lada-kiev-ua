@@ -203,10 +203,21 @@ for (const { locale, path } of homePages) {
       expect(address['@type']).toBe('PostalAddress');
       expect(address.addressCountry).toBe('UA');
 
-      // Текстовые поля обязаны совпасть с тем, что видит посетитель этой языковой версии.
-      const footer = await page.locator('footer').innerText();
-      expect(footer).toContain(String(address.addressLocality));
-      expect(footer).toContain(String(address.streetAddress));
+      const addressLocality = String(address.addressLocality ?? '');
+      const streetAddress = String(address.streetAddress ?? '');
+      expect(addressLocality.length, 'пустой населённый пункт').toBeGreaterThan(0);
+      expect(streetAddress.length, 'пустая улица').toBeGreaterThan(0);
+
+      /**
+       * Части складываются обратно в ту самую строку, которую видит посетитель этой языковой
+       * версии. Проверять вхождение каждой по отдельности недостаточно: разбор единственной
+       * строки словаря по отсутствующему разделителю даёт две её же подстроки — адрес без
+       * последнего символа и адрес без первого, — и обе проходят проверку вхождения, попадая
+       * при этом в описание организации.
+       */
+      const footer = normalize(await page.locator('footer').innerText());
+      expect(footer).toContain(`${addressLocality}, ${streetAddress}`);
+      expect(addressLocality, 'разбор не по первому разделителю').not.toContain(',');
     });
 
     test('ценовой диапазон совпадает с прайсом и не содержит нулевых предложений', async ({

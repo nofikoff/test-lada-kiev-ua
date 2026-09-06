@@ -76,15 +76,38 @@ const amounts = (await getCollection('prices')).flatMap(({ data }) =>
       : [],
 );
 
+/** Разделитель населённого пункта и улицы в строке адреса; так устроены все три локали. */
+const ADDRESS_SEPARATOR = ', ';
+
 /**
  * Адрес в машиночитаемом виде выводится из той же строки словаря, которую видит посетитель:
- * второй записи адреса в проекте нет, поэтому разойтись им не с чем. До первой запятой —
- * населённый пункт, после — улица; так устроены все три локали.
+ * второй записи адреса в проекте нет, поэтому разойтись им не с чем. До первого разделителя —
+ * населённый пункт, после — улица.
+ *
+ * Строка, устроенная иначе, останавливает сборку, а не получает запасной вариант. Разбор без
+ * проверки давал две правдоподобные строки — адрес без последнего символа и адрес без первого
+ * (`indexOf` вернул -1), — и обе остаются частями исходной строки, поэтому проверка контракта
+ * их пропускала. Адрес правится раз в несколько лет; поймать подмену на сборке дешевле, чем
+ * обнаружить её в выдаче поисковика.
  */
-const [addressLocality, streetAddress] = (() => {
-  const separator = t.footer.address.indexOf(', ');
-  return [t.footer.address.slice(0, separator), t.footer.address.slice(separator + 2)];
-})();
+function postalAddress(source: string) {
+  const separator = source.indexOf(ADDRESS_SEPARATOR);
+  if (separator > 0) {
+    const addressLocality = source.slice(0, separator).trim();
+    const streetAddress = source.slice(separator + ADDRESS_SEPARATOR.length).trim();
+    if (addressLocality.length > 0 && streetAddress.length > 0) {
+      return { addressLocality, streetAddress };
+    }
+  }
+
+  throw new Error(
+    `SeoHead: адрес локали «${locale}» не разбирается на населённый пункт и улицу. ` +
+      `Строка словаря: «${source}». Ожидается «населённый пункт${ADDRESS_SEPARATOR}улица» — ` +
+      'поле «Адрес» описания организации (contracts/structured-data.md).',
+  );
+}
+
+const { addressLocality, streetAddress } = postalAddress(t.footer.address);
 
 const business = category
   ? null

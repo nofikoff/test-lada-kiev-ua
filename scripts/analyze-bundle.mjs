@@ -21,7 +21,14 @@ const DIST = 'dist';
 /** SC-006. КБ здесь — 1024 байта, как и в отчётах Lighthouse. */
 const BUDGET_BYTES = 5 * 1024;
 
-const ANALYTICS_MARKERS = ['googletagmanager.com', 'gtag(', 'dataLayer'];
+/**
+ * Признаки аналитики: каждая запись — набор подстрок, которые должны встретиться вместе.
+ * Домен счётчика и вызов его глобальной функции однозначны сами по себе. `dataLayer` —
+ * обычное слово, и признаком в одиночку не является: собственный код, отправляющий событие
+ * в очередь, вышел бы из-под учёта того самого бюджета, который он и тратит. Поэтому очередь
+ * засчитывается только рядом с `gtag`, то есть внутри снипета счётчика.
+ */
+const ANALYTICS_MARKERS = [['googletagmanager.com'], ['gtag('], ['dataLayer', 'gtag']];
 
 /** Тип, при котором содержимое тега исполняется. Пустой тип означает классический скрипт. */
 const EXECUTABLE_TYPES = new Set(['', 'module', 'text/javascript', 'application/javascript']);
@@ -40,7 +47,7 @@ function attribute(tag, name) {
 }
 
 function isAnalytics(text) {
-  return ANALYTICS_MARKERS.some((marker) => text.includes(marker));
+  return ANALYTICS_MARKERS.some((markers) => markers.every((marker) => text.includes(marker)));
 }
 
 function distPath(url) {
