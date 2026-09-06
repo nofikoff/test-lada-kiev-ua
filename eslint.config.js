@@ -6,22 +6,15 @@ import astro from 'eslint-plugin-astro';
 
 export default defineConfig(
   {
-    ignores: [
-      'dist',
-      '.astro',
-      'playwright-report',
-      'test-results',
-      // Сборка старого приложения; удаляется вместе с ним в Step 7.3.
-      'public/assets',
-    ],
+    ignores: ['dist', '.astro', 'playwright-report', 'test-results'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   // Правила разметки .astro: парсер компонентного синтаксиса плюс проверки, которых нет в базовом
-  // наборе. Правила плагинов React сняты — React в дереве доживает до Step 7.3 и ничем не собирается.
+  // наборе. Правил React здесь нет и быть не может — React из дерева удалён (Step 7.3).
   ...astro.configs['flat/recommended'],
   {
-    files: ['**/*.{ts,tsx,astro}'],
+    files: ['**/*.{ts,astro}'],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: globals.browser,
