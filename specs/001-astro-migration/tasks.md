@@ -181,9 +181,9 @@ gate_commands:
   test_quick: "npx astro check"
 -->
 
-- [ ] T017 Создать `src/layouts/BaseLayout.astro`: каркас страницы, счётчик аналитики с прежним идентификатором `G-WZT8TJLSDP` и прежним способом загрузки
-- [ ] T018 Создать `src/components/Icon.astro` с инлайн-SVG вместо `lucide-react`: телефон, меню, крест, карта, часы, Instagram, подарок
-- [ ] T019 Перенести изображения из `public/assets/` в `src/assets/`, кроме изображения предпросмотра — оно остаётся в `public/` с постоянным адресом
+- [x] T017 Создать `src/layouts/BaseLayout.astro`: каркас страницы, счётчик аналитики с прежним идентификатором `G-WZT8TJLSDP` и прежним способом загрузки
+- [x] T018 Создать `src/components/Icon.astro` с инлайн-SVG вместо `lucide-react`: телефон, меню, крест, карта, часы, Instagram, подарок
+- [x] T019 Перенести изображения из `public/assets/` в `src/assets/`, кроме изображения предпросмотра — оно остаётся в `public/` с постоянным адресом
 
 **Done when**: каркас собирается, иконки отрисовываются без внешней библиотеки.
 
@@ -210,11 +210,11 @@ gate_commands:
 
 Тесты пишутся до страниц и на этом шаге обязаны падать — падать по существу, а не по синтаксису.
 
-- [ ] T020 `tests/content-parity.spec.ts`: каждая строка `tests/fixtures/legacy-content.json` присутствует в HTML своей локали, сравнение по нормализованным пробелам и кавычкам
-- [ ] T021 `tests/seo-contract.spec.ts` по [contracts/page-head.md](./contracts/page-head.md): язык документа, один заголовок первого уровня, канонический адрес, четыре языковые альтернативы, уникальность пары «заголовок + описание» по всем страницам, метаданные предпросмотра, счётчик аналитики. Отдельной проверкой — что **все** абсолютные адреса используют хост с `www` и ни один не ведёт на перенаправление (SC-013)
-- [ ] T022 Дописать в `tests/seo-contract.spec.ts` проверки машиночитаемого описания по [contracts/structured-data.md](./contracts/structured-data.md): разбор разметки, соответствие ценового диапазона данным прайса, отсутствие предложений с нулевой ценой
-- [ ] T022a `tests/routes.spec.ts` по [contracts/routes.md](./contracts/routes.md): код ответа каждого адреса таблицы, приход `/ru` без слеша на `/ru/`, код 404 на несуществующем адресе, язык страницы ошибки по разделу (SC-008)
-- [ ] T022b `tests/interaction.spec.ts`: открытие и закрытие мобильного меню, переключение вкладок мышью, стрелками, Home и End, корректность `aria-selected` и `aria-controls` (FR-027, SC-012)
+- [x] T020 `tests/content-parity.spec.ts`: каждая строка `tests/fixtures/legacy-content.json` присутствует в HTML своей локали, сравнение по нормализованным пробелам и кавычкам
+- [x] T021 `tests/seo-contract.spec.ts` по [contracts/page-head.md](./contracts/page-head.md): язык документа, один заголовок первого уровня, канонический адрес, четыре языковые альтернативы, уникальность пары «заголовок + описание» по всем страницам, метаданные предпросмотра, счётчик аналитики. Отдельной проверкой — что **все** абсолютные адреса используют хост с `www` и ни один не ведёт на перенаправление (SC-013)
+- [x] T022 Дописать в `tests/seo-contract.spec.ts` проверки машиночитаемого описания по [contracts/structured-data.md](./contracts/structured-data.md): разбор разметки, соответствие ценового диапазона данным прайса, отсутствие предложений с нулевой ценой
+- [x] T022a `tests/routes.spec.ts` по [contracts/routes.md](./contracts/routes.md): код ответа каждого адреса таблицы, приход `/ru` без слеша на `/ru/`, код 404 на несуществующем адресе, язык страницы ошибки по разделу (SC-008)
+- [x] T022b `tests/interaction.spec.ts`: открытие и закрытие мобильного меню, переключение вкладок мышью, стрелками, Home и End, корректность `aria-selected` и `aria-controls` (FR-027, SC-012)
 
 **Done when**: пять файлов проверок написаны и синтаксически валидны; `astro check` проходит.
 
@@ -230,8 +230,8 @@ gate_commands:
   test_quick: "npx astro check"
 -->
 
-- [ ] T023 Создать `src/components/SeoHead.astro`: заголовок, описание, канонический адрес, языковые альтернативы с версией по умолчанию, метаданные предпросмотра с локалью страницы
-- [ ] T024 Добавить машиночитаемое описание организации для главной страницы; ценовой диапазон вычислять из `prices.json`, не вписывать строкой
+- [x] T023 Создать `src/components/SeoHead.astro`: заголовок, описание, канонический адрес, языковые альтернативы с версией по умолчанию, метаданные предпросмотра с локалью страницы
+- [x] T024 Добавить машиночитаемое описание организации для главной страницы; ценовой диапазон вычислять из `prices.json`, не вписывать строкой
 
 **Done when**: компонент принимает локаль и путь, отдаёт полный набор из [contracts/page-head.md](./contracts/page-head.md).
 
@@ -249,10 +249,10 @@ gate_commands:
 
 Вёрстка переносится один в один. Любое расхождение в отображении — дефект переноса, а не улучшение.
 
-- [ ] T025 `src/components/Hero.tsx` → `Hero.astro`
-- [ ] T026 `src/components/About.tsx` → `About.astro`
-- [ ] T027 `src/components/Certificates.tsx` → `Certificates.astro`
-- [ ] T028 `src/components/Footer.tsx` → `Footer.astro`, включая встроенную карту
+- [x] T025 `src/components/Hero.tsx` → `Hero.astro`
+- [x] T026 `src/components/About.tsx` → `About.astro`
+- [x] T027 `src/components/Certificates.tsx` → `Certificates.astro`
+- [x] T028 `src/components/Footer.tsx` → `Footer.astro`, включая встроенную карту
 
 **Done when**: четыре компонента отрисовываются с теми же классами Tailwind, что в исходных `.tsx`.
 
@@ -268,7 +268,7 @@ gate_commands:
   test_quick: "npx astro check"
 -->
 
-- [ ] T029 `src/components/Header.tsx` → `Header.astro`: мобильное меню на `<details>`/`<summary>` без скрипта, переключатель языков на ссылках из `src/i18n/paths.ts`
+- [x] T029 `src/components/Header.tsx` → `Header.astro`: мобильное меню на `<details>`/`<summary>` без скрипта, переключатель языков на ссылках из `src/i18n/paths.ts`
 
 **Done when**: меню открывается и закрывается без единой строки JavaScript и управляется с клавиатуры.
 
@@ -284,9 +284,9 @@ gate_commands:
   test_quick: "npx astro check"
 -->
 
-- [ ] T030 `src/components/PriceGroup.astro`: блок группы позиций, обе формы цены и долевая цена с подписью вместо суммы
-- [ ] T031 `src/components/PriceTabs.astro`: вкладки с `role="tablist"`, `aria-selected`, `aria-controls`. Разметка отдаётся со всеми видимыми блоками, скрытие неактивных выполняет скрипт при инициализации — иначе при отключённых скриптах не видно ничего
-- [ ] T032 `src/components/ServicesOverview.astro` со ссылками на страницы категорий
+- [x] T030 `src/components/PriceGroup.astro`: блок группы позиций, обе формы цены и долевая цена с подписью вместо суммы
+- [x] T031 `src/components/PriceTabs.astro`: вкладки с `role="tablist"`, `aria-selected`, `aria-controls`. Разметка отдаётся со всеми видимыми блоками, скрытие неактивных выполняет скрипт при инициализации — иначе при отключённых скриптах не видно ничего
+- [x] T032 `src/components/ServicesOverview.astro` со ссылками на страницы категорий
 
 **Done when**: при отключённых скриптах виден весь прайс; при включённых работают вкладки и клавиатура.
 
@@ -304,9 +304,9 @@ gate_commands:
   test_full: "npm run build && npm run test:content && npm run test:e2e"
 -->
 
-- [ ] T033 Создать `src/pages/index.astro`, `src/pages/ru/index.astro`, `src/pages/en/index.astro` — тонкие обёртки, передающие локаль
-- [ ] T034 Создать `public/robots.txt` со ссылкой на карту сайта
-- [ ] T035 Прогнать `npm run check`, `npm run build`, `npm run test:content`, `npm run test:e2e` и предъявить вывод
+- [x] T033 Создать `src/pages/index.astro`, `src/pages/ru/index.astro`, `src/pages/en/index.astro` — тонкие обёртки, передающие локаль
+- [x] T034 Создать `public/robots.txt` со ссылкой на карту сайта
+- [x] T035 Прогнать `npm run check`, `npm run build`, `npm run test:content`, `npm run test:e2e` и предъявить вывод
 
 **Done when**: три языковые версии главной собираются, сверка полноты контента и проверки SEO-контракта зелёные.
 
@@ -364,7 +364,7 @@ gate_commands:
   test_quick: "npm run build && npm run analyze"
 -->
 
-- [ ] T041 Добавить скрипт `analyze`, считающий суммарный размер исполняемого кода сборки помимо аналитики
+- [ ] T041 Добавить скрипт `analyze`, считающий суммарный размер исполняемого кода сборки помимо аналитики. Считать **встроенные модульные скрипты в HTML**, а не файлы `dist/_astro/*.js`: сборка после S2 не порождает ни одного внешнего файла скрипта, весь код вкладок ушёл inline (732 байта). Скрипт, измеряющий только внешние файлы, покажет ноль и будет врать
 - [ ] T042 Снять измерения новой сборки и сравнить с `specs/001-astro-migration/baseline/`; предъявить оба отчёта
 
 **Done when**: исполняемый код помимо аналитики не превышает 5 КБ; сравнение с отправной точкой приложено.
@@ -576,7 +576,9 @@ Phase 0 (0.1, 0.2)  — эталоны, ничего не ломается
 
 ## Implementation Strategy
 
-**MVP — фазы 0–3.** Три языковые версии главной страницы, отдаваемые готовым HTML с корректными метаданными, решают главную проблему: сегодня поисковик не видит содержимого вовсе. Это состояние публикуемо само по себе.
+**MVP — фазы 0–3.** Три языковые версии главной страницы, отдаваемые готовым HTML с корректными метаданными, решают главную проблему: сегодня поисковик не видит содержимого вовсе.
+
+**Поправка по факту выполнения S2**: отдельно публиковать это состояние нельзя. Блок обзора услуг ссылается на четыре страницы категорий, которые появляются только в Step 5.4, — публикация между Phase 3 и Phase 5 выкатила бы двенадцать битых ссылок (четыре категории × три локали). Первая публикуемая точка — конец Phase 5.
 
 **Инкремент 2 — фаза 4.** Скорость. Отделена намеренно: оптимизация изображений и шрифтов не меняет разметку, поэтому её измеримый эффект виден отдельно от эффекта самой миграции.
 
@@ -593,8 +595,8 @@ Phase 0 (0.1, 0.2)  — эталоны, ничего не ломается
 ## Session Map
 
 - [x] S1 (~570K) Steps 0.1, 0.2, 1.1, 1.2, 1.3, 2.1, 2.2, 2.3 — done 2026-09-06
-- [ ] S2 (~590K) Steps 2.4, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6 — **current**
-- [ ] S3 (~520K) Steps 4.1, 4.2, 4.3, 5.1, 5.2, 5.3
+- [x] S2 (~590K) Steps 2.4, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6 — done 2026-09-06
+- [ ] S3 (~520K) Steps 4.1, 4.2, 4.3, 5.1, 5.2, 5.3 — **current**
 - [ ] S4 (~550K) Steps 5.4, 6.1, 7.1, 7.2, 7.3, 7.4, 7.5
 
 ## Progress Log
@@ -630,6 +632,55 @@ Phase 0 (0.1, 0.2)  — эталоны, ничего не ломается
 ### S1.step-2.3 — 2026-09-06
 **Completed steps:** 2.3
 **Commits:** 78089ff
+
+### S2.step-2.4 — 2026-09-06
+**Completed steps:** 2.4
+**Commits:** ca53254
+
+### S2.step-3.1 — 2026-09-06
+**Completed steps:** 3.1
+**Commits:** 0a46a23
+
+### S2.step-3.2 — 2026-09-06
+**Completed steps:** 3.2
+**Commits:** bac20f1
+
+### S2.step-3.3 — 2026-09-06
+**Completed steps:** 3.3
+**Commits:** b2cb8d7
+
+### S2.step-3.4 — 2026-09-06
+**Completed steps:** 3.4
+**Commits:** e0c792c
+
+### S2.step-3.5 — 2026-09-06
+**Completed steps:** 3.5
+**Commits:** fcea369
+
+### S2.step-3.6 — 2026-09-06
+**Completed steps:** 3.6
+**Commits:** f57d821
+
+### S2 — observations (2026-09-06, dispatch 1)
+plan-wrong: TaskCreate is not exposed in this harness; the contract's mandatory first action could not be performed and the bundle was tracked without it.
+plan-wrong: Step 3.6's `npm run test:e2e` gate could not pass as configured. Astro 7 auto-daemonizes `astro preview` when it detects an agent environment (`cli/preview/index.js`: `!process.env.ASTRO_PREVIEW_BACKGROUND && isRunByAgent()`), the launcher exits immediately, and Playwright stops on «webServer exited early». Fixed by setting that variable in `playwright.config.ts` — a top-level file outside step 3.6's own allowed_paths (src/**, tests/**, public/**), reachable only through the orchestrator's union lease. Any later step whose gate is test_e2e depends on that fix.
+plan-wrong: nothing in the plan owns `.gitignore`, and `npm run test:e2e` writes `test-results/` (plus `playwright-report/` on failure), neither of which is ignored. Every gate run therefore leaves the worktree dirty and would fail the orchestrator's resume preflight. I delete the directory after each run; a human must add both to `.gitignore`, since the scope hook correctly refuses `.git/info/exclude` too.
+plan-wrong: T022a wants a response-code check for every address of contracts/routes.md plus the error-page language per section. Twelve category addresses do not exist until Step 5.4, and the per-section language is an Apache `ErrorDocument` that `astro preview` does not implement — it serves one root 404 for everything. routes.spec.ts covers the MVP subset and names both deferrals in the file; Step 5.1 and Step 7.1 must extend it.
+plan-wrong: T018 lists seven icons, but ServicesOverview needs four more (heart, sparkles, palette, eye). Icon.astro carries eleven.
+plan-wrong: T019 moves the images into `src/assets/` while T036/T037 keep the switch to the Image component in Step 4.1 — between those steps the pages would point at dead `/assets/` URLs. Resolved by importing the asset and rendering `.src`, which leaves Step 4.1 its real work.
+plan-wrong: Step 3.1's Done-when says five test files; T020–T022b name four. Four specs plus `tests/support/site.ts`.
+plan-wrong: the preview image is 3.3 MB against the head contract's 300 KB. Step 4.1 T040 owns the recompression, so the seo test asserts only its address and declared dimensions — add the byte check there.
+plan-wrong: T032 links ServicesOverview at the category pages, which answer 404 until Step 5.4, while the Implementation Strategy calls phases 0–3 publishable on their own. Publishing between Phase 3 and Phase 5 would ship four dead links.
+redone: PriceGroup was first written straight over `getCollection('prices')`. The collection store returns entries sorted by id, not in file order, so the price list rendered harmony→classic→fourHands instead of the legacy order — a build screenshot caught it, the parity test cannot (it checks presence, not order). Now sorted by index in prices.json. data-model.md §R4 promises file order is display order and the loader does not honour that: every future consumer of this collection needs the same sort.
+redone: the analytics snippet failed `npx eslint .` on prefer-rest-params, because eslint-plugin-astro lints inline scripts as virtual files. Rewriting it with rest parameters would push an array into dataLayer where gtag.js expects an `arguments` object, so the rule is switched off for that one file in eslint.config.js with the reason written in.
+decided: the mobile menu panel is positioned absolutely at `top-full` of the fixed header, because `<summary>` must be a direct child of `<details>` while the toggle stays inside the fixed-height row. The header's own border-b replaces the panel's border-t, so rendering matches the baseline. If the header ever stops being `position: fixed`, the panel loses its containing block.
+decided: og:locale keeps the legacy uk_UA / ru_RU / en_US while the sitemap keeps ru-UA; ru_UA is not on the social platforms' published locale lists.
+decided: priceRange ships as «200–8500 UAH» and the contract test compares extracted digits, not the string — the format can change without touching the test.
+decided: the structured-data address is derived by splitting the dictionary's single address line at the first ', ' (city first in all three locales). There is exactly one address string in the project, so nothing can drift; a locale whose address starts with the street would break it.
+decided: added `src/components/HomePage.astro` so the three pages stay what T033 demands — a locale declaration and nothing else; adding a section otherwise means editing three files.
+decided: the exotic tab renders without a group heading (single-group tab, as in the legacy), so `ui.priceList.sections.exotic` appears nowhere on the homepage and waits for the /massage/ page in Phase 5.
+decided: dropped the legacy `<meta name="keywords">` — absent from the head contract, ignored by search engines, and without a per-locale source in the dictionary.
+decided: tabs ship with no tabindex attributes and the script establishes roving tabindex on init, so a scriptless visitor keeps all four buttons reachable and all four panels visible. The whole tabs module weighs 732 bytes inlined — note for Step 4.3 that Astro emitted no .js file at all, so `npm run analyze` must measure inline module scripts, not `dist/_astro/*.js`.
 
 ### S1 — observations (2026-09-06, dispatch 1)
 plan-wrong: TaskCreate is not available in this harness — the contract's mandatory first action could not be performed; bundle tracked without it.
