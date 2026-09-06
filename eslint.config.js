@@ -1,28 +1,45 @@
+import { defineConfig } from 'eslint/config';
 import js from '@eslint/js';
 import globals from 'globals';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
+import astro from 'eslint-plugin-astro';
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+export default defineConfig(
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
+    ignores: [
+      'dist',
+      '.astro',
+      'playwright-report',
+      'test-results',
+      // Сборка старого приложения; удаляется вместе с ним в Step 7.3.
+      'public/assets',
+    ],
+  },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  // Правила разметки .astro: парсер компонентного синтаксиса плюс проверки, которых нет в базовом
+  // наборе. Правила плагинов React сняты — React в дереве доживает до Step 7.3 и ничем не собирается.
+  ...astro.configs['flat/recommended'],
+  {
+    files: ['**/*.{ts,tsx,astro}'],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 'latest',
       globals: globals.browser,
     },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+  },
+  {
+    // Конфигурации сборки и служебные скрипты исполняются Node, а не браузером.
+    files: ['*.{js,mjs,cjs}', 'scripts/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      globals: globals.node,
     },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+  },
+  {
+    files: ['tests/**/*.ts'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      globals: { ...globals.node, ...globals.browser },
     },
-  }
+  },
 );
