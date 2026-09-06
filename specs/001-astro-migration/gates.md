@@ -6,3 +6,5 @@
 | gate | commit | date | outcome | note |
 |---|---|---|---|---|
 | analyze | d183bd2 | 2026-09-06 | 0 critical, coverage 55/55 after T022a/T022b/T044a added |  |
+| converge | 0982c17 | 2026-09-06 | converged — 55 requirements, 0 findings |  |
+| analyze | 0982c17 | 2026-09-06 | re-checked at convergence: 0 critical, coverage 55/55 |  |
