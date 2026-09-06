@@ -1,0 +1,45 @@
+---
+/**
+ * Перенос `ServicesOverview.tsx`. Карточки ведут на страницы категорий (Step 5.4), а не на якорь
+ * прайса: у каждой категории теперь есть собственная страница с текстом и своими метаданными.
+ */
+import Icon, { type IconName } from './Icon.astro';
+import { pagePath, type ServiceCategory } from '../i18n/paths';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui[locale];
+
+const services: { category: ServiceCategory; icon: IconName }[] = [
+  { category: 'massage', icon: 'heart' },
+  { category: 'depilation', icon: 'sparkles' },
+  { category: 'permanent', icon: 'palette' },
+  { category: 'beauty', icon: 'eye' },
+];
+---
+
+<section class="py-20 md:py-32 bg-lada-dark">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="section-title">{t.services.title}</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {
+        services.map((service) => (
+          <a href={pagePath(locale, service.category)} class="card group text-center cursor-pointer">
+            <div class="mb-4 flex justify-center">
+              <div class="w-16 h-16 rounded-full bg-lada-gold/10 flex items-center justify-center group-hover:bg-lada-gold/20 transition-colors">
+                <Icon name={service.icon} class="w-8 h-8 text-lada-gold" />
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">{t.services[service.category].name}</h3>
+            <p class="text-white/60 text-sm">{t.services[service.category].description}</p>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

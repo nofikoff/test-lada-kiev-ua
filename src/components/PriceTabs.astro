@@ -1,0 +1,135 @@
+---
+/**
+ * Прайс главной страницы. Перенос `PriceList.tsx` с заменой состояния React на вкладки ARIA.
+ *
+ * Разметка отдаётся со всеми видимыми блоками, скрытие неактивных выполняет скрипт при
+ * инициализации: собранный наоборот, при отключённых скриптах он показал бы пустую страницу
+ * вместо всего прайса (FR-028, research.md §R10).
+ */
+import PriceGroup from './PriceGroup.astro';
+import { getCollection } from 'astro:content';
+import { categoryOf } from '../data/price-groups';
+import { priceTabs } from '../i18n/tabs';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui[locale];
+
+const TAB_BASE = 'px-6 py-3 rounded-lg font-medium transition-all duration-300';
+const TAB_ACTIVE = 'bg-lada-gold text-lada-dark';
+const TAB_IDLE = 'bg-lada-gray text-white/70 hover:bg-lada-gray-light hover:text-white';
+
+/** Группы с вариантами занимают по карточке на позицию — следующий за ними заголовок отбивается. */
+const variantGroups = new Set(
+  (await getCollection('prices'))
+    .filter((entry) => entry.data.price.kind === 'variants')
+    .map((entry) => entry.data.group),
+);
+---
+
+<section id="services" class="py-20 md:py-32 bg-lada-darker">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="section-title">{t.priceList.title}</h2>
+
+    <p class="text-center text-lada-gold mb-8">{t.priceList.discount}</p>
+
+    <div
+      class="flex flex-wrap justify-center gap-2 mb-12"
+      role="tablist"
+      aria-label={t.priceList.tabsLabel}
+      data-price-tabs
+    >
+      {
+        priceTabs.map((tab, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${tab.id}`}
+            aria-controls={`panel-${tab.id}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            class:list={[TAB_BASE, index === 0 ? TAB_ACTIVE : TAB_IDLE]}
+          >
+            {t.priceList.tabs[tab.id]}
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="min-h-[500px]">
+      {
+        priceTabs.map((tab) => {
+          const withNote = tab.groups.some((group) => categoryOf(group) === 'permanent');
+          return (
+            <div id={`panel-${tab.id}`} role="tabpanel" aria-labelledby={`tab-${tab.id}`}>
+              {tab.groups.map((group, index) => (
+                <PriceGroup
+                  locale={locale}
+                  group={group}
+                  heading={tab.groups.length > 1}
+                  headingClass={index > 0 && variantGroups.has(group) ? 'mt-12' : undefined}
+                  cardClass={
+                    index === tab.groups.length - 1 ? (withNote ? 'card mb-4' : 'card') : 'card mb-8'
+                  }
+                />
+              ))}
+              {withNote && (
+                <p class="text-white/50 text-sm text-center">{t.priceList.permanentNote}</p>
+              )}
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  const tablist = document.querySelector<HTMLElement>('[data-price-tabs]');
+
+  if (tablist) {
+    const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = tabs.map((tab) =>
+      document.getElementById(tab.getAttribute('aria-controls') ?? ''),
+    );
+
+    const ACTIVE = ['bg-lada-gold', 'text-lada-dark'];
+    const IDLE = ['bg-lada-gray', 'text-white/70', 'hover:bg-lada-gray-light', 'hover:text-white'];
+
+    const select = (index: number, moveFocus: boolean) => {
+      tabs.forEach((tab, position) => {
+        const selected = position === index;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        tab.classList.remove(...(selected ? IDLE : ACTIVE));
+        tab.classList.add(...(selected ? ACTIVE : IDLE));
+        const panel = panels[position];
+        if (panel) panel.hidden = !selected;
+      });
+      if (moveFocus) tabs[index]?.focus();
+    };
+
+    // Начальное состояние разметки — все блоки видимы; скрывает их именно этот вызов.
+    select(0, false);
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => select(index, false));
+      tab.addEventListener('keydown', (event) => {
+        const last = tabs.length - 1;
+        const moves: Record<string, number> = {
+          ArrowRight: index === last ? 0 : index + 1,
+          ArrowLeft: index === 0 ? last : index - 1,
+          Home: 0,
+          End: last,
+        };
+        const target = moves[event.key];
+        if (target === undefined) return;
+        event.preventDefault();
+        select(target, true);
+      });
+    });
+  }
+</script>

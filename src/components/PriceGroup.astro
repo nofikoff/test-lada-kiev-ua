@@ -1,0 +1,93 @@
+---
+/**
+ * Блок группы позиций прайса. Две формы отображения — по форме цены, ровно как в `PriceList.tsx`:
+ * позиция с вариантами занимает собственную карточку, позиции с одной ценой идут строками
+ * внутри одной общей.
+ *
+ * Долевая цена печатается подписью вместо суммы и стоит сразу за названием: в действующем прайсе
+ * это одна строка словаря («Корекція (28-60 днів) 50%»), и сверка полноты ищет её целиком.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { formatDuration, formatSessions, ui, type Locale } from '../i18n/ui';
+import type { PriceGroup } from '../data/price-groups';
+
+interface Props {
+  locale: Locale;
+  group: PriceGroup;
+  /** Вкладка из одной группы заголовок не повторяет — её название и есть название группы. */
+  heading?: boolean;
+  /** Отступ заголовка зависит от того, что стоит выше: карточки позиций или общая карточка. */
+  headingClass?: string;
+  /** Отступ общей карточки зависит от места группы во вкладке. */
+  cardClass?: string;
+}
+
+type PriceValue = CollectionEntry<'prices'>['data']['price'];
+
+const { locale, group, heading = true, headingClass, cardClass = 'card' } = Astro.props;
+
+const t = ui[locale];
+const items = (await getCollection('prices')).filter((entry) => entry.data.group === group);
+const perItemCards = items.some((entry) => entry.data.price.kind === 'variants');
+
+function variantLabel(unit: 'minutes' | 'sessions', count: number): string {
+  return unit === 'minutes' ? formatDuration(locale, count) : formatSessions(locale, count);
+}
+
+/** Подпись одной цены: сумма с единицей валюты либо доля от базовой процедуры. */
+function priceLabel(price: PriceValue): string {
+  if (price.kind === 'share') return price.note[locale];
+  if (price.kind === 'fixed') return `${price.amount} ${t.priceList.currency}`;
+  return '';
+}
+---
+
+{
+  heading && (
+    <h3 class:list={['text-xl font-serif text-lada-gold mb-6', headingClass]}>
+      {t.priceList.sections[group]}
+    </h3>
+  )
+}
+
+{
+  perItemCards ? (
+    items.map(({ data }) => {
+      const price = data.price;
+      return (
+        <div class="card mb-4">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex-1">
+              <h4 class="text-white font-medium">{data.name[locale]}</h4>
+              {data.description && (
+                <p class="text-white/50 text-sm mt-1">{data.description[locale]}</p>
+              )}
+            </div>
+            <div class="flex flex-wrap gap-3">
+              {price.kind === 'variants' &&
+                price.variants.map((variant) => (
+                  <div class="bg-lada-darker px-4 py-2 rounded-lg text-center min-w-[100px]">
+                    <div class="text-lada-gold font-semibold">
+                      {variant.amount} {t.priceList.currency}
+                    </div>
+                    <div class="text-white/50 text-xs">
+                      {variantLabel(price.unit, variant.count)}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      );
+    })
+  ) : (
+    <div class={cardClass}>
+      {items.map(({ data }) => (
+        <div class="flex items-center justify-between py-3 border-b border-lada-gray last:border-0">
+          <span class="text-white/80">{data.name[locale]}</span>
+          <span class="text-lada-gold font-semibold">{priceLabel(data.price)}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
