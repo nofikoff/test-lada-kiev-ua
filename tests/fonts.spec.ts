@@ -81,7 +81,7 @@ test.describe('кириллическое начертание серифной 
   test('украинский заголовок отрисован объявленной гарнитурой, а не запасной', async ({ page }) => {
     await page.goto('/');
 
-    const heading = page.locator('#about h3');
+    const heading = page.locator('#about h2');
     const text = (await heading.innerText()).trim();
     expect(text, 'украинский заголовок пуст').not.toBe('');
 

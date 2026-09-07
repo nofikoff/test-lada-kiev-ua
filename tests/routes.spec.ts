@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { allPages, LOCALES, SITE_ORIGIN } from './support/site';
+import { allPages, errorPages, LOCALES, SITE_ORIGIN } from './support/site';
 
 /**
  * Контракт адресов ([contracts/routes.md]) против собранного сайта, поднятого `astro preview`.
@@ -23,16 +23,6 @@ const PUBLISHED: readonly { path: string; status: number }[] = [
   { path: '/sitemap-index.xml', status: 200 },
   { path: '/llms.txt', status: 200 },
 ];
-
-/**
- * Файл страницы ошибки раздела. Корневая живёт в `404.html` — Astro выносит её на корень
- * независимо от формы адресов; страницы разделов подчиняются `build.format: 'directory'`.
- */
-const ERROR_PAGES: Record<(typeof LOCALES)[number], string> = {
-  uk: '/404.html',
-  ru: '/ru/404/index.html',
-  en: '/en/404/index.html',
-};
 
 test.describe('карта адресов', () => {
   for (const { path, status } of PUBLISHED) {
@@ -90,8 +80,8 @@ test.describe('страницы ошибок', () => {
     test(`страница ошибки раздела ${locale} собрана и написана на его языке`, async ({
       request,
     }) => {
-      const response = await request.get(ERROR_PAGES[locale]);
-      expect(response.status(), `${ERROR_PAGES[locale]} не собрана`).toBe(200);
+      const response = await request.get(errorPages[locale]);
+      expect(response.status(), `${errorPages[locale]} не собрана`).toBe(200);
 
       const html = await response.text();
       expect(html).toContain(`<html lang="${locale}"`);
@@ -115,7 +105,7 @@ test.describe('страницы ошибок', () => {
       const config = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
 
       const declared = /^\s*ErrorDocument\s+404\s+(\S+)/m.exec(config)?.[1];
-      expect(declared, `${file} не объявляет страницу ошибки`).toBe(ERROR_PAGES[locale]);
+      expect(declared, `${file} не объявляет страницу ошибки`).toBe(errorPages[locale]);
 
       expect((await request.get(declared!)).status(), `${declared} не собран`).toBe(200);
     });

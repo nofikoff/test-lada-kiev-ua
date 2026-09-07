@@ -40,7 +40,11 @@ const labels: Contact[] = [
   <div class="mx-auto max-w-6xl px-4">
     <div class="foot__grid">
       <div class="contacts">
-        <h3 class="eyebrow foot__title">{t.nav.contacts}</h3>
+        <!-- Уровень секции, а не подраздела: подвал — цель пункта меню и сам по себе раздел
+             страницы, а `h3` объявлял его подчинённым той секции, что стоит выше по разметке.
+             На странице ошибки, где секций с `h2` нет вовсе, он к тому же шёл сразу за `h1`.
+             Оформление даёт класс `eyebrow`, поэтому уровень здесь ничего не задаёт на вид. -->
+        <h2 class="eyebrow foot__title">{t.nav.contacts}</h2>
 
         <div class="contact">
           <span class="contact__label">

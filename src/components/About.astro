@@ -10,8 +10,9 @@
  * либо напечатать одно и то же дважды, либо потерять строку прежней версии — сверка полноты
  * ищет «About Us» в английской разметке.
  *
- * Уровень заголовка — h3: на локатор `#about h3` опирается `tests/fonts.spec.ts`, и примитив
- * вводит надзаголовок НАД ним, а не заменяет уровень.
+ * Уровень заголовка — h2, умолчание примитива. До пересборки секция несла два заголовка, и
+ * `h3` был вторым, под `h2`; надзаголовок вторым заголовком не является, поэтому оставшийся
+ * `h3` шёл сразу за `h1` страницы и ронял доступность до 98 (`heading-order`).
  */
 import Monogram from './Monogram.astro';
 import Section from './Section.astro';
@@ -34,7 +35,7 @@ const t = ui[locale];
   <div class="mx-auto w-full max-w-6xl px-4">
     <div class="about">
       <div>
-        <SectionHeading eyebrow={t.about.title} title={t.about.heading} level="h3" />
+        <SectionHeading eyebrow={t.about.title} title={t.about.heading} />
       </div>
 
       <div class="about__body">
