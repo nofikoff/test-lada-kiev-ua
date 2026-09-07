@@ -8,7 +8,11 @@
  * к которым не применена ни одна утилита — research.md §R9.
  */
 import '../index.css';
+// Слой движения отдельным файлом: единственная часть работы, которую при откате снимают
+// целиком, не задев палитру, шкалу и ритм (src/styles/ambience.css).
+import '../styles/ambience.css';
 import { Font } from 'astro:assets';
+import Ambience from '../components/Ambience.astro';
 import ErrorHead from '../components/ErrorHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
@@ -75,7 +79,11 @@ const subset = locale === 'en' ? 'latin' : 'cyrillic';
     </script>
   </head>
   <body>
-    <div class="min-h-screen bg-lada-dark">
+    <Ambience />
+    <!-- Содержимое поднято над фоновым слоем собственным контекстом наложения. Заливки
+         на обёртке нет намеренно: непрозрачный фон здесь погасил бы весь слой света, ради
+         которого он и заведён. Цвет страницы задаёт `body` в src/index.css. -->
+    <div class="relative z-10 min-h-screen">
       <Header locale={locale} />
       <main>
         <slot />

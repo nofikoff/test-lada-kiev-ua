@@ -1,0 +1,141 @@
+---
+/**
+ * Сквозной фоновый слой (FR-010): свет, шёлковые кривые, порох, зерно и конус лампы —
+ * один набор на всю страницу, а не по копии внутри каждой секции.
+ *
+ * Слой неподвижен (`position: fixed`) и лежит под содержимым: при прокрутке секции проходят
+ * поверх стоящего света, и страница читается как одно пространство, а не как стопка
+ * прямоугольников. Пятна внутри секций, как было в `Hero.astro`, дают обратное — и число
+ * анимируемых слоёв растёт линейно с числом секций (research.md §R4).
+ *
+ * Исполняемого кода — ноль: всё движение объявлено в CSS (FR-014, SC-005).
+ */
+import Glow from './Glow.astro';
+
+/**
+ * Двенадцать порошинок фона; ещё восемь живут на первом экране, где они видны поверх кадра
+ * (contracts/motion.md: `mote × 20`). Полоса, длительность, задержка и снос у каждой свои —
+ * с общими значениями двадцать частиц всплывали бы строем. Отрицательная задержка начинает
+ * анимацию с середины, поэтому при загрузке страницы порох уже в воздухе, а не собран внизу.
+ */
+const motes = [
+  { left: '8%', duration: '26s', delay: '-2s', sway: '3vw', size: '3px' },
+  { left: '17%', duration: '34s', delay: '-9s', sway: '-2vw', size: '2px' },
+  { left: '25%', duration: '29s', delay: '-16s', sway: '4vw', size: '3px' },
+  { left: '33%', duration: '40s', delay: '-5s', sway: '-3vw', size: '4px' },
+  { left: '41%', duration: '24s', delay: '-21s', sway: '2vw', size: '2px' },
+  { left: '49%', duration: '36s', delay: '-12s', sway: '-4vw', size: '3px' },
+  { left: '57%', duration: '31s', delay: '-3s', sway: '3vw', size: '2px' },
+  { left: '64%', duration: '27s', delay: '-18s', sway: '-2vw', size: '4px' },
+  { left: '72%', duration: '38s', delay: '-7s', sway: '4vw', size: '3px' },
+  { left: '79%', duration: '25s', delay: '-14s', sway: '-3vw', size: '2px' },
+  { left: '87%', duration: '33s', delay: '-24s', sway: '2vw', size: '3px' },
+  { left: '94%', duration: '30s', delay: '-10s', sway: '-4vw', size: '2px' },
+];
+---
+
+<div class="ambience" aria-hidden="true">
+  <div class="lamp"></div>
+
+  <svg class="silk silk--a" viewBox="0 0 1200 900" preserveAspectRatio="none">
+    <g fill="none" stroke="currentColor" stroke-width="1.2" opacity=".38">
+      <path d="M-100 210 C 220 120, 420 330, 700 240 S 1130 120, 1340 200"></path>
+      <path d="M-100 300 C 240 190, 460 420, 720 330 S 1140 210, 1340 290"></path>
+      <path d="M-100 640 C 260 540, 430 780, 730 690 S 1120 560, 1340 650"></path>
+    </g>
+  </svg>
+
+  <svg class="silk silk--b" viewBox="0 0 1200 900" preserveAspectRatio="none">
+    <g fill="none" stroke="currentColor" stroke-width="1" opacity=".3">
+      <path d="M-100 430 C 200 330, 500 560, 780 460 S 1150 340, 1340 430"></path>
+      <path d="M-100 760 C 280 690, 470 900, 760 800 S 1130 700, 1340 780"></path>
+    </g>
+  </svg>
+
+  {/* Четыре пятна на трёх периодах: 17, 23 и 29 с, четвёртое повторяет 23 со сдвигом фазы. */}
+  <Glow size="44rem" left="-12rem" top="-10rem" tone="warm" period="17s" beat="a" />
+  <Glow size="38rem" right="-10rem" top="18%" tone="deep" period="23s" beat="b" />
+  <Glow size="34rem" left="12%" bottom="-12rem" tone="lit" period="29s" beat="b" />
+  <Glow size="30rem" right="16%" bottom="4%" tone="warm" period="23s" phase="-6s" beat="a" />
+
+  {
+    motes.map((mote) => (
+      <span
+        class="mote"
+        style={{
+          left: mote.left,
+          '--mote-size': mote.size,
+          '--mote-dur': mote.duration,
+          '--mote-delay': mote.delay,
+          '--sway': mote.sway,
+        }}
+      />
+    ))
+  }
+
+  <div class="grain"></div>
+</div>
+
+<style>
+  .ambience {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* Конус света сверху, как лампа над кушеткой. */
+  .lamp {
+    position: absolute;
+    top: -30vh;
+    left: 50%;
+    width: 90vw;
+    height: 110vh;
+    transform: translateX(-50%);
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      rgb(var(--brass-lt) / 0.12),
+      rgb(var(--brass-lt) / 0) 62%
+    );
+    animation: lamp-pulse 11s ease-in-out infinite;
+  }
+
+  /* Длинные латунные кривые дрейфуют двумя слоями с разным периодом. */
+  .silk {
+    position: absolute;
+    inset: -20% -10%;
+    width: 120%;
+    height: 140%;
+    color: rgb(var(--brass));
+  }
+
+  .silk--a {
+    opacity: 0.5;
+    animation: silk-a 34s ease-in-out infinite;
+  }
+
+  .silk--b {
+    opacity: 0.34;
+    animation: silk-b 46s ease-in-out infinite;
+  }
+
+  /**
+   * Плёночное зерно: ровный тёмный фон на дешёвой матрице показывает полосы градиента,
+   * и зерно их разбивает. `feTurbulence` встроен как `data:` URI — ни одного сетевого
+   * запроса и никакого растрового тайла в репозитории (research.md §R8).
+   *
+   * Восемь шагов за 6 с зафиксированы контрактом: с ростом до нескольких десятков
+   * подрагивание перестаёт быть фактурой и начинает считаться мерцанием (FR-015a).
+   */
+  .grain {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    animation: grain-shift 6s steps(8) infinite;
+  }
+</style>
