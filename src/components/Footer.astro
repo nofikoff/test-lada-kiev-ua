@@ -250,9 +250,23 @@ const labels: Contact[] = [
 
   /* Разрядка надзаголовков при кегле соседей по полосе: подпись служебная, но набрана строчными —
      доменное имя набирают так, а не прописными. */
+  /**
+   * Заглавная — оформление, а не данные: в разметке остаётся `lada.kiev.ua`, поэтому
+   * скопированный отсюда адрес остаётся рабочим доменом, а не именем с большой буквы.
+   *
+   * `text-transform: capitalize` для этого не годится дважды: он поднимает букву после
+   * каждой точки (`Lada.Kiev.Ua` в Chromium) и вдобавок расходится между движками —
+   * WebKit точку границей слова не считает и даёт `Lada.kiev.ua`. `::first-letter`
+   * одинаков в обоих, но требует блочного бокса, отсюда `inline-block`.
+   */
   .foot__domain {
     @apply text-muted;
+    display: inline-block;
     font-size: var(--step-caption);
     letter-spacing: 0.22em;
+  }
+
+  .foot__domain::first-letter {
+    text-transform: uppercase;
   }
 </style>
