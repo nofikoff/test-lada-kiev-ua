@@ -1,9 +1,18 @@
 ---
 /**
- * Перенос `ServicesOverview.tsx`. Карточки ведут на страницы категорий (Step 5.4), а не на якорь
- * прайса: у каждой категории теперь есть собственная страница с текстом и своими метаданными.
+ * Четыре направления — четыре двери в общей раме (FR-020). Круглые подложки под иконками ушли:
+ * они делали из карточки значок, а не вход в раздел. Осталась сама иконка, подпись инструментом
+ * ремесла над названием и волосок, который прочерчивается от края при наведении.
+ *
+ * Порядковой нумерации нет намеренно: услуги не образуют последовательности, и «1, 2, 3, 4»
+ * читалось бы как порядок прохождения.
+ *
+ * Свет обходит двери по очереди: сдвиг фазы на четверть периода задан на карточке
+ * (contracts/motion.md, `door-lit`), поэтому светится всегда одна.
  */
 import Icon, { type IconName } from './Icon.astro';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { pagePath, type ServiceCategory } from '../i18n/paths';
 import { ui, type Locale } from '../i18n/ui';
 
@@ -22,24 +31,138 @@ const services: { category: ServiceCategory; icon: IconName }[] = [
 ];
 ---
 
-<section class="py-20 md:py-32 bg-lada-dark">
-  <div class="max-w-6xl mx-auto px-4">
-    <h2 class="section-title">{t.services.title}</h2>
+<Section rhythm="work">
+  <div class="mx-auto w-full max-w-6xl px-4">
+    <!-- Отступ навешен на обёртку, а не на сам примитив: областью видимости стилей компонента
+         владеет только его собственная разметка, и класс, отданный вниз, до неё не доходит. -->
+    <div class="services__head">
+      <SectionHeading eyebrow={t.services.eyebrow} title={t.services.title} />
+    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="doors">
       {
         services.map((service) => (
-          <a href={pagePath(locale, service.category)} class="card group text-center cursor-pointer">
-            <div class="mb-4 flex justify-center">
-              <div class="w-16 h-16 rounded-full bg-lada-gold/10 flex items-center justify-center group-hover:bg-lada-gold/20 transition-colors">
-                <Icon name={service.icon} class="w-8 h-8 text-lada-gold" />
-              </div>
-            </div>
-            <h3 class="text-xl font-semibold text-white mb-2">{t.services[service.category].name}</h3>
-            <p class="text-white/60 text-sm">{t.services[service.category].description}</p>
+          <a href={pagePath(locale, service.category)} class="door">
+            <Icon name={service.icon} size={26} class="text-brass" />
+            <span class="eyebrow door__tool">{t.services[service.category].tool}</span>
+            <h3 class="door__name">{t.services[service.category].name}</h3>
+            <p class="door__text">{t.services[service.category].description}</p>
           </a>
         ))
       }
     </div>
   </div>
-</section>
+</Section>
+
+<style>
+  .services__head {
+    margin-bottom: var(--rhythm-tight);
+  }
+
+  /* Волоски между дверями — не рамки каждой карточки, а зазоры общей рамы: так четыре
+     входа читаются одним рядом, а не четырьмя отдельными прямоугольниками. */
+  .doors {
+    display: grid;
+    gap: 1px;
+    background: var(--hair-soft);
+    border-block: 1px solid var(--hair-soft);
+  }
+
+  @media (min-width: 40rem) {
+    .doors {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 68rem) {
+    .doors {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .door {
+    position: relative;
+    display: grid;
+    gap: 0.65rem;
+    align-content: start;
+    padding: 2.25rem 1.75rem 2.75rem;
+    background: rgb(var(--ink) / 0.55);
+    text-decoration: none;
+    overflow: hidden;
+    transition: background-color 0.45s;
+  }
+
+  .door:hover {
+    background: rgb(var(--raised) / 0.62);
+  }
+
+  .door__tool {
+    @apply text-muted;
+    transition: color 0.45s;
+  }
+
+  .door:hover .door__tool {
+    @apply text-brass;
+  }
+
+  .door__name {
+    font-size: var(--step-subtitle);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  .door__text {
+    font-size: 0.938rem;
+  }
+
+  /* Волосок прочерчивается от края при наведении: дверь открывается, а не подсвечивается. */
+  .door::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: rgb(var(--brass));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .door:hover::after {
+    transform: scaleX(1);
+  }
+
+  /**
+   * Свет по очереди. Нулевая непрозрачность объявлена вне `@supports` намеренно и под
+   * исключением, записанным в T040: это стартовый кадр бесконечной анимации, а не состояние,
+   * из которого элемент вытаскивает таймлайн. При уменьшенном движении слой просто не
+   * зажигается — содержимого в нём нет.
+   */
+  .door::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 50% 120%,
+      rgb(var(--brass) / 0.2),
+      rgb(var(--brass) / 0) 62%
+    );
+    opacity: 0;
+    animation: door-lit 9s ease-in-out infinite;
+    animation-delay: var(--turn, 0s);
+  }
+
+  .door:nth-child(2) {
+    --turn: 2.25s;
+  }
+
+  .door:nth-child(3) {
+    --turn: 4.5s;
+  }
+
+  .door:nth-child(4) {
+    --turn: 6.75s;
+  }
+</style>
