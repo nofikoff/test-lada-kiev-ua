@@ -25,9 +25,15 @@ export default defineConfig({
   // в WebKit самые свежие из трёх движков, поэтому третий проект — не про ещё одно разрешение,
   // а про второй движок рендеринга (SC-013, research.md §R14).
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['Pixel 7'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    // Проверки, помеченные `@build`, читают файлы из `dist/` и браузера не открывают: результат
+    // от движка не зависит, поэтому они идут ровно один раз, а не по разу на каждый движок.
+    // Отдельным проектом, а не пропуском внутри файла: пропуск оставил бы в отчёте два `skipped`
+    // на каждую такую проверку, и «пропущено» в прогоне значило бы две разные вещи сразу —
+    // «здесь не нужно» и «здесь не сделано».
+    { name: 'build', grep: /@build/, use: { ...devices['Desktop Chrome'] } },
+    { name: 'desktop', grepInvert: /@build/, use: { ...devices['Desktop Chrome'] } },
+    { name: 'mobile', grepInvert: /@build/, use: { ...devices['Pixel 7'] } },
+    { name: 'webkit', grepInvert: /@build/, use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
     // Именно `npm run preview`, а не собственный статический сервер: коды ответа и обработка
