@@ -1,17 +1,15 @@
 ---
 /**
- * Перенос `Header.tsx`. Мобильное меню переведено с состояния React на `<details>`/`<summary>`:
- * раскрытие блока — ровно семантика этого элемента, поэтому клавиатура и работа без скриптов
- * достаются бесплатно (research.md §R10).
+ * Шапка. Мобильное меню — нативное `<details>`/`<summary>`: раскрытие блока и есть семантика
+ * этого элемента, поэтому клавиатура и работа без скриптов достаются бесплатно.
  *
- * Раскрытый блок позиционируется абсолютно, а не в потоке, потому что переключатель обязан
- * остаться внутри строки фиксированной высоты, а `<summary>` — прямым потомком `<details>`.
- * Отображение при этом то же: шапка зафиксирована, поэтому и раньше её рост не сдвигал страницу,
- * а `top-full` отсчитывается от шапки — ближайшего позиционированного предка.
+ * Плотность шапки привязана к прокрутке через `animation-timeline: scroll()` (research.md §R6):
+ * над кадром первого экрана полоса прозрачна и не отрезает его верх, ниже — плотная, как
+ * сегодня. Исполняемого кода это не стоит ни байта. Там, где таймлайн не поддержан, шапка
+ * остаётся в конечном состоянии — плотной; это исходное поведение, а не деградация.
  */
-import { Picture } from 'astro:assets';
 import Icon from './Icon.astro';
-import logo from '../assets/logo.jpg';
+import Monogram from './Monogram.astro';
 import { ui, locales, type Locale } from '../i18n/ui';
 import { pagePath } from '../i18n/paths';
 
@@ -39,48 +37,38 @@ const languages = locales.map((code) => ({
 }));
 ---
 
-<header
-  class="fixed top-0 left-0 right-0 z-50 bg-lada-dark/95 backdrop-blur-sm border-b border-lada-gray"
->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16 md:h-20">
-      <!-- `block` на изображении: обёртка `<picture>` стала элементом флекс-раскладки вместо
-           самого изображения, и строчное изображение внутри неё добавило бы высоту строки. -->
-      <a href={pagePath(locale)} class="flex items-center">
-        <Picture
-          src={logo}
-          alt="Lada N"
-          formats={['avif', 'webp']}
-          densities={[1, 2]}
-          width={48}
-          height={48}
-          class="block h-10 md:h-12 w-auto brightness-75 contrast-125"
-        />
+<header class="head fixed inset-x-0 top-0 z-50">
+  <!-- Заливка и нижний волосок вынесены отдельным слоем: анимируется его непрозрачность,
+       а не цвет самой шапки — правило 1 contracts/motion.md. -->
+  <div class="head__bg" aria-hidden="true"></div>
+
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between md:h-20">
+      <a href={pagePath(locale)} class="head__mark flex items-center">
+        <Monogram mode="mark" />
       </a>
 
-      <nav class="hidden md:flex items-center space-x-8">
+      <nav class="hidden items-center gap-8 md:flex">
         {
           navItems.map((item) => (
-            <a
-              href={item.href}
-              class="text-white/80 hover:text-lada-gold transition-colors duration-300 text-sm font-medium"
-            >
+            <a href={item.href} class="head__link">
               {item.label}
             </a>
           ))
         }
       </nav>
 
-      <div class="hidden md:flex items-center space-x-6">
-        <div class="flex items-center space-x-2">
+      <div class="hidden items-center gap-6 md:flex">
+        <div class="flex items-center gap-3">
           {
             languages.map((language) => (
               <a
                 href={language.href}
                 hreflang={language.code}
+                aria-current={language.code === locale ? 'page' : undefined}
                 class:list={[
-                  'text-sm font-medium transition-colors duration-300',
-                  language.code === locale ? 'text-lada-gold' : 'text-white/60 hover:text-white',
+                  'head__lang',
+                  language.code === locale ? 'text-brass' : 'text-muted hover:text-silk-dim',
                 ]}
               >
                 {language.label}
@@ -89,64 +77,61 @@ const languages = locales.map((code) => ({
           }
         </div>
 
-        <a
-          href="tel:+380995570045"
-          class="flex items-center space-x-2 text-lada-gold hover:text-lada-gold-light transition-colors"
-        >
+        <a href="tel:+380995570045" class="head__tel flex items-center gap-2 text-brass">
           <Icon name="phone" size={18} />
-          <span class="font-medium">(099) 557-00-45</span>
+          <span>(099) 557-00-45</span>
         </a>
       </div>
 
-      <details id="mobile-menu" class="md:hidden group">
+      <details id="mobile-menu" class="group md:hidden">
         <summary
-          class="text-white p-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden"
+          class="cursor-pointer list-none p-2 text-silk [&::-webkit-details-marker]:hidden"
           aria-label={t.nav.menu}
         >
           <Icon name="menu" size={24} class="block group-open:hidden" />
           <Icon name="x" size={24} class="hidden group-open:block" />
         </summary>
 
-        <div
-          class="absolute left-0 right-0 top-full bg-lada-dark/95 backdrop-blur-sm border-b border-lada-gray"
-        >
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="head__drop absolute inset-x-0 top-full">
+          <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="py-4">
-              <nav class="flex flex-col space-y-4">
+              <nav class="flex flex-col gap-4">
                 {
                   navItems.map((item) => (
-                    <a
-                      href={item.href}
-                      class="text-white/80 hover:text-lada-gold transition-colors text-lg"
-                    >
+                    <a href={item.href} class="head__link text-lg">
                       {item.label}
                     </a>
                   ))
                 }
               </nav>
 
-              <div class="mt-6 pt-4 border-t border-lada-gray">
-                <div class="flex items-center space-x-4 mb-4">
-                  {
-                    languages.map((language) => (
-                      <a
-                        href={language.href}
-                        hreflang={language.code}
-                        class:list={[
-                          'text-sm font-medium',
-                          language.code === locale ? 'text-lada-gold' : 'text-white/60',
-                        ]}
-                      >
-                        {language.label}
-                      </a>
-                    ))
-                  }
-                </div>
-                <a href="tel:+380995570045" class="flex items-center space-x-2 text-lada-gold">
-                  <Icon name="phone" size={18} />
-                  <span>(099) 557-00-45</span>
-                </a>
+              <div class="rule mb-4 mt-6"></div>
+
+              <div class="mb-4 flex items-center gap-4">
+                {
+                  languages.map((language) => (
+                    <a
+                      href={language.href}
+                      hreflang={language.code}
+                      aria-current={language.code === locale ? 'page' : undefined}
+                      class:list={[
+                        'head__lang',
+                        /* Внутри раскрытого меню подложка — `--raised`, и `--muted` на ней даёт
+                           4.38:1 (правило 2 contracts/design-tokens.md). Неактивный язык здесь
+                           берёт `--silk-dim`, а не тот уровень, что стоит в плотной шапке. */
+                        language.code === locale ? 'text-brass' : 'text-silk-dim',
+                      ]}
+                    >
+                      {language.label}
+                    </a>
+                  ))
+                }
               </div>
+
+              <a href="tel:+380995570045" class="head__tel flex items-center gap-2 text-brass">
+                <Icon name="phone" size={18} />
+                <span>(099) 557-00-45</span>
+              </a>
             </div>
           </div>
         </div>
@@ -154,3 +139,90 @@ const languages = locales.map((code) => ({
     </div>
   </div>
 </header>
+
+<style>
+  /**
+   * Слой уходит за содержимое отрицательным z-index, а не порядком в потоке: раскрытое меню
+   * позиционируется от самой шапки (`top-full` на всю её ширину), поэтому промежуточной
+   * обёртке с `position: relative` здесь взяться неоткуда. Шапка сама создаёт контекст
+   * наложения (`z-50` на фиксированном элементе), так что «минус первый» слой остаётся
+   * внутри неё и под страницу не проваливается.
+   */
+  .head__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(var(--ink) / 0.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--hair-soft);
+  }
+
+  /**
+   * Уплотнение по прокрутке. Невидимость слоя объявлена ВНУТРИ `@supports`, как и у проявления
+   * блоков (contracts/motion.md §4): в браузере без таймлайна шапка обязана остаться плотной,
+   * а не прозрачной навсегда. Отсчёт от корня, а не от ближайшего предка: сама шапка
+   * зафиксирована и своего прокручиваемого предка не имеет.
+   */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .head__bg {
+        animation: head-dense linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 120px;
+      }
+
+      @keyframes head-dense {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .head__mark {
+    color: rgb(var(--silk));
+  }
+
+  .head__link {
+    @apply font-sans text-silk-dim;
+    font-size: 0.875rem;
+    text-decoration: none;
+    padding-block: 0.25rem;
+    border-bottom: 1px solid transparent;
+    transition:
+      color 0.3s,
+      border-color 0.3s;
+  }
+
+  .head__link:hover {
+    @apply text-silk;
+    border-color: rgb(var(--brass));
+  }
+
+  .head__lang {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  /* Номер выровнен по разрядам: в шапке он стоит рядом с меняющимися по ширине подписями. */
+  .head__tel {
+    font-size: 0.938rem;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s;
+  }
+
+  .head__tel:hover {
+    @apply text-brass-lt;
+  }
+
+  .head__drop {
+    background: rgb(var(--raised));
+    border-bottom: 1px solid var(--hair-soft);
+  }
+</style>

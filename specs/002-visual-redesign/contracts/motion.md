@@ -28,6 +28,7 @@
 | `ember` | `ember` | 5.5 с | `text-shadow` | надзаголовки |
 | `door-lit` | `door-lit` | 9 с, сдвиг фазы на четверть между карточками | `opacity` | карточки услуг |
 | `reveal` | `reveal` | по таймлайну кадра | `transform`, `opacity` | секции и карточки |
+| `head` | `head-dense` | по таймлайну прокрутки, 0–120 px | `opacity` | заливка шапки (research.md §R6) |
 
 ## Жёсткие правила
 

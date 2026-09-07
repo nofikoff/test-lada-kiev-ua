@@ -75,6 +75,23 @@ export default defineConfig({
       fallbacks: ['Georgia', 'serif'],
     },
   ],
+  /**
+   * Сжатие стилей переведено с lightningcss на esbuild из-за одной правки, которую первый
+   * складывает неверно: `animation: reveal linear both` рядом с `animation-timeline: view()`
+   * он сворачивает в `animation: linear both reveal view()`. Сокращённая запись таймлайна
+   * в браузерах не принята (`CSS.supports('animation','linear both reveal view()')` → false
+   * в Chrome 153 и в WebKit), поэтому правило отбрасывается целиком: проявление блоков,
+   * уплотнение шапки и всё, что стоит на таймлайне, молча не работает.
+   *
+   * Глазами это не ловится — на прогоне блоки видны, потому что видимость и есть исходное
+   * состояние (contracts/motion.md §4), — и разбором CSS из T040 тоже: вложенность правил
+   * при этом верна. esbuild оставляет обе записи раздельными.
+   */
+  vite: {
+    build: {
+      cssMinify: 'esbuild',
+    },
+  },
   integrations: [
     sitemap({
       i18n: {
