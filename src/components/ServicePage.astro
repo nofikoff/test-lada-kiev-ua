@@ -10,8 +10,9 @@
 import { render } from 'astro:content';
 import Icon from './Icon.astro';
 import PriceGroup from './PriceGroup.astro';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { groupsOfCategory } from '../data/price-groups';
-import { pricesOfGroups } from '../data/price-list';
 import { serviceCopy } from '../data/services';
 import { pagePath, type ServiceCategory } from '../i18n/paths';
 import { ui, type Locale } from '../i18n/ui';
@@ -31,13 +32,6 @@ const groups = groupsOfCategory(category);
 
 /** Сноска об обновлении относится к перманентному макияжу — ровно как на вкладке главной. */
 const withNote = category === 'permanent';
-
-/** Группа с вариантами занимает по карточке на позицию — следующий за ней заголовок отбивается. */
-const variantGroups = new Set(
-  (await pricesOfGroups(groups))
-    .filter((entry) => entry.data.price.kind === 'variants')
-    .map((entry) => entry.data.group),
-);
 ---
 
 <section class="pt-28 pb-16 md:pt-36 md:pb-24 bg-lada-dark">
@@ -72,30 +66,44 @@ const variantGroups = new Set(
   </div>
 </section>
 
-<section id="services" class="py-20 md:py-32 bg-lada-darker">
-  <div class="max-w-6xl mx-auto px-4">
-    <h2 class="section-title">{t.priceList.title}</h2>
+<Section rhythm="work" id="services">
+  <div class="mx-auto w-full max-w-6xl px-4">
+    <div class="price__top">
+      <SectionHeading eyebrow={t.priceList.eyebrow} title={t.priceList.title} />
+      <p class="price__discount">{t.priceList.discount}</p>
+    </div>
 
-    <p class="text-center text-lada-gold mb-8">{t.priceList.discount}</p>
+    <div class="price__groups">
+      {groups.map((group, index) => <PriceGroup locale={locale} group={group} phase={index} />)}
 
-    {
-      groups.map((group, index) => (
-        <PriceGroup
-          locale={locale}
-          group={group}
-          headingClass={index > 0 && variantGroups.has(group) ? 'mt-12' : undefined}
-          cardClass={
-            index === groups.length - 1 ? (withNote ? 'card mb-4' : 'card') : 'card mb-8'
-          }
-        />
-      ))
-    }
-
-    {withNote && <p class="text-white/50 text-sm text-center">{t.priceList.permanentNote}</p>}
+      {withNote && <p class="price__note">{t.priceList.permanentNote}</p>}
+    </div>
   </div>
-</section>
+</Section>
 
 <style>
+  .price__top {
+    display: grid;
+    justify-items: start;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .price__discount {
+    @apply text-brass;
+    font-size: 0.875rem;
+  }
+
+  .price__groups {
+    display: grid;
+    gap: var(--rhythm-tight);
+  }
+
+  .price__note {
+    @apply text-muted;
+    font-size: var(--step-caption);
+  }
+
   /* Текст приходит из markdown, поэтому классы утилит на его элементы не навесить:
      плагина типографики в проекте нет, и оформление задаётся здесь.
 

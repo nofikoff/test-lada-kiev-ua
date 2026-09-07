@@ -1,11 +1,17 @@
 ---
 /**
- * Блок группы позиций прайса. Две формы отображения — по форме цены, ровно как в `PriceList.tsx`:
- * позиция с вариантами занимает собственную карточку, позиции с одной ценой идут строками
- * внутри одной общей.
+ * Группа позиций прайса, набранная как страница меню (FR-021): название слева, точечная
+ * выноска, цена справа. Сплошной заливки карточки больше нет — группу держат надзаголовок,
+ * волосок и сама сетка строки.
  *
- * Долевая цена печатается подписью вместо суммы и стоит сразу за названием: в действующем прайсе
- * это одна строка словаря («Корекція (28-60 днів) 50%»), и сверка полноты ищет её целиком.
+ * Две формы цены свелись к одной строке. Раньше позиция с вариантами занимала отдельную
+ * карточку, а позиция с одной ценой — строку внутри общей: глаз ловил два разных объекта там,
+ * где разница только в числе сумм. Теперь варианты стоят колонкой цен той же строки, и колонка
+ * цифр остаётся сплошной сверху донизу (FR-008, `tabular-nums` на всей колонке).
+ *
+ * Долевая цена печатается подписью вместо суммы и стоит сразу за названием: в действующем
+ * прайсе это одна строка словаря («Корекція (28-60 днів) 50%»), и сверка полноты ищет её
+ * целиком. Поэтому между названием и ценой не должно оказаться ничего, кроме пустой выноски.
  */
 import type { CollectionEntry } from 'astro:content';
 import { pricesOfGroups } from '../data/price-list';
@@ -17,80 +23,181 @@ interface Props {
   group: PriceGroup;
   /** Вкладка из одной группы заголовок не повторяет — её название и есть название группы. */
   heading?: boolean;
-  /** Отступ заголовка зависит от того, что стоит выше: карточки позиций или общая карточка. */
-  headingClass?: string;
-  /** Отступ общей карточки зависит от места группы во вкладке. */
-  cardClass?: string;
+  /**
+   * Сдвиг фазы блика на волоске группы. Соседние волоски с общим периодом вспыхивают разом,
+   * и три группы одной вкладки читаются тогда как один мигающий блок.
+   */
+  phase?: number;
 }
 
 type PriceValue = CollectionEntry<'prices'>['data']['price'];
 
-const { locale, group, heading = true, headingClass, cardClass = 'card' } = Astro.props;
+interface Tier {
+  /** Подпись варианта: длительность или число сеансов. У единственной цены её нет. */
+  readonly unit?: string;
+  readonly sum: string;
+  /** Доля печатается без единицы валюты: «50%» — это уже готовая подпись. */
+  readonly currency: boolean;
+}
+
+const { locale, group, heading = true, phase = 0 } = Astro.props;
 
 const t = ui[locale];
 
 const items = await pricesOfGroups([group]);
 
-const perItemCards = items.some((entry) => entry.data.price.kind === 'variants');
+const RULE_PHASE = ['', 'rule--slow', 'rule--late'];
 
 function variantLabel(unit: 'minutes' | 'sessions', count: number): string {
   return unit === 'minutes' ? formatDuration(locale, count) : formatSessions(locale, count);
 }
 
-/** Подпись одной цены: сумма с единицей валюты либо доля от базовой процедуры. */
-function priceLabel(price: PriceValue): string {
-  if (price.kind === 'share') return price.note[locale];
-  if (price.kind === 'fixed') return `${price.amount} ${t.priceList.currency}`;
-  return '';
+function tiersOf(price: PriceValue): Tier[] {
+  if (price.kind === 'share') return [{ sum: price.note[locale], currency: false }];
+  if (price.kind === 'fixed') return [{ sum: String(price.amount), currency: true }];
+  return price.variants.map((variant) => ({
+    unit: variantLabel(price.unit, variant.count),
+    sum: String(variant.amount),
+    currency: true,
+  }));
 }
 ---
 
-{
-  heading && (
-    <h3 class:list={['text-xl font-serif text-lada-gold mb-6', headingClass]}>
-      {t.priceList.sections[group]}
-    </h3>
-  )
-}
+<div class="group">
+  {
+    heading && (
+      <div class="group__top">
+        <h3 class="eyebrow">{t.priceList.sections[group]}</h3>
+        <div class:list={['rule', RULE_PHASE[phase % RULE_PHASE.length]]} />
+      </div>
+    )
+  }
 
-{
-  perItemCards ? (
-    items.map(({ data }) => {
-      const price = data.price;
-      return (
-        <div class="card mb-4">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div class="flex-1">
-              <h4 class="text-white font-medium">{data.name[locale]}</h4>
-              {data.description && (
-                <p class="text-white/50 text-sm mt-1">{data.description[locale]}</p>
-              )}
-            </div>
-            <div class="flex flex-wrap gap-3">
-              {price.kind === 'variants' &&
-                price.variants.map((variant) => (
-                  <div class="bg-lada-darker px-4 py-2 rounded-lg text-center min-w-[100px]">
-                    <div class="text-lada-gold font-semibold">
-                      {variant.amount} {t.priceList.currency}
-                    </div>
-                    <div class="text-white/50 text-xs">
-                      {variantLabel(price.unit, variant.count)}
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
+  <div class="items">
+    {
+      items.map(({ data }) => (
+        <div class="item">
+          <span class="item__name">
+            {data.name[locale]}
+            {data.description && <span class="item__note">{data.description[locale]}</span>}
+          </span>
+          <span class="item__leader" aria-hidden="true" />
+          <span class="item__prices">
+            {tiersOf(data.price).map((tier) => (
+              <span class="tier">
+                {tier.unit && <span class="tier__unit">{tier.unit}</span>}
+                <span class="tier__sum">{tier.sum}</span>
+                {tier.currency && <span class="tier__cur">{t.priceList.currency}</span>}
+              </span>
+            ))}
+          </span>
         </div>
-      );
-    })
-  ) : (
-    <div class={cardClass}>
-      {items.map(({ data }) => (
-        <div class="flex items-center justify-between py-3 border-b border-lada-gray last:border-0">
-          <span class="text-white/80">{data.name[locale]}</span>
-          <span class="text-lada-gold font-semibold">{priceLabel(data.price)}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .group {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .group__top {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .group__top .rule {
+    flex: 1;
+  }
+
+  .items {
+    display: grid;
+  }
+
+  .item {
+    display: grid;
+    grid-template-columns: minmax(0, auto) 1fr auto;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid rgb(var(--silk) / 0.05);
+    transition: border-color 0.3s;
+  }
+
+  /* У последней строки группы разделителя нет: он отбивает строки друг от друга,
+     а не группу от следующей — ту отбивает надзаголовок. */
+  .item:last-child {
+    border-bottom: 0;
+  }
+
+  .item:hover {
+    border-color: var(--hair);
+  }
+
+  .item__name {
+    @apply text-silk;
+    font-size: var(--step-body);
+    font-weight: 400;
+  }
+
+  .item__note {
+    @apply block text-muted;
+    font-size: var(--step-caption);
+  }
+
+  /* Точечная выноска: она и делает строку строкой меню, а не ячейкой таблицы. */
+  .item__leader {
+    min-width: 1.5rem;
+    border-bottom: 1px dotted rgb(var(--silk) / 0.18);
+    transform: translateY(-0.28em);
+  }
+
+  .item__prices {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.25rem 1.25rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tier {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  .tier__unit {
+    @apply text-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+  }
+
+  .tier__sum {
+    @apply text-brass;
+    font-size: var(--step-body);
+  }
+
+  .tier__cur {
+    @apply text-muted;
+    font-size: 0.75rem;
+  }
+
+  /* На узком экране выноска теряет смысл: цена уходит под название, а не в конец строки. */
+  @media (max-width: 40rem) {
+    .item {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+
+    .item__leader {
+      display: none;
+    }
+
+    .item__prices {
+      justify-content: flex-start;
+    }
+  }
+</style>

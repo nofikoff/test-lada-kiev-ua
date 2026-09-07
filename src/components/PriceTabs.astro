@@ -1,13 +1,20 @@
 ---
 /**
- * Прайс главной страницы. Перенос `PriceList.tsx` с заменой состояния React на вкладки ARIA.
+ * Прайс главной страницы: четыре раздела вкладками.
  *
  * Разметка отдаётся со всеми видимыми блоками, скрытие неактивных выполняет скрипт при
  * инициализации: собранный наоборот, при отключённых скриптах он показал бы пустую страницу
- * вместо всего прайса (FR-028, research.md §R10).
+ * вместо всего прайса (FR-029).
+ *
+ * Оформление вкладки выведено из `aria-selected`, а не из набора классов. Прежде состояние
+ * жило в двух местах — в разметке и в списках классов внутри скрипта, — и расхождение между
+ * ними проявлялось только после первого переключения, то есть мимо любой статической проверки
+ * (contracts/design-tokens.md §Совместимость). Теперь состояние объявлено один раз, там же,
+ * где его читают вспомогательные технологии, и второму месту неоткуда разойтись с первым.
  */
 import PriceGroup from './PriceGroup.astro';
-import { getCollection } from 'astro:content';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { categoryOf } from '../data/price-groups';
 import { priceTabs } from '../i18n/tabs';
 import { ui, type Locale } from '../i18n/ui';
@@ -18,31 +25,16 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = ui[locale];
-
-const TAB_BASE = 'px-6 py-3 rounded-lg font-medium transition-all duration-300';
-const TAB_ACTIVE = 'bg-lada-gold text-lada-dark';
-const TAB_IDLE = 'bg-lada-gray text-white/70 hover:bg-lada-gray-light hover:text-white';
-
-/** Группы с вариантами занимают по карточке на позицию — следующий за ними заголовок отбивается. */
-const variantGroups = new Set(
-  (await getCollection('prices'))
-    .filter((entry) => entry.data.price.kind === 'variants')
-    .map((entry) => entry.data.group),
-);
 ---
 
-<section id="services" class="py-20 md:py-32 bg-lada-darker">
-  <div class="max-w-6xl mx-auto px-4">
-    <h2 class="section-title">{t.priceList.title}</h2>
+<Section rhythm="work" id="services">
+  <div class="mx-auto w-full max-w-6xl px-4">
+    <div class="price__top">
+      <SectionHeading eyebrow={t.priceList.eyebrow} title={t.priceList.title} />
+      <p class="price__discount">{t.priceList.discount}</p>
+    </div>
 
-    <p class="text-center text-lada-gold mb-8">{t.priceList.discount}</p>
-
-    <div
-      class="flex flex-wrap justify-center gap-2 mb-12"
-      role="tablist"
-      aria-label={t.priceList.tabsLabel}
-      data-price-tabs
-    >
+    <div class="tabs" role="tablist" aria-label={t.priceList.tabsLabel} data-price-tabs>
       {
         priceTabs.map((tab, index) => (
           <button
@@ -51,7 +43,7 @@ const variantGroups = new Set(
             id={`tab-${tab.id}`}
             aria-controls={`panel-${tab.id}`}
             aria-selected={index === 0 ? 'true' : 'false'}
-            class:list={[TAB_BASE, index === 0 ? TAB_ACTIVE : TAB_IDLE]}
+            class="tab"
           >
             {t.priceList.tabs[tab.id]}
           </button>
@@ -59,33 +51,100 @@ const variantGroups = new Set(
       }
     </div>
 
-    <div class="min-h-[500px]">
+    <div class="panels">
       {
         priceTabs.map((tab) => {
           const withNote = tab.groups.some((group) => categoryOf(group) === 'permanent');
           return (
-            <div id={`panel-${tab.id}`} role="tabpanel" aria-labelledby={`tab-${tab.id}`}>
+            <div id={`panel-${tab.id}`} role="tabpanel" aria-labelledby={`tab-${tab.id}`} class="panel">
               {tab.groups.map((group, index) => (
                 <PriceGroup
                   locale={locale}
                   group={group}
                   heading={tab.groups.length > 1}
-                  headingClass={index > 0 && variantGroups.has(group) ? 'mt-12' : undefined}
-                  cardClass={
-                    index === tab.groups.length - 1 ? (withNote ? 'card mb-4' : 'card') : 'card mb-8'
-                  }
+                  phase={index}
                 />
               ))}
-              {withNote && (
-                <p class="text-white/50 text-sm text-center">{t.priceList.permanentNote}</p>
-              )}
+              {withNote && <p class="panel__note">{t.priceList.permanentNote}</p>}
             </div>
           );
         })
       }
     </div>
   </div>
-</section>
+</Section>
+
+<style>
+  .price__top {
+    display: grid;
+    justify-items: start;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .price__discount {
+    @apply text-brass;
+    font-size: 0.875rem;
+  }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    margin-bottom: var(--rhythm-tight);
+    border-bottom: 1px solid var(--hair-soft);
+  }
+
+  /**
+   * Неактивный раздел — текстовый переключатель, а не кнопка с заливкой (FR-022). Заливка
+   * ушла, область нажатия осталась: отступы держат высоту около 45 px при пороге FR-031
+   * в 24×24, и это измеряется — `tests/typography.spec.ts`.
+   */
+  .tab {
+    @apply font-sans uppercase text-muted;
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    padding-block: 0.75rem 0.85rem;
+    margin-bottom: -1px;
+    border-bottom: 1px solid transparent;
+    background: none;
+    cursor: pointer;
+    transition:
+      color 0.3s,
+      border-color 0.3s;
+  }
+
+  .tab:hover {
+    @apply text-silk-dim;
+  }
+
+  .tab[aria-selected='true'] {
+    @apply text-brass;
+    border-color: rgb(var(--brass));
+  }
+
+  /* Высота задана наибольшим разделом: без неё переключение вкладок дёргает подвал вверх-вниз
+     и портит накопленный сдвиг макета (SC-004). */
+  .panels {
+    min-height: 30rem;
+  }
+
+  .panel {
+    display: grid;
+    gap: var(--rhythm-tight);
+  }
+
+  /* Правило `display: grid` выше сильнее умолчания атрибута `hidden`, и без этой строки
+     скрытые разделы остались бы видимыми — то есть вкладки перестали бы переключаться. */
+  .panel[hidden] {
+    display: none;
+  }
+
+  .panel__note {
+    @apply text-muted;
+    font-size: var(--step-caption);
+  }
+</style>
 
 <script>
   const tablist = document.querySelector<HTMLElement>('[data-price-tabs]');
@@ -96,16 +155,13 @@ const variantGroups = new Set(
       document.getElementById(tab.getAttribute('aria-controls') ?? ''),
     );
 
-    const ACTIVE = ['bg-lada-gold', 'text-lada-dark'];
-    const IDLE = ['bg-lada-gray', 'text-white/70', 'hover:bg-lada-gray-light', 'hover:text-white'];
-
     const select = (index: number, moveFocus: boolean) => {
       tabs.forEach((tab, position) => {
         const selected = position === index;
+        // Единственное объявление состояния: оформление вкладки выведено из этого атрибута,
+        // поэтому расходиться с разметкой нечему.
         tab.setAttribute('aria-selected', String(selected));
         tab.tabIndex = selected ? 0 : -1;
-        tab.classList.remove(...(selected ? IDLE : ACTIVE));
-        tab.classList.add(...(selected ? ACTIVE : IDLE));
         const panel = panels[position];
         if (panel) panel.hidden = !selected;
       });
