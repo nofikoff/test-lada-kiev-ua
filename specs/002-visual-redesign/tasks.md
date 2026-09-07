@@ -448,10 +448,10 @@ gate_commands:
   test_quick: "npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze"
 -->
 
-- [ ] T047 Полный прогон: `npm run check`, `npm run lint`, `npm run build`, `npm run test:e2e` во всех трёх проектах, `npm run test:invalid-data`, `npm run analyze`
-- [ ] T048 Снять оценки Lighthouse на трёх адресах: производительность ≥ 95, поиск 100, доступность 100. Отдельно выписать LCP и CLS каждого адреса и сверить с порогом SC-004 (≤ 2.5 с и < 0.1): сквозной фон и раскрытие первого экрана бьют ровно по этим двум величинам, а общая оценка производительности их усредняет и может остаться зелёной при провале любой из них
-- [ ] T049 Ручные проходы по [quickstart.md](./quickstart.md): Firefox без проявлений, карта под фильтром в WebKit, темп движения против [prototype.html](./prototype.html), частота изменений яркости не чаще трёх в секунду ни у одного слоя (FR-015a). Периоды сверять **не по `ambience.css`** — там лежат только траектории: длительности заданы на элементах в `src/index.css` (`ember`, `sweep`, `ring`), `Ambience.astro` (`lamp-pulse`, `silk`, `grain`), `Hero.astro` (`drift`, `wake`, `veil-breath`, `drip`), `Header.astro` (`head-dense`), `Certificates.astro` (`sweep`), `ServicesOverview.astro` (`door-lit`)
-- [ ] T050 Записать итоги приёмки в `specs/002-visual-redesign/spec.md`, закрыть оставшиеся пункты `specs/002-visual-redesign/checklists/a11y.md`, записать гейт `converge` в журнал пакета
+- [x] T047 Полный прогон: `npm run check`, `npm run lint`, `npm run build`, `npm run test:e2e` во всех трёх проектах, `npm run test:invalid-data`, `npm run analyze`
+- [x] T048 Снять оценки Lighthouse на трёх адресах: производительность ≥ 95, поиск 100, доступность 100. Отдельно выписать LCP и CLS каждого адреса и сверить с порогом SC-004 (≤ 2.5 с и < 0.1): сквозной фон и раскрытие первого экрана бьют ровно по этим двум величинам, а общая оценка производительности их усредняет и может остаться зелёной при провале любой из них
+- [x] T049 Ручные проходы по [quickstart.md](./quickstart.md): Firefox без проявлений, карта под фильтром в WebKit, темп движения против [prototype.html](./prototype.html), частота изменений яркости не чаще трёх в секунду ни у одного слоя (FR-015a). Периоды сверять **не по `ambience.css`** — там лежат только траектории: длительности заданы на элементах в `src/index.css` (`ember`, `sweep`, `ring`), `Ambience.astro` (`lamp-pulse`, `silk`, `grain`), `Hero.astro` (`drift`, `wake`, `veil-breath`, `drip`), `Header.astro` (`head-dense`), `Certificates.astro` (`sweep`), `ServicesOverview.astro` (`door-lit`)
+- [x] T050 Записать итоги приёмки в `specs/002-visual-redesign/spec.md`, закрыть оставшиеся пункты `specs/002-visual-redesign/checklists/a11y.md`, записать гейт `converge` в журнал пакета. Гейт `converge` записывает оркестратор после этого шага — строка в `gates.md` не из приёмки. Темп движения против прототипа оставлен непринятым: это суждение владельца
 
 ---
 
