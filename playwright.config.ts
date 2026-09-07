@@ -20,9 +20,14 @@ export default defineConfig({
     baseURL: BASE_URL,
     trace: 'on-first-retry',
   },
+  // `desktop` и `mobile` — оба Chromium: Pixel 7 отличается от Desktop Chrome размером экрана
+  // и способом ввода, а не движком. Возможности редизайна (`animation-timeline`, `initial-letter`)
+  // в WebKit самые свежие из трёх движков, поэтому третий проект — не про ещё одно разрешение,
+  // а про второй движок рендеринга (SC-013, research.md §R14).
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
     // Именно `npm run preview`, а не собственный статический сервер: коды ответа и обработка
