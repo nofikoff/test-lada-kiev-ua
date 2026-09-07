@@ -687,3 +687,26 @@ decided: the tab icon is legible and the reserved font-weight='bold' is not need
 decided: the LCP and CLS regressions against the Step 1.1 baseline are recorded even though both criteria pass — LCP 2.0 to 2.3 s leaves 0.2 s of headroom on / and /ru/, CLS 0.003 to 0.012/0.015. If nobody writes that down, the next heavy change to the hero spends a margin it does not know is nearly gone.
 decided: the FR-034 divergence table gained two rows, not the one the brief named — the emoji favicon is in the Step 1.1 inventory, so its replacement by the monogram is the same kind of prescribed substitution as the raster logo.
 decided: T047-T050 ticked in tasks.md, matching how every earlier step closed its tasks; gates.md and the Progress Log left untouched — the converge row and the session log are the orchestrator's.
+
+### review — 2026-09-07
+**Completed steps:** review (findings from `/review2 branch`)
+**Commits:** f497aa9
+
+Отчёт: [docs/2026-09-07-review2-002-visual-redesign.md](../../docs/2026-09-07-review2-002-visual-redesign.md). Одна находка High, одна Medium, четыре Low; Critical нет.
+
+Существо High: `typography.spec.ts` меряла среднее по абзацу, а SC-006 говорит о строке. Среднее всегда ниже самой длинной строки, поэтому проверка была структурно слепа к тому, что требовала: четыре английские страницы рендерили 69–72 знака при пороге 68 и прогон оставался зелёным. Приёмка подписала критерий по этой зелени. Скептик подтвердил и усилил находку, независимо перемерив в двух движках.
+
+Закрыто мерой по локали (`:root` 33rem, `:root:lang(en)` 30.5rem) плюс переписанной проверкой, которая меряет самую длинную строку. Проверено оркестратором отдельным замером: максимум 64 знака на десяти страницах при пороге 68.
+
+### review — observations (2026-09-07)
+
+plan-wrong: scope_check.sh denied Edit on playwright.config.ts although the lease reads ["**/*"]. Its glob translation turns `**/*` into `^.*/[^/]*$`, which requires a slash — so the declared everything-scope excludes every repo-root file by construction (astro.config.mjs, tailwind.config.js, package.json too). Finding #4 therefore landed as the in-file project-name skip, the second fix the review itself named, not as the fourth run project in the config; the config version is the better one and is still open.
+plan-wrong: TaskCreate is not exposed in this harness, so the two-level task list the contract assumes could not be created.
+plan-wrong: the findings block named four documents for #1, but a fifth carried the same false method — quickstart.md:199 described the check as «знаков ÷ строк ≤ 68». Fixing #2 and #4 additionally invalidated spec.md:214 (693 passed), spec.md:220 and spec.md:263 (231 × 3). All corrected; the acceptance figures were kept as the record of that run with one line saying what changed after review.
+plan-wrong: /en/massage/ sat at exactly 68 — absent from the review's list of three failing pages only because 68 is not > 68. It had zero headroom, so the fix covers four English pages, not three.
+redone: the measure value, four times. 33 × 68/72 ≈ 31.2rem is arithmetic on a quantity that is not continuous — wrapping is word-granular, so /en/depilation/ still measured 69 at 32rem, 31.5rem and 31rem, and only broke at 30.6rem. Made visible by re-running the sweep across both engines rather than trusting the ratio. Final 30.5rem.
+redone: finding #4 built twice — first as a `@build` tag plus a fourth project in playwright.config.ts, which the scope hook denied at the write; rebuilt as test.info().project.name selection inside reduced-motion.spec.ts.
+decided: 30.5rem over 30.6rem for :root:lang(en). Both hold under 68 (64 against 65), but 30.75rem is already back at 69, so the four-character headroom buys the check against a one-word copy edit.
+decided: the anti-vacuous guard is strict equality between non-space characters placed into lines and non-space characters in the paragraph text. Exact today on 15 pages × 2 widths × 2 engines.
+decided: contrast.spec.ts got 90 s rather than fewer probes. Cutting probes needs a signal for «kind of element», and the only one available is the class list — the very thing the file's header says the check must not take on trust.
+decided: the two built-CSS runs report as skipped rather than disappearing from collection, and the skip reason states why. Consequence of the in-file variant; a config project would have removed them from the count instead.
