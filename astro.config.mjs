@@ -11,8 +11,9 @@ const SITE = 'https://www.lada.kiev.ua';
  *
  * Inter: 400 — текст страницы, 300 — подзаголовок первого экрана, 500 — навигация и вкладки,
  * 600 — кнопки, цены и заголовки карточек услуг.
- * Playfair Display: 400 — заголовки групп прайса и разделов, 600 — заголовки секций,
- * 700 — заголовок первого экрана.
+ * Cormorant: 300 — заголовок первого экрана и заголовки секций, 400 — подзаголовки и заголовки
+ * групп прайса, 500 — монограмма; курсив — подзаголовок первого экрана и закрывающая строка
+ * «Про нас» (research.md §R1, §R2).
  *
  * Подмножество `cyrillic` обязательно: две локали из трёх — кириллица, и без него украинский
  * заголовок отрисовывается запасным шрифтом (research.md §R8).
@@ -60,12 +61,16 @@ export default defineConfig({
       subsets: SUBSETS,
       fallbacks: ['system-ui', 'sans-serif'],
     },
+    // `weights` и `styles` перемножаются, поэтому объявить курсив только для 300 и 400
+    // (research.md §R2) конфигурацией нельзя: заявленным оказывается и курсив 500. Лишним
+    // он остаётся только в объявлении — @font-face без единого употребления браузер
+    // не загружает, а из предзагрузки курсив отобран в BaseLayout.astro.
     {
       provider: fontProviders.google(),
-      name: 'Playfair Display',
-      cssVariable: '--font-playfair',
-      weights: [400, 600, 700],
-      styles: ['normal'],
+      name: 'Cormorant',
+      cssVariable: '--font-cormorant',
+      weights: [300, 400, 500],
+      styles: ['normal', 'italic'],
       subsets: SUBSETS,
       fallbacks: ['Georgia', 'serif'],
     },

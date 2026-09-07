@@ -3,29 +3,241 @@
 @tailwind utilities;
 
 @layer base {
+  /**
+   * Единственное объявление палитры, шкалы и ритма (contracts/design-tokens.md §Единственный
+   * источник). Цвет хранится каналами, а не готовым hex: только в этой форме Tailwind
+   * подставляет альфу утилиты в `rgb(var(--x) / <alpha-value>)`, и модификаторы вида
+   * `border-brass/20` начинают работать (research.md §R3). С готовым hex правило
+   * сгенерировалось бы, а цвет молча не изменился.
+   */
+  :root {
+    --ink: 18 16 14;
+    --surface: 26 23 20;
+    --raised: 36 31 26;
+    --brass: 201 169 97;
+    --brass-lt: 224 200 138;
+    --silk: 237 228 214;
+    --silk-dim: 184 174 160;
+    --muted: 140 131 119;
+
+    /* Волосок и его приглушённая форма — не новые цвета, а латунь и шёлк на постоянной
+       прозрачности. Границы такой плотности стоят в трёх десятках мест, и повторённая
+       в каждом альфа разошлась бы при первой же правке. */
+    --hair: rgb(var(--brass) / 0.22);
+    --hair-soft: rgb(var(--silk) / 0.09);
+
+    /* Ступени шкалы (data-model.md §Типографическая шкала). */
+    --step-eyebrow: 0.688rem;
+    --step-display: clamp(3.25rem, 11vw, 6rem);
+    --step-title: clamp(1.875rem, 4.4vw, 2.875rem);
+    --step-subtitle: clamp(1.625rem, 2.4vw, 2rem);
+    --step-lede: 1.313rem;
+    --step-body: 1.063rem;
+    --step-caption: 0.813rem;
+
+    /* Мера протяжённого текста (FR-007, SC-006). Предел живёт здесь, а не утилитой
+       в разметке: заголовочная гарнитура и кегль текста меняются, требование — нет. */
+    --measure: 34rem;
+
+    /* Вертикальный ритм по роли секции (data-model.md §Вертикальный ритм). Утилит на них
+       не заводится: ритм применяет примитив Section — правило 4 контракта токенов. */
+    --rhythm-hero: 88svh;
+    --rhythm-air: clamp(6rem, 14vh, 11rem);
+    --rhythm-work: clamp(4.5rem, 9vh, 7rem);
+    --rhythm-tight: clamp(3rem, 6vh, 4.5rem);
+  }
+
   html {
     scroll-behavior: smooth;
   }
 
+  /**
+   * FR-016 и contracts/motion.md §5. Плавная прокрутка — единственная часть движения, которая
+   * не является ни анимацией, ни переходом, поэтому правило `animation: none` её не гасит:
+   * переход по внутренней ссылке остался бы плавным именно у того, кто попросил обратного.
+   * Отмена стоит рядом с объявлением, а не в слое анимаций, чтобы обе половины правила
+   * читались вместе; слой анимаций на эту строку ссылается.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
-    @apply bg-lada-dark text-white font-sans antialiased;
+    @apply bg-ink font-sans text-silk-dim antialiased;
+    font-size: var(--step-body);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif text-silk;
+    font-weight: 300;
+    text-wrap: balance;
+  }
+
+  /**
+   * FR-030: кольцо браузера по умолчанию рассчитано на светлую тему, и его контраст к углю
+   * ничем не гарантирован. Состояние фокуса задаётся своё и латунью — единственным акцентом.
+   */
+  :focus-visible {
+    outline: 2px solid rgb(var(--brass));
+    outline-offset: 3px;
   }
 }
 
 @layer components {
-  .btn-primary {
-    @apply bg-lada-red hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 hover:scale-105;
+  /**
+   * Ступени шкалы и оформленные элементы. Носители мерцания (FR-012) назначаются здесь
+   * и только здесь; периоды — по contracts/motion.md, сами keyframes живут в
+   * `src/styles/ambience.css` и подключаются вместе с фоновым слоем. До того шага
+   * объявленные ниже анимации не находят своих keyframes и просто не идут — это
+   * ожидаемое промежуточное состояние, а не дефект.
+   */
+
+  .eyebrow {
+    @apply font-sans uppercase text-brass;
+    font-size: var(--step-eyebrow);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    animation: ember 5.5s ease-in-out infinite;
   }
 
-  .btn-secondary {
-    @apply border-2 border-lada-gold text-lada-gold hover:bg-lada-gold hover:text-lada-dark font-semibold py-3 px-8 rounded-lg transition-all duration-300;
+  .display {
+    @apply font-serif text-silk;
+    font-size: var(--step-display);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.01em;
   }
 
+  /* Имя сохранено, хотя ступень шкалы зовётся `title`: класс стоит в четырёх компонентах,
+     которые пересобираются в разных шагах (contracts/design-tokens.md §Имена). */
   .section-title {
-    @apply text-3xl md:text-4xl font-serif font-semibold text-lada-gold mb-8 text-center;
+    @apply font-serif text-silk;
+    font-size: var(--step-title);
+    font-weight: 300;
+    line-height: 1.12;
   }
 
+  .lede {
+    @apply font-sans text-silk;
+    font-size: var(--step-lede);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* Главное действие страницы: латунь с угольным текстом даёт 8.44:1 при пороге FR-004 в 7:1. */
+  .btn-primary {
+    @apply relative inline-flex items-center gap-3 overflow-hidden bg-brass font-sans text-ink;
+    padding: 0.95rem 2rem;
+    border-radius: 2px;
+    font-size: 0.938rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition:
+      background-color 0.3s,
+      transform 0.3s;
+  }
+
+  .btn-primary:hover {
+    @apply bg-brass-lt;
+    transform: translateY(-1px);
+  }
+
+  /* Блик металла проходит по самой кнопке. */
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    background: linear-gradient(100deg, transparent, rgb(var(--silk) / 0.55), transparent);
+    animation: sweep 6s cubic-bezier(0.4, 0, 0.5, 1) infinite;
+  }
+
+  /**
+   * Пульсация кнопки. В прототипе это кольцо, расходящееся тенью за пределы кнопки; здесь —
+   * волна света по её лицу, потому что два требования не сходятся иначе. Тень за край требует
+   * либо анимации `box-shadow`, либо снятия обрезки, которая удерживает блик выше; а
+   * contracts/motion.md §1 оставляет ровно одно исключение из «только transform и opacity»,
+   * и оно занято тлением надзаголовков.
+   */
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle, rgb(var(--silk) / 0.5) 0%, rgb(var(--silk) / 0) 62%);
+    opacity: 0;
+    animation: ring 4.5s ease-out infinite;
+  }
+
+  .btn-quiet {
+    @apply inline-flex items-center font-sans uppercase text-silk-dim;
+    font-size: 0.875rem;
+    letter-spacing: 0.12em;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--hair);
+    text-decoration: none;
+    transition:
+      color 0.3s,
+      border-color 0.3s;
+  }
+
+  .btn-quiet:hover {
+    @apply text-silk;
+    border-color: rgb(var(--brass));
+  }
+
+  /* Сплошной заливки нет намеренно (FR-010): сквозной фон обязан просвечивать сквозь карточку,
+     иначе она снова становится отдельным непрозрачным прямоугольником. */
   .card {
-    @apply bg-lada-gray rounded-xl p-6 hover:bg-lada-gray-light transition-colors duration-300;
+    @apply relative;
+    padding: 1.5rem;
+    border: 1px solid var(--hair-soft);
+    background: rgb(var(--raised) / 0.42);
+    transition:
+      background-color 0.45s,
+      border-color 0.45s;
+  }
+
+  .card:hover {
+    border-color: var(--hair);
+    background: rgb(var(--raised) / 0.62);
+  }
+
+  /* Волосок-разделитель: по нему периодически проходит блик. */
+  .rule {
+    position: relative;
+    height: 1px;
+    overflow: hidden;
+    background: var(--hair-soft);
+  }
+
+  .rule::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 45%;
+    background: linear-gradient(to right, transparent, rgb(var(--brass-lt)), transparent);
+    animation: sweep 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+
+  /* Разброс задержек, чтобы соседние волоски не вспыхивали разом. */
+  .rule--slow::after {
+    animation-duration: 7s;
+    animation-delay: 1.6s;
+  }
+
+  .rule--late::after {
+    animation-duration: 6s;
+    animation-delay: 3.1s;
   }
 }

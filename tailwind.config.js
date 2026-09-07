@@ -3,20 +3,25 @@ export default {
   content: ['./src/**/*.{astro,ts,md}'],
   theme: {
     extend: {
+      // Значения живут в `src/index.css` каналами; здесь только форматная строка. Она обязана
+      // нести `<alpha-value>`: без него модификаторы прозрачности (`border-brass/20`,
+      // `bg-raised/40`) сгенерировали бы правило, которое не меняет цвет (research.md §R3).
+      // Префикс `lada-` удалён целиком — он ничего не различал (contracts/design-tokens.md).
       colors: {
-        'lada-dark': '#0a0a0a',
-        'lada-darker': '#050505',
-        'lada-gold': '#c9a961',
-        'lada-gold-light': '#d4b978',
-        'lada-red': '#c94a4a',
-        'lada-gray': '#1a1a1a',
-        'lada-gray-light': '#2a2a2a',
+        ink: 'rgb(var(--ink) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        raised: 'rgb(var(--raised) / <alpha-value>)',
+        brass: 'rgb(var(--brass) / <alpha-value>)',
+        'brass-lt': 'rgb(var(--brass-lt) / <alpha-value>)',
+        silk: 'rgb(var(--silk) / <alpha-value>)',
+        'silk-dim': 'rgb(var(--silk-dim) / <alpha-value>)',
+        muted: 'rgb(var(--muted) / <alpha-value>)',
       },
       // Значение переменной объявляет компонент <Font> в разметке страницы: там же лежат
       // и запасные семейства с подогнанными метриками, поэтому список здесь ими не дублируется.
       fontFamily: {
         sans: ['var(--font-inter)'],
-        serif: ['var(--font-playfair)'],
+        serif: ['var(--font-cormorant)'],
       },
     },
   },

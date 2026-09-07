@@ -97,28 +97,32 @@ const variantGroups = new Set(
 
 <style>
   /* Текст приходит из markdown, поэтому классы утилит на его элементы не навесить:
-     плагина типографики в проекте нет, и оформление задаётся здесь. */
+     плагина типографики в проекте нет, и оформление задаётся здесь.
+
+     Уровни текста переведены на именованные токены, потому что `@apply text-lada-gold`
+     перестаёт собираться в ту же секунду, когда токен уходит из tailwind.config.js.
+     Раскладка блока — мера строки, крупный вводный абзац, надзаголовки разделов — Step 5.2. */
   .service-copy :global(p) {
-    @apply text-lg text-white/70 leading-relaxed mb-6;
+    @apply mb-6 text-lg leading-relaxed text-silk-dim;
   }
 
   .service-copy :global(h2) {
-    @apply text-2xl md:text-3xl font-serif text-lada-gold mt-12 mb-6 [text-wrap:balance];
+    @apply mb-6 mt-12 font-serif text-2xl text-brass md:text-3xl [text-wrap:balance];
   }
 
   .service-copy :global(h3) {
-    @apply text-xl font-serif text-white mt-8 mb-4;
+    @apply mb-4 mt-8 font-serif text-xl text-silk;
   }
 
   .service-copy :global(ul) {
-    @apply mb-6 list-disc space-y-2 pl-6 text-lg text-white/70;
+    @apply mb-6 list-disc space-y-2 pl-6 text-lg text-silk-dim;
   }
 
   .service-copy :global(strong) {
-    @apply font-medium text-white;
+    @apply font-medium text-silk;
   }
 
   .service-copy :global(a) {
-    @apply text-lada-gold underline underline-offset-4;
+    @apply text-brass underline underline-offset-4;
   }
 </style>
