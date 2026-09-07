@@ -1,0 +1,114 @@
+---
+/**
+ * Монограмма студии. Заменяет растровый логотип везде, где его видит посетитель (FR-019);
+ * файл `logo.jpg` остаётся в проекте единственно как изображение организации в машиночитаемом
+ * описании, где вектор непригоден (`SeoHead.astro`, уточнение сессии 2026-09-06).
+ *
+ * Буквы набраны текстом внутри SVG, а не обведены контурами: контуры пришлось бы рисовать
+ * от руки, то есть выдумывать начертание вместо того, которым набран весь сайт. Плата —
+ * знак до загрузки Cormorant отрисовывается запасной антиквой; на шапочном кегле подмена
+ * почти незаметна, а на водяном знаке при непрозрачности в три сотых — тем более.
+ */
+interface Props {
+  /**
+   * `mark` — знак в шапке и подвале, единственный режим со своим именем для чтения с экрана.
+   * `watermark` — водяной знак за содержимым секции.
+   * `edge` — крупный знак первого экрана, обрезанный краем окна.
+   */
+  mode?: 'mark' | 'watermark' | 'edge';
+  /** С какой стороны стоит водяной знак. На остальные режимы не влияет. */
+  side?: 'left' | 'right';
+  class?: string;
+}
+
+const { mode = 'mark', side = 'right', class: className } = Astro.props;
+
+/** Знак несёт название студии; водяной знак и обрезанный краем — оформление, и от чтения скрыты. */
+const decorative = mode !== 'mark';
+---
+
+<svg
+  class:list={['monogram', `monogram--${mode}`, mode === 'watermark' && `monogram--${side}`, className]}
+  viewBox="0 0 420 260"
+  role={decorative ? undefined : 'img'}
+  aria-hidden={decorative ? 'true' : undefined}
+  focusable="false"
+>
+  {!decorative && <title>Lada N</title>}
+  <!-- Одна строка с вложенным `tspan`, а не два `text` с подобранными координатами:
+       ширину «L» в Cormorant знает шрифт, а не автор разметки. -->
+  <text x="0" y="215">L<tspan class="monogram__n">N</tspan></text>
+</svg>
+
+<style>
+  .monogram {
+    display: block;
+    height: auto;
+    pointer-events: none;
+  }
+
+  .monogram text {
+    @apply font-serif;
+    font-size: 280px;
+    font-weight: 300;
+    fill: currentColor;
+  }
+
+  /* Вторая буква латунью — тот же приём, что и в прототипе: акцент лежит на инициале мастера. */
+  .monogram__n {
+    fill: rgb(var(--brass));
+  }
+
+  .monogram--mark {
+    width: 3.25rem;
+    color: rgb(var(--silk));
+  }
+
+  /**
+   * Водяной знак живёт за содержимым секции и почти не виден: три сотых непрозрачности дают
+   * ощущение фактуры, а не второго заголовка. Выше этого значения он начинает соперничать
+   * с текстом, ради которого секция и существует.
+   */
+  .monogram--watermark {
+    position: absolute;
+    z-index: 0;
+    width: 54vw;
+    max-width: 40rem;
+    color: rgb(var(--silk));
+    opacity: 0.028;
+  }
+
+  .monogram--watermark .monogram__n {
+    fill: currentColor;
+  }
+
+  .monogram--left {
+    left: -14vw;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .monogram--right {
+    right: -16vw;
+    bottom: -8%;
+  }
+
+  /**
+   * Первый экран: знак обрезан краем окна (FR-018). `mix-blend-mode: overlay` вместо
+   * непрозрачности — так он ложится на кадр как свет по поверхности, а не как наклейка поверх.
+   */
+  .monogram--edge {
+    position: absolute;
+    right: -9vw;
+    top: 2%;
+    width: 58vw;
+    max-width: 44rem;
+    color: rgb(var(--brass));
+    opacity: 0.18;
+    mix-blend-mode: overlay;
+  }
+
+  .monogram--edge .monogram__n {
+    fill: currentColor;
+  }
+</style>

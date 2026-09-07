@@ -1,0 +1,42 @@
+---
+/**
+ * Пара «надзаголовок + заголовок». Обе строки обязательны, и это не придирка к типам:
+ * надзаголовок в одиночку — латунная строка капителью, которую читатель принимает за заголовок
+ * секции, а экранный диктор не объявляет вовсе (contracts/design-tokens.md, правило 5).
+ * Пропуск любой из строк роняет `astro check`, а не отображение.
+ */
+interface Props {
+  eyebrow: string;
+  title: string;
+  /**
+   * Уровень заголовка задаётся вызывающим: примитив вводит надзаголовок НАД существующим
+   * заголовком, а не заменяет его уровень. У секции «Про нас» это принципиально —
+   * на локатор `#about h3` опирается `tests/fonts.spec.ts`.
+   */
+  level?: 'h1' | 'h2' | 'h3';
+  /** Выравнивание пары по левому краю — умолчание; по центру нужно карточке сертификатов. */
+  align?: 'start' | 'center';
+  class?: string;
+}
+
+const { eyebrow, title, level = 'h2', align = 'start', class: className } = Astro.props;
+
+const Heading = level;
+---
+
+<div class:list={['heading', `heading--${align}`, className]}>
+  <span class="eyebrow">{eyebrow}</span>
+  <Heading class="section-title">{title}</Heading>
+</div>
+
+<style>
+  .heading {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .heading--center {
+    justify-items: center;
+    text-align: center;
+  }
+</style>

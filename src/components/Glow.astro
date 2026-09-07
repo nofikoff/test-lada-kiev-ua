@@ -1,0 +1,92 @@
+---
+/**
+ * Пятно тёплого света. Рисуется радиальным градиентом с прозрачным краем, а не сплошным
+ * кругом под `filter: blur()`: размытие элемента в пол-экрана — это внеэкранный буфер и его
+ * пересчёт на каждый кадр, то есть первое, что просаживает производительность на мобильном
+ * профиле (research.md §R4). Анимируются только `transform` и `opacity`, поэтому слой живёт
+ * на композиторе и раскладку не пересчитывает.
+ *
+ * Размер, место и период приходят снаружи: пятна намеренно разные, и одинаковые сошлись бы
+ * в общую пульсацию.
+ */
+interface Props {
+  /** Диаметр пятна, любая длина CSS. */
+  size: string;
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+  /**
+   * Тон различает сила света, а не цвет: латунь — единственный цветной акцент сайта
+   * (contracts/design-tokens.md, правило 3), поэтому розовых и янтарных пятен прототипа здесь нет.
+   */
+  tone?: 'warm' | 'deep' | 'lit';
+  /** Период дыхания: у четырёх пятен фона это 17, 23 и 29 с (contracts/motion.md). */
+  period?: string;
+  /** Сдвиг фазы. Отрицательное значение начинает с середины цикла, а не после паузы. */
+  phase?: string;
+  /** Какая из двух траекторий: `b` идёт в противофазе к `a`. */
+  beat?: 'a' | 'b';
+  class?: string;
+}
+
+const {
+  size,
+  top,
+  right,
+  bottom,
+  left,
+  tone = 'warm',
+  period = '17s',
+  phase = '0s',
+  beat = 'a',
+  class: className,
+} = Astro.props;
+---
+
+<div
+  class:list={['glow', `glow--${tone}`, `glow--beat-${beat}`, className]}
+  aria-hidden="true"
+  style={{
+    width: size,
+    height: size,
+    top,
+    right,
+    bottom,
+    left,
+    animationDuration: period,
+    animationDelay: phase,
+  }}
+>
+</div>
+
+<style>
+  .glow {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  .glow--beat-a {
+    animation-name: breath-a;
+  }
+
+  .glow--beat-b {
+    animation-name: breath-b;
+  }
+
+  .glow--warm {
+    background: radial-gradient(circle, rgb(var(--brass) / 0.34), rgb(var(--brass) / 0) 68%);
+  }
+
+  .glow--deep {
+    background: radial-gradient(circle, rgb(var(--brass) / 0.22), rgb(var(--brass) / 0) 70%);
+  }
+
+  .glow--lit {
+    background: radial-gradient(circle, rgb(var(--brass-lt) / 0.18), rgb(var(--brass-lt) / 0) 70%);
+  }
+</style>

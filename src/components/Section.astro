@@ -1,0 +1,70 @@
+---
+/**
+ * Секция страницы. Роль задаёт вертикальный отступ и плотность фона — единого `py-20 md:py-32`
+ * на всех секциях больше нет (FR-009, правило 4 контракта токенов): ритм объявляется ролью,
+ * а не набором утилит в разметке.
+ *
+ * Фоны полупрозрачны намеренно: сквозной слой света обязан просвечивать сквозь секцию, иначе
+ * каждая снова становится отдельным непрозрачным прямоугольником, и страница читается как
+ * стопка блоков, а не как одно пространство (research.md §R4).
+ *
+ * Проявление при въезде в кадр (FR-013) навешивает примитив, а не каждый компонент вручную:
+ * правило `.reveal` и его порядок вложенности живут в `src/styles/ambience.css`, и держать
+ * его в одном месте — единственный способ не получить блок, невидимый навсегда в браузере
+ * без поддержки таймлайна.
+ */
+interface Props {
+  /** Роль секции — она же ступень вертикального ритма (data-model.md §Вертикальный ритм). */
+  rhythm: 'hero' | 'air' | 'work' | 'tight';
+  id?: string;
+  /**
+   * Слой света и водяной знак идут отдельным слотом `backdrop`: они лежат под содержимым
+   * и не обязаны проявляться вместе с ним.
+   */
+  reveal?: boolean;
+  class?: string;
+}
+
+const { rhythm, id, reveal = true, class: className } = Astro.props;
+---
+
+<section id={id} class:list={['sec', `sec--${rhythm}`, className]}>
+  <slot name="backdrop" />
+  <div class:list={['sec__body', reveal && 'reveal']}>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .sec {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .sec__body {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Первый экран сам держит свою высоту и фон: под ним лежит кадр, а не поверхность секции. */
+  .sec--hero {
+    min-height: var(--rhythm-hero);
+    padding-block: var(--rhythm-work) var(--rhythm-tight);
+  }
+
+  .sec--air {
+    padding-block: var(--rhythm-air);
+    background: rgb(var(--surface) / 0.72);
+  }
+
+  .sec--work {
+    padding-block: var(--rhythm-work);
+    background: rgb(var(--ink) / 0.58);
+  }
+
+  .sec--tight {
+    padding-block: var(--rhythm-tight);
+    background: rgb(var(--surface) / 0.66);
+  }
+</style>
