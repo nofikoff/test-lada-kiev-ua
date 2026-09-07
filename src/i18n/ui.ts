@@ -24,6 +24,9 @@ const uk = {
     contacts: 'Контакти',
     menu: 'Меню',
     language: 'Мова',
+    // Надзаголовок первого экрана. Нового факта не вводит: расписание живёт в `footer.schedule`,
+    // здесь его сокращённая форма — строка в несколько слов над заголовком.
+    hours: 'Щодня 10:00—21:00',
   },
   hero: {
     title: 'Lada N',
@@ -33,6 +36,7 @@ const uk = {
     cta: 'Зателефонувати',
   },
   about: {
+    eyebrow: 'Про нас',
     title: 'Про нас',
     heading: 'Тиша в серці мегаполісу',
     text1:
@@ -44,13 +48,21 @@ const uk = {
     text4: 'Ваше тіло скаже вам «дякую».',
   },
   services: {
+    eyebrow: 'Чотири напрямки',
     title: 'Наші послуги',
-    massage: { name: 'Масаж', description: 'Ручні та екзотичні техніки' },
-    depilation: { name: 'Депіляція', description: 'Віск / Цукор' },
-    permanent: { name: 'Перманентний макіяж', description: 'Брови, губи, міжвійкова' },
-    beauty: { name: 'Make-up', description: 'Брови / Вії / Макіяж' },
+    // `tool` — инструмент ремесла на карточке услуги (FR-020). Он заменяет собой круглую
+    // подложку под иконкой: карточка называет, чем работают, а не рисует кружок.
+    massage: { name: 'Масаж', description: 'Ручні та екзотичні техніки', tool: 'Руки' },
+    depilation: { name: 'Депіляція', description: 'Віск / Цукор', tool: 'Віск · Цукор' },
+    permanent: {
+      name: 'Перманентний макіяж',
+      description: 'Брови, губи, міжвійкова',
+      tool: 'Пігмент',
+    },
+    beauty: { name: 'Make-up', description: 'Брови / Вії / Макіяж', tool: 'Пензель' },
   },
   priceList: {
+    eyebrow: 'Прайс',
     title: 'Послуги та Ціни',
     discount: 'При купівлі абонемента на 10 сеансів — знижка 10%',
     tabsLabel: 'Розділи прайсу',
@@ -82,6 +94,7 @@ const uk = {
     permanentNote: '* Оновлення до 6 місяців — 80% від вартості',
   },
   certificates: {
+    eyebrow: 'Подарунок',
     title: 'Подарункові сертифікати',
     text: 'Подаруйте близьким турботу та відпочинок. В наявності подарункові сертифікати на будь-яку суму або послугу.',
     cta: 'Замовити сертифікат',
@@ -92,6 +105,14 @@ const uk = {
     schedule: 'Щодня 10:00 - 21:00',
     appointment: 'Обов\'язковий попередній запис',
     rights: 'Всі права захищено',
+    // Подписи назначения над блоками контактов (FR-025): сегодня блок опознаётся только
+    // по иконке, то есть не опознаётся вовсе там, где иконки не видно.
+    labels: {
+      address: 'Адреса',
+      phone: 'Телефон',
+      hours: 'Години',
+      instagram: 'Instagram',
+    },
   },
   meta: {
     siteName: 'Lada N',
@@ -119,6 +140,7 @@ const ru: UiDictionary = {
     contacts: 'Контакты',
     menu: 'Меню',
     language: 'Язык',
+    hours: 'Ежедневно 10:00—21:00',
   },
   hero: {
     title: 'Lada N',
@@ -128,6 +150,7 @@ const ru: UiDictionary = {
     cta: 'Позвонить',
   },
   about: {
+    eyebrow: 'О нас',
     title: 'О нас',
     heading: 'Тишина в сердце мегаполиса',
     text1:
@@ -139,13 +162,19 @@ const ru: UiDictionary = {
     text4: 'Ваше тело скажет вам «спасибо».',
   },
   services: {
+    eyebrow: 'Четыре направления',
     title: 'Наши услуги',
-    massage: { name: 'Массаж', description: 'Ручные и экзотические техники' },
-    depilation: { name: 'Депиляция', description: 'Воск / Сахар' },
-    permanent: { name: 'Перманентный макияж', description: 'Брови, губы, межресничка' },
-    beauty: { name: 'Make-up', description: 'Брови / Ресницы / Макияж' },
+    massage: { name: 'Массаж', description: 'Ручные и экзотические техники', tool: 'Руки' },
+    depilation: { name: 'Депиляция', description: 'Воск / Сахар', tool: 'Воск · Сахар' },
+    permanent: {
+      name: 'Перманентный макияж',
+      description: 'Брови, губы, межресничка',
+      tool: 'Пигмент',
+    },
+    beauty: { name: 'Make-up', description: 'Брови / Ресницы / Макияж', tool: 'Кисть' },
   },
   priceList: {
+    eyebrow: 'Прайс',
     title: 'Услуги и Цены',
     discount: 'При покупке абонемента на 10 сеансов — скидка 10%',
     tabsLabel: 'Разделы прайса',
@@ -175,6 +204,7 @@ const ru: UiDictionary = {
     permanentNote: '* Обновление до 6 месяцев — 80% от стоимости',
   },
   certificates: {
+    eyebrow: 'Подарок',
     title: 'Подарочные сертификаты',
     text: 'Подарите близким заботу и отдых. В наличии подарочные сертификаты на любую сумму или услугу.',
     cta: 'Заказать сертификат',
@@ -185,6 +215,12 @@ const ru: UiDictionary = {
     schedule: 'Ежедневно 10:00 - 21:00',
     appointment: 'Обязательна предварительная запись',
     rights: 'Все права защищены',
+    labels: {
+      address: 'Адрес',
+      phone: 'Телефон',
+      hours: 'Часы',
+      instagram: 'Instagram',
+    },
   },
   meta: {
     siteName: 'Lada N',
@@ -210,6 +246,9 @@ const en: UiDictionary = {
     contacts: 'Contacts',
     menu: 'Menu',
     language: 'Language',
+    // Двенадцатичасовая форма, как и в `footer.schedule` этой локали: расхождение форматов
+    // внутри одного языка читалось бы как разное расписание.
+    hours: 'Daily 10 AM—9 PM',
   },
   hero: {
     title: 'Lada N',
@@ -219,6 +258,7 @@ const en: UiDictionary = {
     cta: 'Call Now',
   },
   about: {
+    eyebrow: 'About',
     title: 'About Us',
     heading: 'Silence in the Heart of the Metropolis',
     text1:
@@ -230,13 +270,15 @@ const en: UiDictionary = {
     text4: 'Your body will thank you.',
   },
   services: {
+    eyebrow: 'Four Directions',
     title: 'Our Services',
-    massage: { name: 'Massage', description: 'Manual and exotic techniques' },
-    depilation: { name: 'Hair Removal', description: 'Wax / Sugar' },
-    permanent: { name: 'Permanent Makeup', description: 'Brows, lips, eyeliner' },
-    beauty: { name: 'Make-up', description: 'Brows / Lashes / Makeup' },
+    massage: { name: 'Massage', description: 'Manual and exotic techniques', tool: 'Hands' },
+    depilation: { name: 'Hair Removal', description: 'Wax / Sugar', tool: 'Wax · Sugar' },
+    permanent: { name: 'Permanent Makeup', description: 'Brows, lips, eyeliner', tool: 'Pigment' },
+    beauty: { name: 'Make-up', description: 'Brows / Lashes / Makeup', tool: 'Brush' },
   },
   priceList: {
+    eyebrow: 'Price List',
     title: 'Services & Prices',
     discount: 'Buy 10 sessions subscription — get 10% off',
     tabsLabel: 'Price list sections',
@@ -266,6 +308,7 @@ const en: UiDictionary = {
     permanentNote: '* Refresh up to 6 months — 80% of original price',
   },
   certificates: {
+    eyebrow: 'A Gift',
     title: 'Gift Certificates',
     text: 'Give your loved ones care and relaxation. Gift certificates available for any amount or service.',
     cta: 'Order Certificate',
@@ -276,6 +319,12 @@ const en: UiDictionary = {
     schedule: 'Daily 10:00 AM - 9:00 PM',
     appointment: 'Appointment required',
     rights: 'All rights reserved',
+    labels: {
+      address: 'Address',
+      phone: 'Phone',
+      hours: 'Hours',
+      instagram: 'Instagram',
+    },
   },
   meta: {
     siteName: 'Lada N',
