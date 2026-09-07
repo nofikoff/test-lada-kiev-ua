@@ -434,9 +434,9 @@ gate_commands:
 
 Заведён по решению владельца в ходе реализации (FR-035, FR-036). Домен `lada.kiev.ua` лаконичен, и подвал — единственное место, где его подпись не избыточна: на первом экране и в шапке посетитель уже на сайте. Довод не эстетический: страницу пересылают снимком экрана, а на снимке адресной строки нет.
 
-- [ ] T051 Вывести подпись домена в нижнюю полосу `src/components/Footer.astro` рядом с `Lada N`, через тот же разделитель. Источник — `Astro.site` (то есть `SITE` из `astro.config.mjs`), отображаемая форма — хост без `www.`; вторая копия домена в разметке или в словаре запрещена (FR-035). Оформление: строчными, разрядка как у надзаголовков, `--muted`; не ссылка
-- [ ] T052 Заменить эмодзи-значок вкладки в `src/layouts/BaseLayout.astro` на монограмму LN во встроенном `data:`-URI — латунь `#C9A961` на прозрачном, читается и на светлой, и на тёмной вкладке. Сетевого запроса не появляется (FR-036). Гарнитура внутри значка — `Georgia, serif`: гарнитуры сайта значку недоступны, а `Georgia` и есть объявленная запасная для Cormorant
-- [ ] T053 Убедиться, что подпись домена не ломает сверку полноты контента: `content-parity.spec.ts` сравнивает текст страницы со словарём предыдущей версии, и новая строка в подвале ей безразлична, но проверить это надо прогоном, а не рассуждением
+- [x] T051 Вывести подпись домена в нижнюю полосу `src/components/Footer.astro` рядом с `Lada N`, через тот же разделитель. Источник — `Astro.site` (то есть `SITE` из `astro.config.mjs`), отображаемая форма — хост без `www.`; вторая копия домена в разметке или в словаре запрещена (FR-035). Оформление: строчными, разрядка как у надзаголовков, `--muted`; не ссылка
+- [x] T052 Заменить эмодзи-значок вкладки в `src/layouts/BaseLayout.astro` на монограмму LN во встроенном `data:`-URI — латунь `#C9A961` на прозрачном, читается и на светлой, и на тёмной вкладке. Сетевого запроса не появляется (FR-036). Гарнитура внутри значка — `Georgia, serif`: гарнитуры сайта значку недоступны, а `Georgia` и есть объявленная запасная для Cormorant
+- [x] T053 Убедиться, что подпись домена не ломает сверку полноты контента: `content-parity.spec.ts` сравнивает текст страницы со словарём предыдущей версии, и новая строка в подвале ей безразлична, но проверить это надо прогоном, а не рассуждением
 
 ### Step 7.2: Приёмка и закрытие пакета
 
@@ -647,3 +647,23 @@ decided: список адресов страниц ошибок перенес�
 decided: проверка разбирает отданную разметку, а не дерево браузера, поэтому считает и заголовки групп прайса, скрытые неактивной вкладкой. Это строже axe. Если дизайн когда-нибудь спрячет заголовок, чей уровень перескакивает ступень, эта проверка покраснеет там, где Lighthouse промолчит — и разбираться придётся с ней, а не с доступностью.
 decided: свойство `level` у SectionHeading оставлено, хотя после правки его не передаёт ни один вызов: примитив заголовка без уровня — хуже, чем неиспользованный параметр. Его доктрина переписана с локатора на структуру документа.
 decided: Lighthouse 12.8.2, мобильный профиль, прогретый кэш, против `npm run preview` — доступность 100 / 100 / 100 на `/`, `/ru/`, `/en/` при нуле непройденных проверок доступности; попутно производительность 97 / 97 / 99, поиск 100 / 100 / 100, LCP 2.3 / 2.3 / 1.8 с, CLS 0.012 / 0.015 / 0. В документы пакета не записано — это Step 7.2.
+
+### S3.step-7.1b — 2026-09-07
+**Completed steps:** 7.1b
+**Commits:** 34a7953
+
+### S3 — observations (2026-09-07, dispatch 3)
+
+plan-wrong: TaskCreate is not exposed in this harness, so the bundle was tracked without a task list — the contract assumed a tool this build does not have.
+plan-wrong: T051 names `Astro.site` as the single source, but `src/i18n/paths.ts:7` already holds a second literal `SITE_ORIGIN = 'https://www.lada.kiev.ua'` from which every canonical URL, hreflang and og:url is built. The new signature adds no copy, yet the tree already carries two that can drift silently — exactly what FR-035 legislates against. Unifying them was outside the step, so `astro.config.mjs:6` and `paths.ts:7` remain two copies.
+plan-wrong: T052 describes the monogram as `L` followed by a raised/offset `N`. There is no offset anywhere — `src/components/Monogram.astro:40` is one baseline with a `tspan` that changes only `fill`, and prototype.html:654 is a bare `<text>LN</text>`. I matched the real construction; had I taken the wording literally the icon would have carried a letterform the site does not use.
+plan-wrong: `tests/seo-contract.spec.ts` and `tests/support/site.ts` cite `contracts/page-head.md`, `contracts/routes.md` and `contracts/structured-data.md`, but `specs/002-visual-redesign/contracts/` holds only `design-tokens.md` and `motion.md`. Pre-existing and untouched; it cost time deciding where a favicon assertion belongs, since the document that would have answered it is gone.
+redone: Nothing in the deliverable was rebuilt — the failing test named both defects on the first run and one edit each closed them. The only rework was the throwaway legibility renderer, which failed on module resolution from the scratchpad and had to be re-pointed at the repo's `node_modules`.
+decided: Signature size is `--step-caption`, matching `.foot__sep`, `.foot__name` and `.foot__rights` on the same line; only the 0.22em tracking comes from the eyebrows, since the step fixed tracking and colour but not size.
+decided: A missing `Astro.site` throws at build instead of rendering an empty signature, consistent with `prerenderConflictBehavior: 'error'` in the same config. A config that lost `site` fails the build rather than shipping a footer without a domain — canonical URLs would be broken anyway.
+decided: Both letters of the tab icon are brass, unlike the page mark's silk `L` + brass `N`: silk (#EDE4D6) is invisible on a light tab strip, and FR-036 demands legibility on both.
+decided: No `font-weight` on the icon text, i.e. Georgia Regular — Cormorant Light's 300 has no counterpart in Georgia, and bold would thicken the mark beyond what FR-036 licenses. Brass on white measures 2.25:1 (9.33:1 on black); rendered at 16 px it reads, verified by screenshot rather than by argument. If Step 7.2's manual pass judges the light strip too faint, `font-weight='bold'` is a one-attribute fix inside the same data URI.
+decided: FR-035 and FR-036 got a new spec file rather than joining `seo-contract.spec.ts`, whose declared subject is the head and structured-data contracts. The domain test asserts the footer against the page's own canonical host (survives a host change and catches drift) and separately against the test-side literal.
+decided: The `foot__base` inventory in quickstart.md was left untouched — Step 7.2 owns the package documents and now has one more divergence to record: the bottom line gained a separator and the domain.
+
+**Ответ оркестратора:** две копии домена записаны открытым долгом в `spec.md` рядом с FR-035, а не починены здесь. `import.meta.env.SITE` не годится: `paths.ts` импортируют тринадцать модулей и прогон через `tests/support/site.ts`, где этой переменной нет. Нужен общий JS-модуль для конфигурации и `paths.ts` — своя работа со своим прогоном.
