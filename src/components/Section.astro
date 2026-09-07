@@ -47,10 +47,25 @@ const { rhythm, id, reveal = true, class: className } = Astro.props;
     z-index: 1;
   }
 
-  /* Первый экран сам держит свою высоту и фон: под ним лежит кадр, а не поверхность секции. */
+  /**
+   * Первый экран сам держит свою высоту: под ним лежит кадр, а не поверхность секции.
+   * Уголь на самой секции — не декорация, а то, что читает `tests/contrast.spec.ts`:
+   * подложка складывается из `background-color` предков, и без него замер уходил бы
+   * к `body`, то есть к цвету, за который первый экран не отвечает.
+   *
+   * Содержимое прижато к низу: композиция первого экрана стоит на нижнем крае кадра,
+   * где затемнение плотнее всего (FR-018).
+   */
   .sec--hero {
+    display: flex;
+    align-items: flex-end;
     min-height: var(--rhythm-hero);
     padding-block: var(--rhythm-work) var(--rhythm-tight);
+    background: rgb(var(--ink));
+  }
+
+  .sec--hero > .sec__body {
+    width: 100%;
   }
 
   .sec--air {

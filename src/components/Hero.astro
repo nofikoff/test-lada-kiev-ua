@@ -1,17 +1,23 @@
 ---
 /**
- * Первый экран. Вёрстка перенесена из `Hero.tsx` один в один: любое расхождение в отображении —
- * дефект переноса, а не улучшение.
+ * Первый экран (FR-011, FR-017, FR-018, research.md §R7).
  *
- * Изображение первого экрана переведено с фонового CSS-свойства на тег с абсолютным
- * позиционированием и `object-fit: cover` — отображение то же, но файл проходит через сборку
- * и получает AVIF, WebP и набор ширин (research.md §R7). Оно же — самый крупный элемент
- * первого экрана, поэтому несёт `priority`: единственное такое изображение на странице.
+ * Затемнение разведено на два слоя, и это не украшение раскладки, а условие проверяемости.
+ * `hero__veil` раскрывается за 1.8 с и дальше дышит — им работает FR-011. `hero__floor`
+ * не участвует ни в одной анимации — им работает FR-017: контраст заголовка не зависит
+ * от фазы дыхания. Одним слоем эти два требования несовместимы: любая заметная глазу
+ * амплитуда в светлой фазе роняет контраст текста.
+ *
+ * Композиция уходит с центральной оси влево, к плотному краю затемнения, а монограмма —
+ * к разреженному правому и обрезается краем окна (FR-018). Текст в анимациях не участвует:
+ * он отрисовывается первым кадром, и LCP не зависит от раскрытия (research.md §R7).
  */
 import { Picture } from 'astro:assets';
+import Glow from './Glow.astro';
 import Icon from './Icon.astro';
+import Monogram from './Monogram.astro';
+import Section from './Section.astro';
 import heroImage from '../assets/massage-kiev-lada-novikova.jpg';
-import logo from '../assets/logo.jpg';
 import { ui, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -20,73 +26,222 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = ui[locale];
+
+/**
+ * Восемь порошинок первого экрана — они видны поверх кадра; остальные двенадцать живут
+ * в сквозном фоне, который здесь закрыт фотографией (contracts/motion.md: `mote × 20`).
+ */
+const motes = [
+  { left: '12%', duration: '22s', delay: '-1s', sway: '3vw', size: '3px' },
+  { left: '22%', duration: '30s', delay: '-8s', sway: '-2vw', size: '2px' },
+  { left: '34%', duration: '26s', delay: '-15s', sway: '4vw', size: '4px' },
+  { left: '46%', duration: '34s', delay: '-4s', sway: '-3vw', size: '3px' },
+  { left: '58%', duration: '24s', delay: '-19s', sway: '2vw', size: '2px' },
+  { left: '69%', duration: '32s', delay: '-11s', sway: '-4vw', size: '4px' },
+  { left: '81%', duration: '28s', delay: '-6s', sway: '3vw', size: '3px' },
+  { left: '91%', duration: '36s', delay: '-22s', sway: '-2vw', size: '2px' },
+];
 ---
 
-<section class="relative min-h-screen flex items-center justify-center pt-20">
-  <!-- alt пуст намеренно: изображение декоративно, поверх него лежит градиент, и весь
-       смысл первого экрана несёт текст. Подпись здесь была бы озвучена как содержание. -->
-  <!-- `display: contents` на обёртке `<picture>`: секция — флекс-контейнер, и обёртка иначе
-       становится в нём отдельным элементом раскладки, которого на месте фонового блока не было. -->
-  <Picture
-    src={heroImage}
-    alt=""
-    formats={['avif', 'webp']}
-    widths={[640, 960, 1280, 1920]}
-    sizes="100vw"
-    priority
-    pictureAttributes={{ class: 'contents' }}
-    class="absolute inset-0 h-full w-full object-cover object-center"
-  />
-  <div
-    class="absolute inset-0 bg-gradient-to-br from-lada-darker/90 via-lada-dark/85 to-lada-gray-light/80"
-  >
-  </div>
-
-  <div class="absolute inset-0 overflow-hidden">
-    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-lada-gold/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-lada-red/5 rounded-full blur-3xl"></div>
-  </div>
-
-  <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
-    <div class="mb-8">
-      <!-- Размеры заданы по наибольшему отображаемому (md:h-32): соотношение сторон известно
-           до загрузки файла, поэтому строка не подпрыгивает. -->
+<Section rhythm="hero" reveal={false}>
+  <Fragment slot="backdrop">
+    <!-- alt пуст намеренно: изображение декоративно, весь смысл первого экрана несёт текст.
+         Наезд кадра живёт на обёртке, а не на самом изображении: `<picture>` объявлен
+         `display: contents`, поэтому анимировать имеет смысл то, что участвует в раскладке. -->
+    <div class="hero__frame" aria-hidden="true">
       <Picture
-        src={logo}
-        alt="Lada N"
+        src={heroImage}
+        alt=""
         formats={['avif', 'webp']}
-        densities={[1, 2]}
-        width={128}
-        height={128}
-        class="h-24 md:h-32 w-auto mx-auto brightness-75 contrast-125"
+        widths={[640, 960, 1280, 1920]}
+        sizes="100vw"
+        priority
+        pictureAttributes={{ class: 'contents' }}
+        class="h-full w-full object-cover [object-position:62%_50%]"
       />
     </div>
 
-    <h1 class="text-4xl md:text-6xl font-serif font-bold text-white mb-4 [text-wrap:balance]">
-      {t.hero.title}
-    </h1>
+    {/* Два пятна света первого экрана: сквозной слой сюда не достаёт — его закрывает кадр. */}
+    <Glow size="32rem" right="-8rem" top="-10rem" tone="warm" period="19s" beat="a" />
+    <Glow size="24rem" left="6%" bottom="-8rem" tone="lit" period="27s" phase="-4s" beat="b" />
 
-    <p class="text-xl md:text-2xl text-lada-gold font-light mb-8 [text-wrap:balance]">
-      {t.hero.subtitle}
-    </p>
+    <div class="hero__veil" aria-hidden="true"></div>
+    <div class="hero__floor" aria-hidden="true"></div>
 
-    <p class="text-lg md:text-xl text-white/70 max-w-3xl mx-auto mb-12 leading-relaxed [text-wrap:balance]">
-      {t.hero.description}
-    </p>
+    <div class="hero__dust" aria-hidden="true">
+      {
+        motes.map((mote) => (
+          <span
+            class="mote"
+            style={{
+              left: mote.left,
+              '--mote-size': mote.size,
+              '--mote-dur': mote.duration,
+              '--mote-delay': mote.delay,
+              '--sway': mote.sway,
+            }}
+          />
+        ))
+      }
+    </div>
 
-    <a href="tel:+380995570045" class="inline-flex items-center space-x-3 btn-primary text-lg">
-      <Icon name="phone" size={20} />
-      <span>{t.hero.cta}</span>
-    </a>
+    <Monogram mode="edge" />
 
-    <p class="mt-8 text-white/50 text-sm">
-      {t.footer.address} {t.footer.landmark}
-    </p>
-  </div>
+    <!-- Подсказка прокрутки: волосок с каплей света вместо подпрыгивающей «мышки» (T024). -->
+    <div class="scroll-hint" aria-hidden="true"></div>
+  </Fragment>
 
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-    <div class="w-6 h-10 border-2 border-lada-gold/50 rounded-full flex justify-center">
-      <div class="w-1 h-3 bg-lada-gold/50 rounded-full mt-2"></div>
+  <div class="mx-auto w-full max-w-6xl px-4">
+    <div class="hero__in">
+      <span class="eyebrow">{t.footer.landmark} · {t.nav.hours}</span>
+
+      <h1 class="display">{t.hero.title}</h1>
+
+      <p class="hero__sub">{t.hero.subtitle}</p>
+
+      <p class="lede hero__lede">{t.hero.description}</p>
+
+      <div class="hero__cta">
+        <a href="tel:+380995570045" class="btn-primary">
+          <Icon name="phone" size={20} />
+          <span>{t.hero.cta}</span>
+        </a>
+      </div>
+
+      <p class="hero__note">{t.footer.address} {t.footer.landmark}</p>
     </div>
   </div>
-</section>
+</Section>
+
+<style>
+  .hero__frame {
+    position: absolute;
+    inset: 0;
+    animation: drift 32s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /**
+   * Затемнение направленное: плотное слева-внизу под текстом, разреженное справа-вверху,
+   * где стоит монограмма и виден сам кадр. Раскрывается однократно, дальше дышит.
+   */
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to top,
+        rgb(var(--ink)) 4%,
+        rgb(var(--ink) / 0.86) 34%,
+        rgb(var(--ink) / 0.34) 78%,
+        rgb(var(--ink) / 0.5) 100%
+      ),
+      linear-gradient(
+        to right,
+        rgb(var(--ink)) 0%,
+        rgb(var(--ink) / 0.72) 42%,
+        rgb(var(--ink) / 0.18) 100%
+      );
+    animation:
+      wake 1.8s cubic-bezier(0.2, 0.6, 0.2, 1) both,
+      veil-breath 13s ease-in-out 1.8s infinite;
+  }
+
+  /**
+   * Статичная подложка под текстовой колонкой (FR-017). Ни одной анимации на ней нет и быть
+   * не может: плотность под текстом — единственное, что удерживает контраст независимо
+   * от фазы дыхания завесы и от того, что происходит на фотографии под ней.
+   */
+  .hero__floor {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 78%;
+    pointer-events: none;
+    background: linear-gradient(
+      to top,
+      rgb(var(--ink)) 2%,
+      rgb(var(--ink) / 0.92) 26%,
+      rgb(var(--ink) / 0.55) 62%,
+      rgb(var(--ink) / 0) 100%
+    );
+  }
+
+  @media (min-width: 62rem) {
+    .hero__floor {
+      inset: 0 auto 0 0;
+      width: 68%;
+      height: 100%;
+      background: linear-gradient(
+        to right,
+        rgb(var(--ink)) 0%,
+        rgb(var(--ink) / 0.88) 38%,
+        rgb(var(--ink) / 0.45) 72%,
+        rgb(var(--ink) / 0) 100%
+      );
+    }
+  }
+
+  .hero__dust {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .hero__in {
+    display: grid;
+    gap: 1.75rem;
+    max-width: 40rem;
+  }
+
+  /* На узком экране надзаголовок переносится: без балансировки на второй строке остаётся
+     хвост в одно значение — ровно тот случай, который спека называет краевым. */
+  .hero__in > .eyebrow {
+    text-wrap: balance;
+  }
+
+  .hero__sub {
+    @apply font-serif text-brass;
+    font-size: clamp(1.25rem, 3.4vw, 1.75rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.3;
+  }
+
+  /* Колонка описания уже общей меры: 46 знаков в строке (T022) — описание первого экрана
+     читается с одного взгляда, а `--measure` задан для абзацев, которые читают подряд. */
+  .hero__lede {
+    max-width: 29rem;
+  }
+
+  .hero__note {
+    @apply text-muted;
+    font-size: var(--step-caption);
+  }
+
+  /* Волосок с каплей света: капля проходит сверху вниз и гаснет за краем. */
+  .scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 1px;
+    height: 5.5rem;
+    overflow: hidden;
+    background: var(--hair-soft);
+  }
+
+  .scroll-hint::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    height: 2.5rem;
+    background: linear-gradient(to bottom, transparent, rgb(var(--brass)), transparent);
+    animation: drip 3.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @media (max-width: 40rem) {
+    .hero__in {
+      gap: 1.15rem;
+    }
+  }
+</style>
