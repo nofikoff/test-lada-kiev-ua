@@ -1,9 +1,15 @@
 ---
 /**
- * Перенос `Footer.tsx` один в один, включая встроенную карту.
- * Год в подписи вычисляется на сборке, а не в браузере: страница статическая.
+ * Подвал: контакты подписями (FR-025) и карта под инверсией (FR-024).
+ *
+ * Подписи блоков — не украшение: сегодня блок опознаётся только по иконке, то есть не
+ * опознаётся вовсе там, где иконку не видно.
+ *
+ * Копирайт переехал с `white/40` на `--muted`: прежняя пара давала 3.82:1 и была единственной
+ * непройденной проверкой контраста во всей доступности (SC-002). Год считается на сборке —
+ * страница статическая.
  */
-import Icon from './Icon.astro';
+import Icon, { type IconName } from './Icon.astro';
 import Monogram from './Monogram.astro';
 import { ui, type Locale } from '../i18n/ui';
 
@@ -16,58 +22,73 @@ const t = ui[locale];
 const year = new Date().getFullYear();
 const map =
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2540.5!2d30.5213!3d50.4501!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4ce50f8b6e3ed%3A0x5f1e4d5b5a5b5e5d!2z0YPQuy4g0JzQsNC70LDRjyDQltC40YLQvtC80LjRgNGB0LrQsNGPLCAxMCwg0JrQuNC10LI!5e0!3m2!1sru!2sua!4v1234567890';
+
+interface Contact {
+  readonly icon: IconName;
+  readonly label: string;
+}
+
+const labels: Contact[] = [
+  { icon: 'map-pin', label: t.footer.labels.address },
+  { icon: 'phone', label: t.footer.labels.phone },
+  { icon: 'clock', label: t.footer.labels.hours },
+  { icon: 'instagram', label: t.footer.labels.instagram },
+];
 ---
 
-<footer id="contacts" class="bg-lada-darker border-t border-lada-gray">
-  <div class="max-w-6xl mx-auto px-4 py-16">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <div>
-        <h3 class="text-2xl font-serif text-lada-gold mb-8">
-          {t.nav.contacts}
-        </h3>
+<footer id="contacts" class="foot">
+  <div class="mx-auto max-w-6xl px-4">
+    <div class="foot__grid">
+      <div class="contacts">
+        <h3 class="eyebrow foot__title">{t.nav.contacts}</h3>
 
-        <div class="space-y-6">
-          <div class="flex items-start space-x-4">
-            <Icon name="map-pin" class="w-6 h-6 text-lada-gold flex-shrink-0 mt-1" />
-            <div>
-              <p class="text-white">{t.footer.address}</p>
-              <p class="text-white/60">{t.footer.landmark}</p>
-            </div>
-          </div>
+        <div class="contact">
+          <span class="contact__label">
+            <Icon name={labels[0].icon} size={14} class="text-brass" />
+            <span class="eyebrow contact__name">{labels[0].label}</span>
+          </span>
+          <p class="contact__value">{t.footer.address}</p>
+          <p class="contact__note">{t.footer.landmark}</p>
+        </div>
 
-          <div class="flex items-center space-x-4">
-            <Icon name="phone" class="w-6 h-6 text-lada-gold flex-shrink-0" />
-            <a
-              href="tel:+380995570045"
-              class="text-white hover:text-lada-gold transition-colors text-lg"
-            >
-              (099) 557-00-45
-            </a>
-          </div>
+        <div class="contact">
+          <span class="contact__label">
+            <Icon name={labels[1].icon} size={14} class="text-brass" />
+            <span class="eyebrow contact__name">{labels[1].label}</span>
+          </span>
+          <p class="contact__value">
+            <a href="tel:+380995570045" class="contact__link">(099) 557-00-45</a>
+          </p>
+        </div>
 
-          <div class="flex items-start space-x-4">
-            <Icon name="clock" class="w-6 h-6 text-lada-gold flex-shrink-0 mt-1" />
-            <div>
-              <p class="text-white">{t.footer.schedule}</p>
-              <p class="text-white/50 text-sm">{t.footer.appointment}</p>
-            </div>
-          </div>
+        <div class="contact">
+          <span class="contact__label">
+            <Icon name={labels[2].icon} size={14} class="text-brass" />
+            <span class="eyebrow contact__name">{labels[2].label}</span>
+          </span>
+          <p class="contact__value">{t.footer.schedule}</p>
+          <p class="contact__note">{t.footer.appointment}</p>
+        </div>
 
-          <div class="flex items-center space-x-4">
-            <Icon name="instagram" class="w-6 h-6 text-lada-gold flex-shrink-0" />
+        <div class="contact">
+          <span class="contact__label">
+            <Icon name={labels[3].icon} size={14} class="text-brass" />
+            <span class="eyebrow contact__name">{labels[3].label}</span>
+          </span>
+          <p class="contact__value">
             <a
               href="https://www.instagram.com/massage.ln.kyiv/"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-white hover:text-lada-gold transition-colors"
+              class="contact__link">@massage.ln.kyiv</a
             >
-              @massage.ln.kyiv
-            </a>
-          </div>
+          </p>
         </div>
       </div>
 
-      <div class="h-64 md:h-auto rounded-xl overflow-hidden">
+      <!-- Кадр Google остаётся кадром Google: тёмный вид даёт фильтр поверх него, а не подмена
+           карты (FR-024). Интерактив и атрибуция при инверсии сохраняются. -->
+      <div class="map">
         <iframe
           src={map}
           width="100%"
@@ -80,18 +101,133 @@ const map =
       </div>
     </div>
 
-    <div
-      class="mt-12 pt-8 border-t border-lada-gray flex flex-col md:flex-row items-center justify-between gap-4"
-    >
-      <div class="flex items-center space-x-3">
-        <Monogram mode="mark" />
-        <span class="text-white/60">|</span>
-        <span class="text-white/60">Lada N</span>
-      </div>
+    <div class="rule foot__rule"></div>
 
-      <p class="text-white/40 text-sm">
-        &copy; {year} Lada N. {t.footer.rights}
-      </p>
+    <div class="foot__base">
+      <span class="foot__mark">
+        <Monogram mode="mark" />
+        <span class="foot__sep">|</span>
+        <span class="foot__name">Lada N</span>
+      </span>
+
+      <p class="foot__rights">&copy; {year} Lada N. {t.footer.rights}</p>
     </div>
   </div>
 </footer>
+
+<style>
+  .foot {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--rhythm-work) var(--rhythm-tight);
+    border-top: 1px solid var(--hair-soft);
+    background: rgb(var(--ink) / 0.78);
+  }
+
+  .foot__grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  @media (min-width: 58rem) {
+    .foot__grid {
+      grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+    }
+  }
+
+  .contacts {
+    display: grid;
+    align-content: start;
+    gap: 1.75rem;
+  }
+
+  .foot__title {
+    margin-bottom: 0.25rem;
+  }
+
+  .contact {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .contact__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Подпись блока — служебный уровень: она называет назначение, а не несёт содержание. */
+  .contact__name {
+    @apply text-muted;
+  }
+
+  .contact__value {
+    @apply text-silk;
+    font-size: var(--step-body);
+  }
+
+  .contact__note {
+    @apply text-muted;
+    font-size: var(--step-caption);
+  }
+
+  .contact__link {
+    text-decoration: none;
+    border-bottom: 1px solid var(--hair);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s;
+  }
+
+  .contact__link:hover {
+    @apply text-brass;
+  }
+
+  /**
+   * Инверсия с поворотом тона и приглушением насыщенности (research.md §R10): тёмная карта
+   * без ключа API, без новых запросов и без замены сервиса. Без поворота тона синяя вода
+   * стала бы оранжевой.
+   */
+  .map {
+    position: relative;
+    min-height: 17rem;
+    overflow: hidden;
+    border: 1px solid var(--hair-soft);
+    filter: invert(0.92) hue-rotate(180deg) saturate(0.6);
+  }
+
+  .map iframe {
+    display: block;
+    height: 100%;
+  }
+
+  .foot__rule {
+    margin-top: var(--rhythm-tight);
+  }
+
+  .foot__base {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.5rem;
+  }
+
+  .foot__mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .foot__sep,
+  .foot__rights {
+    @apply text-muted;
+    font-size: var(--step-caption);
+  }
+
+  .foot__name {
+    @apply text-silk-dim;
+    font-size: var(--step-caption);
+    letter-spacing: 0.08em;
+  }
+</style>

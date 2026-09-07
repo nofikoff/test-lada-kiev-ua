@@ -1,6 +1,13 @@
 ---
-/** Перенос `Certificates.tsx` один в один. */
+/**
+ * Подарочные сертификаты: единственная карточка сайта на приподнятой поверхности (`--raised`),
+ * с бликом по верхней кромке рамки — тем же мерцанием, что проходит по волоскам (FR-012).
+ *
+ * Круглая подложка под иконкой ушла вслед за карточками услуг; сама иконка осталась.
+ */
 import Icon from './Icon.astro';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { ui, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -11,27 +18,50 @@ const { locale } = Astro.props;
 const t = ui[locale];
 ---
 
-<section id="certificates" class="py-20 md:py-32 bg-lada-dark">
-  <div class="max-w-4xl mx-auto px-4 text-center">
-    <div class="card py-12 px-8 md:px-16 border border-lada-gold/20">
-      <div class="mb-6 flex justify-center">
-        <div class="w-20 h-20 rounded-full bg-lada-gold/10 flex items-center justify-center">
-          <Icon name="gift" class="w-10 h-10 text-lada-gold" />
-        </div>
-      </div>
+<Section rhythm="work" id="certificates">
+  <div class="mx-auto w-full max-w-4xl px-4">
+    <div class="gift">
+      <Icon name="gift" size={38} class="text-brass" />
 
-      <h2 class="text-3xl md:text-4xl font-serif font-semibold text-lada-gold mb-6">
-        {t.certificates.title}
-      </h2>
+      <SectionHeading eyebrow={t.certificates.eyebrow} title={t.certificates.title} align="center" />
 
-      <p class="text-lg text-white/70 mb-8 max-w-xl mx-auto">
-        {t.certificates.text}
-      </p>
+      <p class="gift__text">{t.certificates.text}</p>
 
-      <a href="tel:+380995570045" class="inline-flex items-center space-x-3 btn-quiet text-lg">
+      <a href="tel:+380995570045" class="btn-primary">
         <Icon name="phone" size={20} />
         <span>{t.certificates.cta}</span>
       </a>
     </div>
   </div>
-</section>
+</Section>
+
+<style>
+  .gift {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 1.5rem;
+    padding: clamp(3rem, 7vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+    overflow: hidden;
+    border: 1px solid var(--hair);
+    background: rgb(var(--raised) / 0.85);
+    text-align: center;
+  }
+
+  /* Блик по кромке: та же `sweep`, что и на волосках, только с длинным периодом —
+     рамка карточки крупнее волоска, и частый блик читался бы как мигание. */
+  .gift::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgb(var(--brass-lt)), transparent);
+    animation: sweep 11s cubic-bezier(0.45, 0, 0.55, 1) 1.5s infinite;
+  }
+
+  .gift__text {
+    max-width: var(--measure);
+  }
+</style>
