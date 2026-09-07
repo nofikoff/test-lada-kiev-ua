@@ -12,6 +12,7 @@ dist-ssr
 .astro
 test-results
 playwright-report
+.playwright-mcp
 *.local
 
 .vscode/*
