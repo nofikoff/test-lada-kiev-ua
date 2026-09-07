@@ -20,6 +20,15 @@ interface Props {
 const { locale } = Astro.props;
 const t = ui[locale];
 const year = new Date().getFullYear();
+
+/**
+ * Подпись домена (FR-035) выводится из канонического адреса сборки. Вторая копия хоста —
+ * в разметке или в словаре — разошлась бы с первой при смене хоста, и разошлась бы молча.
+ * Без `site` неверны и канонические адреса, и карта сайта, поэтому сборка обязана упасть
+ * здесь, а не отдать подвал с пустой подписью.
+ */
+if (!Astro.site) throw new Error('`site` не объявлен в astro.config.mjs: подпись домена не из чего вывести');
+const domain = Astro.site.host.replace(/^www\./, '');
 const map =
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2540.5!2d30.5213!3d50.4501!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4ce50f8b6e3ed%3A0x5f1e4d5b5a5b5e5d!2z0YPQuy4g0JzQsNC70LDRjyDQltC40YLQvtC80LjRgNGB0LrQsNGPLCAxMCwg0JrQuNC10LI!5e0!3m2!1sru!2sua!4v1234567890';
 
@@ -112,6 +121,10 @@ const labels: Contact[] = [
         <Monogram mode="mark" />
         <span class="foot__sep">|</span>
         <span class="foot__name">Lada N</span>
+        <!-- Не ссылка: посетитель уже здесь. Подпись возвращает адрес читателю снимка экрана,
+             на котором адресной строки нет (FR-035). -->
+        <span class="foot__sep">|</span>
+        <span class="foot__domain">{domain}</span>
       </span>
 
       <p class="foot__rights">&copy; {year} Lada N. {t.footer.rights}</p>
@@ -233,5 +246,13 @@ const labels: Contact[] = [
     @apply text-silk-dim;
     font-size: var(--step-caption);
     letter-spacing: 0.08em;
+  }
+
+  /* Разрядка надзаголовков при кегле соседей по полосе: подпись служебная, но набрана строчными —
+     доменное имя набирают так, а не прописными. */
+  .foot__domain {
+    @apply text-muted;
+    font-size: var(--step-caption);
+    letter-spacing: 0.22em;
   }
 </style>

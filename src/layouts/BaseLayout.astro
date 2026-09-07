@@ -52,10 +52,16 @@ const subset = locale === 'en' ? 'latin' : 'cyrillic';
 <html lang={locale}>
   <head>
     <meta charset="UTF-8" />
+    <!--
+      Монограмма студии во встроенном адресе (FR-036): сетевого запроса не появляется, как и
+      у прежнего эмодзи. Латунью набраны обе буквы, а не одна, как в `Monogram.astro`: шёлк
+      на светлой полосе вкладок исчезает. Решётка цвета записана как `%23` — незакодированная
+      обрывает адрес на фрагменте, и вкладка остаётся пустой при исправной на вид разметке.
+    -->
     <link
       rel="icon"
       type="image/svg+xml"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💆</text></svg>"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text x='32' y='45' text-anchor='middle' font-family='Georgia, serif' font-size='38' fill='%23C9A961'>LN</text></svg>"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
