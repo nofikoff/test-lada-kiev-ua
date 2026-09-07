@@ -710,3 +710,11 @@ decided: 30.5rem over 30.6rem for :root:lang(en). Both hold under 68 (64 against
 decided: the anti-vacuous guard is strict equality between non-space characters placed into lines and non-space characters in the paragraph text. Exact today on 15 pages × 2 widths × 2 engines.
 decided: contrast.spec.ts got 90 s rather than fewer probes. Cutting probes needs a signal for «kind of element», and the only one available is the class list — the very thing the file's header says the check must not take on trust.
 decided: the two built-CSS runs report as skipped rather than disappearing from collection, and the skip reason states why. Consequence of the in-file variant; a config project would have removed them from the count instead.
+
+### review — доработка после починки хука (2026-09-07)
+**Completed steps:** review (finding #4, в полном виде)
+**Commits:** 4036c17
+
+Находка #4 закрыта тем способом, который ревью предлагало первым: проверки собранного CSS ушли в собственный проект прогона `build`, отбираемый меткой `@build`, и в трёх браузерных проектах больше не собираются вовсе. Прогон 689 без единого пропуска — прежний вариант держал четыре строки `skipped`, из-за чего «пропущено» в отчёте значило сразу две разные вещи: «здесь не нужно» и «здесь не сделано».
+
+Способ стал доступен потому, что починен `~/.claude/hooks/scope_check.sh`: его трансляция глобов превращала `**/*` в `^.*/[^/]*$`, а этот регекс требует слеша — то есть lease «весь репозиторий» по построению не пускал ни в один файл в корне (`playwright.config.ts`, `astro.config.mjs`, `package.json`). Теперь `**/` транслируется как `(.*/)?`. Попутно исправился и `docs/**/*.md`, который видел только вложенные файлы. Проверено 22 случаями трансляции плюс живым вызовом хука с обеих сторон: узкий lease по-прежнему запрещает, широкий пропускает.
