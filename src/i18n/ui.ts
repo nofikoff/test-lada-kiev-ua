@@ -36,7 +36,7 @@ const uk = {
     cta: 'Зателефонувати',
   },
   about: {
-    eyebrow: 'Про нас',
+    // Надзаголовка своего у секции нет: им стоит `title`, см. `About.astro`.
     title: 'Про нас',
     heading: 'Тиша в серці мегаполісу',
     text1:
@@ -150,7 +150,6 @@ const ru: UiDictionary = {
     cta: 'Позвонить',
   },
   about: {
-    eyebrow: 'О нас',
     title: 'О нас',
     heading: 'Тишина в сердце мегаполиса',
     text1:
@@ -258,7 +257,6 @@ const en: UiDictionary = {
     cta: 'Call Now',
   },
   about: {
-    eyebrow: 'About',
     title: 'About Us',
     heading: 'Silence in the Heart of the Metropolis',
     text1:

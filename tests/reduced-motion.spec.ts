@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 
 /**
@@ -17,8 +18,11 @@ import { expect, test } from '@playwright/test';
  * таймлайна, поэтому пустую страницу в браузере без поддержки увидел бы только посетитель.
  */
 
-/** Каталог сборки: проверяется опубликованный CSS, а не исходники. */
-const DIST = new URL('../dist/', import.meta.url).pathname;
+/**
+ * Каталог сборки: проверяется опубликованный CSS, а не исходники. Через `fileURLToPath`,
+ * а не `.pathname`: на Windows последний даёт `/C:/…`, чего `readdirSync` не откроет.
+ */
+const DIST = fileURLToPath(new URL('../dist/', import.meta.url));
 
 const PAGES = ['/', '/massage/'] as const;
 
@@ -175,6 +179,23 @@ function blocksOf(css: string): Block[] {
 
 const ZERO_OPACITY = /opacity\s*:\s*0(?!\.|\d)/;
 
+/**
+ * Проект прогона, в котором исполняется разбор собранного CSS. Обе проверки ниже читают файлы
+ * с диска и браузера не открывают: в трёх проектах это три чтения одних и тех же трёх файлов,
+ * а не три независимых результата.
+ *
+ * Отбор по имени проекта, а не отдельный проект в `playwright.config.ts`: так причина стоит
+ * рядом с проверками, которых она касается. Цена — два прогона в отчёте помечены пропуском,
+ * а не пропадают из сбора совсем.
+ */
+const CSS_PROJECT = 'desktop';
+
+const engineIndependent = () =>
+  test.skip(
+    test.info().project.name !== CSS_PROJECT,
+    `разбор собранного CSS от движка не зависит — идёт в проекте ${CSS_PROJECT}`,
+  );
+
 test.describe('собранный CSS', () => {
   /**
    * SC-012 и contracts/motion.md §4. Область сужена до носителей проявления намеренно:
@@ -184,6 +205,8 @@ test.describe('собранный CSS', () => {
    * на них, и это была бы её собственная ошибка.
    */
   test('невидимость носителя проявления объявлена внутри @supports', () => {
+    engineIndependent();
+
     const offenders: string[] = [];
     let carriers = 0;
 
@@ -215,6 +238,8 @@ test.describe('собранный CSS', () => {
    * то есть проверка выше такую сборку пропускает.
    */
   test('таймлайн объявлен отдельным свойством, а не внутри сокращённой записи', () => {
+    engineIndependent();
+
     const offenders: string[] = [];
     let declarations = 0;
 
