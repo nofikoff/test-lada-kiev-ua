@@ -267,6 +267,28 @@
         transform: none;
       }
     }
+
+    /**
+     * Волосок прочерчивается от центра к краям при въезде в кадр. Живёт здесь, а не рядом
+     * с `.rule` в index.css, по той же причине, что и `.reveal`: правило, которое прячет
+     * элемент до таймлайна, обязано лежать внутри блока поддержки. Прячет оно здесь не
+     * непрозрачностью, а масштабом, поэтому разбор CSS из T040 его и не ищет.
+     */
+    .rule--draw {
+      transform-origin: center;
+      animation: draw linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 24%;
+    }
+
+    @keyframes draw {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
   }
 }
 

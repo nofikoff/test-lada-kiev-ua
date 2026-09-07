@@ -9,6 +9,7 @@
  */
 import { render } from 'astro:content';
 import Icon from './Icon.astro';
+import Monogram from './Monogram.astro';
 import PriceGroup from './PriceGroup.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
@@ -34,37 +35,60 @@ const groups = groupsOfCategory(category);
 const withNote = category === 'permanent';
 ---
 
-<section class="pt-28 pb-16 md:pt-36 md:pb-24 bg-lada-dark">
-  <div class="max-w-4xl mx-auto px-4">
-    <nav aria-label={t.nav.breadcrumb} class="mb-8 text-sm text-white/50">
+<Section rhythm="air">
+  <Fragment slot="backdrop">
+    <Monogram mode="watermark" side="right" />
+  </Fragment>
+
+  <div class="mx-auto w-full max-w-4xl px-4">
+    <nav aria-label={t.nav.breadcrumb} class="crumbs">
       <ol class="flex flex-wrap items-center gap-2">
-        <li>
-          <a href={pagePath(locale)} class="hover:text-lada-gold transition-colors">{t.nav.home}</a>
-        </li>
+        <li><a href={pagePath(locale)} class="crumbs__link">{t.nav.home}</a></li>
         <li aria-hidden="true">/</li>
-        <li aria-current="page" class="text-white/70">{copy.data.heading}</li>
+        <li aria-current="page" class="crumbs__here">{copy.data.heading}</li>
       </ol>
     </nav>
 
-    <h1 class="text-3xl md:text-5xl font-serif font-bold text-white mb-8 [text-wrap:balance]">
-      {copy.data.heading}
-    </h1>
+    <h1 class="section-title copy__title">{copy.data.heading}</h1>
 
-    <!-- Атрибут — договорённость со сквозной проверкой: объём и уникальность текста считаются
-         по этому контейнеру, иначе в норму попали бы прайс и подвал (tests/support/site.ts). -->
-    <div class="service-copy" data-service-copy>
-      <Content />
+    <div class="service-copy">
+      <!--
+        Атрибут — договорённость со сквозной проверкой: объём и уникальность текста считаются
+        по этому контейнеру (tests/support/site.ts), поэтому внутри него лежит ТОЛЬКО текст
+        категории. Врезка повторяется на всех четырёх категориях слово в слово, и попади она
+        внутрь — сверка уникальности абзацев справедливо покраснела бы.
+
+        Обёртка объявлена `display: contents`: сама она в раскладке не участвует, а абзацы
+        текста становятся элементами той же сетки, что и врезка, — иначе `order` ниже не
+        смог бы их чередовать.
+      -->
+      <div class="copy__flow" data-service-copy>
+        <Content />
+      </div>
+
+      <!--
+        Врезка стоит в разметке последней, а показывается сразу за вступлением: порядок задаёт
+        `order` на сетке контейнера. Вставить её внутрь текста нельзя — он приходит из markdown
+        одним куском, — а из двух зол это меньшее: дополняющий блок с фактами, которые целиком
+        повторены в подвале, экранный диктор прочтёт последним, и потерять на этом нечего.
+      -->
+      <aside class="insert">
+        <span class="eyebrow">{t.nav.contacts}</span>
+        <p class="insert__line">{t.footer.schedule}</p>
+        <p class="insert__note">{t.footer.appointment}</p>
+        <p class="insert__line">{t.footer.address}</p>
+        <a href="tel:+380995570045" class="insert__tel">(099) 557-00-45</a>
+      </aside>
     </div>
 
-    <a
-      href="tel:+380995570045"
-      class="mt-10 inline-flex items-center space-x-3 btn-primary text-lg"
-    >
-      <Icon name="phone" size={20} />
-      <span>{t.hero.cta}</span>
-    </a>
+    <p class="copy__cta">
+      <a href="tel:+380995570045" class="btn-primary">
+        <Icon name="phone" size={20} />
+        <span>{t.hero.cta}</span>
+      </a>
+    </p>
   </div>
-</section>
+</Section>
 
 <Section rhythm="work" id="services">
   <div class="mx-auto w-full max-w-6xl px-4">
@@ -104,26 +128,123 @@ const withNote = category === 'permanent';
     font-size: var(--step-caption);
   }
 
-  /* Текст приходит из markdown, поэтому классы утилит на его элементы не навесить:
-     плагина типографики в проекте нет, и оформление задаётся здесь.
-
-     Уровни текста переведены на именованные токены, потому что `@apply text-lada-gold`
-     перестаёт собираться в ту же секунду, когда токен уходит из tailwind.config.js.
-     Раскладка блока — мера строки, крупный вводный абзац, надзаголовки разделов — Step 5.2. */
-  .service-copy :global(p) {
-    @apply mb-6 text-lg leading-relaxed text-silk-dim;
+  .crumbs {
+    @apply text-muted;
+    font-size: var(--step-caption);
+    margin-bottom: 2rem;
   }
 
+  .crumbs__link {
+    transition: color 0.3s;
+  }
+
+  .crumbs__link:hover {
+    @apply text-brass;
+  }
+
+  .crumbs__here {
+    @apply text-silk-dim;
+  }
+
+  .copy__title {
+    margin-bottom: var(--rhythm-tight);
+  }
+
+  .copy__cta {
+    margin-top: var(--rhythm-tight);
+  }
+
+  /**
+   * Текст приходит из markdown, поэтому утилит на его элементы не навесить: плагина
+   * типографики в проекте нет, и оформление задаётся здесь.
+   *
+   * Контейнер — сетка ради одного: `order` ставит врезку сразу за вступлением, хотя
+   * в разметке она стоит последней (причина — в комментарии у самой врезки).
+   */
+  .service-copy {
+    display: grid;
+    align-content: start;
+    max-width: var(--measure);
+    counter-reset: copy-section;
+  }
+
+  .copy__flow {
+    display: contents;
+  }
+
+  .copy__flow > :global(*) {
+    order: 3;
+  }
+
+  .copy__flow > :global(p:first-of-type) {
+    order: 1;
+  }
+
+  .service-copy > .insert {
+    order: 2;
+  }
+
+  .service-copy :global(p) {
+    @apply mb-6 text-silk-dim;
+    font-size: var(--step-body);
+    line-height: 1.7;
+  }
+
+  /* Вводный абзац крупнее остальных: он объявляет тему страницы, а не продолжает её (FR-023). */
+  .copy__flow > :global(p:first-of-type) {
+    @apply text-silk;
+    font-size: var(--step-lede);
+    line-height: 1.6;
+  }
+
+  /**
+   * Буквица там, где свойство поддержано (research.md §R9). Без поддержки абзац начинается
+   * обычной буквой — дыры не остаётся, поэтому запасного пути здесь нет и не нужно.
+   */
+  @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+    .copy__flow > :global(p:first-of-type)::first-letter {
+      @apply font-serif text-brass;
+      -webkit-initial-letter: 3;
+      initial-letter: 3;
+      font-weight: 300;
+      margin-right: 0.6rem;
+    }
+  }
+
+  /**
+   * Надзаголовок раздела — его номер, а не слово: страница набрана на трёх языках, а новое
+   * слово потребовало бы трёх строк словаря на каждый раздел каждой категории. Счётчик
+   * даёт ту же ступень шкалы и ту же роль — отбить раздел от предыдущего текста — и не
+   * зависит от языка. Запрет нумерации из FR-020 сюда не переносится: он про карточки услуг,
+   * которые последовательности не образуют, а разделы текста читаются подряд.
+   */
   .service-copy :global(h2) {
-    @apply mb-6 mt-12 font-serif text-2xl text-brass md:text-3xl [text-wrap:balance];
+    @apply font-serif text-silk;
+    counter-increment: copy-section;
+    font-size: var(--step-subtitle);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-block: var(--rhythm-tight) 1.25rem;
+  }
+
+  .service-copy :global(h2)::before {
+    @apply block font-sans text-brass;
+    content: counter(copy-section, decimal-leading-zero);
+    font-size: var(--step-eyebrow);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    margin-bottom: 0.9rem;
   }
 
   .service-copy :global(h3) {
-    @apply mb-4 mt-8 font-serif text-xl text-silk;
+    @apply mb-4 mt-8 font-serif text-silk;
+    font-size: 1.375rem;
+    font-weight: 400;
   }
 
   .service-copy :global(ul) {
-    @apply mb-6 list-disc space-y-2 pl-6 text-lg text-silk-dim;
+    @apply mb-6 list-disc space-y-2 pl-6 text-silk-dim;
+    font-size: var(--step-body);
   }
 
   .service-copy :global(strong) {
@@ -132,5 +253,51 @@ const withNote = category === 'permanent';
 
   .service-copy :global(a) {
     @apply text-brass underline underline-offset-4;
+  }
+
+  /**
+   * Акцентная врезка после вступления (FR-023): расписание, запись, адрес и телефон —
+   * то, ради чего страницу категории открывают из поиска. Служебный уровень текста здесь
+   * не `--muted`: подложка врезки светлее страницы, и на ней он даёт 4.4:1
+   * (правило 2 contracts/design-tokens.md).
+   */
+  .insert {
+    display: grid;
+    gap: 0.4rem;
+    justify-items: start;
+    margin-bottom: var(--rhythm-tight);
+    padding: 1.5rem 1.75rem;
+    border-left: 1px solid rgb(var(--brass));
+    background: rgb(var(--raised) / 0.5);
+  }
+
+  .insert .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Селекторы врезки писаны от неё самой: правило `.service-copy p` несёт тип элемента
+     и без этого перекрывает уровень текста внутри врезки. */
+  .insert .insert__line {
+    @apply mb-0 text-silk;
+    font-size: var(--step-body);
+  }
+
+  .insert .insert__note {
+    @apply mb-0 text-silk-dim;
+    font-size: var(--step-caption);
+  }
+
+  .insert__tel {
+    @apply text-brass;
+    margin-top: 0.5rem;
+    font-size: var(--step-body);
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    border-bottom: 1px solid var(--hair);
+    transition: color 0.3s;
+  }
+
+  .insert__tel:hover {
+    @apply text-brass-lt;
   }
 </style>

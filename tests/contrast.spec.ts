@@ -77,7 +77,6 @@ const SCOPES: readonly Scope[] = [
     name: 'страницы категорий',
     pages: categoryPages,
     within: 'main',
-    readyAt: 'Step 5.2',
   },
   {
     name: 'шапка и подвал',

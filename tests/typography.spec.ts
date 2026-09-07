@@ -101,8 +101,6 @@ test.describe('длина строки протяжённого текста', (
   for (const width of WIDTHS) {
     for (const { path } of categoryPages) {
       test(`${path} держит меру при ширине ${width}`, async ({ page }) => {
-        test.fixme(true, 'страницы категорий пересобираются в Step 5.2');
-
         await page.setViewportSize({ width, height: 1000 });
         await page.goto(path);
 
@@ -120,8 +118,6 @@ test.describe('длина строки протяжённого текста', (
 
     for (const { path } of homePages) {
       test(`повествовательная секция ${path} держит меру при ширине ${width}`, async ({ page }) => {
-        test.fixme(true, 'секция «Про нас» пересобирается в Step 5.2');
-
         await page.setViewportSize({ width, height: 1000 });
         await page.goto(path);
 
@@ -144,8 +140,6 @@ test.describe('длина строки протяжённого текста', (
  */
 test.describe('область нажатия переключателей прайса', () => {
   test('каждый переключатель не меньше 24×24 px', async ({ page }) => {
-    test.fixme(true, 'вкладки пересобираются в Step 4.1, мера проверяется с Step 5.2');
-
     await page.goto('/');
 
     const tabs = page.locator('[role="tab"]');
