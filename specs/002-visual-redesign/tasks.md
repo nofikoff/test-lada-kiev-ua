@@ -505,7 +505,7 @@ gate_commands:
 
 - [x] S1 (~540K) Steps 1.1, 1.2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6 — done 2026-09-07
 - [x] S2 (~530K) Steps 3.1, 3.2, 4.1, 4.2, 5.1, 5.2, 6.1, 7.1 — done 2026-09-07
-- [ ] S3 (~260K) Steps 7.1a, 7.1b, 7.2 — **current**
+- [x] S3 (~260K) Steps 7.1a, 7.1b, 7.2 — done 2026-09-07
 
 ---
 
@@ -667,3 +667,23 @@ decided: FR-035 and FR-036 got a new spec file rather than joining `seo-contract
 decided: The `foot__base` inventory in quickstart.md was left untouched — Step 7.2 owns the package documents and now has one more divergence to record: the bottom line gained a separator and the domain.
 
 **Ответ оркестратора:** две копии домена записаны открытым долгом в `spec.md` рядом с FR-035, а не починены здесь. `import.meta.env.SITE` не годится: `paths.ts` импортируют тринадцать модулей и прогон через `tests/support/site.ts`, где этой переменной нет. Нужен общий JS-модуль для конфигурации и `paths.ts` — своя работа со своим прогоном.
+
+### S3.step-7.2 — 2026-09-07
+**Completed steps:** 7.2
+**Commits:** a5fa283
+
+### S3 — observations (2026-09-07, dispatch 4 — приёмка со второй попытки)
+
+plan-wrong: TaskCreate is not exposed in this harness for the fifth dispatch running — the contract assumed a tool this build does not have; the step was tracked without it.
+plan-wrong: T050 says the acceptance closes the remaining a11y.md items, but that file grades requirement quality, not implementation readiness. Five of the sixteen close on evidence this run produced; the other eleven need a reviewer to write a sentence into the spec, and no run can produce that. The task reads as if a measurement could close all sixteen.
+plan-wrong: the inherited reading of which three items acceptance closes does not survive item-by-item checking. CHK007 asks whether a requirement about map-label legibility exists — it still does not, and the WebKit measurement does not write it, so it stays open. CHK020, CHK025 and CHK027 close on evidence nobody had counted: the @supports/@media nesting at ambience.css:252, the tab-class duplication that T030 removed outright, and the WebKit install line already standing in quickstart.md.
+plan-wrong: SC-002's own text calls contrast the single failing accessibility audit. It was not — heading-order was the second, and that wrong parenthetical is what made the first acceptance attempt fail. Recorded next to the figures.
+plan-wrong: SC-006 claims the line measure holds «от 320 до 2560 px», but typography.spec.ts measures 1440 and 2560 only. Narrower widths can only shorten the line, so the bound holds by construction — but 320 px is reasoning, not measurement, and the criterion is worded as if it were measured.
+plan-wrong: quickstart.md was two steps stale in three places it owns — «одиннадцать файлов проверок» at thirteen, «Ожидается 732 Б» where SC-005 says «не выше», and an FR-034 inventory that still lists the emoji favicon. Fixed, since Step 7.2 owns the package documents.
+redone: nothing in the deliverable was rebuilt, but the gate ran three times. The middle run failed two contrast.spec.ts tests on a 30 s timeout at load average ~50 while nothing in src had changed; separating machine load from a regression cost a wait for the load to drop plus a full re-run (693/693, exit 0). The fragility itself went into the record — that test sits at ~30 s against a 30 s budget and will red-line on a shared build machine.
+redone: the tab-icon verdict took two renders. Scaling the SVG with CSS re-renders it as vectors and proves nothing about 16 px, so the icon had to be screenshotted at true 16 px and then blown up nearest-neighbour from that raster.
+decided: the checklist marking rule is stated in the file — [x] only where the item's question now has an answer in the tree or the artefacts, with the evidence named; a requirement-text gap that nobody closed stays open even when the risk it names is measured away.
+decided: the tab icon is legible and the reserved font-weight='bold' is not needed. Worst measured case is 1.72:1 on the grey inactive strip (2.25:1 white, 7.15:1 dark); WCAG does not reach the tab strip, and the brass is fixed by the palette.
+decided: the LCP and CLS regressions against the Step 1.1 baseline are recorded even though both criteria pass — LCP 2.0 to 2.3 s leaves 0.2 s of headroom on / and /ru/, CLS 0.003 to 0.012/0.015. If nobody writes that down, the next heavy change to the hero spends a margin it does not know is nearly gone.
+decided: the FR-034 divergence table gained two rows, not the one the brief named — the emoji favicon is in the Step 1.1 inventory, so its replacement by the monogram is the same kind of prescribed substitution as the raster logo.
+decided: T047-T050 ticked in tasks.md, matching how every earlier step closed its tasks; gates.md and the Progress Log left untouched — the converge row and the session log are the orchestrator's.
