@@ -20,7 +20,7 @@ export const ANALYTICS_ID = 'G-WZT8TJLSDP';
 
 export const PHONE = '+380995570045';
 
-export const INSTAGRAM = 'https://www.instagram.com/massage.ln.kyiv/';
+export const INSTAGRAM = 'https://www.instagram.com/lada_n_kyiv/';
 
 export const SERVICE_CATEGORIES = ['massage', 'depilation', 'permanent', 'beauty'] as const;
 
