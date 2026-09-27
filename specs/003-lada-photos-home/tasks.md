@@ -194,13 +194,13 @@ description: "Task list for 003-lada-photos-home"
 
 **Purpose**: мёртвый код, полный прогон, закрытие пакета
 
-- [ ] T022 [P] Режим `edge` в `src/components/Monogram.astro` больше никем не используется (`git grep 'mode="edge"'` пусто). Удалить его из типа `mode`, из `class:list` и из стилей `monogram--edge`.
+- [X] T022 [P] Режим `edge` в `src/components/Monogram.astro` больше никем не используется (`git grep 'mode="edge"'` пусто). Удалить его из типа `mode`, из `class:list` и из стилей `monogram--edge`.
 - [X] T027 Написать `tests/build-output.spec.ts` с меткой `@build`: в каждом `dist/**/*.html` нет `<!--`; в каждом `<script>` и `<style>` внутри HTML и в каждом `dist/**/*.{css,js}` нет `/* … */`; во встроенных скриптах нет строчных `//`-комментариев, при этом `://` в адресах комментарием не считается. Тест обязан падать на текущей сборке: там 228 HTML-комментариев (FR-027, SC-012).
 - [X] T028 Перевести все HTML-комментарии шаблонов `src/**/*.astro` в комментарии выражений `{/* … */}` — Astro их не выводит. Смысл комментариев не менять. T027 должен стать зелёным.
 - [X] T029 Записать требование в `.specify/memory/constitution.md` §Quality Gates: одна строка со ссылкой на `tests/build-output.spec.ts` и правилом «комментарии в разметке `.astro` — только `{/* */}`». Версия 1.1.0, новое правило, дата поправки 2026-09-27.
-- [ ] T023 Полный прогон из quickstart.md §Автоматически: `npm run check`, `npm run lint`, `npm run build`, `npm run analyze`, `npx playwright test` — все зелёные, вывод приложить к отчёту.
-- [ ] T024 Lighthouse, мобильный профиль, на `npm run preview` для `/`, `/ru/`, `/en/`: доступность 100, производительность ≥ 95, LCP ≤ 2.5 с, CLS < 0.1 (SC-002, SC-003). Результаты записать в `specs/003-lada-photos-home/quickstart.md` с датой.
-- [ ] T025 Закрыть пакет: отметить выполненные задачи в `specs/003-lada-photos-home/tasks.md`, записать фактические отклонения от плана в `specs/003-lada-photos-home/research.md`, если они были.
+- [X] T023 Полный прогон из quickstart.md §Автоматически: `npm run check`, `npm run lint`, `npm run build`, `npm run analyze`, `npx playwright test` — все зелёные, вывод приложить к отчёту.
+- [X] T024 Lighthouse, мобильный профиль, на `npm run preview` для `/`, `/ru/`, `/en/`: доступность 100, производительность ≥ 95, LCP ≤ 2.5 с, CLS < 0.1 (SC-002, SC-003). Результаты записать в `specs/003-lada-photos-home/quickstart.md` с датой.
+- [X] T025 Закрыть пакет: отметить выполненные задачи в `specs/003-lada-photos-home/tasks.md`, записать фактические отклонения от плана в `specs/003-lada-photos-home/research.md`, если они были.
 
 ---
 
