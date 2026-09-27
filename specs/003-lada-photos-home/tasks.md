@@ -115,7 +115,7 @@ description: "Task list for 003-lada-photos-home"
 
 ## Phase 4: User Story 2 — Посетитель листает ленту работ и переходит к услуге (Priority: P2)
 
-**Goal**: лента из 11 фото по contracts/gallery.md, кнопки и событие GA4
+**Goal**: лента из 13 фото по contracts/gallery.md, кнопки и событие GA4
 
 **Independent Test**: spec.md §User Story 2 — пролистать ленту свайпом, кнопками, клавиатурой и без скриптов; фото с процедурой открывает страницу услуги того же языка.
 

@@ -9,7 +9,7 @@
   <h2>…gallery.title…</h2>                             <!-- через SectionHeading, eyebrow = gallery.eyebrow -->
   <div role="region" aria-label="…gallery.region…" tabindex="0" id="gallery-strip" data-gallery>
     <ul>
-      <li>                                             <!-- × 11, порядок = position -->
+      <li>                                             <!-- × 13, порядок = position -->
         <a href="/depilation/">                        <!-- только при category; href = pagePath(locale, category) -->
           <figure>
             <picture>…<img alt="…alt[locale]…" loading="lazy" decoding="async" …></picture>
