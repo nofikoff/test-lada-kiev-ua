@@ -73,7 +73,7 @@ const photos = await strip();
               loading="lazy"
               decoding="async"
               pictureAttributes={{ class: 'contents' }}
-              class="gallery__image"
+              class:list={['gallery__image', data.fit === 'contain' && 'gallery__image--contain']}
               style={{ objectPosition: data.focus }}
             />
           );
@@ -202,6 +202,10 @@ const photos = await strip();
     height: 100%;
     object-fit: cover;
     transition: transform 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+
+  .gallery__image--contain {
+    object-fit: contain;
   }
 
   .gallery__link:hover .gallery__image {

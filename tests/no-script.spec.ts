@@ -32,7 +32,7 @@ test.describe('страница без скриптов', () => {
       await page.goto(path);
 
       await expect(page.locator('[data-gallery]')).toBeVisible();
-      await expect(page.locator('[data-gallery] li img')).toHaveCount(11);
+      await expect(page.locator('[data-gallery] li img')).toHaveCount(13);
       await expect(page.locator('[data-gallery-prev]')).toBeHidden();
       await expect(page.locator('[data-gallery-next]')).toBeHidden();
     });

@@ -11,16 +11,18 @@ import { homePages, type Locale } from './support/site';
 type Category = 'massage' | 'depilation' | 'beauty';
 
 const STRIP: readonly { id: string; category?: Category }[] = [
-  { id: 'lada-novikova-massage-tea', category: 'massage' },
-  { id: 'lada-novikova-wax-spatulas', category: 'depilation' },
-  { id: 'lada-novikova-bamboo-sticks', category: 'massage' },
-  { id: 'lada-novikova-studio-portrait' },
+  { id: 'lada-novikova-brows-client', category: 'beauty' },
   { id: 'lada-novikova-sugaring', category: 'depilation' },
-  { id: 'depilation-wax-beads', category: 'depilation' },
-  { id: 'lada-novikova-candles' },
-  { id: 'lada-novikova-warm-wax', category: 'depilation' },
-  { id: 'lada-novikova-makeup-mirror', category: 'beauty' },
+  { id: 'massage-room', category: 'massage' },
+  { id: 'lada-novikova-brow-tint', category: 'beauty' },
+  { id: 'anti-cellulite-before-after', category: 'massage' },
+  { id: 'sugaring-close-up', category: 'depilation' },
+  { id: 'lada-novikova-makeup-client', category: 'beauty' },
   { id: 'massage-tools', category: 'massage' },
+  { id: 'depilation-wax-beads', category: 'depilation' },
+  { id: 'disposable-tools' },
+  { id: 'lada-novikova-certificate' },
+  { id: 'makeup-station' },
   { id: 'studio-terrace' },
 ];
 
@@ -132,7 +134,7 @@ async function focusColors(page: Page, selector: string) {
 
 for (const { locale, path } of homePages) {
   test.describe(`лента ${path}`, () => {
-    test('стоит между «О нас» и обзором услуг, 11 карточек в заданном порядке', async ({ page }) => {
+    test('стоит между «О нас» и обзором услуг, карточки в заданном порядке', async ({ page }) => {
       await page.goto(path);
 
       const order = await page.evaluate(() => {
@@ -271,7 +273,8 @@ for (const { locale, path } of homePages) {
       const opened = context.waitForEvent('page');
       await cards(page).locator('a').first().click({ modifiers: ['ControlOrMeta'] });
       await (await opened).close();
-      expect(await galleryEvents(page)).toEqual([['event', 'gallery_click', { service: 'massage', locale }]]);
+      const first = STRIP.find((card) => card.category)!.category;
+      expect(await galleryEvents(page)).toEqual([['event', 'gallery_click', { service: first, locale }]]);
     });
   });
 }

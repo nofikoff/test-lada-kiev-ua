@@ -12,61 +12,23 @@
     }
   },
   {
-    "id": "lada-novikova-massage-tea",
-    "photo": "../assets/gallery/lada-novikova-massage-tea.jpg",
+    "id": "lada-novikova-brows-client",
+    "photo": "../assets/gallery/lada-novikova-brows-client.webp",
     "role": "strip",
     "position": 1,
-    "category": "massage",
-    "focus": "50% 30%",
+    "category": "beauty",
+    "focus": "58% 50%",
     "alt": {
-      "uk": "Лада Новикова з чашкою чаю поруч із моделлю хребта та олією для масажу",
-      "ru": "Лада Новикова с чашкой чая рядом с моделью позвоночника и маслом для массажа",
-      "en": "Lada Novikova with a cup of tea beside a spine model and massage oil"
-    }
-  },
-  {
-    "id": "lada-novikova-wax-spatulas",
-    "photo": "../assets/gallery/lada-novikova-wax-spatulas.jpg",
-    "role": "strip",
-    "position": 2,
-    "category": "depilation",
-    "focus": "45% 50%",
-    "alt": {
-      "uk": "Лада Новикова в рукавичках тримає шпателі для воскової депіляції",
-      "ru": "Лада Новикова в перчатках держит шпатели для восковой депиляции",
-      "en": "Lada Novikova in gloves holding wax spatulas"
-    }
-  },
-  {
-    "id": "lada-novikova-bamboo-sticks",
-    "photo": "../assets/gallery/lada-novikova-bamboo-sticks.jpg",
-    "role": "strip",
-    "position": 3,
-    "category": "massage",
-    "focus": "50% 50%",
-    "alt": {
-      "uk": "Лада Новикова з бамбуковими паличками для масажу",
-      "ru": "Лада Новикова с бамбуковыми палочками для массажа",
-      "en": "Lada Novikova holding bamboo massage sticks"
-    }
-  },
-  {
-    "id": "lada-novikova-studio-portrait",
-    "photo": "../assets/gallery/lada-novikova-studio-portrait.jpg",
-    "role": "strip",
-    "position": 4,
-    "focus": "50% 35%",
-    "alt": {
-      "uk": "Студійний портрет Лади Новикової в синьому светрі",
-      "ru": "Студийный портрет Лады Новиковой в синем свитере",
-      "en": "Studio portrait of Lada Novikova in a blue sweater"
+      "uk": "Лада Новикова оформлює брови клієнтці",
+      "ru": "Лада Новикова оформляет брови клиентке",
+      "en": "Lada Novikova shaping a client's eyebrows"
     }
   },
   {
     "id": "lada-novikova-sugaring",
     "photo": "../assets/gallery/lada-novikova-sugaring.webp",
     "role": "strip",
-    "position": 5,
+    "position": 2,
     "category": "depilation",
     "focus": "50% 40%",
     "alt": {
@@ -76,61 +38,76 @@
     }
   },
   {
-    "id": "depilation-wax-beads",
-    "photo": "../assets/gallery/depilation-wax-beads.jpg",
+    "id": "massage-room",
+    "photo": "../assets/gallery/massage-room.jpg",
+    "role": "strip",
+    "position": 3,
+    "category": "massage",
+    "focus": "50% 50%",
+    "alt": {
+      "uk": "Кабінет масажу: анатомічні плакати, модель хребта та засоби для догляду",
+      "ru": "Кабинет массажа: анатомические плакаты, модель позвоночника и средства для ухода",
+      "en": "The massage room: anatomy posters, a spine model and care products"
+    }
+  },
+  {
+    "id": "lada-novikova-brow-tint",
+    "photo": "../assets/gallery/lada-novikova-brow-tint.jpg",
+    "role": "strip",
+    "position": 4,
+    "category": "beauty",
+    "focus": "50% 50%",
+    "alt": {
+      "uk": "Лада Новикова фарбує брови клієнтці",
+      "ru": "Лада Новикова окрашивает брови клиентке",
+      "en": "Lada Novikova tinting a client's eyebrows"
+    }
+  },
+  {
+    "id": "anti-cellulite-before-after",
+    "photo": "../assets/gallery/anti-cellulite-before-after.jpg",
+    "role": "strip",
+    "position": 5,
+    "category": "massage",
+    "focus": "50% 50%",
+    "fit": "contain",
+    "alt": {
+      "uk": "Результат антицелюлітного масажу: до і після п'яти сеансів",
+      "ru": "Результат антицеллюлитного массажа: до и после пяти сеансов",
+      "en": "Anti-cellulite massage result: before and after five sessions"
+    }
+  },
+  {
+    "id": "sugaring-close-up",
+    "photo": "../assets/gallery/sugaring-close-up.webp",
     "role": "strip",
     "position": 6,
     "category": "depilation",
-    "focus": "55% 50%",
+    "focus": "50% 50%",
     "alt": {
-      "uk": "Гранули синього воску для депіляції, розсипані на столі",
-      "ru": "Гранулы синего воска для депиляции, рассыпанные на столе",
-      "en": "Blue hair removal wax beads spilled on a table"
+      "uk": "Шугаринг ніг крупним планом, руки майстрині в рукавичках",
+      "ru": "Шугаринг ног крупным планом, руки мастера в перчатках",
+      "en": "Close-up of leg sugaring, the specialist's gloved hands"
     }
   },
   {
-    "id": "lada-novikova-candles",
-    "photo": "../assets/gallery/lada-novikova-candles.jpg",
+    "id": "lada-novikova-makeup-client",
+    "photo": "../assets/gallery/lada-novikova-makeup-client.jpg",
     "role": "strip",
     "position": 7,
-    "focus": "40% 40%",
-    "alt": {
-      "uk": "Лада Новикова у кріслі поруч зі свічками та чайником",
-      "ru": "Лада Новикова в кресле рядом со свечами и чайником",
-      "en": "Lada Novikova in an armchair beside candles and a teapot"
-    }
-  },
-  {
-    "id": "lada-novikova-warm-wax",
-    "photo": "../assets/gallery/lada-novikova-warm-wax.jpg",
-    "role": "strip",
-    "position": 8,
-    "category": "depilation",
-    "focus": "45% 45%",
-    "alt": {
-      "uk": "Лада Новикова набирає теплий віск шпателями",
-      "ru": "Лада Новикова набирает тёплый воск шпателями",
-      "en": "Lada Novikova scooping warm wax with spatulas"
-    }
-  },
-  {
-    "id": "lada-novikova-makeup-mirror",
-    "photo": "../assets/gallery/lada-novikova-makeup-mirror.jpg",
-    "role": "strip",
-    "position": 9,
     "category": "beauty",
-    "focus": "68% 50%",
+    "focus": "50% 50%",
     "alt": {
-      "uk": "Лада Новикова наносить макіяж перед дзеркалом",
-      "ru": "Лада Новикова наносит макияж перед зеркалом",
-      "en": "Lada Novikova applying makeup in front of a mirror"
+      "uk": "Лада Новикова робить макіяж клієнтці",
+      "ru": "Лада Новикова делает макияж клиентке",
+      "en": "Lada Novikova doing a client's makeup"
     }
   },
   {
     "id": "massage-tools",
     "photo": "../assets/gallery/massage-tools.jpg",
     "role": "strip",
-    "position": 10,
+    "position": 8,
     "category": "massage",
     "focus": "50% 60%",
     "alt": {
@@ -140,10 +117,59 @@
     }
   },
   {
+    "id": "depilation-wax-beads",
+    "photo": "../assets/gallery/depilation-wax-beads.jpg",
+    "role": "strip",
+    "position": 9,
+    "category": "depilation",
+    "focus": "55% 50%",
+    "alt": {
+      "uk": "Гранули синього воску для депіляції, розсипані на столі",
+      "ru": "Гранулы синего воска для депиляции, рассыпанные на столе",
+      "en": "Blue hair removal wax beads spilled on a table"
+    }
+  },
+  {
+    "id": "disposable-tools",
+    "photo": "../assets/gallery/disposable-tools.jpg",
+    "role": "strip",
+    "position": 10,
+    "focus": "50% 50%",
+    "alt": {
+      "uk": "Одноразові шпателі, щіточки та ватні палички в студії",
+      "ru": "Одноразовые шпатели, щёточки и ватные палочки в студии",
+      "en": "Disposable spatulas, brushes and cotton swabs at the studio"
+    }
+  },
+  {
+    "id": "lada-novikova-certificate",
+    "photo": "../assets/gallery/lada-novikova-certificate.webp",
+    "role": "strip",
+    "position": 11,
+    "focus": "50% 45%",
+    "alt": {
+      "uk": "Лада Новикова з сертифікатом майстра спа-шугарингу Epilax",
+      "ru": "Лада Новикова с сертификатом мастера спа-шугаринга Epilax",
+      "en": "Lada Novikova holding her Epilax spa sugaring master certificate"
+    }
+  },
+  {
+    "id": "makeup-station",
+    "photo": "../assets/gallery/makeup-station.webp",
+    "role": "strip",
+    "position": 12,
+    "focus": "55% 50%",
+    "alt": {
+      "uk": "Робоче місце для макіяжу та брів у студії",
+      "ru": "Рабочее место для макияжа и бровей в студии",
+      "en": "The makeup and brow station at the studio"
+    }
+  },
+  {
     "id": "studio-terrace",
     "photo": "../assets/gallery/studio-terrace.jpg",
     "role": "strip",
-    "position": 11,
+    "position": 13,
     "focus": "50% 50%",
     "alt": {
       "uk": "Тераса студії Lada N із квітами на вікнах",

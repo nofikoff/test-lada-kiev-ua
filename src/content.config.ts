@@ -95,6 +95,9 @@ const gallery = defineCollection({
       category: z.enum(serviceCategories).optional(),
       // Значение CSS `object-position` для обрезки кадра на странице.
       focus: z.string().regex(/^\d{1,3}% \d{1,3}%$/),
+      // `contain` — для кадра, у которого смысл несут края: «до/после» с подписями по бокам
+      // обрезка до 4:5 резала бы надписи. По умолчанию кадр обрезается (FR-017).
+      fit: z.enum(['cover', 'contain']).optional(),
       // Кадр превью ссылок режет sharp, а он принимает стороны, не проценты CSS: `50% 22%` он
       // отвергает, и Astro понижает это до предупреждения — превью молча не собирается.
       previewPosition: z.enum(['top', 'center', 'bottom']).optional(),
