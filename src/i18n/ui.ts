@@ -30,7 +30,7 @@ const uk = {
   },
   hero: {
     title: 'Lada N',
-    subtitle: 'Майстерня масажу та краси',
+    subtitle: 'Студія масажу та краси в центрі Києва',
     description:
       'Місце відновлення та краси в самому серці Києва. Зручно дістатися з будь-якої точки міста — ми знаходимося прямо на Майдані Незалежності.',
     cta: 'Зателефонувати',
@@ -115,9 +115,10 @@ const uk = {
   },
   meta: {
     siteName: 'Lada N',
-    title: 'Lada N — майстерня масажу та краси на Майдані Незалежності',
+    // Заголовок и описание главной — по карте запросов (docs/specs/page-head.md §Целевые запросы).
+    title: 'Студія масажу та краси в центрі Києва — Lada N',
     description:
-      'Масаж, депіляція, перманентний макіяж і б\'юті-послуги в центрі Києва. Майстерня Lada N на вул. Мала Житомирська 10, щодня з 10:00 до 21:00.',
+      'Студія масажу та краси в центрі Києва: масаж, депіляція, перманентний макіяж, брови й вії. Мала Житомирська 10 біля Майдану, щодня з 10:00 до 21:00.',
   },
   error: {
     title: 'Сторінку не знайдено — Lada N',
@@ -143,7 +144,7 @@ const ru: UiDictionary = {
   },
   hero: {
     title: 'Lada N',
-    subtitle: 'Мастерская массажа и красоты',
+    subtitle: 'Студия массажа и красоты в центре Киева',
     description:
       'Место восстановления и красоты в самом сердце Киева. Удобно добраться из любой точки города — мы находимся прямо на Майдане Незалежности.',
     cta: 'Позвонить',
@@ -221,9 +222,9 @@ const ru: UiDictionary = {
   },
   meta: {
     siteName: 'Lada N',
-    title: 'Lada N — мастерская массажа и красоты на Майдане Незалежности',
+    title: 'Студия массажа и красоты в центре Киева — Lada N',
     description:
-      'Массаж, депиляция, перманентный макияж и бьюти-услуги в центре Киева. Мастерская Lada N на ул. Малая Житомирская 10, ежедневно с 10:00 до 21:00.',
+      'Студия массажа и красоты в центре Киева: массаж, депиляция, перманентный макияж, брови и ресницы. Малая Житомирская 10 у Майдана, ежедневно 10:00–21:00.',
   },
   error: {
     title: 'Страница не найдена — Lada N',
@@ -249,7 +250,7 @@ const en: UiDictionary = {
   },
   hero: {
     title: 'Lada N',
-    subtitle: 'Massage & Beauty Studio',
+    subtitle: 'Massage and beauty studio in central Kyiv',
     description:
       'A place of restoration and beauty in the heart of Kyiv. Easy to reach from anywhere in the city — we are located right at Maidan Nezalezhnosti.',
     cta: 'Call Now',
@@ -323,9 +324,9 @@ const en: UiDictionary = {
   },
   meta: {
     siteName: 'Lada N',
-    title: 'Lada N — massage and beauty studio at Maidan Nezalezhnosti, Kyiv',
+    title: 'Massage and beauty studio in central Kyiv — Lada N',
     description:
-      'Massage, hair removal, permanent makeup and beauty services in central Kyiv. Lada N studio at 10 Mala Zhytomyrska St., open daily from 10:00 to 21:00.',
+      'Massage and beauty studio in central Kyiv: massage, hair removal, permanent makeup, brows and lashes. 10 Mala Zhytomyrska St. by Maidan, daily 10:00–21:00.',
   },
   error: {
     title: 'Page not found — Lada N',

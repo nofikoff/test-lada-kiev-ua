@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test';
 import {
   ABOUT,
   ABOUT_COPY_SELECTOR,
+  builtPages,
   countWords,
+  FORBIDDEN_NAME,
   homePages,
   normalize,
 } from './support/site';
@@ -12,6 +14,21 @@ import {
  * по собранному HTML. Тон, первое лицо и отсутствие обещаний лечения автоматикой не меряются —
  * их список в docs/specs/voice.md §Не измеряется.
  */
+
+test.describe('одно название студии', () => {
+  // Весь ответ, а не видимый текст: заголовок окна, описание и превью ссылок — тоже название.
+  for (const { path } of builtPages) {
+    test(`${path}: нет «майстерня / мастерская / workshop»`, async ({ request }) => {
+      const html = await (await request.get(path)).text();
+      expect(html.match(FORBIDDEN_NAME)?.[0], path).toBeUndefined();
+    });
+  }
+
+  test('/llms.txt: нет «майстерня / мастерская / workshop»', async ({ request }) => {
+    const text = await (await request.get('/llms.txt')).text();
+    expect(text.match(FORBIDDEN_NAME)?.[0]).toBeUndefined();
+  });
+});
 
 test.describe('обращение Лады в «Про нас»', () => {
   for (const { locale, path } of homePages) {
