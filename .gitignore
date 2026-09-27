@@ -22,6 +22,8 @@ playwright-report
 # Agent-local tooling. Spec Kit init drops upstream copies of the speckit skills
 # here; committing them would shadow the locally adapted versions in ~/.claude.
 .claude
+# Author-local reports and notes; specs/ and docs/ proper are what ships to the team.
+docs/_local/
 .DS_Store
 *.suo
 *.ntvs*
