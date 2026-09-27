@@ -5,8 +5,9 @@ export default {
     extend: {
       // Значения живут в `src/index.css` каналами; здесь только форматная строка. Она обязана
       // нести `<alpha-value>`: без него модификаторы прозрачности (`border-brass/20`,
-      // `bg-raised/40`) сгенерировали бы правило, которое не меняет цвет (research.md §R3).
-      // Префикс `lada-` удалён целиком — он ничего не различал (contracts/design-tokens.md).
+      // `bg-raised/40`) сгенерировали бы правило, которое не меняет цвет
+      // (docs/specs/design-tokens.md правило 2). Префикс `lada-` удалён целиком — он ничего
+      // не различал.
       colors: {
         ink: 'rgb(var(--ink) / <alpha-value>)',
         surface: 'rgb(var(--surface) / <alpha-value>)',

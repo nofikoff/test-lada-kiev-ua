@@ -8,3 +8,5 @@
 |-----|------|-------|-----|---------|----|------|
 | 003 | lada-photos-home | dissolved | - | - | - |  |
 | 003 | lada-photos-home | retired | dfcc201f0b519c0e05751ad38bc48028b6e1ae18 | - | - |  |
+| 001 | astro-migration | dissolved | - | - | - |  |
+| 002 | visual-redesign | dissolved | - | - | - |  |

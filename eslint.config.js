@@ -11,7 +11,7 @@ export default defineConfig(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   // Правила разметки .astro: парсер компонентного синтаксиса плюс проверки, которых нет в базовом
-  // наборе. Правил React здесь нет и быть не может — React из дерева удалён (Step 7.3).
+  // наборе. Правил React здесь нет и быть не может — React из дерева удалён (ADR-004).
   ...astro.configs['flat/recommended'],
   {
     files: ['**/*.{ts,astro}'],
@@ -37,7 +37,7 @@ export default defineConfig(
   },
   {
     // Инлайн-скрипты .astro плагин выносит в виртуальные файлы вида `Component.astro/1_1.js`.
-    // Сниппет счётчика — чужой код, который обязан остаться прежним (research.md §R16):
+    // Сниппет счётчика — чужой код, который обязан остаться прежним (ADR-011):
     // gtag.js читает из dataLayer объект `arguments`, а не массив, поэтому переписать его
     // на остаточные параметры значило бы менять поведение аналитики ради правила стиля.
     files: ['src/layouts/BaseLayout.astro/**'],

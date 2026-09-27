@@ -1,8 +1,8 @@
 ---
 /**
- * Заголовочная часть страницы по [contracts/page-head.md] и машиночитаемое описание
- * по [contracts/structured-data.md]. Компонент принимает локаль и категорию — всё остальное
- * вычисляется: метаданные страницы нигде не хранятся (data-model.md §Метаданные страницы).
+ * Заголовочная часть страницы по docs/specs/page-head.md и машиночитаемое описание
+ * по docs/specs/structured-data.md. Компонент принимает локаль и категорию — всё остальное
+ * вычисляется: метаданные страницы нигде не хранятся.
  */
 import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
@@ -65,7 +65,7 @@ const ogImage = absoluteUrl(preview.src);
 /**
  * Заголовок и описание страницы категории берутся из frontmatter её текста, а не собираются
  * шаблоном с подставленным названием: одинаково устроенные заголовки на двенадцати страницах —
- * тот же дубль, только автоматический (contracts/page-head.md §Заголовки и описания).
+ * тот же дубль, только автоматический (docs/specs/page-head.md §Заголовки и описания).
  */
 const copy = category ? await serviceCopy(locale, category) : null;
 
@@ -111,7 +111,7 @@ function postalAddress(source: string) {
   throw new Error(
     `SeoHead: адрес локали «${locale}» не разбирается на населённый пункт и улицу. ` +
       `Строка словаря: «${source}». Ожидается «населённый пункт${ADDRESS_SEPARATOR}улица» — ` +
-      'поле «Адрес» описания организации (contracts/structured-data.md).',
+      'поле «address» описания организации (docs/specs/structured-data.md §Главная, три локали).',
   );
 }
 
@@ -149,7 +149,7 @@ const business = category
 /**
  * Перечень предложений страницы категории. Позиция с фиксированной ценой даёт одно предложение,
  * позиция с вариантами — по одному на вариант, долевая не даёт ни одного: предложение без суммы
- * или с нулевой суммой описывает бесплатную услугу (contracts/structured-data.md §Предложение).
+ * или с нулевой суммой описывает бесплатную услугу (ADR-013).
  */
 const priced = category ? await pricesOfGroups(groupsOfCategory(category)) : [];
 

@@ -18,8 +18,8 @@ import {
 } from './support/site';
 
 /**
- * Контракт заголовочной части ([contracts/page-head.md]) и машиночитаемого описания
- * ([contracts/structured-data.md]). Проверяется по собранному HTML: требование относится
+ * Контракт заголовочной части (docs/specs/page-head.md) и машиночитаемого описания
+ * (docs/specs/structured-data.md). Проверяется по собранному HTML: требование относится
  * к опубликованному файлу, а не к исходникам компонентов.
  */
 
@@ -69,16 +69,12 @@ function asArray(value: unknown): unknown[] {
 }
 
 /**
- * Страницы категорий создаёт **Step 5.4** (T048–T050). До него все двенадцать адресов отвечают
- * 404, и каждая проверка ниже останавливается здесь — с указанием шага, а не с разбором `null`
- * там, где ожидалась разметка.
+ * Страница категории, которая не отдаётся, останавливает каждую проверку ниже здесь — с указанием
+ * адреса, а не с разбором `null` там, где ожидалась разметка.
  */
 async function requireCategoryPage(request: APIRequestContext, path: string): Promise<string> {
   const response = await request.get(path);
-  expect(
-    response.status(),
-    `${path} не отдаётся: страницы категорий создаёт Step 5.4 (T048–T050)`,
-  ).toBe(200);
+  expect(response.status(), `${path}: страница категории не отдаётся`).toBe(200);
   return response.text();
 }
 
@@ -184,7 +180,8 @@ for (const { locale, path } of homePages) {
       expect(asArray(business!.sameAs)).toContain(INSTAGRAM);
       expect(asArray(business!.availableLanguage).map(String).sort()).toEqual(['en', 'ru', 'uk']);
 
-      // FR-022 пакета 003: логотип и портрет Лады, стокового кадра нет.
+      // Логотип и портрет Лады, стокового кадра нет
+      // (docs/specs/home-hero.md §Превью ссылок и JSON-LD).
       const images = asArray(business!.image).map(String);
       expect(images).toHaveLength(2);
       for (const image of images) expect(image.startsWith(SITE_ORIGIN)).toBe(true);
@@ -311,7 +308,7 @@ for (const { locale, category, path } of categoryPages) {
 
       /**
        * Число предложений равно числу отображаемых позиций за вычетом долевых
-       * (contracts/structured-data.md §Проверка 4): предложение с нулевой ценой описывает
+       * (docs/specs/structured-data.md §Страница категории): предложение с нулевой ценой описывает
        * бесплатную услугу, поэтому «коррекция 50%» в перечень не попадает.
        */
       const offers = nodes.filter((node) => node['@type'] === 'Offer');
@@ -349,9 +346,10 @@ for (const { locale, category, path } of categoryPages) {
 }
 
 /**
- * Объём и уникальность текста (T044 по FR-017). Счётчик слов — рабочее определение
- * «содержательного текста»: четыреста слов нельзя набрать шаблоном с подставленным названием.
- * Считается только контейнер текста категории — прайс и подвал набрали бы норму сами.
+ * Объём и уникальность текста (docs/specs/content-model.md §Страница категории). Счётчик слов —
+ * рабочее определение «содержательного текста»: четыреста слов нельзя набрать шаблоном
+ * с подставленным названием. Считается только контейнер текста категории — прайс и подвал
+ * набрали бы норму сами.
  */
 test.describe('тексты страниц категорий', () => {
   for (const locale of ['uk', 'ru', 'en'] as const) {
@@ -368,7 +366,7 @@ test.describe('тексты страниц категорий', () => {
         const copy = page.locator(SERVICE_COPY_SELECTOR);
         await expect(
           copy,
-          `${entry.path}: контейнер ${SERVICE_COPY_SELECTOR} — договорённость со Step 5.4`,
+          `${entry.path}: контейнер ${SERVICE_COPY_SELECTOR} — договорённость с шаблоном страницы категории`,
         ).toHaveCount(1);
 
         const words = normalize(await copy.innerText()).split(' ').filter(Boolean);
@@ -402,12 +400,10 @@ test.describe('сквозные требования ко всем страни�
     const pairs: string[] = [];
 
     // Требование проверяется по всем пятнадцати страницам: нарушение возникает между файлами,
-    // и одна только главная его не покажет (contracts/page-head.md §Заголовки и описания).
+    // и одна только главная его не покажет (docs/specs/page-head.md §Заголовки и описания).
     for (const { path } of allPages) {
       const response = await request.get(path);
-      expect(response.status(), `${path} не отдаётся: страницы категорий создаёт Step 5.4`).toBe(
-        200,
-      );
+      expect(response.status(), `${path} не отдаётся`).toBe(200);
 
       const html = await response.text();
       const title = /<title>([\s\S]*?)<\/title>/.exec(html)?.[1] ?? '';
@@ -423,8 +419,9 @@ test.describe('сквозные требования ко всем страни�
   });
 
   /**
-   * FR-021 пакета 003: превью — кадр портрета Лады, одинаковый на всех пятнадцати страницах,
-   * собранный в `_astro/`. Скриншот сайта и стоковый кадр из выдачи ушли совсем.
+   * Превью — кадр портрета Лады, одинаковый на всех пятнадцати страницах, собранный в `_astro/`
+   * (docs/specs/home-hero.md §Превью ссылок и JSON-LD). Скриншот сайта и стоковый кадр из выдачи
+   * ушли совсем.
    */
   test('превью всех страниц — портрет, стока и скриншота нет', async ({ request }) => {
     const previews = new Set<string>();
@@ -442,8 +439,8 @@ test.describe('сквозные требования ко всем страни�
 
   /**
    * Изображение предпросмотра одно на весь сайт, поэтому и вес, и объявленные размеры
-   * проверяются один раз. Объявление размеров без сверки с файлом ничего не стоит: до Step 4.1
-   * пакета 001 разметка объявляла 1416×840 против файла 2970×1756 весом 3.3 МБ.
+   * проверяются один раз. Объявление размеров без сверки с файлом ничего не стоит: до миграции
+   * разметка объявляла 1416×840 против файла 2970×1756 весом 3.3 МБ.
    */
   test('изображение предпросмотра укладывается в лимит веса и объявлено своими размерами', async ({
     page,
@@ -486,9 +483,7 @@ test.describe('сквозные требования ко всем страни�
   }) => {
     for (const { path } of allPages) {
       const response = await request.get(path);
-      expect(response.status(), `${path} не отдаётся: страницы категорий создаёт Step 5.4`).toBe(
-        200,
-      );
+      expect(response.status(), `${path} не отдаётся`).toBe(200);
 
       const html = await response.text();
       const found = [...html.matchAll(/https?:\/\/[^"'\s<>)\\]+/g)].map((match) => match[0]);

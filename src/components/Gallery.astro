@@ -113,7 +113,8 @@ const photos = await strip();
     gap: 0.5rem;
   }
 
-  /* Область нажатия 44×44 — порог FR-031 пакета 002 для переключателей. */
+  /* Область нажатия 44×44 — с запасом над порогом переключателей 24×24
+     (docs/specs/accessibility.md). */
   .gallery__button {
     @apply text-brass;
     display: grid;
