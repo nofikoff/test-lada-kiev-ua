@@ -62,12 +62,13 @@ const photos = await strip();
     <ul class="gallery__list">
       {
         photos.map(({ data }) => {
+          // Ряд ширин — под плотность 1.75 на 412 px, где карточке нужно 562 px (research.md §R11).
           const image = (
             <Picture
               src={data.photo}
               alt={data.alt[locale]}
               formats={['avif', 'webp']}
-              widths={[360, 540, 720, 1080].filter((width) => width <= data.photo.width)}
+              widths={[360, 600, 840, 1080].filter((width) => width <= data.photo.width)}
               sizes="(min-width: 62rem) 22rem, 78vw"
               loading="lazy"
               decoding="async"
@@ -242,11 +243,15 @@ const photos = await strip();
       next.disabled = root.scrollLeft > root.scrollWidth - root.clientWidth - 1;
     };
 
+    // Раскладку читает только наблюдатель: его вызов приходит в цикле отрисовки, уже со стилями,
+    // и повторяется при смене ширины карточек. Синхронный замер при запуске заставлял WebKit
+    // считать стили до прихода таблиц — и `transition` соседних секций стартовал от цвета
+    // ссылки по умолчанию (research.md §R11).
+    new ResizeObserver(sync).observe(root.querySelector('ul')!);
     root.addEventListener('scroll', sync, { passive: true });
     prev.addEventListener('click', () => move(-1));
     next.addEventListener('click', () => move(1));
     prev.hidden = next.hidden = false;
-    sync();
 
     // FR-026: переход не ждёт счётчика и не отменяется — событие уходит попутно.
     root.addEventListener('click', (event) => {

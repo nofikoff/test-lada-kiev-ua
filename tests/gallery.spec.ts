@@ -291,9 +291,9 @@ test.describe('уменьшенное движение', () => {
 });
 
 /**
- * SC-004 в уточнённой форме (research.md §R11): порог отложенной загрузки задаёт браузер, и Chromium
- * берёт заранее карточки из начала ленты. Проверяется то, что от страницы зависит: их не больше
- * двух, и ни одна не опережает портрет.
+ * SC-004 (research.md §R11): лента на 360×740 стоит внутри порога отложенной загрузки Chromium,
+ * и он берёт заранее карточки из её начала. Проверяется то, что от страницы зависит: их не
+ * больше двух, и ни одна не опережает портрет.
  */
 test('на 360×740 до прокрутки лента берёт не больше двух фото и после портрета', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 });
@@ -308,13 +308,15 @@ test('на 360×740 до прокрутки лента берёт не боль�
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
-  const early = new Set(requested.filter((name) => name !== 'portrait'));
-  expect(early.size, `фото ленты до прокрутки: ${[...early].join(', ')}`).toBeLessThanOrEqual(2);
-  for (const id of early) {
-    expect(STRIP.slice(0, 2).map((card) => card.id), `${id} не из начала ленты`).toContain(id);
-  }
-  if (early.size > 0) {
-    expect(requested.indexOf('portrait'), 'фото ленты запрошено раньше портрета').toBeGreaterThanOrEqual(0);
-    expect(requested.indexOf('portrait')).toBeLessThan(requested.findIndex((name) => name !== 'portrait'));
+  const early = [...new Set(requested.filter((name) => name !== 'portrait'))];
+  expect(early.length, `фото ленты до прокрутки: ${early.join(', ')}`).toBeLessThanOrEqual(2);
+  const leading = STRIP.slice(0, 2).map((card) => card.id);
+  for (const id of early) expect(leading, `${id} не из начала ленты`).toContain(id);
+  if (early.length > 0) {
+    const portrait = requested.indexOf('portrait');
+    expect(portrait, 'портрет не запрошен').toBeGreaterThanOrEqual(0);
+    expect(portrait, 'фото ленты запрошено раньше портрета').toBeLessThan(
+      requested.findIndex((name) => name !== 'portrait'),
+    );
   }
 });
