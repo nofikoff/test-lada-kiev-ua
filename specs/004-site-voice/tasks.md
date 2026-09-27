@@ -127,13 +127,13 @@ description: "Task list for 004-site-voice"
 
 ### Tests for User Story 4
 
-- [ ] T029 [P] [US4] В tests/seo-contract.spec.ts для `homePages`: `business.founder` — `@type` Person, `name` = `ABOUT[locale].signatureName`, `jobTitle` = `FOUNDER_ROLE[locale]`, `image` = `business.image[1]`, `alumniOf` = `{ '@type': 'CollegeOrUniversity', name: ALUMNI.name, sameAs: ALUMNI.sameAs }`
+- [X] T029 [P] [US4] В tests/seo-contract.spec.ts для `homePages`: `business.founder` — `@type` Person, `name` = `ABOUT[locale].signatureName`, `jobTitle` = `FOUNDER_ROLE[locale]`, `image` = `business.image[1]`, `alumniOf` = `{ '@type': 'CollegeOrUniversity', name: ALUMNI.name, sameAs: ALUMNI.sameAs }`
 
 ### Implementation for User Story 4
 
-- [ ] T030 [US4] В src/i18n/ui.ts добавить `meta.founderRole`: «засновниця студії, масажистка» / «основательница студии, массажистка» / «founder, massage therapist»
-- [ ] T031 [US4] В src/components/SeoHead.astro добавить в `business` узел `founder` по data-model.md §Основательница: `@id` `${canonical}#founder`, `name` из `aboutCopy(locale)`, `jobTitle` из `t.meta.founderRole`, `image` — `absoluteUrl(face.photo.src)` (тот же, что второй элемент `image`), `alumniOf` с именем НУФВСУ и `sameAs: 'https://uni-sport.edu.ua/'` (research.md §R3) — константы рядом с `INSTAGRAM`
-- [ ] T032 [US4] В docs/specs/structured-data.md строка таблицы `founder` и источник полей
+- [X] T030 [US4] В src/i18n/ui.ts добавить `meta.founderRole`: «засновниця студії, масажистка» / «основательница студии, массажистка» / «founder, massage therapist»
+- [X] T031 [US4] В src/components/SeoHead.astro добавить в `business` узел `founder` по data-model.md §Основательница: `@id` `${canonical}#founder`, `name` из `aboutCopy(locale)`, `jobTitle` из `t.meta.founderRole`, `image` — `absoluteUrl(face.photo.src)` (тот же, что второй элемент `image`), `alumniOf` с именем НУФВСУ и `sameAs: 'https://uni-sport.edu.ua/'` (research.md §R3) — константы рядом с `INSTAGRAM`
+- [X] T032 [US4] В docs/specs/structured-data.md строка таблицы `founder` и источник полей
 
 **Checkpoint**: US4 проходит `npx playwright test tests/seo-contract.spec.ts`
 

@@ -1,11 +1,14 @@
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
 import {
+  ABOUT,
+  ALUMNI,
   allPages,
   ANALYTICS_ID,
   APEX_ORIGIN,
   categoryPages,
   countWords,
   expectedOfferCount,
+  FOUNDER_ROLE,
   homePages,
   INSTAGRAM,
   normalize,
@@ -193,6 +196,24 @@ for (const { locale, path } of homePages) {
       expect(asArray(hours.dayOfWeek)).toHaveLength(7);
       expect(hours.opens).toBe('10:00');
       expect(hours.closes).toBe('21:00');
+    });
+
+    test('основательница — Лада, с вузом и тем же портретом', async ({ page }) => {
+      await page.goto(path);
+      const nodes = await structuredData(page);
+      const business = nodes.find((node) => node['@type'] === 'HealthAndBeautyBusiness');
+      const founder = business!.founder as Record<string, unknown> | undefined;
+      expect(founder, 'нет основательницы в описании организации').toBeDefined();
+
+      expect(founder!['@type']).toBe('Person');
+      expect(founder!.name).toBe(ABOUT[locale].signatureName);
+      expect(founder!.jobTitle).toBe(FOUNDER_ROLE[locale]);
+      expect(founder!.image).toBe(asArray(business!.image).map(String)[1]);
+      expect(founder!.alumniOf).toEqual({
+        '@type': 'CollegeOrUniversity',
+        name: ALUMNI.name,
+        sameAs: ALUMNI.sameAs,
+      });
     });
 
     test('адрес взят на языке страницы', async ({ page }) => {

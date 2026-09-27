@@ -119,6 +119,8 @@ const uk = {
     title: 'Студія масажу та краси в центрі Києва — Lada N',
     description:
       'Студія масажу та краси в центрі Києва: масаж, депіляція, перманентний макіяж, брови й вії. Мала Житомирська 10 біля Майдану, щодня з 10:00 до 21:00.',
+    // Роль Лады в JSON-LD: только подтверждённое автором (docs/specs/voice.md).
+    founderRole: 'засновниця студії, масажистка',
   },
   error: {
     title: 'Сторінку не знайдено — Lada N',
@@ -225,6 +227,7 @@ const ru: UiDictionary = {
     title: 'Студия массажа и красоты в центре Киева — Lada N',
     description:
       'Студия массажа и красоты в центре Киева: массаж, депиляция, перманентный макияж, брови и ресницы. Малая Житомирская 10 у Майдана, ежедневно 10:00–21:00.',
+    founderRole: 'основательница студии, массажистка',
   },
   error: {
     title: 'Страница не найдена — Lada N',
@@ -327,6 +330,7 @@ const en: UiDictionary = {
     title: 'Massage and beauty studio in central Kyiv — Lada N',
     description:
       'Massage and beauty studio in central Kyiv: massage, hair removal, permanent makeup, brows and lashes. 10 Mala Zhytomyrska St. by Maidan, daily 10:00–21:00.',
+    founderRole: 'founder, massage therapist',
   },
   error: {
     title: 'Page not found — Lada N',

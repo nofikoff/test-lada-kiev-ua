@@ -7,6 +7,7 @@
 import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import logo from '../assets/logo.jpg';
+import { aboutCopy } from '../data/about';
 import { portrait } from '../data/gallery';
 import { groupsOfCategory } from '../data/price-groups';
 import { pricesOfGroups } from '../data/price-list';
@@ -29,6 +30,13 @@ const OG_LOCALE: Record<Locale, string> = { uk: 'uk_UA', ru: 'ru_RU', en: 'en_US
 
 const PHONE = '+380995570045';
 const INSTAGRAM = 'https://www.instagram.com/lada_n_kyiv/';
+
+/** Вуз Лады — имя собственное, одно на все локали; источник адреса — docs/specs/structured-data.md. */
+const ALMA_MATER = {
+  '@type': 'CollegeOrUniversity',
+  name: 'Національний університет фізичного виховання і спорту України',
+  sameAs: 'https://uni-sport.edu.ua/',
+};
 const WEEK = [
   'Monday',
   'Tuesday',
@@ -117,6 +125,18 @@ function postalAddress(source: string) {
 
 const { addressLocality, streetAddress } = postalAddress(t.footer.address);
 
+/** Имя основательницы — из подписи её обращения: подпись и разметка не могут разойтись. */
+const founder = category
+  ? null
+  : {
+      '@type': 'Person',
+      '@id': `${canonical}#founder`,
+      name: (await aboutCopy(locale)).data.signatureName,
+      jobTitle: t.meta.founderRole,
+      image: absoluteUrl(face.photo.src),
+      alumniOf: ALMA_MATER,
+    };
+
 const business = category
   ? null
   : {
@@ -144,6 +164,7 @@ const business = category
       priceRange: `${Math.min(...amounts)}–${Math.max(...amounts)} UAH`,
       sameAs: [INSTAGRAM],
       availableLanguage: [...locales],
+      founder,
     };
 
 /**
