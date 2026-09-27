@@ -26,6 +26,28 @@ export const SERVICE_CATEGORIES = ['massage', 'depilation', 'permanent', 'beauty
 
 export type ServiceCategory = (typeof SERVICE_CATEGORIES)[number];
 
+export type GalleryCategory = Extract<ServiceCategory, 'massage' | 'depilation' | 'beauty'>;
+
+/**
+ * Состав и порядок ленты работ на главной. Записаны литералами, а не прочитаны из
+ * `src/data/gallery.json`, по тому же доводу, что и хост выше.
+ */
+export const GALLERY_STRIP: readonly { id: string; category?: GalleryCategory }[] = [
+  { id: 'lada-novikova-brows-client', category: 'beauty' },
+  { id: 'lada-novikova-sugaring', category: 'depilation' },
+  { id: 'massage-room', category: 'massage' },
+  { id: 'lada-novikova-brow-tint', category: 'beauty' },
+  { id: 'anti-cellulite-before-after', category: 'massage' },
+  { id: 'sugaring-close-up', category: 'depilation' },
+  { id: 'lada-novikova-makeup-client', category: 'beauty' },
+  { id: 'massage-tools', category: 'massage' },
+  { id: 'depilation-wax-beads', category: 'depilation' },
+  { id: 'disposable-tools' },
+  { id: 'lada-novikova-certificate' },
+  { id: 'makeup-station' },
+  { id: 'studio-terrace' },
+];
+
 export interface PageUnderTest {
   readonly locale: Locale;
   readonly path: string;

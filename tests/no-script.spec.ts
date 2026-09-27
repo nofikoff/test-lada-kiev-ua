@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { normalize, readPrices } from './support/site';
+import { GALLERY_STRIP, normalize, readPrices } from './support/site';
 
 /**
  * Поведение при отключённых скриптах (FR-028, T060). Проверка приёмочная по происхождению —
@@ -32,7 +32,7 @@ test.describe('страница без скриптов', () => {
       await page.goto(path);
 
       await expect(page.locator('[data-gallery]')).toBeVisible();
-      await expect(page.locator('[data-gallery] li img')).toHaveCount(13);
+      await expect(page.locator('[data-gallery] li img')).toHaveCount(GALLERY_STRIP.length);
       await expect(page.locator('[data-gallery-prev]')).toBeHidden();
       await expect(page.locator('[data-gallery-next]')).toBeHidden();
     });

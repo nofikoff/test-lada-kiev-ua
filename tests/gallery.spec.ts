@@ -1,31 +1,15 @@
 import { expect, test, type Page } from '@playwright/test';
-import { homePages, type Locale } from './support/site';
+import {
+  GALLERY_STRIP as STRIP,
+  homePages,
+  type GalleryCategory as Category,
+  type Locale,
+} from './support/site';
 
 /**
  * Лента работ на главной (specs/003-lada-photos-home/contracts/gallery.md; FR-009…FR-019, FR-026).
- *
- * Состав и порядок ленты записаны здесь литералами, а не прочитаны из `src/data/gallery.json`:
- * проверка, читающая те же данные, что и страница, доказала бы только их согласие с самими собой
- * (тот же довод — `tests/support/site.ts`).
+ * Состав и порядок ленты — `GALLERY_STRIP` в `tests/support/site.ts`.
  */
-type Category = 'massage' | 'depilation' | 'beauty';
-
-const STRIP: readonly { id: string; category?: Category }[] = [
-  { id: 'lada-novikova-brows-client', category: 'beauty' },
-  { id: 'lada-novikova-sugaring', category: 'depilation' },
-  { id: 'massage-room', category: 'massage' },
-  { id: 'lada-novikova-brow-tint', category: 'beauty' },
-  { id: 'anti-cellulite-before-after', category: 'massage' },
-  { id: 'sugaring-close-up', category: 'depilation' },
-  { id: 'lada-novikova-makeup-client', category: 'beauty' },
-  { id: 'massage-tools', category: 'massage' },
-  { id: 'depilation-wax-beads', category: 'depilation' },
-  { id: 'disposable-tools' },
-  { id: 'lada-novikova-certificate' },
-  { id: 'makeup-station' },
-  { id: 'studio-terrace' },
-];
-
 const SERVICE_NAMES: Record<Locale, Record<Category, string>> = {
   uk: { massage: 'Масаж', depilation: 'Депіляція', beauty: 'Make-up' },
   ru: { massage: 'Массаж', depilation: 'Депиляция', beauty: 'Make-up' },
