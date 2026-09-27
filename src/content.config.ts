@@ -8,10 +8,14 @@ import { priceGroups } from './data/price-groups';
 
 /**
  * Перевод обязателен во всех локалях. Отсутствие языка — ошибка сборки, а не пустая строка:
- * пустое место на странице никто не заметит, остановленная сборка заметна сразу.
+ * пустое место на странице никто не заметит, остановленная сборка заметна сразу. Строка из одних
+ * пробелов — то же пустое место, поэтому проверка требует хотя бы одного видимого знака, а не длины.
+ * Значение не обрезается: `.trim()` молча поменял бы тексты, которые сверяет `test:content`.
  */
+const translation = z.string().regex(/\S/, 'перевод пуст или состоит из одних пробелов');
+
 const localized = z.object(
-  Object.fromEntries(locales.map((locale) => [locale, z.string().min(1)])) as Record<
+  Object.fromEntries(locales.map((locale) => [locale, translation])) as Record<
     (typeof locales)[number],
     z.ZodString
   >,

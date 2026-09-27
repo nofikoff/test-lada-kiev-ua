@@ -108,6 +108,19 @@ const cases = [
       ),
   },
   {
+    // Пробелы проходят проверку длины, а описания в них нет — alt=" " для экранного чтеца пуст.
+    name: 'описание фото из одних пробелов',
+    file: GALLERY,
+    expect: /alt(\.|\s*→\s*|["'\]\s]+)ru/i,
+    corrupt: (path, original) =>
+      writeFileSync(
+        path,
+        editJson(original, (items) => {
+          items[1].alt.ru = ' \n ';
+        }),
+      ),
+  },
+  {
     name: 'фото ведёт на несуществующую услугу',
     file: GALLERY,
     expect: /category/i,
