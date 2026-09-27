@@ -2,6 +2,8 @@
 
 > Massage, hair removal, permanent makeup and beauty services in central Kyiv, Ukraine. One studio at 10 Mala Zhytomyrska St., a few minutes' walk from Maidan Nezalezhnosti. Appointment by phone only — there is no online booking.
 
+The studio belongs to Lada Novikova, its founder: a physical rehabilitation specialist by training (National University of Ukraine on Physical Education and Sport) who gives massage sessions herself. The rest of the team works under the studio's name.
+
 The site is static HTML in three languages: Ukrainian at the root, Russian under `/ru/`, English under `/en/`. The same fifteen pages exist in every language, the address of a category is identical in all three, and every page carries its full price list in the served HTML — no script has to run to see a price.
 
 ## Pages
@@ -10,7 +12,7 @@ Ukrainian (default):
 
 - [Home](https://www.lada.kiev.ua/): studio, services overview, full price list
 - [Massage](https://www.lada.kiev.ua/massage/): full body, local and exotic massage
-- [Hair removal](https://www.lada.kiev.ua/depilation/): wax and sugar, women and men
+- [Hair removal](https://www.lada.kiev.ua/depilation/): waxing and sugaring, women and men
 - [Permanent makeup](https://www.lada.kiev.ua/permanent/): brows, lips, eyeliner
 - [Brows, lashes and makeup](https://www.lada.kiev.ua/beauty/): brow and lash treatments, makeup, hair styling
 
@@ -21,7 +23,7 @@ English: [/en/](https://www.lada.kiev.ua/en/), [/en/massage/](https://www.lada.k
 ## Services
 
 - **Massage**: relaxation, therapeutic, author's, sports and four-hands sessions; local work on the neck, back, face, head, feet and hands; exotic techniques — Gua Sha, coconut bowls, anti-cellulite, cupping with stone therapy, Yumeiho, Tibetan honey and chocolate, Abhyanga, Shirodhara, lymphatic drainage
-- **Hair removal**: wax and sugar paste, women and men, single zones and combos
+- **Hair removal**: waxing and sugaring (sugar paste), women and men, single zones and combos
 - **Permanent makeup**: brows, lips, interlash and eyeliner; touch-up within 6 months costs 80% of the original price
 - **Brows, lashes and makeup**: brow shaping and tinting, lash extensions and lamination, makeup, hair styling
 
@@ -40,4 +42,4 @@ Session prices are stated on every page in Ukrainian hryvnia. Duration-based ser
 - [Sitemap](https://www.lada.kiev.ua/sitemap-index.xml): all fifteen pages with their language alternates
 - [robots.txt](https://www.lada.kiev.ua/robots.txt)
 
-Every page carries JSON-LD: the home page describes the business (address, hours, phone, price range), each category page describes the service with its offers and a breadcrumb. Share-priced items are deliberately absent from the offer list — an offer without an amount would read as a free service.
+Every page carries JSON-LD: the home page describes the business (address, hours, phone, price range, founder), each category page describes the service with its offers and a breadcrumb. Share-priced items are deliberately absent from the offer list — an offer without an amount would read as a free service.

@@ -141,11 +141,15 @@ description: "Task list for 004-site-voice"
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T033 [P] В public/llms.txt: строка об основательнице (Lada Novikova, physical rehabilitation specialist, graduate of the National University of Ukraine on Physical Education and Sport, leads massage sessions herself) и шугаринг в строке Hair removal; без «workshop»
-- [ ] T034 [P] ADR с номерами из get-id (`resolve_project` → `next_id`, тип `ADR`), форма docs/adr/adr-template.md: мастера кроме Лады не называются по именам; `FAQPage` не размечается (research.md §R4 с источниками); отдельных страниц под запросы нет (docs/specs/routes.md); docs/specs/voice.md ссылается на первый
-- [ ] T035 Прогнать все гейты: `npm run check`, `npm run lint`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze` — все зелёные
-- [ ] T036 Проверить JSON-LD `dist/index.html` и `dist/massage/index.html` валидатором schema.org (quickstart.md §5); результат — в этот файл
-- [ ] T037 Закрыть пакет: отметить выполненные задачи в specs/004-site-voice/tasks.md, записать замер LCP и итог валидации
+- [X] T033 [P] В public/llms.txt: строка об основательнице (Lada Novikova, physical rehabilitation specialist, graduate of the National University of Ukraine on Physical Education and Sport, leads massage sessions herself) и шугаринг в строке Hair removal; без «workshop»
+- [X] T034 [P] ADR с номерами из get-id (`resolve_project` → `next_id`, тип `ADR`), форма docs/adr/adr-template.md: мастера кроме Лады не называются по именам; `FAQPage` не размечается (research.md §R4 с источниками); отдельных страниц под запросы нет (docs/specs/routes.md); docs/specs/voice.md ссылается на первый
+- [X] T035 Прогнать все гейты: `npm run check`, `npm run lint`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze` — все зелёные
+- [X] T036 Проверить JSON-LD `dist/index.html` и `dist/massage/index.html` валидатором schema.org (quickstart.md §5); результат — в этот файл
+  - 2026-09-27, `POST https://validator.schema.org/validate` по собранным `dist/index.html`, `dist/ru/index.html`, `dist/en/index.html`, `dist/massage/index.html`, `dist/en/depilation/index.html`: **0 ошибок** на всех. На трёх главных по 3 предупреждения `UNKNOWN_FIELD availableLanguage` у `HealthAndBeautyBusiness` — поле из пакета 001, пакетом 004 не затронуто; `founder`, `Person`, `CollegeOrUniversity` предупреждений не дают.
+- [X] T037 Закрыть пакет: отметить выполненные задачи в specs/004-site-voice/tasks.md, записать замер LCP и итог валидации
+  - LCP (Lighthouse 12.8.2, мобильный, simulate, два прогона, против сборки 1cac138 подряд на одной машине): `/` 2.48 / 2.48 с (база 2.48 / 2.48), `/ru/` 2.49 / 2.48 (база 2.48 / 2.48), `/en/` 2.03 / 2.10 (база 2.11 / 2.03) — записано в docs/specs/home-hero.md §Производительность.
+  - Гейты на `3dc37f2` + polish: `check` 0/0, `lint` чисто, `build`, `test:e2e` 1150 passed / 3 skipped (пропуски были и до пакета), `test:invalid-data` 8/8, `analyze` — наибольшая страница 1287 Б при потолке 1536.
+  - Отклонение от плана: проверка состава шрифтов (T021) в WebKit не выполняется — на сборке 1cac138 он уже отмечал загруженными неиспользуемые начертания Cormorant; в Chromium совпадает с базой. Раскладка первого экрана сверена с 1cac138 по вычисленным стилям и координатам на 1280 и 390 px — расхождений ноль.
 
 ---
 

@@ -20,7 +20,7 @@
 
 ## Что открыть, когда трогаешь
 
-Перед тем как предлагать зависимость, фреймворк или переписывание подсистемы — `docs/adr/`. Уже отвергнуто: React/Next с пререндерингом ([ADR-004](docs/adr/adr-004-static-astro-no-client-framework.md)), `IntersectionObserver` для проявлений ([ADR-015](docs/adr/adr-015-motion-css-scroll-driven-no-script.md)), отложенная загрузка GA4 ([ADR-011](docs/adr/adr-011-analytics-snippet-unchanged-not-deferred.md)), Tailwind 4 вместе с правкой вёрстки ([ADR-010](docs/adr/adr-010-tailwind-3-via-postcss-no-integration.md)).
+Перед тем как предлагать зависимость, фреймворк или переписывание подсистемы — `docs/adr/`. Уже отвергнуто: React/Next с пререндерингом ([ADR-004](docs/adr/adr-004-static-astro-no-client-framework.md)), `IntersectionObserver` для проявлений ([ADR-015](docs/adr/adr-015-motion-css-scroll-driven-no-script.md)), отложенная загрузка GA4 ([ADR-011](docs/adr/adr-011-analytics-snippet-unchanged-not-deferred.md)), Tailwind 4 вместе с правкой вёрстки ([ADR-010](docs/adr/adr-010-tailwind-3-via-postcss-no-integration.md)), разметка `FAQPage` ([ADR-020](docs/adr/adr-020-no-faqpage-markup.md)), отдельные страницы под поисковые запросы ([ADR-021](docs/adr/adr-021-no-query-landing-pages.md)).
 
 | Трогаешь | Открой | Потому что |
 |---|---|---|
