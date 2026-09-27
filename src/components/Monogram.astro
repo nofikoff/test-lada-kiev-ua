@@ -35,8 +35,8 @@ const decorative = mode !== 'mark';
   focusable="false"
 >
   {!decorative && <title>Lada N</title>}
-  <!-- Одна строка с вложенным `tspan`, а не два `text` с подобранными координатами:
-       ширину «L» в Cormorant знает шрифт, а не автор разметки. -->
+  {/* Одна строка с вложенным `tspan`, а не два `text` с подобранными координатами:
+       ширину «L» в Cormorant знает шрифт, а не автор разметки. */}
   <text x="0" y="215">L<tspan class="monogram__n">N</tspan></text>
 </svg>
 

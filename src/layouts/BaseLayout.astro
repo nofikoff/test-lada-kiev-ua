@@ -52,12 +52,12 @@ const subset = locale === 'en' ? 'latin' : 'cyrillic';
 <html lang={locale}>
   <head>
     <meta charset="UTF-8" />
-    <!--
+    {/*
       Монограмма студии во встроенном адресе (FR-036): сетевого запроса не появляется, как и
       у прежнего эмодзи. Латунью набраны обе буквы, а не одна, как в `Monogram.astro`: шёлк
       на светлой полосе вкладок исчезает. Решётка цвета записана как `%23` — незакодированная
       обрывает адрес на фрагменте, и вкладка остаётся пустой при исправной на вид разметке.
-    -->
+    */}
     <link
       rel="icon"
       type="image/svg+xml"
@@ -67,13 +67,13 @@ const subset = locale === 'en' ? 'latin' : 'cyrillic';
 
     {error ? <ErrorHead locale={locale} /> : <SeoHead locale={locale} category={category} />}
 
-    <!-- Шрифты отдаются с собственного домена: файлы скачаны на сборке, объявления @font-face
-         и метрики запасного шрифта Astro выводит сюда сам. Сторонних доменов в загрузке нет. -->
+    {/* Шрифты отдаются с собственного домена: файлы скачаны на сборке, объявления @font-face
+         и метрики запасного шрифта Astro выводит сюда сам. Сторонних доменов в загрузке нет. */}
     <Font cssVariable="--font-inter" preload={[{ subset }]} />
     <Font cssVariable="--font-cormorant" preload={[{ subset, style: 'normal' }]} />
 
-    <!-- Google Analytics. Переносится без изменений: отложенная загрузка потеряла бы визиты
-         и сделала статистику до и после миграции несопоставимой (research.md §R16). -->
+    {/* Google Analytics. Переносится без изменений: отложенная загрузка потеряла бы визиты
+         и сделала статистику до и после миграции несопоставимой (research.md §R16). */}
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WZT8TJLSDP"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
@@ -86,9 +86,9 @@ const subset = locale === 'en' ? 'latin' : 'cyrillic';
   </head>
   <body>
     <Ambience />
-    <!-- Содержимое поднято над фоновым слоем собственным контекстом наложения. Заливки
+    {/* Содержимое поднято над фоновым слоем собственным контекстом наложения. Заливки
          на обёртке нет намеренно: непрозрачный фон здесь погасил бы весь слой света, ради
-         которого он и заведён. Цвет страницы задаёт `body` в src/index.css. -->
+         которого он и заведён. Цвет страницы задаёт `body` в src/index.css. */}
     <div class="relative z-10 min-h-screen">
       <Header locale={locale} />
       <main>
