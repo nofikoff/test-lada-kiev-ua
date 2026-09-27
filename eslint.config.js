@@ -6,7 +6,7 @@ import astro from 'eslint-plugin-astro';
 
 export default defineConfig(
   {
-    ignores: ['dist', '.astro', 'playwright-report', 'test-results'],
+    ignores: ['dist', '.astro', 'playwright-report', 'test-results', '.playwright-mcp'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
