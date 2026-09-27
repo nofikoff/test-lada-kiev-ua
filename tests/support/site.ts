@@ -193,20 +193,21 @@ export function queryOf(page: PageUnderTest & { category?: ServiceCategory }): R
 }
 
 /**
- * Начертания, загруженные главными страницами до пакета 004 (сняты на `main` 95d57b5,
- * 2026-09-27): «гарнитура|начертание|насыщенность|начало unicode-range». `U+301` открывает
- * кириллическое подмножество, `U+0-FF` — латинское. Главный заголовок главной вобрал строку
- * первого экрана, и новый файл шрифта на странице был бы ценой этой правки (docs/specs/home-hero.md).
+ * Начертания, загруженные главными страницами до пакета 004 в Chromium (сняты на `main` 95d57b5,
+ * 2026-09-27): «гарнитура|начертание|насыщенность|первая кодовая точка unicode-range». `U+301`
+ * открывает кириллическое подмножество, `U+0` — латинское; только начало диапазона, потому что
+ * движки записывают `unicode-range` по-разному. Главный заголовок главной вобрал строку первого
+ * экрана, и новый файл шрифта на странице был бы ценой этой правки (docs/specs/home-hero.md).
  */
 const LATIN_FACES = [
-  'Cormorant|italic|300|U+0-FF',
-  'Cormorant|normal|300|U+0-FF',
-  'Cormorant|normal|400|U+0-FF',
-  'Inter|normal|300|U+0-FF',
-  'Inter|normal|400|U+0-FF',
-  'Inter|normal|500|U+0-FF',
+  'Cormorant|italic|300|U+0',
+  'Cormorant|normal|300|U+0',
+  'Cormorant|normal|400|U+0',
+  'Inter|normal|300|U+0',
+  'Inter|normal|400|U+0',
+  'Inter|normal|500|U+0',
 ];
-const CYRILLIC_FACES = LATIN_FACES.map((face) => face.replace('U+0-FF', 'U+301'));
+const CYRILLIC_FACES = LATIN_FACES.map((face) => face.replace('U+0', 'U+301'));
 
 export const HOME_FONT_FACES: Record<Locale, readonly string[]> = {
   uk: [...LATIN_FACES, ...CYRILLIC_FACES].sort(),

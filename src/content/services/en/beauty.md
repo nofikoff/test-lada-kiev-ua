@@ -1,11 +1,11 @@
 ---
 category: beauty
-title: "Brows, lashes, makeup and hair styling in central Kyiv"
-description: "Brow shaping and tinting, InLei brow and lash lamination, makeup, hairstyles and blow-dries at Lada N, 10 Mala Zhytomyrska St. in Kyiv, open daily."
-heading: "Brows, lashes and makeup"
+title: "Brow and lash lamination, makeup in Kyiv — Lada N"
+description: "Brow and lash lamination with InLei, brow shaping and tinting, makeup, hairstyles and blow-dries in central Kyiv. Lada N, 10 Mala Zhytomyrska St., daily."
+heading: "Brow and lash lamination, makeup in Kyiv"
 ---
 
-This is the part of the studio people come to before an event — or simply to spend ten minutes less on themselves every morning for the next few weeks. There are two groups of work here: brow and lash care that lasts, and makeup and styling done for one particular day.
+This is the part of our studio in central Kyiv people come to before an event — or simply to spend ten minutes less on themselves every morning for the next few weeks. There are two groups of work here: brow and lash care — shaping, tinting, lamination — that lasts, and makeup and styling done for one particular day.
 
 ## Brows and lashes
 

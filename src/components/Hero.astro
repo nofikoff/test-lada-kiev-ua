@@ -71,9 +71,12 @@ const motes = [
     <div class="hero__in">
       <span class="eyebrow">{t.footer.landmark} · {t.nav.hours}</span>
 
-      <h1 class="display">{t.hero.title}</h1>
-
-      <p class="hero__sub">{t.hero.subtitle}</p>
+      {/* Строка под брендом — часть заголовка: в ней запрос главной (docs/specs/page-head.md
+           §Целевые запросы), а набрана она тем же начертанием, что и прежний подзаголовок. */}
+      <h1 class="hero__title">
+        <span class="display">{t.hero.title}</span>
+        <span class="hero__sub">{t.hero.subtitle}</span>
+      </h1>
 
       <p class="lede hero__lede">{t.hero.description}</p>
 
@@ -136,7 +139,7 @@ const motes = [
 
   /**
    * Узкий экран. Портрет стоит над текстом, и его высота — то, что остаётся от
-   * экрана после основной части текста: надзаголовка, заголовка, подзаголовка и кнопки
+   * экрана после основной части текста: надзаголовка, заголовка со строкой под брендом и кнопки
    * (`--primary`). Кнопка поэтому идёт сразу за подзаголовком, а описание и адрес — после неё:
    * полная колонка на 360×740 выше остатка экрана, и кнопка ушла бы за край при любом портрете.
    */
@@ -231,7 +234,18 @@ const motes = [
     text-wrap: balance;
   }
 
+  /* Бренд и строка лежат в одном `h1`, а расстояние между ними — прежний шаг колонки. */
+  .hero__title {
+    display: grid;
+    gap: inherit;
+  }
+
+  .hero__title > .display {
+    display: block;
+  }
+
   .hero__sub {
+    display: block;
     @apply font-serif text-brass;
     font-size: clamp(1.25rem, 3.4vw, 1.75rem);
     font-style: italic;

@@ -1,13 +1,15 @@
 ---
 category: massage
-title: "Massage in Kyiv at Maidan Nezalezhnosti — Lada N studio"
-description: "Wellness, signature, sports and exotic massage in central Kyiv. Lada N studio at 10 Mala Zhytomyrska St., open daily from 10:00 to 21:00, by appointment."
+title: "Massage in Kyiv at Maidan Nezalezhnosti — Lada N"
+description: "Massage in central Kyiv: wellness, signature, sports and exotic. Lada N studio at 10 Mala Zhytomyrska St., open daily from 10:00 to 21:00, by appointment."
 heading: "Massage in central Kyiv"
 ---
 
-Massage is the largest part of what we do. Three directions run at the studio on Mala Zhytomyrska: full body massage, local sessions on a single area, and exotic techniques that are hard to find elsewhere in the city. You choose the length of the session yourself — from a short visit in the middle of a working day to a full hour with nowhere to be.
+Massage is the largest part of what we do. Three directions run at the studio on Mala Zhytomyrska in central Kyiv: full body massage, local sessions on a single area, and exotic techniques that are hard to find elsewhere in the city. You choose the length of the session yourself — from a short visit in the middle of a working day to a full hour with nowhere to be.
 
 The difference between the directions is not the pressure, it is the task. One session gives the body back its mobility after a load, another releases the tension collected over a week, a third works with your state — with breathing, with sleep, and with the way you feel your own body at the end of the day. So choose by what brought you here, not by the name on the list.
+
+Among those who give massage at the studio is Lada Novikova, its founder and a physical rehabilitation specialist by training. She describes her approach to a session herself — [in her address on the home page](/en/#about).
 
 ## Full body massage
 

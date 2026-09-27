@@ -1,13 +1,13 @@
 ---
 category: permanent
-title: "Permanent makeup for brows, lips and eyeliner — Kyiv"
+title: "Permanent makeup in Kyiv: brows, lips, eyeliner — Lada N"
 description: "Permanent makeup in central Kyiv: powder brows, watercolour and lipstick lip techniques, interlash eyeliner. 10 Mala Zhytomyrska St., open daily."
-heading: "Permanent makeup"
+heading: "Permanent makeup in Kyiv"
 ---
 
-Permanent makeup is about a morning where nothing has to be drawn on. The pigment goes into the surface layer of the skin, holds for months and fades gradually, which is why the work is split in two: the main procedure, and a correction a few weeks later, once it is clear how the skin took the colour.
+Permanent makeup is about a morning where nothing has to be drawn on. The pigment goes into the surface layer of the skin, holds for months and fades gradually, which is why at our studio in central Kyiv the work is split in two: the main procedure, and a correction a few weeks later, once it is clear how the skin took the colour.
 
-## Brows
+## Powder brows
 
 We work in the powder technique — a soft, blended fill that reads like the trace of an eyeshadow rather than drawn-on hairs. It looks natural on any brow shape and has none of the hard outline that eventually becomes the main complaint about older work.
 

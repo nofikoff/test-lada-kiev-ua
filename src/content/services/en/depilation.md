@@ -1,11 +1,11 @@
 ---
 category: depilation
-title: "Waxing and sugaring in Kyiv — women's and men's hair removal"
-description: "Women's and men's hair removal with wax and sugar paste in central Kyiv: bikini, legs, arms, back, face. 10 Mala Zhytomyrska St., daily 10:00 to 21:00."
-heading: "Hair removal with wax and sugar paste"
+title: "Waxing and sugaring in Kyiv, women and men — Lada N"
+description: "Waxing and sugaring in central Kyiv for women and men: bikini, legs, arms, back, face. Lada N, 10 Mala Zhytomyrska St., open daily 10:00 to 21:00."
+heading: "Waxing and sugaring in Kyiv"
 ---
 
-Hair removal at Lada N is done two ways — with wax and with sugar paste. The choice between them is not a matter of fashion: paste works better on short, coarse hair and is gentler on sensitive skin, while wax is faster across large areas. Which one suits you is something the therapist will say on the spot, after looking at the area and the hair type.
+Hair removal at Lada N in central Kyiv is done two ways — waxing, and sugaring with sugar paste. The choice between them is not a matter of fashion: paste works better on short, coarse hair and is gentler on sensitive skin, while wax is faster across large areas. Which one suits you is something the therapist will say on the spot, after looking at the area and the hair type.
 
 ## Women's hair removal
 
