@@ -1,8 +1,8 @@
 <!--
 Sync Impact Report
-Version change: none → 1.0.0
-Modified principles: none (initial ratification)
-Added sections: Core Principles (I–V), Technology Constraints, Quality Gates, Governance
+Version change: 1.0.0 → 1.1.0
+Modified principles: none
+Added sections: Quality Gates §5 — выдача без комментариев кода (spec 003 FR-027)
 Removed sections: none
 Deferred TODOs: none
 Note: в репозитории нет CLAUDE.md, docs/ и ADR, поэтому текст принципов написан здесь,
@@ -68,6 +68,9 @@ e2e-проверки SEO-контракта и автоматическая св
 3. E2E-проверки SEO-контракта зелёные на всех языковых версиях затронутых страниц.
 4. Для изменений, затрагивающих контент, — сверка полноты переноса относительно предыдущей
    версии.
+5. В собранном `dist/` нет ни одного комментария кода — ни в HTML, ни в скриптах и стилях;
+   проверяет `tests/build-output.spec.ts`. Astro выводит `<!-- -->` из разметки как есть,
+   поэтому в шаблонах `.astro` комментарий пишется только выражением `{/* */}`.
 
 ## Governance
 
@@ -80,4 +83,4 @@ e2e-проверки SEO-контракта и автоматическая св
 runbook), заменяется здесь одной строкой со ссылкой на него. Дублирование текста правила в двух
 местах запрещено: копия расходится с оригиналом, и никто не знает, какая из них актуальна.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-06
+**Version**: 1.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-27
