@@ -10,3 +10,5 @@
 | 003 | lada-photos-home | retired | dfcc201f0b519c0e05751ad38bc48028b6e1ae18 | - | - |  |
 | 001 | astro-migration | dissolved | - | - | - |  |
 | 002 | visual-redesign | dissolved | - | - | - |  |
+| 001 | astro-migration | retired | b4c60b10d74de86545f22ef234be670d2644b371 | - | - |  |
+| 002 | visual-redesign | retired | b4c60b10d74de86545f22ef234be670d2644b371 | - | - |  |
