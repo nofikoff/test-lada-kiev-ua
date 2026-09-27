@@ -30,4 +30,4 @@ Keyframes — `src/styles/ambience.css`, носители — `src/index.css` и
 
 ## Не проверяется автоматически
 
-Уместность темпа (эталон — прототип из истории пакета 002, `git show ade2e87:specs/002-visual-redesign/prototype.html`) и общая целостность страницы в Firefox.
+Уместность темпа (эталон — `prototype.html`, согласованный в пакете 002; в истории на коммите ade2e87) и общая целостность страницы в Firefox.
