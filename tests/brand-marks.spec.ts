@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { homePages, SITE_ORIGIN } from './support/site';
+import { allPages, GOOGLE_MAPS_PLACE, homePages, SITE_ORIGIN } from './support/site';
 
 /**
- * Знаки студии в служебных местах страницы: подпись домена в нижней полосе подвала (FR-035)
- * и значок вкладки (FR-036). Ни то, ни другое не покрыто соседними проверками — сверка полноты
+ * Знаки студии в служебных местах страницы: подпись домена в нижней полосе подвала (FR-035),
+ * значок вкладки (FR-036) и карта в подвале. Ни то, ни другое не покрыто соседними проверками — сверка полноты
  * контента читает словарь предыдущей версии, а контракт заголовочной части описывает адреса
  * и машиночитаемое описание.
  */
@@ -115,6 +115,23 @@ test.describe('значок вкладки (FR-036)', () => {
         href,
       );
       expect(rendered, 'значок не отрисовался из встроенного адреса').toBe(true);
+    });
+  }
+});
+
+test.describe('карта в подвале', () => {
+  // Сам кадр Google в прогоне не грузится (сеть), поэтому проверяется то, что от сайта зависит:
+  // адрес встраивания ведёт на карточку студии, а не на точку по адресу, и на языке страницы.
+  for (const { locale, path } of allPages) {
+    test(`${path}: карта — карточка студии в Google Картах на языке страницы`, async ({ page }) => {
+      await page.goto(path);
+
+      const src = await page.locator('footer iframe').getAttribute('src');
+      expect(src, 'в подвале нет карты').not.toBeNull();
+
+      const embed = decodeURIComponent(src!);
+      expect(embed, 'карта не ведёт на карточку студии').toContain(`!1s${GOOGLE_MAPS_PLACE}!`);
+      expect(embed, 'язык карты не совпадает с языком страницы').toContain(`!3m2!1s${locale}!2sua`);
     });
   }
 });

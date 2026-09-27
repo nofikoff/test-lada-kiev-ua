@@ -22,6 +22,9 @@ export const PHONE = '+380995570045';
 
 export const INSTAGRAM = 'https://www.instagram.com/lada_n_kyiv/';
 
+/** Карточка студии в Google Картах (Google Business): идентификатор места из её адреса. */
+export const GOOGLE_MAPS_PLACE = '0x40d4cfc47fcb8ed9:0x402f20aba16ffbaa';
+
 export const SERVICE_CATEGORIES = ['massage', 'depilation', 'permanent', 'beauty'] as const;
 
 export type ServiceCategory = (typeof SERVICE_CATEGORIES)[number];

@@ -29,8 +29,14 @@ const year = new Date().getFullYear();
  */
 if (!Astro.site) throw new Error('`site` не объявлен в astro.config.mjs: подпись домена не из чего вывести');
 const domain = Astro.site.host.replace(/^www\./, '');
+/**
+ * Кадр — карточка студии в Google Business, а не точка по адресу: так на карте видны название,
+ * рейтинг и отзывы. Адрес взят из «Поделиться → Встроить карту» на карточке; `!1s<язык>`
+ * подставляется из локали страницы, остальное — как выдал Google.
+ */
 const map =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2540.5!2d30.5213!3d50.4501!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4ce50f8b6e3ed%3A0x5f1e4d5b5a5b5e5d!2z0YPQuy4g0JzQsNC70LDRjyDQltC40YLQvtC80LjRgNGB0LrQsNGPLCAxMCwg0JrQuNC10LI!5e0!3m2!1sru!2sua!4v1234567890';
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2540.402651295617!2d30.521418000000008!3d50.4522263!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4cfc47fcb8ed9%3A0x402f20aba16ffbaa!2zTGFkYSBOIC0g0LzQsNGB0LDQtiAsINC00LXQv9C40LvRj9GG0ZbRjywg0L_QtdGA0LzQsNC90LXQvdGCICwg0LzQsNGB0LDQtiDQutC40ZfQsg!5e0' +
+  `!3m2!1s${locale}!2sua!4v1790519599010!5m2!1s${locale}!2sua`;
 
 interface Contact {
   readonly icon: IconName;
@@ -109,7 +115,7 @@ const labels: Contact[] = [
           style="border: 0; min-height: 250px"
           allowfullscreen
           loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
+          referrerpolicy="strict-origin-when-cross-origin"
           title="Lada N Location"></iframe>
       </div>
     </div>
