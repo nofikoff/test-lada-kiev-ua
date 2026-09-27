@@ -1,7 +1,7 @@
 /**
- * Вес исполняемого кода собранного сайта — предмет SC-005 (не более 5 КБ на страницу помимо
- * аналитики и не выше снятых до работ 732 Б). Нумерация — пакета 002; в пакете 001, для
- * которого скрипт написан, тот же порог стоял под SC-006 и FR-029.
+ * Вес исполняемого кода собранного сайта — предмет FR-024 пакета 003: не более 5 КБ на страницу
+ * помимо аналитики и не выше потолка 1536 Б. Потолок заменил 732 Б из SC-005 пакета 002; в пакете
+ * 001, для которого скрипт написан, бюджет стоял под SC-006 и FR-029.
  *
  * Считаются ВСТРОЕННЫЕ модульные скрипты страницы, а не только файлы `dist/_astro/*.js`.
  * Сборка после переноса вкладок не порождает ни одного внешнего файла скрипта: код вкладок
@@ -16,19 +16,20 @@ import { gzipSync } from 'node:zlib';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
-const DIST = 'dist';
+/** Каталог сборки — аргументом, чтобы анализатор проверялся на фикстурах (`tests/analyze-bundle.spec.ts`). */
+const DIST = process.argv[2] ?? 'dist';
 
-/** SC-005. КБ здесь — 1024 байта, как и в отчётах Lighthouse. */
+/** КБ здесь — 1024 байта, как и в отчётах Lighthouse. */
 const BUDGET_BYTES = 5 * 1024;
+const CEILING_BYTES = 1536;
 
 /**
  * Признаки аналитики: каждая запись — набор подстрок, которые должны встретиться вместе.
- * Домен счётчика и вызов его глобальной функции однозначны сами по себе. `dataLayer` —
- * обычное слово, и признаком в одиночку не является: собственный код, отправляющий событие
- * в очередь, вышел бы из-под учёта того самого бюджета, который он и тратит. Поэтому очередь
- * засчитывается только рядом с `gtag`, то есть внутри снипета счётчика.
+ * Признаком служит сам сниппет счётчика, а не вызов `gtag(`: собственный код, отправляющий
+ * событие, тоже вызывает `gtag(` и вышел бы из-под учёта того бюджета, который он тратит.
+ * Сниппет подключён `is:inline` и минификатор его не трогает, поэтому кавычки в маркере стабильны.
  */
-const ANALYTICS_MARKERS = [['googletagmanager.com'], ['gtag('], ['dataLayer', 'gtag']];
+const ANALYTICS_MARKERS = [['googletagmanager.com'], ["gtag('js'", "gtag('config'"]];
 
 /** Тип, при котором содержимое тега исполняется. Пустой тип означает классический скрипт. */
 const EXECUTABLE_TYPES = new Set(['', 'module', 'text/javascript', 'application/javascript']);
@@ -115,12 +116,15 @@ const worst = Math.max(...rows.map((row) => row.bytes));
 const heaviest = rows.filter((row) => row.bytes === worst).map((row) => row.address);
 
 console.log(
-  `\nБюджет SC-005: ${BUDGET_BYTES} Б на страницу помимо аналитики.` +
-    `\nНаибольшая страница: ${worst} Б (${((worst / BUDGET_BYTES) * 100).toFixed(1)}% бюджета) — ${heaviest.join(', ')}`,
+  `\nFR-024: потолок ${CEILING_BYTES} Б, бюджет ${BUDGET_BYTES} Б на страницу помимо аналитики.` +
+    `\nНаибольшая страница: ${worst} Б (${((worst / CEILING_BYTES) * 100).toFixed(1)}% потолка) — ${heaviest.join(', ')}`,
 );
 
-const over = rows.filter((row) => row.bytes > BUDGET_BYTES);
+const limit = Math.min(CEILING_BYTES, BUDGET_BYTES);
+const over = rows.filter((row) => row.bytes > limit);
 if (over.length > 0) {
-  console.error(`\nПревышение бюджета: ${over.map((row) => `${row.address} — ${row.bytes} Б`).join(', ')}`);
+  console.error(
+    `\nПревышение ${limit} Б: ${over.map((row) => `${row.address} — ${row.bytes} Б`).join(', ')}`,
+  );
   process.exit(1);
 }
