@@ -7,6 +7,12 @@ import sitemap from '@astrojs/sitemap';
 const SITE = 'https://www.lada.kiev.ua';
 
 /**
+ * Свой порт у preview, а не общий с dev 4321: иначе e2e (reuseExistingServer) и Lighthouse
+ * молча уходят на запущенный astro dev и проверяют не dist/. Отсюда же его берёт playwright.config.ts.
+ */
+export const PREVIEW_PORT = 4329;
+
+/**
  * Начертания перечислены те, что действительно встречаются в разметке, а не весь набор
  * действующей ссылки на сторонний домен: каждое лишнее — отдельный файл в загрузке.
  *
@@ -30,6 +36,7 @@ const SUBSETS = /** @type {['latin', 'cyrillic']} */ (['latin', 'cyrillic']);
  */
 export default defineConfig({
   site: SITE,
+  server: ({ command }) => (command === 'preview' ? { port: PREVIEW_PORT } : {}),
   output: 'static',
   // Совпадение двух адресов и совпадение идентификаторов в прайсе обязаны ронять сборку,
   // а не писать предупреждение: по умолчанию побеждает запись с большим приоритетом,

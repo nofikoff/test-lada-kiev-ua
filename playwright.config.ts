@@ -1,9 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { PREVIEW_PORT } from './astro.config.mjs';
 
-// Порт `astro preview` по умолчанию. Держится здесь одним значением, потому что его знают
-// и webServer, и baseURL, и проверки абсолютных адресов.
-const PORT = 4321;
-const BASE_URL = `http://localhost:${PORT}`;
+const BASE_URL = `http://localhost:${PREVIEW_PORT}`;
 
 /**
  * Проверяемый объект — статический HTML собранного сайта, а не компоненты в изоляции:

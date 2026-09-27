@@ -48,8 +48,8 @@ Lighthouse 12.8.2, мобильный профиль, `--throttling-method=simul
 Любая правка первого экрана или первых карточек ленты — перемер:
 
 ```sh
-npm run build && npm run preview   # порт 4321 должен быть свободен от astro dev
+npm run build && npm run preview   # PREVIEW_PORT из astro.config.mjs, не 4321 от astro dev
 CHROME_PATH="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" \
-  npx -y lighthouse@12.8.2 http://localhost:4321/ --throttling-method=simulate \
+  npx -y lighthouse@12.8.2 http://localhost:4329/ --throttling-method=simulate \
   --only-categories=performance,accessibility,seo --chrome-flags="--headless=new" --output=json
 ```
