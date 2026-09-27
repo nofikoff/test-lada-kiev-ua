@@ -19,6 +19,9 @@ ErrorDocument 404 /404.html
 <IfModule mod_mime.c>
   AddType font/woff2 .woff2
   AddType image/avif .avif
+  # Карты сайта: Apache по умолчанию отдаёт text/xml, а preview и проверка из runbook —
+  # application/xml. Тип объявлен здесь, чтобы прод совпадал с тем, что проверяется локально.
+  AddType application/xml .xml
 </IfModule>
 
 <IfModule mod_deflate.c>
