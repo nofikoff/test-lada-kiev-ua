@@ -1,23 +1,20 @@
 ---
 /**
- * Первый экран (FR-011, FR-017, FR-018, research.md §R7).
+ * Первый экран: текст и портрет Лады (FR-017 из 002; FR-001…FR-008 из 003, contracts/hero.md).
  *
- * Затемнение разведено на два слоя, и это не украшение раскладки, а условие проверяемости.
- * `hero__veil` раскрывается за 1.8 с и дальше дышит — им работает FR-011. `hero__floor`
- * не участвует ни в одной анимации — им работает FR-017: контраст заголовка не зависит
- * от фазы дыхания. Одним слоем эти два требования несовместимы: любая заметная глазу
- * амплитуда в светлой фазе роняет контраст текста.
+ * Портрет стоит колонкой рядом с текстом, а не фоном под ним — почему, см. ADR-002. Отсюда два
+ * следствия раскладки. Текст лежит на угле самой секции, и его контраст не зависит от кадра
+ * (FR-017 держится без отдельной подложки). Монограммы здесь больше нет: разреженный край,
+ * который она заполняла, занял портрет (FR-008 заменяет FR-018 из 002).
  *
- * Композиция уходит с центральной оси влево, к плотному краю затемнения, а монограмма —
- * к разреженному правому и обрезается краем окна (FR-018). Текст в анимациях не участвует:
- * он отрисовывается первым кадром, и LCP не зависит от раскрытия (research.md §R7).
+ * В разметке текст идёт раньше портрета — `h1` первым читает и диктор, и поисковик; наверх на
+ * узком экране портрет поднимает `order`.
  */
 import { Picture } from 'astro:assets';
 import Glow from './Glow.astro';
 import Icon from './Icon.astro';
-import Monogram from './Monogram.astro';
 import Section from './Section.astro';
-import heroImage from '../assets/massage-kiev-lada-novikova.jpg';
+import { portrait } from '../data/gallery';
 import { ui, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -26,10 +23,11 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = ui[locale];
+const photo = (await portrait()).data;
 
 /**
- * Восемь порошинок первого экрана — они видны поверх кадра; остальные двенадцать живут
- * в сквозном фоне, который здесь закрыт фотографией (contracts/motion.md: `mote × 20`).
+ * Восемь порошинок первого экрана; остальные двенадцать живут в сквозном фоне, который
+ * секция первого экрана закрывает своей заливкой (contracts/motion.md из 002: `mote × 20`).
  */
 const motes = [
   { left: '12%', duration: '22s', delay: '-1s', sway: '3vw', size: '3px' },
@@ -45,28 +43,8 @@ const motes = [
 
 <Section rhythm="hero" reveal={false}>
   <Fragment slot="backdrop">
-    <!-- alt пуст намеренно: изображение декоративно, весь смысл первого экрана несёт текст.
-         Наезд кадра живёт на обёртке, а не на самом изображении: `<picture>` объявлен
-         `display: contents`, поэтому анимировать имеет смысл то, что участвует в раскладке. -->
-    <div class="hero__frame" aria-hidden="true">
-      <Picture
-        src={heroImage}
-        alt=""
-        formats={['avif', 'webp']}
-        widths={[640, 960, 1280, 1920]}
-        sizes="100vw"
-        priority
-        pictureAttributes={{ class: 'contents' }}
-        class="h-full w-full object-cover [object-position:62%_50%]"
-      />
-    </div>
-
-    {/* Два пятна света первого экрана: сквозной слой сюда не достаёт — его закрывает кадр. */}
     <Glow size="32rem" right="-8rem" top="-10rem" tone="warm" period="19s" beat="a" />
     <Glow size="24rem" left="6%" bottom="-8rem" tone="lit" period="27s" phase="-4s" beat="b" />
-
-    <div class="hero__veil" aria-hidden="true"></div>
-    <div class="hero__floor" aria-hidden="true"></div>
 
     <div class="hero__dust" aria-hidden="true">
       {
@@ -85,13 +63,11 @@ const motes = [
       }
     </div>
 
-    <Monogram mode="edge" />
-
-    <!-- Подсказка прокрутки: волосок с каплей света вместо подпрыгивающей «мышки» (T024). -->
+    <!-- Подсказка прокрутки: волосок с каплей света вместо подпрыгивающей «мышки» (T024 из 002). -->
     <div class="scroll-hint" aria-hidden="true"></div>
   </Fragment>
 
-  <div class="mx-auto w-full max-w-6xl px-4">
+  <div class="hero__grid mx-auto w-full max-w-6xl px-4">
     <div class="hero__in">
       <span class="eyebrow">{t.footer.landmark} · {t.nav.hours}</span>
 
@@ -110,11 +86,76 @@ const motes = [
 
       <p class="hero__note">{t.footer.address} {t.footer.landmark}</p>
     </div>
+
+    <div class="hero__portrait">
+      <!-- Наезд живёт на обёртке, а не на изображении: прозрачность и трансформация самого
+           `<img>` не анимируются, иначе отрисовка портрета ждала бы движения (research.md §R4). -->
+      <div class="hero__zoom">
+        <Picture
+          src={photo.photo}
+          alt={photo.alt[locale]}
+          formats={['avif', 'webp']}
+          widths={[480, 720, 960, 1440]}
+          sizes="(min-width: 62rem) 40vw, 100vw"
+          priority
+          pictureAttributes={{ class: 'contents' }}
+          class="h-full w-full object-cover"
+          style={{ objectPosition: photo.focus }}
+        />
+      </div>
+      <div class="hero__veil" aria-hidden="true"></div>
+    </div>
   </div>
 </Section>
 
 <style>
-  .hero__frame {
+  /**
+   * `--head` — высота шапки (`h-16` и `md:h-20` в `Header.astro`). Шапка фиксирована и лежит
+   * поверх секции; верхний отступ секции (`--rhythm-work`) её не всегда перекрывает, и остаток
+   * добирается здесь — иначе шапка режет лицо на портрете.
+   */
+  .hero__grid {
+    --head: 4rem;
+    display: grid;
+    gap: 1.5rem;
+    padding-top: max(0px, var(--head) + 0.75rem - var(--rhythm-work));
+  }
+
+  @media (min-width: 48rem) {
+    .hero__grid {
+      --head: 5rem;
+    }
+  }
+
+  .hero__in {
+    display: grid;
+    gap: 1.15rem;
+    max-width: 40rem;
+  }
+
+  /**
+   * Узкий экран (FR-003, FR-004). Портрет стоит над текстом, и его высота — то, что остаётся от
+   * экрана после основной части текста: надзаголовка, заголовка, подзаголовка и кнопки
+   * (`--primary`). Кнопка поэтому идёт сразу за подзаголовком, а описание и адрес — после неё:
+   * полная колонка на 360×740 выше остатка экрана, и кнопка ушла бы за край при любом портрете.
+   */
+  .hero__portrait {
+    --primary: 20rem;
+    position: relative;
+    order: -1;
+    overflow: hidden;
+    margin-inline: -1rem;
+    height: clamp(11rem, 100svh - var(--rhythm-work) - var(--rhythm-tight) - var(--primary), 62svh);
+    /* Края уходят в уголь секции: у портрета нет рамки, он проступает из темноты. */
+    mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 72%, transparent);
+  }
+
+  .hero__lede,
+  .hero__note {
+    order: 1;
+  }
+
+  .hero__zoom {
     position: absolute;
     inset: 0;
     animation: drift 32s ease-in-out infinite;
@@ -122,62 +163,57 @@ const motes = [
   }
 
   /**
-   * Затемнение направленное: плотное слева-внизу под текстом, разреженное справа-вверху,
-   * где стоит монограмма и виден сам кадр. Раскрывается однократно, дальше дышит.
+   * Раскрытие из затемнения (FR-007): слой угля над портретом гаснет за 1.8 с и дальше едва
+   * дышит. В покое слой прозрачен — поэтому при уменьшенном движении, где анимации сняты
+   * глобально, портрет виден сразу, а не остаётся под завесой.
    */
   .hero__veil {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(
-        to top,
-        rgb(var(--ink)) 4%,
-        rgb(var(--ink) / 0.86) 34%,
-        rgb(var(--ink) / 0.34) 78%,
-        rgb(var(--ink) / 0.5) 100%
-      ),
-      linear-gradient(
-        to right,
-        rgb(var(--ink)) 0%,
-        rgb(var(--ink) / 0.72) 42%,
-        rgb(var(--ink) / 0.18) 100%
-      );
+    background: rgb(var(--ink));
+    opacity: 0;
     animation:
       wake 1.8s cubic-bezier(0.2, 0.6, 0.2, 1) both,
       veil-breath 13s ease-in-out 1.8s infinite;
   }
 
   /**
-   * Статичная подложка под текстовой колонкой (FR-017). Ни одной анимации на ней нет и быть
-   * не может: плотность под текстом — единственное, что удерживает контраст независимо
-   * от фазы дыхания завесы и от того, что происходит на фотографии под ней.
+   * Широкий экран, а также телефон, повёрнутый горизонтально: колонки. Высота портрета берётся
+   * от экрана, ширина — от высоты через пропорцию 4:5, и обе ограничены исходником (FR-005).
    */
-  .hero__floor {
-    position: absolute;
-    inset: auto 0 0 0;
-    height: 78%;
-    pointer-events: none;
-    background: linear-gradient(
-      to top,
-      rgb(var(--ink)) 2%,
-      rgb(var(--ink) / 0.92) 26%,
-      rgb(var(--ink) / 0.55) 62%,
-      rgb(var(--ink) / 0) 100%
-    );
+  @media (min-width: 62rem), (orientation: landscape) and (max-height: 32rem) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: clamp(1.5rem, 4vw, 4rem);
+    }
+
+    .hero__in {
+      gap: 1.75rem;
+    }
+
+    .hero__lede,
+    .hero__note {
+      order: 0;
+    }
+
+    .hero__portrait {
+      order: 0;
+      margin-inline: 0;
+      aspect-ratio: 4 / 5;
+      height: min(86svh - var(--head) - var(--rhythm-tight), 900px);
+      max-width: 720px;
+      /* Со стороны текста и снизу край уходит глубже, сверху и справа — едва: кадр не вклеен. */
+      mask-image:
+        linear-gradient(to right, transparent, #000 18%, #000 94%, transparent),
+        linear-gradient(to bottom, transparent, #000 6%, #000 84%, transparent);
+      mask-composite: intersect;
+    }
   }
 
-  @media (min-width: 62rem) {
-    .hero__floor {
-      inset: 0 auto 0 0;
-      width: 68%;
-      height: 100%;
-      background: linear-gradient(
-        to right,
-        rgb(var(--ink)) 0%,
-        rgb(var(--ink) / 0.88) 38%,
-        rgb(var(--ink) / 0.45) 72%,
-        rgb(var(--ink) / 0) 100%
-      );
+  @media (orientation: landscape) and (max-height: 32rem) {
+    .hero__in {
+      gap: 0.75rem;
     }
   }
 
@@ -188,14 +224,8 @@ const motes = [
     pointer-events: none;
   }
 
-  .hero__in {
-    display: grid;
-    gap: 1.75rem;
-    max-width: 40rem;
-  }
-
   /* На узком экране надзаголовок переносится: без балансировки на второй строке остаётся
-     хвост в одно значение — ровно тот случай, который спека называет краевым. */
+     хвост в одно значение — ровно тот случай, который спека 002 называет краевым. */
   .hero__in > .eyebrow {
     text-wrap: balance;
   }
@@ -208,7 +238,7 @@ const motes = [
     line-height: 1.3;
   }
 
-  /* Колонка описания уже общей меры: 46 знаков в строке (T022) — описание первого экрана
+  /* Колонка описания уже общей меры: 46 знаков в строке (T022 из 002) — описание первого экрана
      читается с одного взгляда, а `--measure` задан для абзацев, которые читают подряд. */
   .hero__lede {
     max-width: 29rem;
@@ -237,11 +267,5 @@ const motes = [
     height: 2.5rem;
     background: linear-gradient(to bottom, transparent, rgb(var(--brass)), transparent);
     animation: drip 3.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  @media (max-width: 40rem) {
-    .hero__in {
-      gap: 1.15rem;
-    }
   }
 </style>
