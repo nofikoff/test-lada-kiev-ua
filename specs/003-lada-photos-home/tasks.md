@@ -29,7 +29,7 @@ description: "Task list for 003-lada-photos-home"
 
 **Purpose**: исходники фото в дереве проекта
 
-- [ ] T001 Скопировать 12 исходников из `~/Downloads/_lada.kiev.ua` в `src/assets/gallery/<id>.<исходное расширение>` строго по таблице «Соответствие отбору» в `specs/003-lada-photos-home/data-model.md`. Фото 13 остаётся `.webp`, остальные — `.jpg`. Имя файла равно `id`.
+- [X] T001 Скопировать 12 исходников из `~/Downloads/_lada.kiev.ua` в `src/assets/gallery/<id>.<исходное расширение>` строго по таблице «Соответствие отбору» в `specs/003-lada-photos-home/data-model.md`. Фото 13 остаётся `.webp`, остальные — `.jpg`. Имя файла равно `id`.
 
 ---
 
@@ -39,20 +39,20 @@ description: "Task list for 003-lada-photos-home"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 Написать тест анализатора бюджета `tests/analyze-bundle.spec.ts` с меткой `@build` на фикстуре `tests/fixtures/bundle/`. Три страницы:
+- [X] T002 Написать тест анализатора бюджета `tests/analyze-bundle.spec.ts` с меткой `@build` на фикстуре `tests/fixtures/bundle/`. Три страницы:
   - встроенный модуль с `gtag('event', …)` засчитывается в бюджет;
   - сниппет счётчика — пара `gtag('js'` + `gtag('config'` и внешний `googletagmanager.com` — не засчитывается;
   - страница с 1537 байтами собственного кода завершает анализатор с кодом ≠ 0.
 
   Тест обязан падать на текущем анализаторе (research.md §R3).
-- [ ] T003 В `scripts/analyze-bundle.mjs`:
+- [X] T003 В `scripts/analyze-bundle.mjs`:
   - принимать каталог сборки аргументом, по умолчанию `dist`;
   - заменить `ANALYTICS_MARKERS` признаками сниппета: `['googletagmanager.com']` и `["gtag('js'", "gtag('config'"]`;
   - добавить `CEILING_BYTES = 1536` («1536 несжатых байт», FR-024) рядом с `BUDGET_BYTES` и выходить с кодом 1 при превышении любого порога;
   - обновить шапку файла: SC-005 пакета 002 заменён FR-024 пакета 003.
 
   T002 должен стать зелёным.
-- [ ] T004 Добавить коллекцию `gallery` в `src/content.config.ts`: `file('src/data/gallery.json')`, схема `({ image }) => z.object({ … })`:
+- [X] T004 Добавить коллекцию `gallery` в `src/content.config.ts`: `file('src/data/gallery.json')`, схема `({ image }) => z.object({ … })`:
   - `photo: image()`;
   - `role: z.enum(['portrait', 'strip'])`;
   - `position: positiveInteger.optional()`;
@@ -61,14 +61,14 @@ description: "Task list for 003-lada-photos-home"
   - `focus: z.string().regex(/^\d{1,3}% \d{1,3}%$/)`.
 
   Комментарий — одна строка о том, почему это коллекция (research.md §R1), без пересказа.
-- [ ] T005 Создать `src/data/gallery.json`: 12 записей из data-model.md — `id`, `photo: "../assets/gallery/<файл>"`, `role`, `position`, `category`, `focus`, `alt` из таблицы «Описания», все три языка дословно.
-- [ ] T006 Создать `src/data/gallery.ts`: `portrait()` и `strip()` поверх `getCollection('gallery')`. Проверки при сборке, каждая бросает исключение с `id` записи:
+- [X] T005 Создать `src/data/gallery.json`: 12 записей из data-model.md — `id`, `photo: "../assets/gallery/<файл>"`, `role`, `position`, `category`, `focus`, `alt` из таблицы «Описания», все три языка дословно.
+- [X] T006 Создать `src/data/gallery.ts`: `portrait()` и `strip()` поверх `getCollection('gallery')`. Проверки при сборке, каждая бросает исключение с `id` записи:
   - `portrait` — ровно одна запись, без `position` и `category`;
   - `strip` — `position` 1…N без пропусков и повторов.
 
   `strip()` возвращает записи, отсортированные по `position`.
-- [ ] T026 [P] Дополнить `scripts/test-invalid-data.mjs` тремя порчами `src/data/gallery.json` по образцу существующих случаев: удалён `alt.en` у одной записи, `category: "nails"`, `photo` указывает на несуществующий файл. Каждая должна ронять `npm run build`, откат — в `finally`. `npm run test:invalid-data` зелёный (FR-020).
-- [ ] T007 [P] Добавить ключ `gallery` (`eyebrow`, `title`, `region`, `prev`, `next`) в три локали `src/i18n/ui.ts`, значения — из data-model.md §Строки интерфейса. `npm run check` без ошибок.
+- [X] T026 [P] Дополнить `scripts/test-invalid-data.mjs` тремя порчами `src/data/gallery.json` по образцу существующих случаев: удалён `alt.en` у одной записи, `category: "nails"`, `photo` указывает на несуществующий файл. Каждая должна ронять `npm run build`, откат — в `finally`. `npm run test:invalid-data` зелёный (FR-020).
+- [X] T007 [P] Добавить ключ `gallery` (`eyebrow`, `title`, `region`, `prev`, `next`) в три локали `src/i18n/ui.ts`, значения — из data-model.md §Строки интерфейса. `npm run check` без ошибок.
 
 **Checkpoint**: `npm run build` и `npm run check` зелёные; анализатор считает по новым правилам.
 

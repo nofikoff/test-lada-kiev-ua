@@ -78,4 +78,24 @@ const services = defineCollection({
   }),
 });
 
-export const collections = { prices, services };
+/**
+ * Фото Лады: портрет первого экрана и карточки ленты. Коллекция, а не модуль с данными, ради
+ * `localized` и `image()` — пропущенный перевод описания или файл фото роняет сборку, а не только
+ * проверку типов (specs/003-lada-photos-home/research.md §R1). Связи между записями — один портрет,
+ * позиции ленты без пропусков — проверяет `src/data/gallery.ts`: схема видит одну запись.
+ */
+const gallery = defineCollection({
+  loader: file('src/data/gallery.json'),
+  schema: ({ image }) =>
+    z.object({
+      photo: image(),
+      role: z.enum(['portrait', 'strip']),
+      position: positiveInteger.optional(),
+      alt: localized,
+      category: z.enum(serviceCategories).optional(),
+      // Значение CSS `object-position` для обрезки кадра; для портрета — ещё и центр превью ссылок.
+      focus: z.string().regex(/^\d{1,3}% \d{1,3}%$/),
+    }),
+});
+
+export const collections = { prices, services, gallery };

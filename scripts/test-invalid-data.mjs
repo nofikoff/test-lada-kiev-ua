@@ -1,7 +1,7 @@
 /**
  * Приёмка модели данных (SC-010, FR-023): порча данных обязана ронять сборку, а не проходить
- * молча. Три случая — отсутствующий перевод названия позиции, отсутствующий файл текста
- * категории и отрицательная цена — вносятся во временную копию файла и откатываются в `finally`,
+ * молча. Случаи прайса и текстов категорий (пакет 001) и фото Лады (FR-020 пакета 003) вносятся
+ * во временную копию файла и откатываются в `finally`,
  * поэтому прогон не оставляет за собой изменений в дереве.
  *
  * Проверка сделана автоматической намеренно. Ручная процедура «сломать, посмотреть, откатить»
@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 
 const PRICES = 'src/data/prices.json';
+const GALLERY = 'src/data/gallery.json';
 const SERVICE_COPY = 'src/content/services/uk/massage.md';
 
 /** Astro раскрашивает вывод собственным средством, поэтому FORCE_COLOR его не гасит. */
@@ -53,7 +54,7 @@ function withCorruption(relativePath, corrupt, check) {
   }
 }
 
-function editPrices(original, edit) {
+function editJson(original, edit) {
   const items = JSON.parse(original);
   edit(items);
   return `${JSON.stringify(items, null, 2)}\n`;
@@ -68,7 +69,7 @@ const cases = [
     corrupt: (path, original) =>
       writeFileSync(
         path,
-        editPrices(original, (items) => {
+        editJson(original, (items) => {
           delete items[0].name.ru;
         }),
       ),
@@ -87,9 +88,46 @@ const cases = [
     corrupt: (path, original) =>
       writeFileSync(
         path,
-        editPrices(original, (items) => {
+        editJson(original, (items) => {
           const fixed = items.find((item) => item.price.kind === 'fixed');
           fixed.price.amount = -fixed.price.amount;
+        }),
+      ),
+  },
+  {
+    // FR-020 пакета 003: описание фото без одного языка останавливает сборку.
+    name: 'отсутствующий перевод описания фото',
+    file: GALLERY,
+    expect: /alt(\.|\s*→\s*|["'\]\s]+)en/i,
+    corrupt: (path, original) =>
+      writeFileSync(
+        path,
+        editJson(original, (items) => {
+          delete items[1].alt.en;
+        }),
+      ),
+  },
+  {
+    name: 'фото ведёт на несуществующую услугу',
+    file: GALLERY,
+    expect: /category/i,
+    corrupt: (path, original) =>
+      writeFileSync(
+        path,
+        editJson(original, (items) => {
+          items[1].category = 'nails';
+        }),
+      ),
+  },
+  {
+    name: 'запись ссылается на отсутствующий файл фото',
+    file: GALLERY,
+    expect: /Could not find requested image `\.\.\/assets\/gallery\/no-such-photo\.jpg`/,
+    corrupt: (path, original) =>
+      writeFileSync(
+        path,
+        editJson(original, (items) => {
+          items[1].photo = '../assets/gallery/no-such-photo.jpg';
         }),
       ),
   },
@@ -135,4 +173,4 @@ if (failed > 0) {
   process.exit(1);
 }
 
-console.log(`\nВсе ${cases.length} случая порчи данных останавливают сборку; дерево восстановлено.`);
+console.log(`\nВсе случаи порчи данных (${cases.length}) останавливают сборку; дерево восстановлено.`);

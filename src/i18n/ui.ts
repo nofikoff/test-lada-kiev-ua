@@ -47,6 +47,13 @@ const uk = {
       'Ми об\'єднали глибокі техніки масажу, естетику тіла та професійний догляд, щоб ви могли поставити міську суєту на паузу.',
     text4: 'Ваше тіло скаже вам «дякую».',
   },
+  gallery: {
+    eyebrow: 'Робота',
+    title: 'Лада за роботою',
+    region: 'Фотографії Лади Новикової',
+    prev: 'Попереднє фото',
+    next: 'Наступне фото',
+  },
   services: {
     eyebrow: 'Чотири напрямки',
     title: 'Наші послуги',
@@ -160,6 +167,13 @@ const ru: UiDictionary = {
       'Мы объединили глубокие техники массажа, эстетику тела и профессиональный уход, чтобы вы могли поставить городскую суету на паузу.',
     text4: 'Ваше тело скажет вам «спасибо».',
   },
+  gallery: {
+    eyebrow: 'Работа',
+    title: 'Лада за работой',
+    region: 'Фотографии Лады Новиковой',
+    prev: 'Предыдущее фото',
+    next: 'Следующее фото',
+  },
   services: {
     eyebrow: 'Четыре направления',
     title: 'Наши услуги',
@@ -266,6 +280,13 @@ const en: UiDictionary = {
     text3:
       'We have combined deep massage techniques, body aesthetics, and professional care so you can put the city hustle on pause.',
     text4: 'Your body will thank you.',
+  },
+  gallery: {
+    eyebrow: 'At work',
+    title: 'Lada at work',
+    region: 'Photos of Lada Novikova',
+    prev: 'Previous photo',
+    next: 'Next photo',
   },
   services: {
     eyebrow: 'Four Directions',
