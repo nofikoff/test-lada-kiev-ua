@@ -1,6 +1,6 @@
 ---
 /**
- * Лента работ Лады (specs/003-lada-photos-home/contracts/gallery.md): горизонтальная прокрутка
+ * Лента работ Лады (docs/specs/home-gallery.md): горизонтальная прокрутка
  * на CSS, без автопрокрутки и без библиотеки слайдера — почему, см. ADR-001.
  *
  * Лента работает и без скриптов: листается жестом и стрелками, раз контейнер фокусируем.
@@ -62,7 +62,7 @@ const photos = await strip();
     <ul class="gallery__list">
       {
         photos.map(({ data }) => {
-          // Ряд ширин — под плотность 1.75 на 412 px, где карточке нужно 562 px (research.md §R11).
+          // Ряд ширин — под плотность 1.75 на 412 px, где карточке нужно 562 px (docs/specs/home-gallery.md §Загрузка).
           const image = (
             <Picture
               src={data.photo}
@@ -129,7 +129,7 @@ const photos = await strip();
       color 0.3s;
   }
 
-  /* `display: grid` выше перебивает скрытие по умолчанию, а без скриптов кнопки скрыты (FR-014). */
+  /* `display: grid` выше перебивает скрытие по умолчанию, а без скриптов кнопки скрыты. */
   .gallery__button[hidden] {
     display: none;
   }
@@ -157,11 +157,11 @@ const photos = await strip();
     padding: 0.5rem var(--edge) 1rem;
     scrollbar-width: thin;
     scrollbar-color: var(--hair) transparent;
-    /* Правый край растворяется: видно, что лента продолжается (FR-011). */
+    /* Правый край растворяется: видно, что лента продолжается. */
     mask-image: linear-gradient(to right, #000 calc(100% - 3.5rem), transparent);
   }
 
-  /* FR-019: при уменьшенном движении листание мгновенное — и кнопками, и стрелками. */
+  /* При уменьшенном движении листание мгновенное — и кнопками, и стрелками. */
   @media (prefers-reduced-motion: no-preference) {
     .gallery__strip {
       scroll-behavior: smooth;
@@ -250,14 +250,14 @@ const photos = await strip();
     // Раскладку читает только наблюдатель: его вызов приходит в цикле отрисовки, уже со стилями,
     // и повторяется при смене ширины карточек. Синхронный замер при запуске заставлял WebKit
     // считать стили до прихода таблиц — и `transition` соседних секций стартовал от цвета
-    // ссылки по умолчанию (research.md §R11).
+    // ссылки по умолчанию.
     new ResizeObserver(sync).observe(root.querySelector('ul')!);
     root.addEventListener('scroll', sync, { passive: true });
     prev.addEventListener('click', () => move(-1));
     next.addEventListener('click', () => move(1));
     prev.hidden = next.hidden = false;
 
-    // FR-026: переход не ждёт счётчика и не отменяется — событие уходит попутно.
+    // Переход не ждёт счётчика и не отменяется — событие уходит попутно.
     root.addEventListener('click', (event) => {
       const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-service]');
       const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;

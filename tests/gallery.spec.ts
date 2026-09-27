@@ -7,7 +7,7 @@ import {
 } from './support/site';
 
 /**
- * Лента работ на главной (specs/003-lada-photos-home/contracts/gallery.md; FR-009…FR-019, FR-026).
+ * Лента работ на главной (docs/specs/home-gallery.md).
  * Состав и порядок ленты — `GALLERY_STRIP` в `tests/support/site.ts`.
  */
 const SERVICE_NAMES: Record<Locale, Record<Category, string>> = {
@@ -278,7 +278,7 @@ test.describe('уменьшенное движение', () => {
 });
 
 /**
- * SC-004 (research.md §R11): лента на 360×740 стоит внутри порога отложенной загрузки Chromium,
+ * docs/specs/home-gallery.md §Загрузка: лента на 360×740 стоит внутри порога отложенной загрузки Chromium,
  * и он берёт заранее карточки из её начала. Проверяется то, что от страницы зависит: их не
  * больше двух, и ни одна не опережает портрет.
  */

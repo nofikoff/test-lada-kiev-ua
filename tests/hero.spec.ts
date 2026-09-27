@@ -2,11 +2,11 @@ import { expect, test, type Page } from '@playwright/test';
 import { homePages } from './support/site';
 
 /**
- * Первый экран с портретом Лады (specs/003-lada-photos-home/contracts/hero.md, FR-002…FR-008).
+ * Первый экран с портретом Лады (docs/specs/home-hero.md).
  *
  * Проверяется геометрия, а не лицо: распознавания в прогоне нет, поэтому «лицо видно» сведено к
  * тому, что проверить можно — портрет не пересекается с текстом и не уходит под шапку. Само лицо
- * смотрят глазами по скриншотам (spec.md §Assumptions).
+ * смотрят глазами по скриншотам.
  */
 const SCREENS = [
   { width: 320, height: 640, callVisible: false },
@@ -20,7 +20,7 @@ const SCREENS = [
 /** Точка перелома раскладки из пакета 002: 62rem при корневом кегле 16px. */
 const SPLIT_AT = 992;
 
-/** FR-005: половина ширины исходника 1440px при плотности 2x. */
+/** Половина ширины исходника 1440px при плотности 2x: крупнее исходника портрет не растягивается. */
 const PORTRAIT_MAX_WIDTH = 720;
 
 async function box(page: Page, selector: string) {
@@ -107,7 +107,7 @@ for (const { locale, path } of homePages) {
           .map((element) => getComputedStyle(element).animationName)
           .filter((name) => name !== 'none'),
       );
-      expect(animated, 'FR-007: раскрытие — работа накрывающего слоя, а не изображения').toEqual([]);
+      expect(animated, 'раскрытие — работа накрывающего слоя, а не изображения').toEqual([]);
     });
   });
 }
