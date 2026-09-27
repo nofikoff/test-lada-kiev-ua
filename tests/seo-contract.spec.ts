@@ -182,7 +182,9 @@ for (const { locale, path } of homePages) {
       expect(business!.telephone).toBe(PHONE);
       expect(business!.url).toBe(`${SITE_ORIGIN}${path}`);
       expect(asArray(business!.sameAs)).toContain(INSTAGRAM);
-      expect(asArray(business!.availableLanguage).map(String).sort()).toEqual(['en', 'ru', 'uk']);
+      // Языки — `knowsLanguage`, не `availableLanguage` (ADR-022).
+      expect(asArray(business!.knowsLanguage).map(String).sort()).toEqual(['en', 'ru', 'uk']);
+      expect(business!.availableLanguage).toBeUndefined();
 
       // Логотип и портрет Лады, стокового кадра нет
       // (docs/specs/home-hero.md §Превью ссылок и JSON-LD).

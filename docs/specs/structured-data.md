@@ -14,7 +14,7 @@
 | `openingHoursSpecification` | часы работы, ежедневно |
 | `priceRange` | вычисляется: минимум и максимум сумм прайса, долевые позиции не участвуют. Вписанный строкой, он разойдётся с ценами на первой правке |
 | `sameAs` | профиль Instagram |
-| `availableLanguage` | `uk`, `ru`, `en` |
+| `knowsLanguage` | `uk`, `ru`, `en` — не `availableLanguage`, [ADR-022](../adr/adr-022-business-languages-knowslanguage.md) |
 | `founder` | `Person` `#founder`: `name` — подпись обращения своей локали (`src/content/about/<locale>.md`), `jobTitle` — `meta.founderRole` словаря, `image` — тот же портрет, что второй элемент `image`, `alumniOf` — `CollegeOrUniversity` «Національний університет фізичного виховання і спорту України», `sameAs` `https://uni-sport.edu.ua/` (сайт университета и реестр ЕДЕБО, проверено 2026-09-27). Роль — только подтверждённое автором ([voice.md](voice.md)). Принято в пакете 004 |
 
 Разметки `FAQPage` нет — [ADR-020](../adr/adr-020-no-faqpage-markup.md).

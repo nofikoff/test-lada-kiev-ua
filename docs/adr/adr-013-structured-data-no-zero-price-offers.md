@@ -14,4 +14,6 @@
 - Отвергнуто: разметка отзывов без отзывов на странице — нарушение правил поисковых систем.
 - Отвергнуто: разметка действия записи — ведёт посетителя к действию, которого нет.
 - `availableLanguage` на `HealthAndBeautyBusiness` оставлен при трёх предупреждениях `validator.schema.org` (2026-09-06): свойство объявлено для `ContactPoint`, а не для `LocalBusiness`. Перенос в `contactPoint` меняет форму описания организации — решение об этом, а не о приёмке; предупреждение не открывать заново.
+
+> Correction 2026-09-27: пункт о `availableLanguage` заменён [ADR-022](adr-022-business-languages-knowslanguage.md) — языки перенесены в `knowsLanguage` без смены формы описания, предупреждений больше нет. Остальное в этом ADR в силе.
 - Контракт разметки — [docs/specs/structured-data.md](../specs/structured-data.md).
