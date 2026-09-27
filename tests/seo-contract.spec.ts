@@ -416,7 +416,7 @@ test.describe('сквозные требования ко всем страни�
 
       expect(title.trim().length, `пустой заголовок на ${path}`).toBeGreaterThan(0);
       expect(description.trim().length, `пустое описание на ${path}`).toBeGreaterThan(0);
-      pairs.push(`${title} ${description}`);
+      pairs.push(JSON.stringify([title, description]));
     }
 
     expect(new Set(pairs).size, 'повторяющаяся пара «заголовок + описание»').toBe(pairs.length);
