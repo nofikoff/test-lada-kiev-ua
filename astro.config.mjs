@@ -3,6 +3,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // Канонический хост — с www: apex отвечает постоянным перенаправлением (contracts/routes.md).
+// Единственное объявление домена в коде сайта: src/i18n/paths.ts читает его как import.meta.env.SITE.
 const SITE = 'https://www.lada.kiev.ua';
 
 /**

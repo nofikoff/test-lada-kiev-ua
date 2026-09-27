@@ -1,11 +1,5 @@
 import { defaultLocale, locales, type Locale } from './ui';
 
-/**
- * Канонический хост. С `www`: адрес без него отвечает постоянным перенаправлением,
- * поэтому объявленный сайтом адрес обязан быть уже конечным (contracts/routes.md).
- */
-export const SITE_ORIGIN = 'https://www.lada.kiev.ua';
-
 export const serviceCategories = ['massage', 'depilation', 'permanent', 'beauty'] as const;
 
 export type ServiceCategory = (typeof serviceCategories)[number];
@@ -34,9 +28,12 @@ export function pagePath(locale: Locale, category?: ServiceCategory): string {
   return `${prefix}${segment}/`;
 }
 
-/** Абсолютный адрес от канонического хоста. Принимает путь, уже приведённый к форме со слешем. */
+/**
+ * Абсолютный адрес от канонического хоста. Принимает путь, уже приведённый к форме со слешем.
+ * Хост берётся из `site` в astro.config.mjs: вторая копия домена разошлась бы с ним молча.
+ */
 export function absoluteUrl(path: string): string {
-  return new URL(path, `${SITE_ORIGIN}/`).href;
+  return new URL(path, import.meta.env.SITE).href;
 }
 
 export function canonicalUrl(locale: Locale, category?: ServiceCategory): string {
