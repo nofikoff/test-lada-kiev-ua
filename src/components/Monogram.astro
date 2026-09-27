@@ -13,9 +13,8 @@ interface Props {
   /**
    * `mark` — знак в шапке и подвале, единственный режим со своим именем для чтения с экрана.
    * `watermark` — водяной знак за содержимым секции.
-   * `edge` — крупный знак первого экрана, обрезанный краем окна.
    */
-  mode?: 'mark' | 'watermark' | 'edge';
+  mode?: 'mark' | 'watermark';
   /** С какой стороны стоит водяной знак. На остальные режимы не влияет. */
   side?: 'left' | 'right';
   class?: string;
@@ -23,7 +22,7 @@ interface Props {
 
 const { mode = 'mark', side = 'right', class: className } = Astro.props;
 
-/** Знак несёт название студии; водяной знак и обрезанный краем — оформление, и от чтения скрыты. */
+/** Знак несёт название студии; водяной знак — оформление, и от чтения скрыт. */
 const decorative = mode !== 'mark';
 ---
 
@@ -91,24 +90,5 @@ const decorative = mode !== 'mark';
   .monogram--right {
     right: -16vw;
     bottom: -8%;
-  }
-
-  /**
-   * Первый экран: знак обрезан краем окна (FR-018). `mix-blend-mode: overlay` вместо
-   * непрозрачности — так он ложится на кадр как свет по поверхности, а не как наклейка поверх.
-   */
-  .monogram--edge {
-    position: absolute;
-    right: -9vw;
-    top: 2%;
-    width: 58vw;
-    max-width: 44rem;
-    color: rgb(var(--brass));
-    opacity: 0.18;
-    mix-blend-mode: overlay;
-  }
-
-  .monogram--edge .monogram__n {
-    fill: currentColor;
   }
 </style>
