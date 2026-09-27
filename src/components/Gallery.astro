@@ -1,0 +1,262 @@
+---
+/**
+ * Лента работ Лады (specs/003-lada-photos-home/contracts/gallery.md): горизонтальная прокрутка
+ * на CSS, без автопрокрутки и без библиотеки слайдера — почему, см. ADR-001.
+ *
+ * Лента работает и без скриптов: листается жестом и стрелками, раз контейнер фокусируем.
+ * Скрипт только добавляет кнопки «назад/вперёд» и событие аналитики, поэтому кнопки отданы
+ * в разметке скрытыми и открываются им же — без него они не работали бы.
+ */
+import { Picture } from 'astro:assets';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { strip } from '../data/gallery';
+import { pagePath } from '../i18n/paths';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui[locale];
+const photos = await strip();
+---
+
+<Section rhythm="work" id="gallery">
+  <div class="gallery__head mx-auto w-full max-w-6xl px-4">
+    <SectionHeading eyebrow={t.gallery.eyebrow} title={t.gallery.title} />
+
+    <div class="gallery__nav">
+      <button
+        type="button"
+        class="gallery__button"
+        aria-controls="gallery-strip"
+        aria-label={t.gallery.prev}
+        data-gallery-prev
+        hidden
+      >
+        <span aria-hidden="true">←</span>
+      </button>
+      <button
+        type="button"
+        class="gallery__button"
+        aria-controls="gallery-strip"
+        aria-label={t.gallery.next}
+        data-gallery-next
+        hidden
+      >
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="gallery-strip"
+    class="gallery__strip"
+    role="region"
+    aria-label={t.gallery.region}
+    tabindex="0"
+    data-gallery
+  >
+    <ul class="gallery__list">
+      {
+        photos.map(({ data }) => {
+          const image = (
+            <Picture
+              src={data.photo}
+              alt={data.alt[locale]}
+              formats={['avif', 'webp']}
+              widths={[360, 540, 720, 1080].filter((width) => width <= data.photo.width)}
+              sizes="(min-width: 62rem) 22rem, 78vw"
+              loading="lazy"
+              decoding="async"
+              pictureAttributes={{ class: 'contents' }}
+              class="gallery__image"
+              style={{ objectPosition: data.focus }}
+            />
+          );
+          return (
+            <li class="gallery__card">
+              {data.category ? (
+                <a href={pagePath(locale, data.category)} class="gallery__link" data-service={data.category}>
+                  <figure class="gallery__figure">
+                    <div class="gallery__frame">{image}</div>
+                    <figcaption class="gallery__caption">{t.services[data.category].name}</figcaption>
+                  </figure>
+                </a>
+              ) : (
+                <figure class="gallery__figure">
+                  <div class="gallery__frame">{image}</div>
+                </figure>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</Section>
+
+<style>
+  .gallery__head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: var(--rhythm-tight);
+  }
+
+  .gallery__nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  /* Область нажатия 44×44 — порог FR-031 пакета 002 для переключателей. */
+  .gallery__button {
+    @apply text-brass;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--hair);
+    background: rgb(var(--ink) / 0.4);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition:
+      border-color 0.3s,
+      color 0.3s;
+  }
+
+  /* `display: grid` выше перебивает скрытие по умолчанию, а без скриптов кнопки скрыты (FR-014). */
+  .gallery__button[hidden] {
+    display: none;
+  }
+
+  .gallery__button:hover:not(:disabled) {
+    border-color: rgb(var(--brass));
+  }
+
+  .gallery__button:disabled {
+    @apply text-muted;
+    cursor: default;
+    border-color: var(--hair-soft);
+  }
+
+  /**
+   * Лента на всю ширину секции, первая карточка — по левому краю колонки текста. Отступы внутри
+   * прокрутки, а не снаружи: иначе обводка фокуса карточки обрезается краем контейнера.
+   */
+  .gallery__strip {
+    --edge: max(1rem, (100% - 72rem) / 2 + 1rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--edge);
+    padding: 0.5rem var(--edge) 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hair) transparent;
+    /* Правый край растворяется: видно, что лента продолжается (FR-011). */
+    mask-image: linear-gradient(to right, #000 calc(100% - 3.5rem), transparent);
+  }
+
+  /* FR-019: при уменьшенном движении листание мгновенное — и кнопками, и стрелками. */
+  @media (prefers-reduced-motion: no-preference) {
+    .gallery__strip {
+      scroll-behavior: smooth;
+    }
+  }
+
+  .gallery__list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 22rem);
+    column-gap: 1rem;
+  }
+
+  .gallery__card {
+    scroll-snap-align: start;
+  }
+
+  .gallery__link {
+    display: block;
+    text-decoration: none;
+  }
+
+  /* Строка подписи зарезервирована и у карточек без неё: иначе нижний край ленты рваный. */
+  .gallery__figure {
+    display: grid;
+    grid-template-rows: auto 3.25rem;
+    background: rgb(var(--raised));
+  }
+
+  .gallery__frame {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: rgb(var(--surface));
+  }
+
+  .gallery__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+
+  .gallery__link:hover .gallery__image {
+    transform: scale(1.04);
+  }
+
+  /* Подпись лежит на сплошной поверхности карточки, а не на фото: так её контраст измерим. */
+  .gallery__caption {
+    @apply font-sans text-silk;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+  }
+
+  .gallery__caption::after {
+    @apply text-brass;
+    content: '→';
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-gallery]');
+
+  if (root) {
+    const prev = document.querySelector<HTMLButtonElement>('[data-gallery-prev]')!;
+    const next = document.querySelector<HTMLButtonElement>('[data-gallery-next]')!;
+    const cards = root.querySelectorAll<HTMLElement>('li');
+
+    // Шаг — расстояние между соседними карточками, то есть ширина плюс зазор. Плавность задаёт
+    // CSS (`scroll-behavior`), поэтому при уменьшенном движении сдвиг мгновенный без проверки здесь.
+    const move = (direction: number) =>
+      root.scrollBy({ left: direction * (cards[1].offsetLeft - cards[0].offsetLeft) });
+
+    const sync = () => {
+      prev.disabled = root.scrollLeft < 1;
+      next.disabled = root.scrollLeft > root.scrollWidth - root.clientWidth - 1;
+    };
+
+    root.addEventListener('scroll', sync, { passive: true });
+    prev.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+    prev.hidden = next.hidden = false;
+    sync();
+
+    // FR-026: переход не ждёт счётчика и не отменяется — событие уходит попутно.
+    root.addEventListener('click', (event) => {
+      const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-service]');
+      const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+      if (!link || typeof gtag !== 'function') return;
+      gtag('event', 'gallery_click', {
+        service: link.dataset.service,
+        locale: document.documentElement.lang,
+      });
+    });
+  }
+</script>

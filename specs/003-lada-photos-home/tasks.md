@@ -121,7 +121,7 @@ description: "Task list for 003-lada-photos-home"
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T012 [P] [US2] Написать `tests/gallery.spec.ts` для трёх главных.
+- [X] T012 [P] [US2] Написать `tests/gallery.spec.ts` для трёх главных.
   - **Разметка:**
     - `#gallery` стоит между `#about` и секцией обзора услуг; 11 `li` в порядке `position`;
     - у каждого `img` непустой `alt`, внутри локали без повторов;
@@ -142,21 +142,21 @@ description: "Task list for 003-lada-photos-home"
     - клик по карточке депиляции на `/ru/` даёт ровно одну запись `['event','gallery_click',{service:'depilation',locale:'ru'}]`, и страница депиляции открыта;
     - при `route.abort()` для `googletagmanager.com` переход тоже состоялся (SC-011);
     - клик с `ControlOrMeta` по карточке даёт ровно одно событие (FR-026).
-- [ ] T013 [P] [US2] Дополнить `tests/no-script.spec.ts`: на трёх главных лента видна, в ней 11 `img`, обе кнопки с атрибутом `hidden`.
+- [X] T013 [P] [US2] Дополнить `tests/no-script.spec.ts`: на трёх главных лента видна, в ней 11 `img`, обе кнопки с атрибутом `hidden`.
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Создать `src/components/Gallery.astro` по contracts/gallery.md.
+- [X] T014 [US2] Создать `src/components/Gallery.astro` по contracts/gallery.md.
   - Разметка: `Section id="gallery"`, `SectionHeading` с `ui.gallery.eyebrow` и `title`, `div[role=region][tabindex=0][data-gallery]#gallery-strip` > `ul` > `li`.
   - Карточка с `category` — это `a[href=pagePath]` вокруг `figure` с `figcaption` под фото на сплошной поверхности карточки (research.md §R8).
   - `<Picture>` avif/webp, `widths={[360, 540, 720, 1080]}` не шире исходника, `sizes="(min-width: 62rem) 22rem, 78vw"`, `loading="lazy"`, `object-position` из `focus`.
   - CSS: `grid-auto-flow: column`, `grid-auto-columns: min(78vw, 22rem)`, `scroll-snap-type: x mandatory`, `aspect-ratio: 4 / 5`, `overscroll-behavior-x: contain`, растворение правого края; фокус с контрастом ≥ 3:1 (FR-013).
   - Кнопки `button[type=button][aria-controls=gallery-strip][hidden]` с подписями `ui.gallery.prev/next`.
-- [ ] T015 [US2] Добавить в `src/components/Gallery.astro` обрабатываемый `<script>`, по образцу `src/components/PriceTabs.astro:149`.
+- [X] T015 [US2] Добавить в `src/components/Gallery.astro` обрабатываемый `<script>`, по образцу `src/components/PriceTabs.astro:149`.
   - Кнопки: снять `hidden`; `scrollBy` на ширину первой карточки плюс `column-gap`; `behavior: 'auto'` при `matchMedia('(prefers-reduced-motion: reduce)')`, иначе `'smooth'`; `disabled` на краях пересчитывается пассивным `scroll` + `requestAnimationFrame`.
   - Событие: `click` на `a` внутри `[data-gallery]` → `gtag('event', 'gallery_click', { service, locale })`, если `typeof window.gtag === 'function'`, без `preventDefault`. `service` берётся из `data-service` на ссылке, `locale` — из `document.documentElement.lang` через словарь локалей.
-- [ ] T016 [US2] Вставить `<Gallery locale={locale} />` между `<About>` и `<ServicesOverview>` в `src/components/HomePage.astro`.
-- [ ] T017 [US2] Прогнать `tests/gallery.spec.ts`, `tests/no-script.spec.ts`, `tests/contrast.spec.ts`, `tests/headings.spec.ts`, `tests/reduced-motion.spec.ts`, `tests/interaction.spec.ts` и `npm run analyze`: не больше 1536 Б на главной, код ленты засчитан. Скриншоты ленты на 360×740 и 1366×768 в `.playwright-mcp/003/` проверить глазами и поправить `focus` карточек 21, 17, 06 и 27.
+- [X] T016 [US2] Вставить `<Gallery locale={locale} />` между `<About>` и `<ServicesOverview>` в `src/components/HomePage.astro`.
+- [X] T017 [US2] Прогнать `tests/gallery.spec.ts`, `tests/no-script.spec.ts`, `tests/contrast.spec.ts`, `tests/headings.spec.ts`, `tests/reduced-motion.spec.ts`, `tests/interaction.spec.ts` и `npm run analyze`: не больше 1536 Б на главной, код ленты засчитан. Скриншоты ленты на 360×740 и 1366×768 в `.playwright-mcp/003/` проверить глазами и поправить `focus` карточек 21, 17, 06 и 27.
 
 **Checkpoint**: US1 и US2 работают вместе и по отдельности.
 

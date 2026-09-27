@@ -26,6 +26,18 @@ test.describe('страница без скриптов', () => {
     }
   });
 
+  // SC-006 пакета 003: лента листается и без скриптов, а кнопки, которые без них не работают, скрыты.
+  for (const path of ['/', '/ru/', '/en/']) {
+    test(`${path}: лента видна целиком, кнопок листания нет`, async ({ page }) => {
+      await page.goto(path);
+
+      await expect(page.locator('[data-gallery]')).toBeVisible();
+      await expect(page.locator('[data-gallery] li img')).toHaveCount(11);
+      await expect(page.locator('[data-gallery-prev]')).toBeHidden();
+      await expect(page.locator('[data-gallery-next]')).toBeHidden();
+    });
+  }
+
   test('меню и переходы работают на нативной разметке', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 800 });
     await page.goto('/');

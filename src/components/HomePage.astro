@@ -5,6 +5,7 @@
  */
 import About from './About.astro';
 import Certificates from './Certificates.astro';
+import Gallery from './Gallery.astro';
 import Hero from './Hero.astro';
 import PriceTabs from './PriceTabs.astro';
 import ServicesOverview from './ServicesOverview.astro';
@@ -19,6 +20,7 @@ const { locale } = Astro.props;
 
 <Hero locale={locale} />
 <About locale={locale} />
+<Gallery locale={locale} />
 <ServicesOverview locale={locale} />
 <PriceTabs locale={locale} />
 <Certificates locale={locale} />
