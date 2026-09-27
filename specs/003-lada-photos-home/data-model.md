@@ -7,60 +7,48 @@
 | `id` | string | Уникален; совпадает с базовым именем файла без расширения. |
 | `photo` | `image()` | Путь относительно `src/data/gallery.json` → `../assets/gallery/<id>.<ext>`. Отсутствующий файл роняет сборку. |
 | `role` | `'portrait' \| 'strip'` | `portrait` — ровно одна запись. Проверяет компонент при сборке. |
-| `position` | целое > 0 | Только у `strip`; значения 1…11 без пропусков и повторов. Проверяет компонент при сборке (research.md §R1). |
+| `position` | целое > 0 | Только у `strip`; значения 1…13 без пропусков и повторов. Проверяет компонент при сборке (research.md §R1). |
 | `alt` | `localized` | uk/ru/en, каждая строка непустая (FR-006, FR-016, FR-020). Внутри одной локали повторов нет (проверяет `gallery.spec.ts`). |
 | `category` | `ServiceCategory?` | Только у `strip`. Есть → карточка-ссылка на `pagePath(locale, category)` с подписью `ui[locale].services[category].name` (FR-015). |
 | `focus` | string | Значение `object-position` для обрезки до 4:5 (FR-017). |
+| `fit` | `'cover' \| 'contain'`? | По умолчанию кадр обрезается; `contain` вписывает его целиком, когда смысл на краях (16, FR-017). |
 | `previewPosition` | `'top' \| 'center' \| 'bottom'` | Только у портрета, обязательно: откуда sharp режет превью 1200×630 (research.md §R2). Проценты CSS sharp не принимает. |
 
 Связь: `category` ссылается на существующую `ServiceCategory` (`src/i18n/paths.ts:9`). Новых категорий фича не заводит.
 
 ## Соответствие отбору
 
-Нумерация 01–29 — порядок имён файлов в выгрузке автора, `~/Downloads/_lada.kiev.ua`. Префикс имени исходника у всех файлов — `lada_n_kyiv_`, суффикс — `_1552222305`. Начальные значения `focus` уточняются визуальной проверкой при реализации.
+Нумерация 01–29 — порядок имён файлов в выгрузке автора, `~/Downloads/_lada.kiev.ua`. Префикс имени исходника у всех файлов — `lada_n_kyiv_`, суффикс — `_1552222305`. Состав пересмотрен 2026-09-27: лента — работа, а не позирование (spec.md §Clarifications).
 
-| № | Исходник (середина имени) | Размер | `id` | `role` / `position` | `category` | `focus` |
-|---|---|---|---|---|---|---|
-| 20 | `1691439543_3164346701099310766.jpg` | 1440×1800 | `lada-novikova-portrait` | portrait | — | `50% 22%` |
-| 15 | `1687702590_3132998862419317625.jpg` | 1440×1800 | `lada-novikova-massage-tea` | strip / 1 | massage | `50% 30%` |
-| 21 | `1699219168_3229606918959315918.jpg` | 1440×1440 | `lada-novikova-wax-spatulas` | strip / 2 | depilation | `45% 50%` |
-| 17 | `1691428297_3164252362855768260.jpg` | 1440×1440 | `lada-novikova-bamboo-sticks` | strip / 3 | massage | `50% 50%` |
-| 07 | `1608988100_2472693861476408285.jpg` | 1440×1800 | `lada-novikova-studio-portrait` | strip / 4 | — | `50% 35%` |
-| 13 | `1665658019_2948075602402768079.webp` | 1440×1800 | `lada-novikova-sugaring` | strip / 5 | depilation | `50% 40%` |
-| 19 | `1691431967_3164283143552716729.jpg` | 1440×1800 | `depilation-wax-beads` | strip / 6 | depilation | `55% 50%` |
-| 22 | `1699229227_3229691306082323694.jpg` | 1440×1800 | `lada-novikova-candles` | strip / 7 | — | `40% 40%` |
-| 27 | `1736312239_3540766156454738055.jpg` | 1440×1499 | `lada-novikova-warm-wax` | strip / 8 | depilation | `45% 45%` |
-| 06 | `1607945191_2463945308003220550.jpg` | 1080×1080 | `lada-novikova-makeup-mirror` | strip / 9 | beauty | `68% 50%` |
-| 18 | `1691428802_3164256593096558383.jpg` | 1440×1800 | `massage-tools` | strip / 10 | massage | `50% 60%` |
-| 26 | `1720362391_3406969130869742762.jpg` | 1440×1800 | `studio-terrace` | strip / 11 | — | `50% 50%` |
+| № | Исходник (середина имени) | Размер | `id` | `role` / `position` | `category` |
+|---|---|---|---|---|---|
+| 20 | `1691439543_3164346701099310766.jpg` | 1440×1800 | `lada-novikova-portrait` | portrait | — |
+| 09 | `1656431777_2870680271738779363.webp` | 1440×1440 | `lada-novikova-brows-client` | strip / 1 | beauty |
+| 13 | `1665658019_2948075602402768079.webp` | 1440×1800 | `lada-novikova-sugaring` | strip / 2 | depilation |
+| 25 | `1705933044_3285927000576116490.jpg` | 1440×1801 | `massage-room` | strip / 3 | massage |
+| 28 | `1760123146_3740506367233702705.heic` (внутри JPEG) | 1154×1440 | `lada-novikova-brow-tint` | strip / 4 | beauty |
+| 16 | `1691428297_3164252362839101596.jpg` | 1075×1075 | `anti-cellulite-before-after` | strip / 5 | massage |
+| 12 | `1664450539_2937946523750005968.webp` | 1440×1800 | `sugaring-close-up` | strip / 6 | depilation |
+| 01 | `1524945767_1767695676646670173.jpg` | 960×1200 | `lada-novikova-makeup-client` | strip / 7 | beauty |
+| 18 | `1691428802_3164256593096558383.jpg` | 1440×1800 | `massage-tools` | strip / 8 | massage |
+| 19 | `1691431967_3164283143552716729.jpg` | 1440×1800 | `depilation-wax-beads` | strip / 9 | depilation |
+| 08 | `1623950689_2598209160373111745.jpg` | 937×1171 | `disposable-tools` | strip / 10 | — |
+| 10 | `1660215227_2902418149871181913.webp` | 1440×1800 | `lada-novikova-certificate` | strip / 11 | — |
+| 11 | `1662551762_2922018425082871754.webp` | 1440×1440 | `makeup-station` | strip / 12 | — |
+| 26 | `1720362391_3406969130869742762.jpg` | 1440×1800 | `studio-terrace` | strip / 13 | — |
 
-Квадратные исходники (21, 17, 06) и почти квадратный 27 при обрезке до 4:5 теряют края по бокам, поэтому у них фокус задан по горизонтали.
+Квадратные исходники (09, 16, 11) при обрезке до 4:5 теряют края по бокам; их `focus` задан по горизонтали.
 
 ## Описания (alt)
 
-| № | uk | ru | en |
-|---|---|---|---|
-| 20 | Лада Новикова, майстриня масажу та депіляції, у студії Lada N | Лада Новикова, мастер массажа и депиляции, в студии Lada N | Lada Novikova, massage and hair removal specialist, at the Lada N studio |
-| 15 | Лада Новикова з чашкою чаю поруч із моделлю хребта та олією для масажу | Лада Новикова с чашкой чая рядом с моделью позвоночника и маслом для массажа | Lada Novikova with a cup of tea beside a spine model and massage oil |
-| 21 | Лада Новикова в рукавичках тримає шпателі для воскової депіляції | Лада Новикова в перчатках держит шпатели для восковой депиляции | Lada Novikova in gloves holding wax spatulas |
-| 17 | Лада Новикова з бамбуковими паличками для масажу | Лада Новикова с бамбуковыми палочками для массажа | Lada Novikova holding bamboo massage sticks |
-| 07 | Студійний портрет Лади Новикової в синьому светрі | Студийный портрет Лады Новиковой в синем свитере | Studio portrait of Lada Novikova in a blue sweater |
-| 13 | Лада Новикова робить шугаринг ніг | Лада Новикова делает шугаринг ног | Lada Novikova performing a leg sugaring treatment |
-| 19 | Гранули синього воску для депіляції, розсипані на столі | Гранулы синего воска для депиляции, рассыпанные на столе | Blue hair removal wax beads spilled on a table |
-| 22 | Лада Новикова у кріслі поруч зі свічками та чайником | Лада Новикова в кресле рядом со свечами и чайником | Lada Novikova in an armchair beside candles and a teapot |
-| 27 | Лада Новикова набирає теплий віск шпателями | Лада Новикова набирает тёплый воск шпателями | Lada Novikova scooping warm wax with spatulas |
-| 06 | Лада Новикова наносить макіяж перед дзеркалом | Лада Новикова наносит макияж перед зеркалом | Lada Novikova applying makeup in front of a mirror |
-| 18 | Бамбукові палички, лаванда та олія для масажу на столі студії | Бамбуковые палочки, лаванда и масло для массажа на столе студии | Bamboo sticks, lavender and massage oil on a studio table |
-| 26 | Тераса студії Lada N із квітами на вікнах | Терраса студии Lada N с цветами на окнах | The Lada N studio terrace with flowers on the windows |
-
-После реализации единственный источник этих строк — `src/data/gallery.json`. Таблица здесь нужна до того, как файл появился.
+Единственный источник — `src/data/gallery.json`: у каждой записи три языка, и сборка падает на пропуске (FR-020). Второй копии здесь нет, чтобы не разойтись с ней.
 
 ## Строки интерфейса — `ui.ts`, ключ `gallery`
 
 | Ключ | uk | ru | en |
 |---|---|---|---|
-| `eyebrow` | Робота | Работа | At work |
-| `title` | Лада за роботою | Лада за работой | Lada at work |
+| `eyebrow` | Студія Лади Новикової | Студия Лады Новиковой | Lada Novikova's studio |
+| `title` | Процес і результат | Процесс и результат | Process and results |
 | `region` | Фотографії Лади Новикової | Фотографии Лады Новиковой | Photos of Lada Novikova |
 | `prev` | Попереднє фото | Предыдущее фото | Previous photo |
 | `next` | Наступне фото | Следующее фото | Next photo |
