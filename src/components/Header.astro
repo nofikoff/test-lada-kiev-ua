@@ -20,11 +20,14 @@ interface Props {
 const { locale } = Astro.props;
 const t = ui[locale];
 
+// Разделы живут на главной, а шапка стоит на каждой странице: голый якорь на странице категории
+// никуда не ведёт. На самой главной адрес отличается только якорем, и браузер не перезагружает её.
+const home = pagePath(locale);
 const navItems = [
-  { href: '#about', label: t.nav.about },
-  { href: '#services', label: t.nav.services },
-  { href: '#certificates', label: t.nav.certificates },
-  { href: '#contacts', label: t.nav.contacts },
+  { href: `${home}#about`, label: t.nav.about },
+  { href: `${home}#services`, label: t.nav.services },
+  { href: `${home}#certificates`, label: t.nav.certificates },
+  { href: `${home}#contacts`, label: t.nav.contacts },
 ];
 
 /** Подписи переключателя — не коды языка, а то, что видит посетитель; в старом коде так же. */

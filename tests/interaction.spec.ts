@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { allPages, homePages } from './support/site';
 
 /**
  * Интерактив без фреймворка (FR-027, FR-028, SC-012): меню на нативном раскрытии и вкладки
@@ -35,6 +36,54 @@ test.describe('мобильное меню', () => {
     await page.keyboard.press('Enter');
 
     await expect(menu.locator('nav')).toBeVisible();
+  });
+});
+
+test.describe('пункты меню ведут к разделам главной', () => {
+  // Разделы есть только на главной: голый `#about` на странице категории никуда не ведёт.
+  const SECTIONS = ['about', 'services', 'certificates', 'contacts'];
+
+  for (const { locale, path } of allPages) {
+    test(`${path}: пункты шапки — разделы главной своего языка`, async ({ page }) => {
+      await page.goto(path);
+
+      const home = homePages.find((candidate) => candidate.locale === locale)!.path;
+      const expected = SECTIONS.map((id) => `${home}#${id}`);
+      const hrefs = await page
+        .locator('header nav a')
+        .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+
+      // Две навигации — полоса на широком экране и раскрывающееся меню на узком.
+      expect(hrefs).toEqual([...expected, ...expected]);
+    });
+  }
+
+  test('со страницы категории пункт «О нас» полосы шапки ведёт на главную', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(isMobile, 'полоса пунктов видна только на широком экране');
+    await page.goto('/ru/massage/');
+
+    await page.locator('header nav').first().getByRole('link', { name: 'О нас' }).click();
+
+    await expect(page).toHaveURL(/\/ru\/#about$/);
+    await expect(page.locator('#about')).toBeInViewport();
+  });
+
+  test('со страницы категории пункт «О нас» раскрывающегося меню ведёт на главную', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'раскрывающееся меню есть только на узком экране');
+    await page.goto('/ru/massage/');
+
+    const menu = page.locator('#mobile-menu');
+    await menu.locator('summary').click();
+    await menu.locator('nav').getByRole('link', { name: 'О нас' }).click();
+
+    await expect(page).toHaveURL(/\/ru\/#about$/);
+    await expect(page.locator('#about')).toBeInViewport();
   });
 });
 
