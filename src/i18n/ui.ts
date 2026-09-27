@@ -36,16 +36,8 @@ const uk = {
     cta: 'Зателефонувати',
   },
   about: {
-    // Надзаголовка своего у секции нет: им стоит `title`, см. `About.astro`.
+    // Надзаголовок секции и пункт меню; заголовок и текст — обращение Лады, src/content/about/.
     title: 'Про нас',
-    heading: 'Тиша в серці мегаполісу',
-    text1:
-      'Ми створили простір абсолютного релаксу там, де б\'ється пульс Києва — на Майдані Незалежності.',
-    text2:
-      'Lada N — це не просто масажний кабінет, це майстерня відновлення вашої енергії. Тут час сповільнюється.',
-    text3:
-      'Ми об\'єднали глибокі техніки масажу, естетику тіла та професійний догляд, щоб ви могли поставити міську суєту на паузу.',
-    text4: 'Ваше тіло скаже вам «дякую».',
   },
   gallery: {
     eyebrow: 'Студія Лади Новикової',
@@ -158,14 +150,6 @@ const ru: UiDictionary = {
   },
   about: {
     title: 'О нас',
-    heading: 'Тишина в сердце мегаполиса',
-    text1:
-      'Мы создали пространство абсолютного релакса там, где бьется пульс Киева — на Майдане Незалежности.',
-    text2:
-      'Lada N — это не просто массажный кабинет, это мастерская восстановления вашей энергии. Здесь время замедляется.',
-    text3:
-      'Мы объединили глубокие техники массажа, эстетику тела и профессиональный уход, чтобы вы могли поставить городскую суету на паузу.',
-    text4: 'Ваше тело скажет вам «спасибо».',
   },
   gallery: {
     eyebrow: 'Студия Лады Новиковой',
@@ -272,14 +256,6 @@ const en: UiDictionary = {
   },
   about: {
     title: 'About Us',
-    heading: 'Silence in the Heart of the Metropolis',
-    text1:
-      'We have created a space of absolute relaxation where the pulse of Kyiv beats — at Maidan Nezalezhnosti.',
-    text2:
-      'Lada N is not just a massage parlor, it\'s a workshop for restoring your energy. Here, time slows down.',
-    text3:
-      'We have combined deep massage techniques, body aesthetics, and professional care so you can put the city hustle on pause.',
-    text4: 'Your body will thank you.',
   },
   gallery: {
     eyebrow: "Lada Novikova's studio",

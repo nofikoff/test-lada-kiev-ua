@@ -3,19 +3,19 @@
  * Повествовательная секция: единственная на главной, где текст читают подряд, — отсюда
  * и ступень ритма `air`, и мера строки.
  *
- * Пара «надзаголовок + заголовок» собрана из уже существующих строк: надзаголовком стоит
- * название секции (`about.title`), заголовком — её первая строка (`about.heading`). Своего
- * ключа надзаголовок не заводит, в отличие от остальных секций: на uk и ru он дословно
- * повторил бы `about.title`, а на en («About» против «About Us») вытеснил бы строку, которую
- * ищет в английской разметке сверка полноты контента.
+ * Надзаголовок — название секции из словаря (`about.title`, он же пункт меню), заголовок и тело —
+ * обращение Лады из коллекции `about` (docs/specs/voice.md). Подпись стоит вне `data-about-copy`:
+ * внутри её слова засчитывались бы телу обращения.
  *
  * Уровень заголовка — h2, умолчание примитива. До пересборки секция несла два заголовка, и
  * `h3` был вторым, под `h2`; надзаголовок вторым заголовком не является, поэтому оставшийся
  * `h3` шёл сразу за `h1` страницы и ронял доступность до 98 (`heading-order`).
  */
+import { render } from 'astro:content';
 import Monogram from './Monogram.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
+import { aboutCopy } from '../data/about';
 import { ui, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -24,6 +24,9 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = ui[locale];
+const copy = await aboutCopy(locale);
+const { Content } = await render(copy);
+const { heading, signatureName, signatureRole } = copy.data;
 ---
 
 <Section rhythm="air" id="about">
@@ -34,20 +37,20 @@ const t = ui[locale];
   <div class="mx-auto w-full max-w-6xl px-4">
     <div class="about">
       <div>
-        <SectionHeading eyebrow={t.about.title} title={t.about.heading} />
+        <SectionHeading eyebrow={t.about.title} title={heading} />
       </div>
 
       <div class="about__body">
-        <p class="lede">{t.about.text1}</p>
-        <p>{t.about.text2}</p>
-        <p>{t.about.text3}</p>
+        <div class="about__copy lede-first" data-about-copy>
+          <Content />
+        </div>
 
         {/* Разделитель прежней версии: короткая полоса с растворяющимися краями. Теперь
              волосок, который прочерчивается при въезде в кадр, а в браузере без таймлайна
              стоит на месте — то есть остаётся ровно тем, чем был. */}
         <div class="rule rule--draw about__rule"></div>
 
-        <p class="about__close">{t.about.text4}</p>
+        <p class="about__close">{signatureName}, {signatureRole}</p>
       </div>
     </div>
   </div>
@@ -72,12 +75,17 @@ const t = ui[locale];
     max-width: var(--measure);
   }
 
+  .about__copy {
+    display: grid;
+    gap: inherit;
+  }
+
   .about__rule {
     margin-block: 0.6rem;
   }
 
-  /* Закрывающая строка — курсивом антиквы: одно из двух мест, ради которых курсив
-     вообще загружается (ADR-014). */
+  /* Подпись — курсивом антиквы: одно из двух мест, ради которых курсив вообще
+     загружается (ADR-014). */
   .about__close {
     @apply font-serif text-brass;
     font-size: 1.5rem;

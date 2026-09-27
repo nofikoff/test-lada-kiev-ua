@@ -83,6 +83,19 @@ const services = defineCollection({
 });
 
 /**
+ * Обращение Лады в «Про нас», по файлу на локаль. Отсутствие файла ловит `aboutCopy`, а не схема —
+ * по той же причине, что у `services`.
+ */
+const about = defineCollection({
+  loader: glob({ pattern: `+(${locales.join('|')}).md`, base: './src/content/about' }),
+  schema: z.object({
+    heading: translation,
+    signatureName: translation,
+    signatureRole: translation,
+  }),
+});
+
+/**
  * Фото Лады: портрет первого экрана и карточки ленты. Коллекция, а не модуль с данными, ради
  * `localized` и `image()` — пропущенный перевод описания или файл фото роняет сборку, а не только
  * проверку типов. Связи между записями — один портрет,
@@ -108,4 +121,4 @@ const gallery = defineCollection({
     }),
 });
 
-export const collections = { prices, services, gallery };
+export const collections = { prices, services, about, gallery };

@@ -4,6 +4,7 @@ import {
   ANALYTICS_ID,
   APEX_ORIGIN,
   categoryPages,
+  countWords,
   expectedOfferCount,
   homePages,
   INSTAGRAM,
@@ -369,8 +370,8 @@ test.describe('тексты страниц категорий', () => {
           `${entry.path}: контейнер ${SERVICE_COPY_SELECTOR} — договорённость с шаблоном страницы категории`,
         ).toHaveCount(1);
 
-        const words = normalize(await copy.innerText()).split(' ').filter(Boolean);
-        expect(words.length, `${entry.path}: ${words.length} слов`).toBeGreaterThanOrEqual(400);
+        const words = countWords(await copy.innerText());
+        expect(words, `${entry.path}: ${words} слов`).toBeGreaterThanOrEqual(400);
 
         const paragraphs = (await copy.locator('p').allInnerTexts())
           .map(normalize)

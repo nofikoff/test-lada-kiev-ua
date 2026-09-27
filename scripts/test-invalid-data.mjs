@@ -1,6 +1,6 @@
 /**
  * Приёмка модели данных (docs/specs/content-model.md §Инварианты): порча данных обязана ронять
- * сборку, а не проходить молча. Порча прайса, текстов категорий и фото Лады вносится в сам файл
+ * сборку, а не проходить молча. Порча прайса, текстов категорий, обращения и фото Лады вносится в сам файл
  * и откатывается в `finally`, поэтому прогон не оставляет за собой изменений в дереве.
  *
  * Проверка сделана автоматической намеренно. Ручная процедура «сломать, посмотреть, откатить»
@@ -16,6 +16,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const PRICES = 'src/data/prices.json';
 const GALLERY = 'src/data/gallery.json';
 const SERVICE_COPY = 'src/content/services/uk/massage.md';
+const ABOUT_COPY = 'src/content/about/uk.md';
 
 /** Astro раскрашивает вывод собственным средством, поэтому FORCE_COLOR его не гасит. */
 const ANSI = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g');
@@ -78,6 +79,12 @@ const cases = [
     file: SERVICE_COPY,
     // Ловится не схемой, а страницей, которая текст запрашивает: схема видит только то, что есть.
     expect: /нет текста услуги: src\/content\/services\/uk\/massage\.md/,
+    corrupt: (path) => rmSync(path),
+  },
+  {
+    name: 'отсутствующий файл обращения',
+    file: ABOUT_COPY,
+    expect: /нет обращения: src\/content\/about\/uk\.md/,
     corrupt: (path) => rmSync(path),
   },
   {

@@ -119,6 +119,101 @@ export const builtPages: readonly PageUnderTest[] = [
  */
 export const SERVICE_COPY_SELECTOR = '[data-service-copy]';
 
+/** Контейнер тела обращения Лады в «Про нас»: подпись и заголовок секции вне его. */
+export const ABOUT_COPY_SELECTOR = '[data-about-copy]';
+
+/**
+ * Название заведения, которого на сайте быть не должно (docs/specs/voice.md). «Майстер»,
+ * «майстри», «мастер» — люди, а не заведение, поэтому основа взята с «-н»/«-ск».
+ */
+export const FORBIDDEN_NAME = /майстерн|мастерск|workshop/i;
+
+export const ABOUT: Record<Locale, { heading: string; signatureName: string; signatureRole: string }> = {
+  uk: {
+    heading: 'Масаж від реабілітолога',
+    signatureName: 'Лада Новикова',
+    signatureRole: 'засновниця студії',
+  },
+  ru: {
+    heading: 'Массаж от реабилитолога',
+    signatureName: 'Лада Новикова',
+    signatureRole: 'основательница студии',
+  },
+  en: {
+    heading: 'Massage by a rehabilitation specialist',
+    signatureName: 'Lada Novikova',
+    signatureRole: 'founder of the studio',
+  },
+};
+
+export const FOUNDER_ROLE: Record<Locale, string> = {
+  uk: 'засновниця студії, масажистка',
+  ru: 'основательница студии, массажистка',
+  en: 'founder, massage therapist',
+};
+
+export const ALUMNI = {
+  name: 'Національний університет фізичного виховання і спорту України',
+  sameAs: 'https://uni-sport.edu.ua/',
+} as const;
+
+const KYIV: Record<Locale, RegExp> = { uk: /Ки(їв|єв)/i, ru: /Киев/i, en: /Kyiv/i };
+
+/**
+ * Карта запросов (docs/specs/page-head.md §Целевые запросы): первое выражение — основная
+ * формулировка страницы, остальные обязаны стоять рядом с ней. Выражения, а не строки: заголовок
+ * пишет «у Києві», описание — «Києва», и буквальная строка отвергла бы оба.
+ */
+const QUERIES: Record<Locale, Record<'home' | ServiceCategory, RegExp[]>> = {
+  uk: {
+    home: [/студі[яї] масажу та краси/i],
+    massage: [/масаж/i],
+    depilation: [/депіляці/i, /шугаринг/i],
+    permanent: [/перманентн\S* макіяж/i],
+    beauty: [/ламінуванн/i, /макіяж/i],
+  },
+  ru: {
+    home: [/студи[яи] массажа и красоты/i],
+    massage: [/массаж/i],
+    depilation: [/депиляци/i, /шугаринг/i],
+    permanent: [/перманентн\S* макияж/i],
+    beauty: [/ламинировани/i, /макияж/i],
+  },
+  en: {
+    home: [/massage and beauty studio/i],
+    massage: [/massage/i],
+    depilation: [/waxing/i, /sugaring/i],
+    permanent: [/permanent makeup/i],
+    beauty: [/lamination/i, /makeup/i],
+  },
+};
+
+export function queryOf(page: PageUnderTest & { category?: ServiceCategory }): RegExp[] {
+  return [...QUERIES[page.locale][page.category ?? 'home'], KYIV[page.locale]];
+}
+
+/**
+ * Начертания, загруженные главными страницами до пакета 004 (сняты на `main` 95d57b5,
+ * 2026-09-27): «гарнитура|начертание|насыщенность|начало unicode-range». `U+301` открывает
+ * кириллическое подмножество, `U+0-FF` — латинское. Главный заголовок главной вобрал строку
+ * первого экрана, и новый файл шрифта на странице был бы ценой этой правки (docs/specs/home-hero.md).
+ */
+const LATIN_FACES = [
+  'Cormorant|italic|300|U+0-FF',
+  'Cormorant|normal|300|U+0-FF',
+  'Cormorant|normal|400|U+0-FF',
+  'Inter|normal|300|U+0-FF',
+  'Inter|normal|400|U+0-FF',
+  'Inter|normal|500|U+0-FF',
+];
+const CYRILLIC_FACES = LATIN_FACES.map((face) => face.replace('U+0-FF', 'U+301'));
+
+export const HOME_FONT_FACES: Record<Locale, readonly string[]> = {
+  uk: [...LATIN_FACES, ...CYRILLIC_FACES].sort(),
+  ru: [...LATIN_FACES, ...CYRILLIC_FACES].sort(),
+  en: [...LATIN_FACES].sort(),
+};
+
 const NAMED_ENTITIES: Record<string, string> = {
   amp: '&',
   lt: '<',
@@ -162,6 +257,11 @@ export function normalize(value: string): string {
     .replace(/[“”„«»″]/g, '"')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/** Слова считаются одинаково для текста категории и обращения: по пробелам нормализованного текста. */
+export function countWords(text: string): number {
+  return normalize(text).split(' ').filter(Boolean).length;
 }
 
 function repoFile(relativePath: string): string {

@@ -144,7 +144,9 @@
     line-height: 1.12;
   }
 
-  .lede {
+  /* `.lede-first` — для Markdown, который классов не расставляет: вводным становится его первый абзац. */
+  .lede,
+  .lede-first > p:first-child {
     @apply font-sans text-silk;
     font-size: var(--step-lede);
     font-weight: 300;
