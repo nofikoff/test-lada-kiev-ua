@@ -4,9 +4,10 @@
  * по [contracts/structured-data.md]. Компонент принимает локаль и категорию — всё остальное
  * вычисляется: метаданные страницы нигде не хранятся (data-model.md §Метаданные страницы).
  */
+import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import logo from '../assets/logo.jpg';
-import hero from '../assets/massage-kiev-lada-novikova.jpg';
+import { portrait } from '../data/gallery';
 import { groupsOfCategory } from '../data/price-groups';
 import { pricesOfGroups } from '../data/price-list';
 import { serviceCopy } from '../data/services';
@@ -26,15 +27,6 @@ interface Props {
 /** Формат площадок предпросмотра — язык с территорией, в отличие от кода языка в разметке. */
 const OG_LOCALE: Record<Locale, string> = { uk: 'uk_UA', ru: 'ru_RU', en: 'en_US' };
 
-/**
- * Изображение предпросмотра лежит в статических файлах и оптимизации сборки не подвергается:
- * имена оптимизированных файлов содержат хэш и меняются при пересборке, а соцсети кэшируют адрес.
- * Поэтому же оно пережато один раз вручную (Step 4.1) с сохранением имени и типа файла:
- * 2970×1756 и 3.3 МБ против объявленных здесь размеров и лимита в 300 КБ — до пережатия
- * объявление было ложным. Размеры ниже соответствуют файлу и проверяются тестом контракта.
- */
-const OG_IMAGE = { path: '/assets/lada.kiev.ua-website.png', width: '1416', height: '840' };
-
 const PHONE = '+380995570045';
 const INSTAGRAM = 'https://www.instagram.com/lada_n_kyiv/';
 const WEEK = [
@@ -52,7 +44,23 @@ const { locale, category } = Astro.props;
 const t = ui[locale];
 const canonical = canonicalUrl(locale, category);
 const { alternates, xDefault } = languageAlternates(category);
-const ogImage = absoluteUrl(OG_IMAGE.path);
+const face = (await portrait()).data;
+
+/**
+ * Превью ссылок — кадр портрета Лады 1200×630 с центром на лице (FR-021 пакета 003). Собирается
+ * сборкой, а не лежит в статике: хэш в имени зависит от исходника и параметров кадра, поэтому
+ * адрес меняется только вместе с картинкой — ровно тогда, когда соцсетям и нужно перечитать её
+ * (specs/003-lada-photos-home/research.md §R2). Размеры для разметки берутся из результата.
+ */
+const preview = await getImage({
+  src: face.photo,
+  width: 1200,
+  height: 630,
+  fit: 'cover',
+  position: face.previewPosition,
+  format: 'jpeg',
+});
+const ogImage = absoluteUrl(preview.src);
 
 /**
  * Заголовок и описание страницы категории берутся из frontmatter её текста, а не собираются
@@ -117,7 +125,7 @@ const business = category
       '@id': `${canonical}#business`,
       name: t.meta.siteName,
       url: canonical,
-      image: [absoluteUrl(logo.src), absoluteUrl(hero.src)],
+      image: [absoluteUrl(logo.src), absoluteUrl(face.photo.src)],
       telephone: PHONE,
       address: {
         '@type': 'PostalAddress',
@@ -223,8 +231,8 @@ const serviceGraph =
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImage} />
-<meta property="og:image:width" content={OG_IMAGE.width} />
-<meta property="og:image:height" content={OG_IMAGE.height} />
+<meta property="og:image:width" content={String(preview.attributes.width)} />
+<meta property="og:image:height" content={String(preview.attributes.height)} />
 <meta property="og:locale" content={OG_LOCALE[locale]} />
 {
   locales

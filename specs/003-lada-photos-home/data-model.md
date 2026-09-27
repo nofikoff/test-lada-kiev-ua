@@ -10,7 +10,8 @@
 | `position` | целое > 0 | Только у `strip`; значения 1…11 без пропусков и повторов. Проверяет компонент при сборке (research.md §R1). |
 | `alt` | `localized` | uk/ru/en, каждая строка непустая (FR-006, FR-016, FR-020). Внутри одной локали повторов нет (проверяет `gallery.spec.ts`). |
 | `category` | `ServiceCategory?` | Только у `strip`. Есть → карточка-ссылка на `pagePath(locale, category)` с подписью `ui[locale].services[category].name` (FR-015). |
-| `focus` | string | Значение `object-position` для обрезки до 4:5 (FR-017); у портрета — ещё и точка кадра превью 1200×630. |
+| `focus` | string | Значение `object-position` для обрезки до 4:5 (FR-017). |
+| `previewPosition` | `'top' \| 'center' \| 'bottom'` | Только у портрета, обязательно: откуда sharp режет превью 1200×630 (research.md §R2). Проценты CSS sharp не принимает. |
 
 Связь: `category` ссылается на существующую `ServiceCategory` (`src/i18n/paths.ts:9`). Новых категорий фича не заводит.
 

@@ -19,6 +19,9 @@ async function entries(): Promise<{ portrait: GalleryEntry; strip: GalleryEntry[
   if (portrait.data.position !== undefined || portrait.data.category !== undefined) {
     throw new Error(`gallery.json: у портрета ${portrait.id} не бывает position и category`);
   }
+  if (portrait.data.previewPosition === undefined) {
+    throw new Error(`gallery.json: у портрета ${portrait.id} нет previewPosition — превью не из чего резать`);
+  }
 
   const strip = all
     .filter((entry) => entry.data.role === 'strip')

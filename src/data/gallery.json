@@ -4,6 +4,7 @@
     "photo": "../assets/gallery/lada-novikova-portrait.jpg",
     "role": "portrait",
     "focus": "50% 22%",
+    "previewPosition": "top",
     "alt": {
       "uk": "Лада Новикова, майстриня масажу та депіляції, у студії Lada N",
       "ru": "Лада Новикова, мастер массажа и депиляции, в студии Lada N",

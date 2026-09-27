@@ -170,7 +170,7 @@ description: "Task list for 003-lada-photos-home"
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T018 [P] [US3] Дополнить `tests/seo-contract.spec.ts`:
+- [X] T018 [P] [US3] Дополнить `tests/seo-contract.spec.ts`:
   - на всех 15 страницах `og:image` указывает на файл из `/_astro/`, а не на `/assets/lada.kiev.ua-website.png`;
   - JSON-LD `LocalBusiness.image` на главных — ровно два абсолютных адреса: логотип и портрет с `lada-novikova-portrait` в имени;
   - стокового кадра в JSON-LD нет.
@@ -179,12 +179,12 @@ description: "Task list for 003-lada-photos-home"
 
 ### Implementation for User Story 3
 
-- [ ] T019 [US3] В `src/components/SeoHead.astro`:
+- [X] T019 [US3] В `src/components/SeoHead.astro`:
   - убрать импорт `massage-kiev-lada-novikova.jpg` и константу `OG_IMAGE`;
   - превью строить `getImage({ src: portrait.photo, width: 1200, height: 630, fit: 'cover', position: portrait.focus, format: 'jpeg' })`, а `og:image:width/height` брать из результата;
   - `business.image = [absoluteUrl(logo.src), absoluteUrl(portrait.photo.src)]`.
-- [ ] T020 [US3] Удалить `src/assets/massage-kiev-lada-novikova.jpg` и `public/assets/lada.kiev.ua-website.png`. `git grep` по обоим именам вне `specs/` должен вернуть пусто.
-- [ ] T021 [P] [US3] В `docs/runbook-deploy.md:23` убрать `/assets/lada.kiev.ua-website.png` из списка сброса кэша. Превью теперь в `_astro/` с хэшем в имени.
+- [X] T020 [US3] Удалить `src/assets/massage-kiev-lada-novikova.jpg` и `public/assets/lada.kiev.ua-website.png`. `git grep` по обоим именам вне `specs/` должен вернуть пусто.
+- [X] T021 [P] [US3] В `docs/runbook-deploy.md:23` убрать `/assets/lada.kiev.ua-website.png` из списка сброса кэша. Превью теперь в `_astro/` с хэшем в имени.
 
 **Checkpoint**: все три истории работают.
 

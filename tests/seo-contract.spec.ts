@@ -184,9 +184,12 @@ for (const { locale, path } of homePages) {
       expect(asArray(business!.sameAs)).toContain(INSTAGRAM);
       expect(asArray(business!.availableLanguage).map(String).sort()).toEqual(['en', 'ru', 'uk']);
 
+      // FR-022 пакета 003: логотип и портрет Лады, стокового кадра нет.
       const images = asArray(business!.image).map(String);
-      expect(images.length).toBeGreaterThan(0);
+      expect(images).toHaveLength(2);
       for (const image of images) expect(image.startsWith(SITE_ORIGIN)).toBe(true);
+      expect(images.some((image) => image.includes('/logo.'))).toBe(true);
+      expect(images.some((image) => image.includes('lada-novikova-portrait'))).toBe(true);
 
       const hours = asArray(business!.openingHoursSpecification)[0] as Record<string, unknown>;
       expect(asArray(hours.dayOfWeek)).toHaveLength(7);
@@ -420,9 +423,27 @@ test.describe('сквозные требования ко всем страни�
   });
 
   /**
-   * Изображение предпросмотра одно на весь сайт и лежит по постоянному адресу, поэтому и вес,
-   * и объявленные размеры проверяются один раз. Объявление размеров без сверки с файлом ничего
-   * не стоит: до Step 4.1 разметка объявляла 1416×840 против файла 2970×1756 весом 3.3 МБ.
+   * FR-021 пакета 003: превью — кадр портрета Лады, одинаковый на всех пятнадцати страницах,
+   * собранный в `_astro/`. Скриншот сайта и стоковый кадр из выдачи ушли совсем.
+   */
+  test('превью всех страниц — портрет, стока и скриншота нет', async ({ request }) => {
+    const previews = new Set<string>();
+    for (const { path } of allPages) {
+      const html = await (await request.get(path)).text();
+      const preview = /<meta\s+property="og:image"\s+content="([^"]*)"/.exec(html)?.[1] ?? '';
+
+      expect(preview, `превью ${path}`).toContain('/_astro/lada-novikova-portrait');
+      expect(html, `стоковый кадр на ${path}`).not.toContain('massage-kiev-lada-novikova');
+      expect(html, `скриншот-превью на ${path}`).not.toContain('lada.kiev.ua-website.png');
+      previews.add(preview);
+    }
+    expect(previews.size, 'превью различается между страницами').toBe(1);
+  });
+
+  /**
+   * Изображение предпросмотра одно на весь сайт, поэтому и вес, и объявленные размеры
+   * проверяются один раз. Объявление размеров без сверки с файлом ничего не стоит: до Step 4.1
+   * пакета 001 разметка объявляла 1416×840 против файла 2970×1756 весом 3.3 МБ.
    */
   test('изображение предпросмотра укладывается в лимит веса и объявлено своими размерами', async ({
     page,
