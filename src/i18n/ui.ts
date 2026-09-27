@@ -48,8 +48,8 @@ const uk = {
     text4: 'Ваше тіло скаже вам «дякую».',
   },
   gallery: {
-    eyebrow: 'Робота',
-    title: 'Лада за роботою',
+    eyebrow: 'Студія Лади Новикової',
+    title: 'Процес і результат',
     region: 'Фотографії Лади Новикової',
     prev: 'Попереднє фото',
     next: 'Наступне фото',
@@ -168,8 +168,8 @@ const ru: UiDictionary = {
     text4: 'Ваше тело скажет вам «спасибо».',
   },
   gallery: {
-    eyebrow: 'Работа',
-    title: 'Лада за работой',
+    eyebrow: 'Студия Лады Новиковой',
+    title: 'Процесс и результат',
     region: 'Фотографии Лады Новиковой',
     prev: 'Предыдущее фото',
     next: 'Следующее фото',
@@ -282,8 +282,8 @@ const en: UiDictionary = {
     text4: 'Your body will thank you.',
   },
   gallery: {
-    eyebrow: 'At work',
-    title: 'Lada at work',
+    eyebrow: "Lada Novikova's studio",
+    title: 'Process and results',
     region: 'Photos of Lada Novikova',
     prev: 'Previous photo',
     next: 'Next photo',
