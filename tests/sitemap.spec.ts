@@ -2,7 +2,7 @@ import { expect, test, type APIRequestContext } from '@playwright/test';
 import { allPages, SITE_ORIGIN, toLocalPath } from './support/site';
 
 /**
- * Карта сайта (docs/specs/routes.md §Карта адресов) против собранного сайта.
+ * Карта сайта (docs/specs/routes.md §Route map) против собранного сайта.
  *
  * Проверка отвечает на вопрос, который сайт до миграции проваливал молча: запрос `/sitemap.xml`
  * отдавал HTML главной страницы с кодом 200, то есть карта сайта выглядела существующей и не

@@ -2,7 +2,7 @@ import { expect, test, type APIRequestContext } from '@playwright/test';
 import { allPages, htmlToText, normalize, PHONE, SITE_ORIGIN } from './support/site';
 
 /**
- * Файл описания для языковых моделей (docs/specs/routes.md §Согласованность контактов).
+ * Файл описания для языковых моделей (docs/specs/routes.md §Contact consistency).
  * Проверяется ровно то, что расходится молча: перечень страниц и контактные данные. Файл лежит
  * в статике, никем не собирается из словаря, и после смены часов работы на страницах останется
  * единственным местом со старым значением.

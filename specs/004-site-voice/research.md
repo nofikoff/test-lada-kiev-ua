@@ -29,7 +29,7 @@
 ## R5. `public/llms.txt` (FR-019)
 
 - **Decision**: слов «майстерня/workshop» в файле нет (заголовок уже «Massage & Beauty Studio»). Дописываются две строки фактами из этого пакета: основательница (Lada Novikova, physical rehabilitation specialist, NUPESU graduate, leads massage sessions herself) и шугаринг в перечне депиляции. Файл входит в проверку единого названия.
-- **Rationale**: файл пишется руками и расходится с разметкой молча (docs/specs/routes.md §Согласованность контактов); факт об основательнице теперь есть в JSON-LD и должен быть и здесь.
+- **Rationale**: файл пишется руками и расходится с разметкой молча (docs/specs/routes.md §Contact consistency); факт об основательнице теперь есть в JSON-LD и должен быть и здесь.
 - **Alternatives considered**: не трогать — описание для языковых моделей осталось бы без человека, который теперь есть в разметке.
 
 ## R6. Хранение обращения (FR-004, FR-009)
