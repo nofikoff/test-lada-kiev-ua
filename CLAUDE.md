@@ -35,3 +35,4 @@
 | первый экран, портрет, превью ссылок | [docs/specs/home-hero.md](docs/specs/home-hero.md) | LCP на `/` и `/ru/` стоит на 2.48 с при пороге 2.5 |
 | ленту фото | [docs/specs/home-gallery.md](docs/specs/home-gallery.md) | фото 24 не публикуется никогда; подпись поверх фото проходит проверку контраста, ничего не доказав |
 | выкладку | [docs/runbook-deploy.md](docs/runbook-deploy.md) | клиент выкладки по умолчанию теряет `.htaccess`, а Cloudflare держит постоянные адреса четыре часа |
+| `docs/seo/` | `skills/seo/references/contract.md` в `~/.claude` | `domain.md` и `core.csv` пишет и проверяет `/seo` — ручная правка ломает их разборщики |

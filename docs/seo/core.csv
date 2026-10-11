@@ -1,0 +1,79 @@
+query,lang,geo,cluster,intent,volume,volume_source,volume_date,target_url
+масаж,uk,kyiv,masazh,commercial,unknown,,,/massage/
+масаж київ,uk,kyiv,masazh,commercial,unknown,,,/massage/
+масаж київ ціна,uk,kyiv,masazh,commercial,unknown,,,/massage/
+масаж київ недорого,uk,kyiv,masazh,commercial,unknown,,,/massage/
+масаж релакс київ,uk,kyiv,masazh,commercial,unknown,,,/massage/
+масаж київ для жінок,uk,kyiv,masazh,commercial,unknown,,,/massage/
+масаж київ для двох,uk,kyiv,masazh,commercial,unknown,,,/massage/
+скільки коштує година масажу в києві?,uk,kyiv,masazh,commercial,unknown,,,/massage/
+що дає масаж тіла?,uk,kyiv,masazh-koryst,informational,unknown,,,
+скільки сеансів масажу потрібно?,uk,kyiv,masazh-seansy,informational,unknown,,,
+депіляція,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
+депіляція київ,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
+депіляція воском київ,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
+воскова депіляція,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
+депіляція ціна,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
+шугаринг,uk,kyiv,shuharynh,commercial,unknown,,,
+скільки коштує курс шугарингу?,uk,kyiv,shuharynh,commercial,unknown,,,
+що таке процедура шугаринг?,uk,kyiv,shuharynh-shcho-tse,informational,unknown,,,
+скільки не голитися перед шугарингом?,uk,kyiv,shuharynh-pidhotovka,informational,unknown,,,
+депіляція чи епіляція,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
+епіляція і депіляція різниця,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
+яка різниця між епіляцією і депіляцією?,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
+що означає депіляція?,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
+що краще депіляція чи шугаринг?,uk,kyiv,depiliatsiia-chy-shuharynh,informational,unknown,,,
+що не можна робити після депіляції?,uk,kyiv,depiliatsiia-pislia,informational,unknown,,,
+яка депіляція найкраща?,uk,kyiv,depiliatsiia-yaka-krashcha,informational,unknown,,,
+перманентний макіяж,uk,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/permanent/
+перманентний макіяж київ,uk,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/permanent/
+перманентний макіяж ціна,uk,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/permanent/
+перманентний макіяж брів,uk,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
+перманентний макіяж брів ціна,uk,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
+скільки коштує зробити перманентний макіяж брів?,uk,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
+татуаж брів,uk,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
+перманентний макіяж губ,uk,kyiv,permanentnyi-makiiazh-hub,commercial,unknown,,,
+перманентний макіяж стрілки,uk,kyiv,permanentnyi-makiiazh-strilky,commercial,unknown,,,
+перманентний макіяж вій,uk,kyiv,permanentnyi-makiiazh-strilky,commercial,unknown,,,
+перманентний макіяж брів догляд,uk,kyiv,permanentnyi-makiiazh-dohliad,informational,unknown,,,
+кому не можна робити перманентний макіяж?,uk,kyiv,permanentnyi-makiiazh-protypokazannia,informational,unknown,,,
+скільки тримається перманентний макіяж?,uk,kyiv,permanentnyi-makiiazh-skilky-trymaietsia,informational,unknown,,,
+чи шкідливий перманентний макіяж брів?,uk,kyiv,permanentnyi-makiiazh-shkoda,informational,unknown,,,
+яка різниця між татуажем та перманентним макіяжем?,uk,kyiv,permanentnyi-makiiazh-chy-tatuazh,informational,unknown,,,
+як довго заживають губи після перманентного макіяжу?,uk,kyiv,permanentnyi-makiiazh-hub-zahoiennia,informational,unknown,,,
+массаж,ru,kyiv,masazh,commercial,unknown,,,/ru/massage/
+массаж киев,ru,kyiv,masazh,commercial,unknown,,,/ru/massage/
+массаж киев цена,ru,kyiv,masazh,commercial,unknown,,,/ru/massage/
+массаж расслабляющий,ru,kyiv,masazh,commercial,unknown,,,/ru/massage/
+массаж спины,ru,kyiv,masazh-spyny,informational,unknown,,,
+сколько стоит 1 час массажа спины?,ru,kyiv,masazh-spyny,informational,unknown,,,
+как часто нужно делать массаж спины?,ru,kyiv,masazh-spyny,informational,unknown,,,
+депиляция,ru,kyiv,depiliatsiia,commercial,unknown,,,/ru/depilation/
+депиляция воском,ru,kyiv,depiliatsiia,commercial,unknown,,,/ru/depilation/
+депиляция воском киев,ru,kyiv,depiliatsiia,commercial,unknown,,,/ru/depilation/
+депиляция мужская,ru,kyiv,depiliatsiia,commercial,unknown,,,/ru/depilation/
+депиляция бикини,ru,kyiv,depiliatsiia-bikini,commercial,unknown,,,
+как удаляют волосы в зоне глубокого бикини?,ru,kyiv,depiliatsiia-bikini-yak,informational,unknown,,,
+шугаринг,ru,kyiv,shuharynh,commercial,unknown,,,
+депиляция и эпиляция,ru,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
+в чем разница между эпиляция и депиляция?,ru,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
+чем депиляция отличается от шугаринга?,ru,kyiv,depiliatsiia-chy-shuharynh,informational,unknown,,,
+какой самый лучший способ удаления волос?,ru,kyiv,depiliatsiia-yaka-krashcha,informational,unknown,,,
+перманентный макияж,ru,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/ru/permanent/
+перманентный макияж киев,ru,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/ru/permanent/
+перманентный макияж цена,ru,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/ru/permanent/
+перманентный макияж бровей,ru,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
+перманентный макияж бровей цена,ru,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
+татуаж бровей киев цена,ru,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
+перманентный макияж губ,ru,kyiv,permanentnyi-makiiazh-hub,commercial,unknown,,,
+перманентный макияж губ цена,ru,kyiv,permanentnyi-makiiazh-hub,commercial,unknown,,,
+перманентный макияж до после,ru,kyiv,permanentnyi-makiiazh-foto,,unknown,,,
+в чем разница перманентного макияжа и татуажа?,ru,kyiv,permanentnyi-makiiazh-chy-tatuazh,informational,unknown,,,
+что такое перманентный макияж простыми словами?,ru,kyiv,permanentnyi-makiiazh-shcho-tse,informational,unknown,,,
+как называется перманентный макияж?,ru,kyiv,permanentnyi-makiiazh-shcho-tse,informational,unknown,,,
+кому нельзя делать перманентный макияж?,ru,kyiv,permanentnyi-makiiazh-protypokazannia,informational,unknown,,,
+макіяж київ,uk,kyiv,makiiazh,commercial,unknown,,,/beauty/
+ламинирование ресниц киев,ru,kyiv,laminuvannia-vii,commercial,unknown,,,/ru/beauty/
+lada n,uk,kyiv,lada-n,navigational,unknown,,,/
+лада салон,ru,kyiv,lada-n,navigational,unknown,,,/ru/
+салон лада,ru,kyiv,lada-n,navigational,unknown,,,/ru/
