@@ -1,5 +1,7 @@
 # ADR-021: отдельных страниц под поисковые запросы нет
 
+> **Superseded by:** [ADR-023](adr-023-knowledge-base-pages-for-informational-queries.md) (частично — информационные запросы)
+
 - **Related:** [docs/specs/page-head.md](../specs/page-head.md) §Целевые запросы · [docs/specs/routes.md](../specs/routes.md)
 
 ## Context
