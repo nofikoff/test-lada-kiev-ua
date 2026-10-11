@@ -1,10 +1,10 @@
 # lada.kiev.ua
 
-Статический сайт студии на Astro 7, три языка (`uk` на корне, `/ru/`, `/en/`). Прод — статические файлы из `dist/` на Apache за Cloudflare, выкладка вручную по [docs/runbook-deploy.md](docs/runbook-deploy.md).
+Статический сайт студии на Astro 7, три языка (`uk` на корне, `/ru/`, `/en/`). Прод — статические файлы из `dist/` на Apache за Cloudflare. Выкладывает только workflow `publish` ([ADR-026](docs/adr/adr-026-single-ci-deploy-path.md), [docs/runbook-deploy.md](docs/runbook-deploy.md)), в том числе по галочке Лады в таблице цен: **всё, что лежит в `main`, уходит на сайт при следующей публикации**, незавершённая работа живёт в ветках.
 
 ## Гейты
 
-`npm run check`, `npm run lint`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze` — все зелёные до слияния; правила сверх них — [.specify/memory/constitution.md](.specify/memory/constitution.md).
+`npm run check`, `npm run lint`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze` — все зелёные до слияния; правила сверх них — [.specify/memory/constitution.md](.specify/memory/constitution.md).
 
 - e2e идёт против `astro preview` над `dist/` на `PREVIEW_PORT` (4329, `astro.config.mjs`), не против `astro dev` на 4321. Прогон без свежей `npm run build` проверяет прошлую сборку и выглядит необъяснимо зелёным.
 - `tests/support/site.ts` держит хост, телефон, состав ленты литералами, а не импортом из `src/`: проверка, читающая константу реализации, доказывает только непротиворечивость.
@@ -20,7 +20,7 @@
 
 ## Что открыть, когда трогаешь
 
-Перед тем как предлагать зависимость, фреймворк или переписывание подсистемы — `docs/adr/`. Уже отвергнуто: React/Next с пререндерингом ([ADR-004](docs/adr/adr-004-static-astro-no-client-framework.md)), `IntersectionObserver` для проявлений ([ADR-015](docs/adr/adr-015-motion-css-scroll-driven-no-script.md)), отложенная загрузка GA4 ([ADR-011](docs/adr/adr-011-analytics-snippet-unchanged-not-deferred.md)), Tailwind 4 вместе с правкой вёрстки ([ADR-010](docs/adr/adr-010-tailwind-3-via-postcss-no-integration.md)), разметка `FAQPage` ([ADR-020](docs/adr/adr-020-no-faqpage-markup.md)), отдельные страницы под коммерческие запросы ([ADR-021](docs/adr/adr-021-no-query-landing-pages.md); информационным — база знаний, [ADR-023](docs/adr/adr-023-knowledge-base-pages-for-informational-queries.md)), WordPress и любая админка для статей ([ADR-024](docs/adr/adr-024-articles-published-via-git-no-cms.md)).
+Перед тем как предлагать зависимость, фреймворк или переписывание подсистемы — `docs/adr/`. Уже отвергнуто: React/Next с пререндерингом ([ADR-004](docs/adr/adr-004-static-astro-no-client-framework.md)), `IntersectionObserver` для проявлений ([ADR-015](docs/adr/adr-015-motion-css-scroll-driven-no-script.md)), отложенная загрузка GA4 ([ADR-011](docs/adr/adr-011-analytics-snippet-unchanged-not-deferred.md)), Tailwind 4 вместе с правкой вёрстки ([ADR-010](docs/adr/adr-010-tailwind-3-via-postcss-no-integration.md)), разметка `FAQPage` ([ADR-020](docs/adr/adr-020-no-faqpage-markup.md)), отдельные страницы под коммерческие запросы ([ADR-021](docs/adr/adr-021-no-query-landing-pages.md); информационным — база знаний, [ADR-023](docs/adr/adr-023-knowledge-base-pages-for-informational-queries.md)), WordPress и любая админка для статей ([ADR-024](docs/adr/adr-024-articles-published-via-git-no-cms.md)), CMS и своя админка для цен ([ADR-025](docs/adr/adr-025-price-input-via-google-sheet.md)), ручная выкладка рядом с workflow ([ADR-026](docs/adr/adr-026-single-ci-deploy-path.md)).
 
 | Трогаешь | Открой | Потому что |
 |---|---|---|
@@ -34,5 +34,6 @@
 | фокус, контраст, клавиатура, поведение без скриптов | [docs/specs/accessibility.md](docs/specs/accessibility.md) | часть требований прогон не меряет — там же список |
 | первый экран, портрет, превью ссылок | [docs/specs/home-hero.md](docs/specs/home-hero.md) | LCP на `/` и `/ru/` стоит на 2.48 с при пороге 2.5 |
 | ленту фото | [docs/specs/home-gallery.md](docs/specs/home-gallery.md) | фото 24 не публикуется никогда; подпись поверх фото проходит проверку контраста, ничего не доказав |
-| выкладку | [docs/runbook-deploy.md](docs/runbook-deploy.md) | клиент выкладки по умолчанию теряет `.htaccess`, а Cloudflare держит постоянные адреса четыре часа |
+| суммы в `prices.json`, `scripts/prices/`, `apps-script/` | [docs/specs/content-model.md](docs/specs/content-model.md) | сумма принадлежит таблице цен: правка в git в обход неё останавливает публикацию Лады; адреса ячеек — общий контракт четырёх файлов |
+| выкладку, `.github/workflows/publish.yml`, `scripts/purge-cache.mjs` | [docs/runbook-deploy.md](docs/runbook-deploy.md) | правка структуры прайса без `mode: rebuild-sheet` роняет следующую публикацию; Cloudflare держит постоянные адреса четыре часа |
 | `docs/seo/` | `skills/seo/references/contract.md` в `~/.claude` | `domain.md` и `core.csv` пишет и проверяет `/seo` — ручная правка ломает их разборщики |

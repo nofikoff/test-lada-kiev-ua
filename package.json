@@ -12,6 +12,7 @@
     "test:content": "playwright test tests/content-parity.spec.ts",
     "test:e2e": "playwright test",
     "test:invalid-data": "node scripts/test-invalid-data.mjs",
+    "test:unit": "node --test scripts/prices/*.test.mjs scripts/purge-cache.test.mjs",
     "analyze": "node scripts/analyze-bundle.mjs"
   },
   "dependencies": {

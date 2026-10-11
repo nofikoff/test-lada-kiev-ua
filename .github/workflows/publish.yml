@@ -1,0 +1,222 @@
+# The only deploy path of the site (ADR on the single CI deploy path; docs/runbook-deploy.md).
+# Contract: specs/005-sheet-price-publishing/contracts/publish-workflow.md.
+name: publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: Who started the run; the sheet passes `sheet`
+        type: choice
+        options: [manual, sheet]
+        default: manual
+      mode:
+        description: publish — deploy; dry-run — gates on the sheet copy, nothing written; rebuild-sheet — rebuild both sheets from prices.json
+        type: choice
+        options: [publish, dry-run, rebuild-sheet]
+        default: publish
+      allow_large_change:
+        description: Row keys, comma-separated, exempt from the ×2 threshold (manual runs only)
+        type: string
+        default: ''
+
+permissions: {}
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+  # The default `single` queue drops a waiting run when a newer one arrives, which would lose a
+  # manual run carrying allow_large_change behind Lada's checkbox.
+  queue: max
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      SOURCE: ${{ inputs.source }}
+      MODE: ${{ inputs.mode }}
+      ALLOW_LARGE_CHANGE: ${{ inputs.allow_large_change }}
+      PRICES_SHEET_ID: ${{ inputs.mode == 'dry-run' && vars.PRICES_SHEET_ID_DRY_RUN || vars.PRICES_SHEET_ID }}
+      PRICES_SHEET_OWNER: ${{ vars.PRICES_SHEET_OWNER }}
+      GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT }}
+      SITE_ORIGIN: https://www.lada.kiev.ua
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+        timeout-minutes: 3
+
+      - id: google
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/spreadsheets
+
+      - name: Rebuild both sheets
+        if: inputs.mode == 'rebuild-sheet'
+        env:
+          GOOGLE_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+          LIVE_SHEET: ${{ vars.PRICES_SHEET_ID }}
+          COPY_SHEET: ${{ vars.PRICES_SHEET_ID_DRY_RUN }}
+        run: |
+          PRICES_SHEET_ID="$LIVE_SHEET" node scripts/prices/rebuild-sheet.mjs
+          PRICES_SHEET_ID="$COPY_SHEET" node scripts/prices/rebuild-sheet.mjs
+
+      - name: Status — started
+        if: inputs.mode == 'publish'
+        env:
+          GOOGLE_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+          OUTCOME: started
+        run: node scripts/prices/report.mjs
+
+      - id: prices
+        name: Sheet → prices.json
+        if: inputs.mode != 'rebuild-sheet'
+        env:
+          GOOGLE_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+        run: |
+          set +e
+          node scripts/prices/publish.mjs
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          [ "$code" -ne 1 ]
+
+      - name: Commit prices and rebase onto main
+        if: inputs.mode == 'publish'
+        run: |
+          [ -f "$RUNNER_TEMP/prices-commit.txt" ] || exit 0
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/data/prices.json
+          git commit -F "$RUNNER_TEMP/prices-commit.txt"
+          git fetch origin main
+          git rebase origin/main
+
+      - name: Cache Playwright browsers
+        if: inputs.mode != 'rebuild-sheet'
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: inputs.mode != 'rebuild-sheet'
+        run: npx playwright install --with-deps chromium webkit
+        timeout-minutes: 4
+
+      - name: Gate — check
+        if: inputs.mode != 'rebuild-sheet'
+        run: npm run check
+        timeout-minutes: 3
+      - name: Gate — lint
+        if: inputs.mode != 'rebuild-sheet'
+        run: npm run lint
+        timeout-minutes: 2
+      - name: Gate — unit
+        if: inputs.mode != 'rebuild-sheet'
+        run: npm run test:unit
+        timeout-minutes: 1
+      - name: Gate — build
+        if: inputs.mode != 'rebuild-sheet'
+        run: npm run build
+        timeout-minutes: 3
+      - name: Gate — e2e
+        if: inputs.mode != 'rebuild-sheet'
+        run: npm run test:e2e
+        timeout-minutes: 6
+      - name: Gate — invalid data
+        if: inputs.mode != 'rebuild-sheet'
+        run: npm run test:invalid-data
+        timeout-minutes: 5
+      # test:invalid-data rebuilds the site from corrupted data; the deploy needs the clean build back.
+      - name: Gate — analyze
+        if: inputs.mode != 'rebuild-sheet'
+        run: npm run build && npm run analyze
+        timeout-minutes: 3
+
+      - id: deploy
+        name: Deploy dist/
+        if: inputs.mode == 'publish'
+        timeout-minutes: 3
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+        run: |
+          install -m 600 /dev/null "$RUNNER_TEMP/deploy_key"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$RUNNER_TEMP/deploy_key"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$RUNNER_TEMP/known_hosts"
+          # The server's rrsync pins the target to the site root, so the remote path stays empty.
+          rsync -rlt --delete --chmod=D755,F644 \
+            -e "ssh -i $RUNNER_TEMP/deploy_key -o UserKnownHostsFile=$RUNNER_TEMP/known_hosts -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes" \
+            dist/ "lada@$DEPLOY_HOST:"
+
+      - id: purge
+        name: Purge Cloudflare cache
+        if: inputs.mode == 'publish'
+        timeout-minutes: 1
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        run: node scripts/purge-cache.mjs
+
+      - id: smoke
+        name: Checks after deploy (docs/runbook-deploy.md)
+        if: inputs.mode == 'publish'
+        timeout-minutes: 1
+        run: |
+          test "$(curl -s -o /dev/null -w '%{http_code}' "$SITE_ORIGIN/nonexistent-check")" = 404
+          curl -sf "$SITE_ORIGIN/robots.txt" | grep -q "^Sitemap: $SITE_ORIGIN/sitemap-index.xml"
+          curl -sfI "$SITE_ORIGIN/sitemap-index.xml" | grep -qi '^content-type: application/xml'
+          curl -s "$SITE_ORIGIN/en/nonexistent-check" | grep -q 'lang="en"'
+
+      - id: push
+        name: Push prices to main
+        if: inputs.mode == 'publish'
+        timeout-minutes: 1
+        run: |
+          [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ] && exit 0
+          git push origin HEAD:main || { git fetch origin main && git rebase origin/main && git push origin HEAD:main; }
+
+      - name: Status — outcome
+        if: always() && inputs.mode == 'publish' && steps.google.outcome == 'success'
+        env:
+          GOOGLE_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+          JOB_STATUS: ${{ job.status }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+        run: |
+          if [ "$JOB_STATUS" = success ]; then
+            OUTCOME=published
+          elif [ "$DEPLOY_OUTCOME" = skipped ]; then
+            OUTCOME=failed-before-deploy
+          else
+            OUTCOME=failed-after-deploy
+          fi
+          OUTCOME=$OUTCOME node scripts/prices/report.mjs
+
+      # A rejected row still lets the rest publish; failing here makes GitHub mail the author (FR-016).
+      - name: Fail on rejected rows
+        if: steps.prices.outputs.code == '3'
+        run: |
+          echo "::error::Rows rejected by the ×2 threshold — see the «Пометка» column of the sheet"
+          exit 1
+
+      - name: Remove deploy key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/deploy_key"

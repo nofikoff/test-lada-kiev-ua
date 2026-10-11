@@ -29,6 +29,30 @@ export default defineConfig(
     },
   },
   {
+    // Исходник скрипта таблицы цен: исполняется Apps Script, а не Node и не браузером, и все
+    // функции файла видны среде как глобальные — триггеры вызывают их по имени.
+    files: ['apps-script/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'script',
+      globals: {
+        SpreadsheetApp: 'readonly',
+        PropertiesService: 'readonly',
+        UrlFetchApp: 'readonly',
+        MailApp: 'readonly',
+        ScriptApp: 'readonly',
+        Session: 'readonly',
+        Utilities: 'readonly',
+        LockService: 'readonly',
+        Browser: 'readonly',
+      },
+    },
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
+  {
     files: ['tests/**/*.ts'],
     languageOptions: {
       ecmaVersion: 'latest',
