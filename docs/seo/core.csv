@@ -1,79 +1,108 @@
 query,lang,geo,cluster,intent,volume,volume_source,volume_date,target_url
-масаж,uk,kyiv,masazh,commercial,unknown,,,/massage/
-масаж київ,uk,kyiv,masazh,commercial,unknown,,,/massage/
-масаж київ ціна,uk,kyiv,masazh,commercial,unknown,,,/massage/
-масаж київ недорого,uk,kyiv,masazh,commercial,unknown,,,/massage/
-масаж релакс київ,uk,kyiv,masazh,commercial,unknown,,,/massage/
-масаж київ для жінок,uk,kyiv,masazh,commercial,unknown,,,/massage/
-масаж київ для двох,uk,kyiv,masazh,commercial,unknown,,,/massage/
+масаж,uk,kyiv,masazh,commercial,12100,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/massage/
+масаж київ,uk,kyiv,masazh,commercial,4400,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/massage/
+масаж київ ціна,uk,kyiv,masazh,commercial,70,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/massage/
+масаж київ недорого,uk,kyiv,masazh,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/massage/
+масаж релакс київ,uk,kyiv,masazh,commercial,90,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/massage/
+масаж київ для жінок,uk,kyiv,masazh,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/massage/
+масаж київ для двох,uk,kyiv,masazh,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/massage/
 скільки коштує година масажу в києві?,uk,kyiv,masazh,commercial,unknown,,,/massage/
 що дає масаж тіла?,uk,kyiv,masazh-koryst,informational,unknown,,,
-скільки сеансів масажу потрібно?,uk,kyiv,masazh-seansy,informational,unknown,,,
-депіляція,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
-депіляція київ,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
-депіляція воском київ,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
-воскова депіляція,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
-депіляція ціна,uk,kyiv,depiliatsiia,commercial,unknown,,,/depilation/
-шугаринг,uk,kyiv,shuharynh,commercial,unknown,,,
+скільки сеансів масажу потрібно?,uk,kyiv,masazh-seansy,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+депіляція,uk,kyiv,depiliatsiia,commercial,480,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/depilation/
+депіляція київ,uk,kyiv,depiliatsiia,commercial,110,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/depilation/
+депіляція воском київ,uk,kyiv,depiliatsiia,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/depilation/
+воскова депіляція,uk,kyiv,depiliatsiia,commercial,320,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/depilation/
+депіляція ціна,uk,kyiv,depiliatsiia,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/depilation/
+шугаринг,uk,kyiv,shuharynh,commercial,1600,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 скільки коштує курс шугарингу?,uk,kyiv,shuharynh,commercial,unknown,,,
 що таке процедура шугаринг?,uk,kyiv,shuharynh-shcho-tse,informational,unknown,,,
 скільки не голитися перед шугарингом?,uk,kyiv,shuharynh-pidhotovka,informational,unknown,,,
-депіляція чи епіляція,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
-епіляція і депіляція різниця,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
-яка різниця між епіляцією і депіляцією?,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
+депіляція чи епіляція,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,30,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+епіляція і депіляція різниця,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+яка різниця між епіляцією і депіляцією?,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 що означає депіляція?,uk,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
 що краще депіляція чи шугаринг?,uk,kyiv,depiliatsiia-chy-shuharynh,informational,unknown,,,
-що не можна робити після депіляції?,uk,kyiv,depiliatsiia-pislia,informational,unknown,,,
+що не можна робити після депіляції?,uk,kyiv,depiliatsiia-pislia,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 яка депіляція найкраща?,uk,kyiv,depiliatsiia-yaka-krashcha,informational,unknown,,,
-перманентний макіяж,uk,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/permanent/
-перманентний макіяж київ,uk,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/permanent/
-перманентний макіяж ціна,uk,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/permanent/
-перманентний макіяж брів,uk,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
-перманентний макіяж брів ціна,uk,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
+перманентний макіяж,uk,kyiv,permanentnyi-makiiazh,commercial,320,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/permanent/
+перманентний макіяж київ,uk,kyiv,permanentnyi-makiiazh,commercial,170,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/permanent/
+перманентний макіяж ціна,uk,kyiv,permanentnyi-makiiazh,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/permanent/
+перманентний макіяж брів,uk,kyiv,permanentnyi-makiiazh-briv,commercial,110,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентний макіяж брів ціна,uk,kyiv,permanentnyi-makiiazh-briv,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 скільки коштує зробити перманентний макіяж брів?,uk,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
-татуаж брів,uk,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
-перманентний макіяж губ,uk,kyiv,permanentnyi-makiiazh-hub,commercial,unknown,,,
-перманентний макіяж стрілки,uk,kyiv,permanentnyi-makiiazh-strilky,commercial,unknown,,,
-перманентний макіяж вій,uk,kyiv,permanentnyi-makiiazh-strilky,commercial,unknown,,,
-перманентний макіяж брів догляд,uk,kyiv,permanentnyi-makiiazh-dohliad,informational,unknown,,,
+татуаж брів,uk,kyiv,permanentnyi-makiiazh-briv,commercial,260,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентний макіяж губ,uk,kyiv,permanentnyi-makiiazh-hub,commercial,50,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентний макіяж стрілки,uk,kyiv,permanentnyi-makiiazh-strilky,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентний макіяж вій,uk,kyiv,permanentnyi-makiiazh-strilky,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентний макіяж брів догляд,uk,kyiv,permanentnyi-makiiazh-dohliad,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 кому не можна робити перманентний макіяж?,uk,kyiv,permanentnyi-makiiazh-protypokazannia,informational,unknown,,,
-скільки тримається перманентний макіяж?,uk,kyiv,permanentnyi-makiiazh-skilky-trymaietsia,informational,unknown,,,
+скільки тримається перманентний макіяж?,uk,kyiv,permanentnyi-makiiazh-skilky-trymaietsia,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 чи шкідливий перманентний макіяж брів?,uk,kyiv,permanentnyi-makiiazh-shkoda,informational,unknown,,,
 яка різниця між татуажем та перманентним макіяжем?,uk,kyiv,permanentnyi-makiiazh-chy-tatuazh,informational,unknown,,,
 як довго заживають губи після перманентного макіяжу?,uk,kyiv,permanentnyi-makiiazh-hub-zahoiennia,informational,unknown,,,
-массаж,ru,kyiv,masazh,commercial,unknown,,,/ru/massage/
-массаж киев,ru,kyiv,masazh,commercial,unknown,,,/ru/massage/
-массаж киев цена,ru,kyiv,masazh,commercial,unknown,,,/ru/massage/
-массаж расслабляющий,ru,kyiv,masazh,commercial,unknown,,,/ru/massage/
-массаж спины,ru,kyiv,masazh-spyny,informational,unknown,,,
+массаж,ru,kyiv,masazh,commercial,6600,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/massage/
+массаж киев,ru,kyiv,masazh,commercial,5400,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/massage/
+массаж киев цена,ru,kyiv,masazh,commercial,50,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/massage/
+массаж расслабляющий,ru,kyiv,masazh,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/massage/
+массаж спины,ru,kyiv,masazh-spyny,informational,140,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 сколько стоит 1 час массажа спины?,ru,kyiv,masazh-spyny,informational,unknown,,,
-как часто нужно делать массаж спины?,ru,kyiv,masazh-spyny,informational,unknown,,,
-депиляция,ru,kyiv,depiliatsiia,commercial,unknown,,,/ru/depilation/
-депиляция воском,ru,kyiv,depiliatsiia,commercial,unknown,,,/ru/depilation/
-депиляция воском киев,ru,kyiv,depiliatsiia,commercial,unknown,,,/ru/depilation/
-депиляция мужская,ru,kyiv,depiliatsiia,commercial,unknown,,,/ru/depilation/
-депиляция бикини,ru,kyiv,depiliatsiia-bikini,commercial,unknown,,,
+как часто нужно делать массаж спины?,ru,kyiv,masazh-spyny,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+депиляция,ru,kyiv,depiliatsiia,commercial,480,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/depilation/
+депиляция воском,ru,kyiv,depiliatsiia,commercial,110,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/depilation/
+депиляция воском киев,ru,kyiv,depiliatsiia,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/depilation/
+депиляция мужская,ru,kyiv,depiliatsiia,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/depilation/
+депиляция бикини,ru,kyiv,depiliatsiia-bikini,commercial,70,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 как удаляют волосы в зоне глубокого бикини?,ru,kyiv,depiliatsiia-bikini-yak,informational,unknown,,,
-шугаринг,ru,kyiv,shuharynh,commercial,unknown,,,
-депиляция и эпиляция,ru,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
-в чем разница между эпиляция и депиляция?,ru,kyiv,depiliatsiia-chy-epiliatsiia,informational,unknown,,,
-чем депиляция отличается от шугаринга?,ru,kyiv,depiliatsiia-chy-shuharynh,informational,unknown,,,
+шугаринг,ru,kyiv,shuharynh,commercial,1600,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+депиляция и эпиляция,ru,kyiv,depiliatsiia-chy-epiliatsiia,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+в чем разница между эпиляция и депиляция?,ru,kyiv,depiliatsiia-chy-epiliatsiia,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+чем депиляция отличается от шугаринга?,ru,kyiv,depiliatsiia-chy-shuharynh,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 какой самый лучший способ удаления волос?,ru,kyiv,depiliatsiia-yaka-krashcha,informational,unknown,,,
-перманентный макияж,ru,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/ru/permanent/
-перманентный макияж киев,ru,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/ru/permanent/
-перманентный макияж цена,ru,kyiv,permanentnyi-makiiazh,commercial,unknown,,,/ru/permanent/
-перманентный макияж бровей,ru,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
-перманентный макияж бровей цена,ru,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
-татуаж бровей киев цена,ru,kyiv,permanentnyi-makiiazh-briv,commercial,unknown,,,
-перманентный макияж губ,ru,kyiv,permanentnyi-makiiazh-hub,commercial,unknown,,,
-перманентный макияж губ цена,ru,kyiv,permanentnyi-makiiazh-hub,commercial,unknown,,,
-перманентный макияж до после,ru,kyiv,permanentnyi-makiiazh-foto,,unknown,,,
+перманентный макияж,ru,kyiv,permanentnyi-makiiazh,commercial,260,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/permanent/
+перманентный макияж киев,ru,kyiv,permanentnyi-makiiazh,commercial,70,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/permanent/
+перманентный макияж цена,ru,kyiv,permanentnyi-makiiazh,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/permanent/
+перманентный макияж бровей,ru,kyiv,permanentnyi-makiiazh-briv,commercial,90,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентный макияж бровей цена,ru,kyiv,permanentnyi-makiiazh-briv,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+татуаж бровей киев цена,ru,kyiv,permanentnyi-makiiazh-briv,commercial,70,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентный макияж губ,ru,kyiv,permanentnyi-makiiazh-hub,commercial,50,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентный макияж губ цена,ru,kyiv,permanentnyi-makiiazh-hub,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+перманентный макияж до после,ru,kyiv,permanentnyi-makiiazh-foto,,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
 в чем разница перманентного макияжа и татуажа?,ru,kyiv,permanentnyi-makiiazh-chy-tatuazh,informational,unknown,,,
 что такое перманентный макияж простыми словами?,ru,kyiv,permanentnyi-makiiazh-shcho-tse,informational,unknown,,,
 как называется перманентный макияж?,ru,kyiv,permanentnyi-makiiazh-shcho-tse,informational,unknown,,,
-кому нельзя делать перманентный макияж?,ru,kyiv,permanentnyi-makiiazh-protypokazannia,informational,unknown,,,
-макіяж київ,uk,kyiv,makiiazh,commercial,unknown,,,/beauty/
-ламинирование ресниц киев,ru,kyiv,laminuvannia-vii,commercial,unknown,,,/ru/beauty/
-lada n,uk,kyiv,lada-n,navigational,unknown,,,/
-лада салон,ru,kyiv,lada-n,navigational,unknown,,,/ru/
-салон лада,ru,kyiv,lada-n,navigational,unknown,,,/ru/
+кому нельзя делать перманентный макияж?,ru,kyiv,permanentnyi-makiiazh-protypokazannia,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+макіяж київ,uk,kyiv,makiiazh,commercial,110,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+ламинирование ресниц киев,ru,kyiv,laminuvannia-vii,commercial,90,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+lada n,uk,kyiv,lada-n,navigational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/
+лада салон,ru,kyiv,lada-n,navigational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/
+салон лада,ru,kyiv,lada-n,navigational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/
+брови та вії,uk,kyiv,brovy-ta-vii,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+брови київ,uk,kyiv,brovy-ta-vii,commercial,140,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+зробити брови ціна,uk,kyiv,brovy-ta-vii,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+скільки коштує зробити брови?,uk,kyiv,brovy-ta-vii,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+корекція та фарбування брів,uk,kyiv,korektsiia-briv,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+ламінування вій,uk,kyiv,laminuvannia-vii,commercial,1600,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+скільки коштує ламінування вій,uk,kyiv,laminuvannia-vii,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+скільки триває ефект ламінування вій?,uk,kyiv,laminuvannia-vii-skilky-trymaietsia,informational,unknown,,,
+пудрові брови,uk,kyiv,permanentnyi-makiiazh-briv,commercial,260,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+макіяж та зачіски,uk,kyiv,makiiazh-i-zachiska,commercial,30,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+макіяж і зачіска київ,uk,kyiv,makiiazh-i-zachiska,commercial,30,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+весільний макіяж та зачіска київ,uk,kyiv,makiiazh-i-zachiska,commercial,unknown,,,/beauty/
+де в києві можна зробити зачіску та макіяж?,uk,kyiv,makiiazh-i-zachiska,commercial,unknown,,,/beauty/
+макіяж київ ціна,uk,kyiv,makiiazh,commercial,unknown,,,/beauty/
+макіяж київ правий берег,uk,kyiv,makiiazh,commercial,unknown,,,/beauty/
+професійний макіяж,uk,kyiv,makiiazh,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+макіяж на весілля для гостей,uk,kyiv,makiiazh,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/beauty/
+скільки часу тримається макіяж?,uk,kyiv,makiiazh-skilky-trymaietsia,informational,unknown,,,
+брови и ресницы,ru,kyiv,brovy-ta-vii,commercial,40,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+сколько стоит сделать брови в украине?,ru,kyiv,brovy-ta-vii,commercial,unknown,,,/ru/beauty/
+коррекция бровей цена,ru,kyiv,korektsiia-briv,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+коррекция бровей киев,ru,kyiv,korektsiia-briv,commercial,40,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+покраска бровей киев цена,ru,kyiv,korektsiia-briv,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+ламинирование бровей,ru,kyiv,laminuvannia-briv,commercial,390,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+пудровое напыление бровей,ru,kyiv,permanentnyi-makiiazh-briv,commercial,90,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+макияж и прически,ru,kyiv,makiiazh-i-zachiska,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+вечерний образ макияж и прическа,ru,kyiv,makiiazh-i-zachiska,commercial,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+макияж киев,ru,kyiv,makiiazh,commercial,40,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/ru/beauty/
+что лучше делать сначала: макияж или прическу?,ru,kyiv,makiiazh-i-zachiska-poriadok,informational,unknown,,,
