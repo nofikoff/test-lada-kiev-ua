@@ -1,0 +1,92 @@
+# Research: Sheet-driven price publishing
+
+Решения brainstorming 2026-10-11 и проверки 2026-10-12. Метки достоверности — по `epistemic.md`: VERIFIED с источником, FROM TRAINING, UNCERTAIN.
+
+## R1. Price input medium
+
+- **Decision**: Google-таблица на личном gmail автора, Лада — редактор.
+- **Rationale**: Лада уже работает в Google (карточка Google Business), таблица на телефоне ей знакома. Учётная запись GitHub и свой код на сервере не нужны.
+- **Alternatives considered**:
+  - git-based CMS (Sveltia, Decap) на `/admin`: Ладе нужна учётная запись GitHub, интерфейс англоязычный, форма из 73 вложенных позиций тяжела для нетехнического человека;
+  - своя админка на сервере: PHP, авторизация, защита от перебора и поверхность атаки на проде ради 110 чисел.
+
+## R2. Sheet row model
+
+- **Decision**: одна строка на сумму, ключ строки `<id>` для `fixed` и `<id>@<count>` для варианта. Модель — [data-model.md](data-model.md).
+- **Rationale**: у вариантов бывают минуты (60/90/120, 30/45) и сеансы (1/5/10, позиция с `unit: sessions`), всего 1–3 варианта. Строка на позицию дала бы семь столбцов и прокрутку вбок на телефоне. Строка на сумму — три видимых столбца.
+- **Alternatives considered**: строка на позицию с парами «подпись + сумма» — шире экрана телефона, а пустые ячейки отсутствующих вариантов приходится отдельно закрывать.
+
+## R3. Sync snapshot
+
+- **Decision**: снимок — защищённый от Лады столбец «На сайте» той же таблицы. Его пишет только workflow (после успешной выкладки) и перестройка таблицы.
+- **Rationale**: тот же столбец нужен для жёлтой подсветки неопубликованных ячеек (FR-025). Отдельный файл снимка в репозитории дублировал бы `prices.json`.
+- **Alternatives considered**: файл `prices.sync.json` в репозитории — второй источник сумм, который надо держать в согласии с первым; поиск последнего commit бота в `git log` — зависит от глубины клона и сообщения commit.
+
+## R4. Publish trigger
+
+- **Decision**: ячейка-галочка и установленный (installable) триггер `onEdit` скрипта таблицы, который вызывает `POST /repos/nofikoff/test-lada-kiev-ua/actions/workflows/publish.yml/dispatches`.
+- **Rationale**: публикация событием, только по явному действию (FR-007).
+- **Срабатывание на телефоне**: UNCERTAIN. Пункты меню Apps Script в мобильном приложении не работают (FROM TRAINING). Что установленный `onEdit` срабатывает на правку галочки с телефона, документация явно не подтверждает. Проверка — quickstart §3. Если триггер не сработает, запасной вариант — триггер по времени раз в минуту, который смотрит на галочку.
+- **Alternatives considered**:
+  - публикация сама через 5 минут после последней правки — недоправленный прайс уходит на сайт посередине;
+  - workflow по расписанию — FROM TRAINING: в публичном репозитории GitHub отключает такие workflow после 60 дней без активности;
+  - суммы во входных данных `workflow_dispatch` — проверки и обратная связь уезжают в Apps Script вне тестов, а утёкший токен позволяет публиковать произвольные суммы;
+  - чтение опубликованной в интернете CSV-копии — FROM TRAINING: она обновляется с задержкой, и workflow прочитал бы старые цены.
+
+## R5. Credentials
+
+| Доступ | Решение | Почему |
+|---|---|---|
+| Apps Script → GitHub | fine-grained PAT на один репозиторий, `Actions: write`, хранится в **UserProperties** автора | установленный триггер выполняется от имени создавшего его автора (FROM TRAINING), поэтому читает его UserProperties. Лада, открыв редактор скрипта, видит свои пустые свойства, а не токен. Остаточный риск: редактор таблицы может изменить код скрипта, и тот выполнится от имени автора. Для Лады это не реальная угроза, но FR-021 этим держится на доверии к редакторам, а не на механизме |
+| Actions → Google | WIF: `google-github-actions/auth@v3`, `token_format: access_token`, `access_token_scopes: https://www.googleapis.com/auth/spreadsheets` | VERIFIED ([README google-github-actions/auth](https://github.com/google-github-actions/auth), 2026-10-12): нужен `id-token: write`, токен живёт до часа, ключ не хранится (FR-022) |
+| Actions → сервер | ключ ed25519 пользователя `lada`, `command="rrsync /home/lada/public_html",restrict` в `/home/lada/.ssh/authorized_keys` | на сервере CentOS 7, rsync 3.1.2, `rrsync` нет, `~lada/.ssh` нет — VERIFIED по SSH 2026-10-12. `rrsync` ставится из исходников rsync 3.1.2 (`support/rrsync`, Perl) в `/usr/local/bin` |
+| Actions → Cloudflare | существующий токен Cache Purge на зону `lada.kiev.ua` | права только `Zone › Cache Purge › Purge` |
+
+- **Секреты**: все — в environment `production` с правилом ветки `main` (FR-024). `known_hosts` сервера — тоже секрет, без `ssh-keyscan` при запуске.
+- **Alternatives considered**: JSON-ключ service account — долгоживущий секрет; выкладка от root — ключ из CI дал бы root-shell на сервере.
+
+## R6. Workflow order
+
+- **Decision**:
+  1. checkout `main`;
+  2. `npm ci` и браузеры Playwright;
+  3. токен Google;
+  4. `publish.mjs` — таблица и `prices.json`; ошибка структуры или конфликт останавливают запуск до изменений;
+  5. commit локально и rebase на свежий `origin/main`;
+  6. гейты;
+  7. в обычном режиме: rsync, сброс кэша, проверки после выкладки, push;
+  8. всегда: `report.mjs` пишет в таблицу.
+
+  Push идёт после выкладки.
+- **Rationale**: гейты проверяют ровно то дерево, которое уходит на сайт. Красный гейт не оставляет в `main` commit с ценой, которой нет на сайте. Если push упал после выкладки, столбец «На сайте» не обновлён, и следующая публикация применит те же суммы повторно — шаг идемпотентен.
+- **Alternatives considered**: push до гейтов — при красном гейте `main` расходится с сайтом и нарушает FR-020.
+
+## R7. Concurrency
+
+- **Decision**: `concurrency: { group: publish, cancel-in-progress: false, queue: max }`.
+- **Rationale**: VERIFIED ([GitHub Docs, concurrency](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/control-the-concurrency-of-workflows-and-jobs), 2026-10-12): со значением по умолчанию `queue: single` новая ожидающая публикация отменяет предыдущую ожидающую. Ручной запуск автора со списком разрешённых позиций потерялся бы за галочкой Лады. `queue: max` держит до 100 ожидающих.
+
+## R8. Structure protection
+
+- **Decision**: лист целиком защищён, исключения — диапазон сумм и галочка. Структурная сверка FR-008 — вторая линия обороны.
+- **Rationale**: UNCERTAIN, блокирует ли защита листа вставку и удаление строк редактором. Сторонние руководства противоречат друг другу ([Coefficient](https://coefficient.io/how-to-lock-cells-in-google-sheets): не блокирует; [The Bricks](https://thebricks.com/resources/guide-how-to-stop-insert-in-google-sheets): блокирует). Проверка — quickstart §2 под учётной записью-редактором.
+- **Если вставка возможна**: установленный триггер `onChange` от имени автора ловит `INSERT_ROW`, `REMOVE_ROW`, `INSERT_COLUMN`, `REMOVE_COLUMN` и восстанавливает структуру из `prices.json` и столбца «На сайте». Это задача условная и попадает в tasks.md отдельной фазой.
+
+## R9. Deploy steps
+
+- **Decision**:
+  - `rsync -rlt --delete --chmod=D755,F644 dist/ lada@<host>:` — корень задаёт `rrsync`;
+  - сброс кэша по адресам из `dist/`: каждый `index.html` и `404.html` → адрес, плюс `robots.txt`, `llms.txt`, `sitemap-*.xml`, пачками по 30;
+  - проверки «После выкладки» из `runbook-deploy.md` через `curl`.
+- **Rationale**: список из 19 адресов в регламенте устареет с первой страницей базы знаний (ADR-023), а адреса из `dist/` устареть не могут. Owner `lada:lada` получается сам, без `chown`.
+- **Откат**: архив сборки на сервере (`/root/lada-backups`) больше не создаётся — сборка воспроизводится из git. Откат — revert в `main` и ручной запуск.
+
+## R10. Runner time budget
+
+- **Estimate** (не замер): `npm ci` ≈ 1 мин, браузеры Playwright ≈ 1 мин, `check` + `lint` + `build` ≈ 1–2 мин, `test:e2e` ≈ 2–3 мин, `test:invalid-data` (несколько сборок) ≈ 2–3 мин, выкладка и сброс < 1 мин. Итого 8–11 мин против SC-001 «≤ 10 мин».
+- **Decision**: кэш npm и браузеров Playwright в `actions/setup-node` / `actions/cache`; все гейты остаются в публикации (FR-012). Замер первого боевого прогона записывается сюда же. Если SC-001 не держится, это изменение spec, а не тихий перенос гейта: вынести `test:invalid-data` в проверку push в `main` можно только поправкой FR-012. Довод за перенос: гейт проверяет схему, а не суммы.
+
+## R11. Sheet-side watchdogs
+
+- **Decision**: в скрипте таблицы два установленных триггера от имени автора. Первый — `onEdit` на галочку. Второй — по времени, раз в 10 минут. Он меняет статус «идёт с ЧЧ:ММ» старше 25 минут на «ошибка, Руслан уведомлён» (FR-028). Ответ GitHub на dispatch несёт заголовок `github-authentication-token-expiration` (FROM TRAINING, проверить в quickstart §1). Если до истечения меньше 14 дней, `onEdit` шлёт автору письмо через `MailApp` (FR-029).
+- **Alternatives considered**: дата истечения PAT как константа в Script Properties — расходится с токеном при замене.
