@@ -205,6 +205,8 @@ for (const { locale, path } of homePages) {
       expect(await strip(page).evaluate((element) => element.scrollLeft), 'лента прокрутилась сама').toBe(before);
 
       await next.click();
+      // Two equal samples before smooth scrolling starts read as "settled at 0" on a loaded runner.
+      await expect.poll(() => strip(page).evaluate((element) => element.scrollLeft), 'лента не сдвинулась').toBeGreaterThan(before);
       const moved = await settledScroll(page);
       expect(Math.abs(moved - (await step(page))), `сдвиг ${moved}`).toBeLessThanOrEqual(2);
       await expect(prev).toBeEnabled();
