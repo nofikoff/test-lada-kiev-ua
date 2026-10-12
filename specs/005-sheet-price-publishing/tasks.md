@@ -132,7 +132,7 @@ description: "Task list for sheet-driven price publishing"
 ### Implementation for User Story 4
 
 - [X] T026 [US4] Implement `mode: dry-run` (`PRICES_SHEET_ID_DRY_RUN`, без commit, rsync, сброса кэша и report) and `mode: rebuild-sheet` (только rebuild-sheet.mjs) in .github/workflows/publish.yml
-- [ ] T027 [US4] (автор, root на сервере) Install rrsync from rsync 3.1.2 sources to /usr/local/bin/rrsync and create /home/lada/.ssh/authorized_keys (`700`/`600`, `lada:lada`) with `command="/usr/local/bin/rrsync /home/lada/public_html",restrict` по quickstart.md §1.1; агент готовит пару ключей ed25519 в docs/_local/ и команды
+- [X] T027 [US4] (автор, root на сервере) Install rrsync from rsync 3.1.2 sources to /usr/local/bin/rrsync and create /home/lada/.ssh/authorized_keys (`700`/`600`, `lada:lada`) with `command="/usr/local/bin/rrsync /home/lada/public_html",restrict` по quickstart.md §1.1; агент готовит пару ключей ed25519 в docs/_local/ и команды
 - [ ] T028 [US4] (автор) Create the GCP project, Sheets API, keyless service account, WIF pool and provider with condition `assertion.repository == 'nofikoff/test-lada-kiev-ua' && assertion.ref == 'refs/heads/main'`, the two sheets shared with the service account, GitHub environment `production` (main only) with secrets and variables of contracts/publish-workflow.md, the PAT (`Actions: Read and write`, один репозиторий) and the Apps Script install by quickstart.md §1.2–§1.6
 - [X] T029 [US4] Rewrite docs/runbook-deploy.md: единственный путь — Actions → publish (ручной запуск, dry-run, rebuild-sheet, `allow_large_change`); откат — revert в `main` и ручной запуск; что делать при каждом статусе FR-015; ротация PAT; ручная выкладка от root удаляется (Assumptions «Переходный период»)
 

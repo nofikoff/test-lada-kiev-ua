@@ -11,7 +11,7 @@ npm run lint && npm run check && npm run build
 
 ## 1. One-time setup
 
-1. **Сервер, root**: поставить `rrsync` из исходников rsync 3.1.2 в `/usr/local/bin/rrsync`, создать `/home/lada/.ssh/authorized_keys` (`700`/`600`, владелец `lada`) со строкой `command="/usr/local/bin/rrsync /home/lada/public_html",restrict ssh-ed25519 …`. Проверка: `ssh lada@host` без команды отказывает, `rsync -n dist/ lada@host:` проходит.
+1. **Сервер, root**: поставить `rrsync` из исходников rsync 3.1.2 в `/usr/local/bin/rrsync`, создать `/home/lada/.ssh/authorized_keys` (`700`/`600`, владелец `lada`) со строкой `command="/usr/local/bin/rrsync /home/lada/public_html",restrict ssh-ed25519 …`, добавить `lada` в `AllowUsers` и блок `Match User lada` (research.md §R5). Проверка: `ssh lada@host id` отвечает «is not rsync», вход по паролю — `Permission denied (publickey)`, `rsync -n -rlpt --delete --chmod=D755,F644 dist/ lada@host:` проходит. Сделано 2026-10-12.
 2. **GCP** (личный gmail): проект, Sheets API, service account без ключей, пул WIF с провайдером `token.actions.githubusercontent.com` и условием `assertion.repository == 'nofikoff/test-lada-kiev-ua' && assertion.ref == 'refs/heads/main'`, роль `roles/iam.workloadIdentityUser` пулу на service account.
 3. **Таблицы**: две пустые таблицы (боевая и копия для пробного прогона) с доступом «редактор» для service account.
 4. **GitHub**: environment `production` с правилом ветки `main`; секреты и переменные — [contracts/publish-workflow.md](contracts/publish-workflow.md) §Job invariants.

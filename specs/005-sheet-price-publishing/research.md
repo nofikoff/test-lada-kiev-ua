@@ -39,11 +39,11 @@
 |---|---|---|
 | Apps Script → GitHub | fine-grained PAT на один репозиторий, `Actions: write`, хранится в **UserProperties** автора | установленный триггер выполняется от имени создавшего его автора (FROM TRAINING), поэтому читает его UserProperties. Лада, открыв редактор скрипта, видит свои пустые свойства, а не токен. Остаточный риск: редактор таблицы может изменить код скрипта, и тот выполнится от имени автора. Для Лады это не реальная угроза, но FR-021 этим держится на доверии к редакторам, а не на механизме |
 | Actions → Google | WIF: `google-github-actions/auth@v3`, `token_format: access_token`, `access_token_scopes: https://www.googleapis.com/auth/spreadsheets` | VERIFIED ([README google-github-actions/auth](https://github.com/google-github-actions/auth), 2026-10-12): нужен `id-token: write`, токен живёт до часа, ключ не хранится (FR-022) |
-| Actions → сервер | ключ ed25519 пользователя `lada`, `command="rrsync /home/lada/public_html",restrict` в `/home/lada/.ssh/authorized_keys` | на сервере CentOS 7, rsync 3.1.2, `rrsync` нет, `~lada/.ssh` нет — VERIFIED по SSH 2026-10-12. `rrsync` ставится из исходников rsync 3.1.2 (`support/rrsync`, Perl) в `/usr/local/bin` |
+| Actions → сервер | ключ ed25519 пользователя `lada`, `command="rrsync /home/lada/public_html",restrict` в `/home/lada/.ssh/authorized_keys` | на сервере CentOS 7, rsync 3.1.2, `rrsync` нет, `~lada/.ssh` нет — VERIFIED по SSH 2026-10-12. `rrsync` ставится из исходников rsync 3.1.2 (`support/rrsync`, Perl) в `/usr/local/bin`. Кроме того, `sshd_config` пускал только `AllowUsers root images`, а вход по паролю включён глобально, и у `lada` пароль Virtualmin. Поэтому `lada` добавлен в `AllowUsers` вместе с блоком `Match User lada`: `AuthenticationMethods publickey`, `PasswordAuthentication no`, `ForceCommand /usr/local/bin/rrsync /home/lada/public_html`, без TTY и пробросов. Резервная копия — `/etc/ssh/sshd_config.bak-20261012-094601` |
 | Actions → Cloudflare | существующий токен Cache Purge на зону `lada.kiev.ua` | права только `Zone › Cache Purge › Purge` |
 
 - **Секреты**: все — в environment `production` с правилом ветки `main` (FR-024). `known_hosts` сервера — тоже секрет, без `ssh-keyscan` при запуске.
-- **Alternatives considered**: JSON-ключ service account — долгоживущий секрет; выкладка от root — ключ из CI дал бы root-shell на сервере.
+- **Alternatives considered**: JSON-ключ service account — долгоживущий секрет; выкладка от root — ключ из CI дал бы root-shell на сервере; SFTP Virtualmin (ProFTPD `mod_sftp`, порт 2222, chroot в `/home/lada`) — порт закрыт в firewalld, его пришлось бы открыть наружу с паролями ProFTPD, ключ получил бы весь `/home/lada`, а rsync через SFTP не работает.
 
 ## R6. Workflow order
 

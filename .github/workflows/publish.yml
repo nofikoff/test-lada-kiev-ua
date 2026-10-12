@@ -163,7 +163,8 @@ jobs:
           printf '%s\n' "$DEPLOY_SSH_KEY" > "$RUNNER_TEMP/deploy_key"
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$RUNNER_TEMP/known_hosts"
           # The server's rrsync pins the target to the site root, so the remote path stays empty.
-          rsync -rlt --delete --chmod=D755,F644 \
+          # --chmod rewrites modes on the sending side; without -p the receiver ignores them.
+          rsync -rlpt --delete --chmod=D755,F644 \
             -e "ssh -i $RUNNER_TEMP/deploy_key -o UserKnownHostsFile=$RUNNER_TEMP/known_hosts -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes" \
             dist/ "lada@$DEPLOY_HOST:"
 
