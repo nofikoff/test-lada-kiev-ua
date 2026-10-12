@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { categoryPages, homePages, SERVICE_COPY_SELECTOR } from './support/site';
 
 /**
@@ -143,12 +143,27 @@ function lostText(all: readonly LineMeasurement[]): string {
     .join('\n');
 }
 
+/**
+ * Открывает страницу и ждёт шрифты сайта. Замер до их прихода меряет резервную гарнитуру:
+ * на нагруженном CI `/en/depilation/` давал 69 знаков там, где Inter даёт 64.
+ */
+async function openWithSiteFonts(page: Page, path: string, width: number) {
+  await page.setViewportSize({ width, height: 1000 });
+  await page.goto(path);
+  const unsettled = await page.evaluate(async () => {
+    await document.fonts.ready;
+    return [...document.fonts]
+      .filter((face) => face.status === 'loading' || face.status === 'error')
+      .map((face) => `${face.family} ${face.weight} ${face.status}`);
+  });
+  expect(unsettled, `${path}: шрифты сайта не загрузились`).toEqual([]);
+}
+
 test.describe('длина строки протяжённого текста', () => {
   for (const width of WIDTHS) {
     for (const { path } of categoryPages) {
       test(`${path} держит меру при ширине ${width}`, async ({ page }) => {
-        await page.setViewportSize({ width, height: 1000 });
-        await page.goto(path);
+        await openWithSiteFonts(page, path, width);
 
         const measured = await page.evaluate(measureInBrowser, {
           selector: `${SERVICE_COPY_SELECTOR} p, ${SERVICE_COPY_SELECTOR} li`,
@@ -168,8 +183,7 @@ test.describe('длина строки протяжённого текста', (
 
     for (const { path } of homePages) {
       test(`повествовательная секция ${path} держит меру при ширине ${width}`, async ({ page }) => {
-        await page.setViewportSize({ width, height: 1000 });
-        await page.goto(path);
+        await openWithSiteFonts(page, path, width);
 
         const measured = await page.evaluate(measureInBrowser, {
           selector: '#about p',
