@@ -139,7 +139,7 @@ jobs:
       - name: Gate — e2e
         if: inputs.mode != 'rebuild-sheet'
         run: npm run test:e2e
-        timeout-minutes: 6
+        timeout-minutes: 12
       - name: Gate — invalid data
         if: inputs.mode != 'rebuild-sheet'
         run: npm run test:invalid-data

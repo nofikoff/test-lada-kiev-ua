@@ -13,6 +13,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
+  // The default half of the cores gives 2 workers on the 4-vCPU runner and pushes the publish
+  // workflow past its time budget (specs/005-sheet-price-publishing/research.md §R10).
+  workers: process.env.CI ? '100%' : undefined,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['list']],
   use: {
     baseURL: BASE_URL,
