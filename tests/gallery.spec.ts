@@ -29,17 +29,7 @@ function categoryPath(locale: Locale, category: Category): string {
 const strip = (page: Page) => page.locator('[data-gallery]');
 const cards = (page: Page) => page.locator('[data-gallery] li');
 
-/** Прокрутка, дождавшаяся конца плавного сдвига: два одинаковых замера подряд. */
-async function settledScroll(page: Page): Promise<number> {
-  let previous = -1;
-  for (let attempt = 0; attempt < 40; attempt += 1) {
-    const current = await strip(page).evaluate((element) => element.scrollLeft);
-    if (current === previous) return current;
-    previous = current;
-    await page.waitForTimeout(100);
-  }
-  return previous;
-}
+const scrollLeft = (page: Page) => strip(page).evaluate((element) => element.scrollLeft);
 
 /** Шаг ленты — ширина карточки плюс зазор между карточками. */
 async function step(page: Page): Promise<number> {
@@ -200,15 +190,20 @@ for (const { locale, path } of homePages) {
       await expect(next).toBeVisible();
       await expect(prev).toBeDisabled();
 
-      const before = await strip(page).evaluate((element) => element.scrollLeft);
+      const before = await scrollLeft(page);
       await page.waitForTimeout(3000);
-      expect(await strip(page).evaluate((element) => element.scrollLeft), 'лента прокрутилась сама').toBe(before);
+      expect(await scrollLeft(page), 'лента прокрутилась сама').toBe(before);
 
       await next.click();
-      // Two equal samples before smooth scrolling starts read as "settled at 0" on a loaded runner.
-      await expect.poll(() => strip(page).evaluate((element) => element.scrollLeft), 'лента не сдвинулась').toBeGreaterThan(before);
-      const moved = await settledScroll(page);
-      expect(Math.abs(moved - (await step(page))), `сдвиг ${moved}`).toBeLessThanOrEqual(2);
+      // Asserting where the strip comes to rest: on a loaded CI runner "two equal samples" fired
+      // both before smooth scrolling started (0) and in a pause before scroll-snap finished (361 of 368).
+      const card = await step(page);
+      await expect
+        .poll(async () => Math.abs((await scrollLeft(page)) - before - card), {
+          message: `сдвиг не равен одной карточке (${card}px)`,
+          timeout: 5000,
+        })
+        .toBeLessThanOrEqual(2);
       await expect(prev).toBeEnabled();
 
       await strip(page).evaluate((element) => element.scrollTo({ left: element.scrollWidth, behavior: 'instant' }));
