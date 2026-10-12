@@ -20,7 +20,7 @@
 
 **Testing**: `node --test` для чистых функций (`scripts/prices/*.test.mjs`, вне `tests/`, который принадлежит Playwright); существующие гейты без изменений; пробный прогон workflow на копии таблицы
 
-**Target Platform**: GitHub-hosted runner `ubuntu-latest`; сервер CentOS 7, rsync 3.1.2, `rrsync` в комплекте пакета нет (проверено 2026-10-12 по SSH)
+**Target Platform**: GitHub-hosted runner `ubuntu-24.04` (закреплён: гейт типографики меряет строку в шрифтовом окружении образа, а `ubuntu-latest` переезжает на Ubuntu 26 19 октября 2026); сервер CentOS 7, rsync 3.1.2, `rrsync` в комплекте пакета нет (проверено 2026-10-12 по SSH)
 
 **Project Type**: статический сайт + служебные скрипты сборки и CI
 

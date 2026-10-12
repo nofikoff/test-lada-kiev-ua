@@ -32,7 +32,9 @@ concurrency:
 jobs:
   publish:
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    # Pinned: the typography gate measures line length in this image's font rendering
+    # (src/index.css, --measure), and ubuntu-latest moves to Ubuntu 26 on 2026-10-19.
+    runs-on: ubuntu-24.04
     environment: production
     timeout-minutes: 20
     permissions:
