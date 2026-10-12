@@ -86,7 +86,7 @@
         },
         {
           "count": 90,
-          "amount": 2900
+          "amount": 3750
         },
         {
           "count": 120,
@@ -671,7 +671,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 850
+      "amount": 650
     }
   },
   {
@@ -684,7 +684,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 750
+      "amount": 550
     }
   },
   {
@@ -697,7 +697,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 400
+      "amount": 350
     }
   },
   {
@@ -710,7 +710,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 650
+      "amount": 550
     }
   },
   {
@@ -723,7 +723,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 850
+      "amount": 750
     }
   },
   {
@@ -749,7 +749,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 650
+      "amount": 550
     }
   },
   {
@@ -762,7 +762,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 550
+      "amount": 450
     }
   },
   {
@@ -814,7 +814,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 1000
+      "amount": 900
     }
   },
   {
@@ -827,7 +827,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 900
+      "amount": 800
     }
   },
   {
@@ -840,7 +840,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 1500
+      "amount": 1300
     }
   },
   {
@@ -853,7 +853,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 1800
+      "amount": 1500
     }
   },
   {
@@ -905,7 +905,7 @@
     },
     "price": {
       "kind": "fixed",
-      "amount": 850
+      "amount": 1000
     }
   },
   {
