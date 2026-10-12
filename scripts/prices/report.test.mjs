@@ -25,10 +25,14 @@ test('time is shown in Kyiv time', () => {
   assert.equal(at, '12.10 14:32');
 });
 
-test('started writes only the status, with the start time', () => {
+// Copy of the watchdog pattern in apps-script/Code.js: a status it cannot parse is never timed out.
+const WATCHDOG_PATTERN = /^публикация (?:запущена в|идёт с) (\d{2}):(\d{2})$/;
+
+test('started writes only the status, with the start time the watchdog can parse', () => {
   const updates = buildReportUpdates({ outcome: 'started', report: undefined, now });
   assert.equal(updates.length, 1);
-  assert.equal(status(updates), `публикация идёт с ${at}`);
+  assert.equal(status(updates), 'публикация идёт с 14:32');
+  assert.match(status(updates), WATCHDOG_PATTERN);
 });
 
 test('published writes the snapshot and clears marks', () => {

@@ -9,8 +9,8 @@ import { a1, clientFromEnv } from './sheets-api.mjs';
 import { FIRST_DATA_ROW, SHEET_NAME, STATUS_CELL, lastDataRow } from './sheet-layout.mjs';
 import { REPORT_FILE } from './publish.mjs';
 
-export function formatKyiv(date) {
-  const parts = Object.fromEntries(
+function kyivParts(date) {
+  return Object.fromEntries(
     new Intl.DateTimeFormat('ru-RU', {
       timeZone: 'Europe/Kyiv',
       day: '2-digit',
@@ -22,7 +22,17 @@ export function formatKyiv(date) {
       .formatToParts(date)
       .map(({ type, value }) => [type, value]),
   );
+}
+
+export function formatKyiv(date) {
+  const parts = kyivParts(date);
   return `${parts.day}.${parts.month} ${parts.hour}:${parts.minute}`;
+}
+
+/** Time only: the sheet's watchdog parses «идёт с ЧЧ:ММ» (apps-script/Code.js, watchdog). */
+export function formatKyivClock(date) {
+  const parts = kyivParts(date);
+  return `${parts.hour}:${parts.minute}`;
 }
 
 function positions(count) {
@@ -46,7 +56,7 @@ export function buildReportUpdates({ outcome, report, now }) {
 
   switch (outcome) {
     case 'started':
-      return [statusUpdate(`публикация идёт с ${at}`)];
+      return [statusUpdate(`публикация идёт с ${formatKyivClock(now)}`)];
     case 'failed-before-deploy':
       return [statusUpdate('ошибка, сайт не изменён, Руслан уведомлён')];
     case 'failed-after-deploy':
