@@ -19,6 +19,10 @@ on:
         description: Row keys, comma-separated, exempt from the ×2 threshold (manual runs only)
         type: string
         default: ''
+      e2e:
+        description: Run the full e2e suite (three engines, ~7–10 min) instead of the price and SEO contract
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -119,7 +123,7 @@ jobs:
 
       - name: Install Playwright browsers
         if: inputs.mode != 'rebuild-sheet'
-        run: npx playwright install --with-deps chromium webkit
+        run: npx playwright install --with-deps chromium ${{ inputs.e2e && 'webkit' || '' }}
         timeout-minutes: 4
 
       - name: Gate — check
@@ -138,8 +142,13 @@ jobs:
         if: inputs.mode != 'rebuild-sheet'
         run: npm run build
         timeout-minutes: 3
+      # The full suite runs only on request (ADR-027).
+      - name: Gate — price and SEO contract
+        if: inputs.mode != 'rebuild-sheet' && !inputs.e2e
+        run: npm run test:publish
+        timeout-minutes: 3
       - name: Gate — e2e
-        if: inputs.mode != 'rebuild-sheet'
+        if: inputs.mode != 'rebuild-sheet' && inputs.e2e
         run: npm run test:e2e
         timeout-minutes: 12
       - name: Gate — invalid data

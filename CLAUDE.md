@@ -4,7 +4,7 @@
 
 ## Гейты
 
-`npm run check`, `npm run lint`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze` — все зелёные до слияния; правила сверх них — [.specify/memory/constitution.md](.specify/memory/constitution.md).
+`npm run check`, `npm run lint`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze` — все зелёные до слияния. Публикация гоняет вместо `test:e2e` только `test:publish` ([ADR-027](docs/adr/adr-027-full-e2e-outside-publish.md)): регрессия вёрстки, не прогнанная локально, уйдёт на сайт со следующей галочкой Лады; правила сверх них — [.specify/memory/constitution.md](.specify/memory/constitution.md).
 
 - e2e идёт против `astro preview` над `dist/` на `PREVIEW_PORT` (4329, `astro.config.mjs`), не против `astro dev` на 4321. Прогон без свежей `npm run build` проверяет прошлую сборку и выглядит необъяснимо зелёным.
 - `tests/support/site.ts` держит хост, телефон, состав ленты литералами, а не импортом из `src/`: проверка, читающая константу реализации, доказывает только непротиворечивость.
@@ -20,7 +20,7 @@
 
 ## Что открыть, когда трогаешь
 
-Перед тем как предлагать зависимость, фреймворк или переписывание подсистемы — `docs/adr/`. Уже отвергнуто: React/Next с пререндерингом ([ADR-004](docs/adr/adr-004-static-astro-no-client-framework.md)), `IntersectionObserver` для проявлений ([ADR-015](docs/adr/adr-015-motion-css-scroll-driven-no-script.md)), отложенная загрузка GA4 ([ADR-011](docs/adr/adr-011-analytics-snippet-unchanged-not-deferred.md)), Tailwind 4 вместе с правкой вёрстки ([ADR-010](docs/adr/adr-010-tailwind-3-via-postcss-no-integration.md)), разметка `FAQPage` ([ADR-020](docs/adr/adr-020-no-faqpage-markup.md)), отдельные страницы под коммерческие запросы ([ADR-021](docs/adr/adr-021-no-query-landing-pages.md); информационным — база знаний, [ADR-023](docs/adr/adr-023-knowledge-base-pages-for-informational-queries.md)), WordPress и любая админка для статей ([ADR-024](docs/adr/adr-024-articles-published-via-git-no-cms.md)), CMS и своя админка для цен ([ADR-025](docs/adr/adr-025-price-input-via-google-sheet.md)), ручная выкладка рядом с workflow ([ADR-026](docs/adr/adr-026-single-ci-deploy-path.md)).
+Перед тем как предлагать зависимость, фреймворк или переписывание подсистемы — `docs/adr/`. Уже отвергнуто: React/Next с пререндерингом ([ADR-004](docs/adr/adr-004-static-astro-no-client-framework.md)), `IntersectionObserver` для проявлений ([ADR-015](docs/adr/adr-015-motion-css-scroll-driven-no-script.md)), отложенная загрузка GA4 ([ADR-011](docs/adr/adr-011-analytics-snippet-unchanged-not-deferred.md)), Tailwind 4 вместе с правкой вёрстки ([ADR-010](docs/adr/adr-010-tailwind-3-via-postcss-no-integration.md)), разметка `FAQPage` ([ADR-020](docs/adr/adr-020-no-faqpage-markup.md)), отдельные страницы под коммерческие запросы ([ADR-021](docs/adr/adr-021-no-query-landing-pages.md); информационным — база знаний, [ADR-023](docs/adr/adr-023-knowledge-base-pages-for-informational-queries.md)), WordPress и любая админка для статей ([ADR-024](docs/adr/adr-024-articles-published-via-git-no-cms.md)), CMS и своя админка для цен ([ADR-025](docs/adr/adr-025-price-input-via-google-sheet.md)), ручная выкладка рядом с workflow ([ADR-026](docs/adr/adr-026-single-ci-deploy-path.md)), полный e2e в каждой публикации ([ADR-027](docs/adr/adr-027-full-e2e-outside-publish.md)).
 
 | Трогаешь | Открой | Потому что |
 |---|---|---|
