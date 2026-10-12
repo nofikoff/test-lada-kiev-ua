@@ -144,31 +144,33 @@ function lostText(all: readonly LineMeasurement[]): string {
 }
 
 /**
- * Открывает страницу и ждёт шрифты сайта. Замер до их прихода меряет резервную гарнитуру:
- * на нагруженном CI `/en/depilation/` давал 69 знаков там, где Inter даёт 64.
+ * Открывает страницу и ждёт гарнитуру, которой набран измеряемый текст: замер до её прихода
+ * меряет резервную. Проверяется только первая гарнитура из `font-family` — резервные
+ * начертания `local(Arial)` на Linux законно получают `error`, там этих шрифтов нет.
  */
-async function openWithSiteFonts(page: Page, path: string, width: number) {
+async function openWithSiteFonts(page: Page, path: string, width: number, selector: string) {
   await page.setViewportSize({ width, height: 1000 });
   await page.goto(path);
-  const unsettled = await page.evaluate(async () => {
+  const primary = await page.evaluate(async (target) => {
     await document.fonts.ready;
-    return [...document.fonts]
-      .filter((face) => face.status === 'loading' || face.status === 'error')
-      .map((face) => `${face.family} ${face.weight} ${face.status}`);
-  });
-  expect(unsettled, `${path}: шрифты сайта не загрузились`).toEqual([]);
+    const element = document.querySelector(target);
+    if (!element) return { family: '', statuses: [] as string[] };
+    const family = getComputedStyle(element).fontFamily.split(',')[0].trim().replace(/^["']|["']$/g, '');
+    const statuses = [...document.fonts].filter((face) => face.family === family).map((face) => face.status);
+    return { family, statuses };
+  }, selector);
+  expect(primary.statuses, `${path}: гарнитура «${primary.family}» не загрузилась`).toContain('loaded');
+  expect(primary.statuses.filter((status) => status === 'loading' || status === 'error'), `${path}: «${primary.family}»`).toEqual([]);
 }
 
 test.describe('длина строки протяжённого текста', () => {
   for (const width of WIDTHS) {
     for (const { path } of categoryPages) {
       test(`${path} держит меру при ширине ${width}`, async ({ page }) => {
-        await openWithSiteFonts(page, path, width);
+        const selector = `${SERVICE_COPY_SELECTOR} p, ${SERVICE_COPY_SELECTOR} li`;
+        await openWithSiteFonts(page, path, width, selector);
 
-        const measured = await page.evaluate(measureInBrowser, {
-          selector: `${SERVICE_COPY_SELECTOR} p, ${SERVICE_COPY_SELECTOR} li`,
-          minimum: MEANINGFUL_LENGTH,
-        });
+        const measured = await page.evaluate(measureInBrowser, { selector, minimum: MEANINGFUL_LENGTH });
 
         // Пустой список абзацев прошёл бы проверку вхолостую: «ни одного длиннее предела»
         // верно и там, где мерить было нечего.
@@ -183,12 +185,10 @@ test.describe('длина строки протяжённого текста', (
 
     for (const { path } of homePages) {
       test(`повествовательная секция ${path} держит меру при ширине ${width}`, async ({ page }) => {
-        await openWithSiteFonts(page, path, width);
+        const selector = '#about p';
+        await openWithSiteFonts(page, path, width, selector);
 
-        const measured = await page.evaluate(measureInBrowser, {
-          selector: '#about p',
-          minimum: MEANINGFUL_LENGTH,
-        });
+        const measured = await page.evaluate(measureInBrowser, { selector, minimum: MEANINGFUL_LENGTH });
 
         expect(measured.length, `${path}: абзацы секции «Про нас» не найдены`).toBeGreaterThan(0);
         expect(
