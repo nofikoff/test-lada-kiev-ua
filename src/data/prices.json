@@ -3,9 +3,9 @@
     "id": "full-body-massage-harmony",
     "group": "fullBodyMassage",
     "name": {
-      "uk": "Масаж Гармонія (Relax)",
-      "ru": "Массаж Гармония (Relax)",
-      "en": "Harmony Massage (Relax)"
+      "uk": "Масаж відновлення всього тіла",
+      "ru": "Массаж восстановления всего тела",
+      "en": "Full Body Recovery Massage"
     },
     "description": {
       "uk": "Зняття втоми, емоційний баланс",
@@ -160,6 +160,98 @@
     }
   },
   {
+    "id": "full-body-massage-pregnancy",
+    "group": "fullBodyMassage",
+    "name": {
+      "uk": "Масаж для вагітних",
+      "ru": "Массаж для беременных",
+      "en": "Pregnancy Massage"
+    },
+    "description": {
+      "uk": "З другого триместру, лежачи на боці або сидячи на фітболі",
+      "ru": "Со второго триместра, лёжа на боку или сидя на фитболе",
+      "en": "From the second trimester, lying on your side or seated on a fitball"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1200
+        },
+        {
+          "count": 90,
+          "amount": 1700
+        },
+        {
+          "count": 120,
+          "amount": 2500
+        }
+      ]
+    }
+  },
+  {
+    "id": "full-body-massage-children",
+    "group": "fullBodyMassage",
+    "name": {
+      "uk": "Дитячий масаж (до 12 років)",
+      "ru": "Детский массаж (до 12 лет)",
+      "en": "Children's Massage (up to 12)"
+    },
+    "description": {
+      "uk": "Розслаблення та опрацювання м'язів",
+      "ru": "Расслабление и проработка мышц",
+      "en": "Relaxes and works through the muscles"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 1100
+        },
+        {
+          "count": 90,
+          "amount": 1500
+        }
+      ]
+    }
+  },
+  {
+    "id": "full-body-massage-couples-premium",
+    "group": "fullBodyMassage",
+    "name": {
+      "uk": "Парний масаж Premium",
+      "ru": "Парный массаж Premium",
+      "en": "Couples Massage Premium"
+    },
+    "description": {
+      "uk": "Спільна процедура для двох",
+      "ru": "Совместная процедура для двоих",
+      "en": "A shared session for two"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 60,
+          "amount": 4500
+        },
+        {
+          "count": 90,
+          "amount": 4900
+        },
+        {
+          "count": 120,
+          "amount": 6500
+        }
+      ]
+    }
+  },
+  {
     "id": "local-massage-neck",
     "group": "localMassage",
     "name": {
@@ -218,8 +310,12 @@
       "unit": "minutes",
       "variants": [
         {
-          "count": 60,
-          "amount": 850
+          "count": 30,
+          "amount": 800
+        },
+        {
+          "count": 45,
+          "amount": 1000
         }
       ]
     }
@@ -289,6 +385,29 @@
         {
           "count": 30,
           "amount": 700
+        },
+        {
+          "count": 45,
+          "amount": 900
+        }
+      ]
+    }
+  },
+  {
+    "id": "local-massage-visceral",
+    "group": "localMassage",
+    "name": {
+      "uk": "Вісцеральний масаж живота",
+      "ru": "Висцеральный массаж живота",
+      "en": "Visceral Abdominal Massage"
+    },
+    "price": {
+      "kind": "variants",
+      "unit": "minutes",
+      "variants": [
+        {
+          "count": 30,
+          "amount": 750
         },
         {
           "count": 45,
@@ -688,6 +807,19 @@
     }
   },
   {
+    "id": "women-depilation-panty-line-bikini",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Бікіні по зоні трусиків",
+      "ru": "Бикини по линии трусиков",
+      "en": "Bikini (panty line)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 350
+    }
+  },
+  {
     "id": "women-depilation-underarms",
     "group": "womenDepilation",
     "name": {
@@ -766,6 +898,19 @@
     }
   },
   {
+    "id": "women-depilation-intergluteal-strip",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Міжсіднична смужка",
+      "ru": "Межъягодичная полоска",
+      "en": "Intergluteal Strip"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 300
+    }
+  },
+  {
     "id": "women-depilation-belly",
     "group": "womenDepilation",
     "name": {
@@ -776,6 +921,19 @@
     "price": {
       "kind": "fixed",
       "amount": 500
+    }
+  },
+  {
+    "id": "women-depilation-belly-strip",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Смужка на животі",
+      "ru": "Полоска на животе",
+      "en": "Belly Strip"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 250
     }
   },
   {
@@ -792,12 +950,25 @@
     }
   },
   {
+    "id": "women-depilation-lower-back",
+    "group": "womenDepilation",
+    "name": {
+      "uk": "Поперек",
+      "ru": "Поясница",
+      "en": "Lower Back"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 400
+    }
+  },
+  {
     "id": "women-depilation-upper-lip",
     "group": "womenDepilation",
     "name": {
-      "uk": "Вусики / Брови / Ніс",
-      "ru": "Усики / Брови / Нос",
-      "en": "Upper lip / Brows / Nose"
+      "uk": "Ніс / Вуха / Брови / Шия",
+      "ru": "Нос / Уши / Брови / Шея",
+      "en": "Nose / Ears / Brows / Neck"
     },
     "price": {
       "kind": "fixed",
@@ -831,12 +1002,64 @@
     }
   },
   {
+    "id": "combos-legs-knee-deep",
+    "group": "combos",
+    "name": {
+      "uk": "Ноги до коліна + Глибоке бікіні",
+      "ru": "Ноги до колена + Глубокое бикини",
+      "en": "Legs (to knee) + Deep Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1100
+    }
+  },
+  {
     "id": "combos-legs-knee-deep-underarms",
     "group": "combos",
     "name": {
       "uk": "Ноги до коліна + Глибоке бікіні + Пахви",
       "ru": "Ноги до колена + Глубокое бикини + Подмышки",
       "en": "Legs (to knee) + Deep Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1300
+    }
+  },
+  {
+    "id": "combos-legs-knee-classic",
+    "group": "combos",
+    "name": {
+      "uk": "Ноги до коліна + Класичне бікіні",
+      "ru": "Ноги до колена + Классическое бикини",
+      "en": "Legs (to knee) + Classic Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1000
+    }
+  },
+  {
+    "id": "combos-legs-knee-classic-underarms",
+    "group": "combos",
+    "name": {
+      "uk": "Ноги до коліна + Класичне бікіні + Пахви",
+      "ru": "Ноги до колена + Классическое бикини + Подмышки",
+      "en": "Legs (to knee) + Classic Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1200
+    }
+  },
+  {
+    "id": "combos-legs-full-deep",
+    "group": "combos",
+    "name": {
+      "uk": "Ноги повністю + Глибоке бікіні",
+      "ru": "Ноги полностью + Глубокое бикини",
+      "en": "Legs (full) + Deep Bikini"
     },
     "price": {
       "kind": "fixed",
@@ -854,6 +1077,32 @@
     "price": {
       "kind": "fixed",
       "amount": 1500
+    }
+  },
+  {
+    "id": "combos-legs-full-classic",
+    "group": "combos",
+    "name": {
+      "uk": "Ноги повністю + Класичне бікіні",
+      "ru": "Ноги полностью + Классическое бикини",
+      "en": "Legs (full) + Classic Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1200
+    }
+  },
+  {
+    "id": "combos-legs-full-classic-underarms",
+    "group": "combos",
+    "name": {
+      "uk": "Ноги повністю + Класичне бікіні + Пахви",
+      "ru": "Ноги полностью + Классическое бикини + Подмышки",
+      "en": "Legs (full) + Classic Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1400
     }
   },
   {
@@ -1088,6 +1337,474 @@
     "price": {
       "kind": "fixed",
       "amount": 250
+    }
+  },
+  {
+    "id": "men-depilation-full-torso",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Торс повністю (груди і живіт)",
+      "ru": "Торс полностью (грудь и живот)",
+      "en": "Full Torso (chest and belly)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1200
+    }
+  },
+  {
+    "id": "men-depilation-beard",
+    "group": "menDepilation",
+    "name": {
+      "uk": "Щетина / Підборіддя / Борода",
+      "ru": "Щетина / Подбородок / Борода",
+      "en": "Stubble / Chin / Beard"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 600
+    }
+  },
+  {
+    "id": "men-combos-deep-bikini-underarms",
+    "group": "menCombos",
+    "name": {
+      "uk": "Глибоке бікіні + Пахви",
+      "ru": "Глубокое бикини + Подмышки",
+      "en": "Deep Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1500
+    }
+  },
+  {
+    "id": "men-combos-classic-bikini-underarms",
+    "group": "menCombos",
+    "name": {
+      "uk": "Класичне бікіні + Пахви",
+      "ru": "Классическое бикини + Подмышки",
+      "en": "Classic Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1350
+    }
+  },
+  {
+    "id": "men-combos-back-torso",
+    "group": "menCombos",
+    "name": {
+      "uk": "Спина повністю + Торс повністю",
+      "ru": "Спина полностью + Торс полностью",
+      "en": "Full Back + Full Torso"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2000
+    }
+  },
+  {
+    "id": "men-combos-legs-buttocks",
+    "group": "menCombos",
+    "name": {
+      "uk": "Ноги повністю + Сідниці повністю",
+      "ru": "Ноги полностью + Ягодицы полностью",
+      "en": "Full Legs + Full Buttocks"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1600
+    }
+  },
+  {
+    "id": "men-combos-blades-shoulders-lower-back",
+    "group": "menCombos",
+    "name": {
+      "uk": "Лопатки + Плечі + Поперек",
+      "ru": "Лопатки + Плечи + Поясница",
+      "en": "Shoulder Blades + Shoulders + Lower Back"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1200
+    }
+  },
+  {
+    "id": "men-combos-legs-deep-bikini",
+    "group": "menCombos",
+    "name": {
+      "uk": "Ноги повністю + Глибоке бікіні",
+      "ru": "Ноги полностью + Глубокое бикини",
+      "en": "Full Legs + Deep Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2000
+    }
+  },
+  {
+    "id": "men-combos-legs-deep-bikini-underarms",
+    "group": "menCombos",
+    "name": {
+      "uk": "Ноги повністю + Глибоке бікіні + Пахви",
+      "ru": "Ноги полностью + Глубокое бикини + Подмышки",
+      "en": "Full Legs + Deep Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2400
+    }
+  },
+  {
+    "id": "men-combos-legs-deep-bikini-buttocks",
+    "group": "menCombos",
+    "name": {
+      "uk": "Ноги повністю + Глибоке бікіні + Сідниці повністю",
+      "ru": "Ноги полностью + Глубокое бикини + Ягодицы полностью",
+      "en": "Full Legs + Deep Bikini + Full Buttocks"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2500
+    }
+  },
+  {
+    "id": "men-combos-legs-deep-bikini-buttocks-underarms",
+    "group": "menCombos",
+    "name": {
+      "uk": "Ноги повністю + Глибоке бікіні + Сідниці повністю + Пахви",
+      "ru": "Ноги полностью + Глубокое бикини + Ягодицы полностью + Подмышки",
+      "en": "Full Legs + Deep Bikini + Full Buttocks + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 2800
+    }
+  },
+  {
+    "id": "men-combos-full-body",
+    "group": "menCombos",
+    "name": {
+      "uk": "Все тіло від шиї до п'ят",
+      "ru": "Всё тело от шеи до пят",
+      "en": "Full Body (neck to heels)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 5000
+    }
+  },
+  {
+    "id": "men-trimmer-deep-bikini",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Глибоке бікіні",
+      "ru": "Глубокое бикини",
+      "en": "Deep Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 950
+    }
+  },
+  {
+    "id": "men-trimmer-classic-bikini",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Класичне бікіні",
+      "ru": "Классическое бикини",
+      "en": "Classic Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 850
+    }
+  },
+  {
+    "id": "men-trimmer-underarms",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Пахви",
+      "ru": "Подмышки",
+      "en": "Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 400
+    }
+  },
+  {
+    "id": "men-trimmer-full-back",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Спина повністю",
+      "ru": "Спина полностью",
+      "en": "Full Back"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 800
+    }
+  },
+  {
+    "id": "men-trimmer-shoulder-blades",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Лопатки",
+      "ru": "Лопатки",
+      "en": "Shoulder Blades"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 300
+    }
+  },
+  {
+    "id": "men-trimmer-shoulders-to-elbow",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Плечі до ліктя",
+      "ru": "Плечи до локтя",
+      "en": "Shoulders to Elbow"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 400
+    }
+  },
+  {
+    "id": "men-trimmer-lower-back",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Поперек",
+      "ru": "Поясница",
+      "en": "Lower Back"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 350
+    }
+  },
+  {
+    "id": "men-trimmer-full-belly",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Живіт повністю",
+      "ru": "Живот полностью",
+      "en": "Full Belly"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 450
+    }
+  },
+  {
+    "id": "men-trimmer-belly-strip",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Смужка на животі",
+      "ru": "Полоска на животе",
+      "en": "Belly Strip"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 200
+    }
+  },
+  {
+    "id": "men-trimmer-intergluteal-strip",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Міжсіднична смужка",
+      "ru": "Межъягодичная полоска",
+      "en": "Intergluteal Strip"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 250
+    }
+  },
+  {
+    "id": "men-trimmer-full-buttocks",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Сідниці повністю",
+      "ru": "Ягодицы полностью",
+      "en": "Full Buttocks"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 450
+    }
+  },
+  {
+    "id": "men-trimmer-full-chest",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Груди повністю",
+      "ru": "Грудь полностью",
+      "en": "Full Chest"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 500
+    }
+  },
+  {
+    "id": "men-trimmer-arms-to-elbow",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Руки до ліктя",
+      "ru": "Руки до локтя",
+      "en": "Arms to Elbow"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 400
+    }
+  },
+  {
+    "id": "men-trimmer-arms-full",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Руки повністю",
+      "ru": "Руки полностью",
+      "en": "Full Arms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 650
+    }
+  },
+  {
+    "id": "men-trimmer-legs-to-knee",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Ноги до коліна",
+      "ru": "Ноги до колена",
+      "en": "Legs to Knee"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 600
+    }
+  },
+  {
+    "id": "men-trimmer-legs-full",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Ноги повністю",
+      "ru": "Ноги полностью",
+      "en": "Full Legs"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 800
+    }
+  },
+  {
+    "id": "men-trimmer-full-torso",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Торс повністю (груди і живіт)",
+      "ru": "Торс полностью (грудь и живот)",
+      "en": "Full Torso (chest and belly)"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 850
+    }
+  },
+  {
+    "id": "men-trimmer-neck",
+    "group": "menTrimmer",
+    "name": {
+      "uk": "Шия",
+      "ru": "Шея",
+      "en": "Neck"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 200
+    }
+  },
+  {
+    "id": "men-trimmer-combos-deep-bikini-underarms",
+    "group": "menTrimmerCombos",
+    "name": {
+      "uk": "Глибоке бікіні + Пахви",
+      "ru": "Глубокое бикини + Подмышки",
+      "en": "Deep Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1300
+    }
+  },
+  {
+    "id": "men-trimmer-combos-classic-bikini-underarms",
+    "group": "menTrimmerCombos",
+    "name": {
+      "uk": "Класичне бікіні + Пахви",
+      "ru": "Классическое бикини + Подмышки",
+      "en": "Classic Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1200
+    }
+  },
+  {
+    "id": "men-trimmer-combos-back-torso",
+    "group": "menTrimmerCombos",
+    "name": {
+      "uk": "Спина повністю + Торс повністю",
+      "ru": "Спина полностью + Торс полностью",
+      "en": "Full Back + Full Torso"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1500
+    }
+  },
+  {
+    "id": "men-trimmer-combos-legs-deep-bikini",
+    "group": "menTrimmerCombos",
+    "name": {
+      "uk": "Ноги повністю + Глибоке бікіні",
+      "ru": "Ноги полностью + Глубокое бикини",
+      "en": "Full Legs + Deep Bikini"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1450
+    }
+  },
+  {
+    "id": "men-trimmer-combos-legs-deep-bikini-underarms",
+    "group": "menTrimmerCombos",
+    "name": {
+      "uk": "Ноги повністю + Глибоке бікіні + Пахви",
+      "ru": "Ноги полностью + Глубокое бикини + Подмышки",
+      "en": "Full Legs + Deep Bikini + Underarms"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1650
+    }
+  },
+  {
+    "id": "men-trimmer-combos-back-legs",
+    "group": "menTrimmerCombos",
+    "name": {
+      "uk": "Спина повністю + Ноги повністю",
+      "ru": "Спина полностью + Ноги полностью",
+      "en": "Full Back + Full Legs"
+    },
+    "price": {
+      "kind": "fixed",
+      "amount": 1500
     }
   },
   {

@@ -59,10 +59,10 @@ test('an unknown unit is an error, not a blank label', () => {
   assert.throws(() => variantLabel('hours', 2), /hours/);
 });
 
-test('the real price list yields 110 rows with unique keys', () => {
+test('the real price list yields 167 rows with unique keys', () => {
   const prices = JSON.parse(readFileSync(new URL('../../src/data/prices.json', import.meta.url), 'utf8'));
   const rows = rowsFromPrices(prices);
-  assert.equal(rows.length, 110);
+  assert.equal(rows.length, 167);
   assert.equal(new Set(rows.map((row) => row.key)).size, rows.length);
 });
 

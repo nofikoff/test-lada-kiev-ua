@@ -17,7 +17,10 @@ export interface PriceTab {
 export const priceTabs = [
   { id: 'bodyMassage', groups: ['fullBodyMassage', 'localMassage'] },
   { id: 'exotic', groups: ['exotic'] },
-  { id: 'depilation', groups: ['womenDepilation', 'combos', 'menDepilation'] },
+  {
+    id: 'depilation',
+    groups: ['womenDepilation', 'combos', 'menDepilation', 'menCombos', 'menTrimmer', 'menTrimmerCombos'],
+  },
   {
     id: 'beauty',
     groups: ['browsLashes', 'makeupHair', 'permanentBrows', 'permanentLips', 'permanentEyeliner'],
