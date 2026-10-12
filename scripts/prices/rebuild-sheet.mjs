@@ -6,7 +6,17 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { a1, clientFromEnv } from './sheets-api.mjs';
-import { FIRST_DATA_ROW, HEADER_ROW, HEADERS, SHEET_NAME, lastDataRow, mergeRows } from './sheet-layout.mjs';
+import {
+  FIRST_DATA_ROW,
+  HEADER_ROW,
+  HEADERS,
+  PUBLISH_CELL,
+  PUBLISH_LABEL,
+  PUBLISH_LABEL_CELL,
+  SHEET_NAME,
+  lastDataRow,
+  mergeRows,
+} from './sheet-layout.mjs';
 
 const PRICES_PATH = fileURLToPath(new URL('../../src/data/prices.json', import.meta.url));
 const COLUMN_COUNT = HEADERS.length;
@@ -15,6 +25,16 @@ const MAX_AMOUNT = 100000;
 
 const RED = { red: 0.96, green: 0.8, blue: 0.8 };
 const YELLOW = { red: 1, green: 0.95, blue: 0.7 };
+
+// Visible columns B, C, D, F in pixels. Names reach 54 characters, so B wraps instead of
+// stretching past a phone screen; F holds the rejection note written by report.mjs.
+const COLUMN_WIDTHS = [
+  [1, 220],
+  [2, 80],
+  [3, 100],
+  [5, 240],
+];
+const WRAPPED_COLUMNS = [1, 5];
 
 function gridRange(sheetId, startRow, endRow, startColumn, endColumn) {
   return {
@@ -100,6 +120,20 @@ export function buildSheetRequests({ sheetId, rowCount, protectedRangeIds, condi
         fields: 'hiddenByUser',
       },
     })),
+    ...COLUMN_WIDTHS.map(([column, pixelSize]) => ({
+      updateDimensionProperties: {
+        range: { sheetId, dimension: 'COLUMNS', startIndex: column, endIndex: column + 1 },
+        properties: { pixelSize },
+        fields: 'pixelSize',
+      },
+    })),
+    ...WRAPPED_COLUMNS.map((column) => ({
+      repeatCell: {
+        range: gridRange(sheetId, firstDataIndex, lastRow, column, column + 1),
+        cell: { userEnteredFormat: { wrapStrategy: 'WRAP', verticalAlignment: 'TOP' } },
+        fields: 'userEnteredFormat(wrapStrategy,verticalAlignment)',
+      },
+    })),
     {
       repeatCell: {
         range: gridRange(sheetId, HEADER_ROW - 1, HEADER_ROW, 0, COLUMN_COUNT),
@@ -137,9 +171,11 @@ async function main() {
       editors: [process.env.PRICES_SHEET_OWNER, process.env.GCP_SERVICE_ACCOUNT],
     }),
   );
-  await client.clearValues([a1(SHEET_NAME, `A${HEADER_ROW}:F`)]);
+  // A1:A2 also drops the label earlier rebuilds wrote into hidden column A.
+  await client.clearValues([a1(SHEET_NAME, 'A1:A2'), a1(SHEET_NAME, `A${HEADER_ROW}:F`)]);
   await client.updateValues([
-    { range: a1(SHEET_NAME, 'A1:B1'), values: [['Опубликовать', false]] },
+    { range: a1(SHEET_NAME, PUBLISH_CELL), values: [[false]] },
+    { range: a1(SHEET_NAME, PUBLISH_LABEL_CELL), values: [[PUBLISH_LABEL]] },
     { range: a1(SHEET_NAME, `A${HEADER_ROW}:F${HEADER_ROW}`), values: [HEADERS] },
     {
       range: a1(SHEET_NAME, `A${FIRST_DATA_ROW}:F${lastDataRow(rows.length)}`),

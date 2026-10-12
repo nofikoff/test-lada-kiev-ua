@@ -43,6 +43,32 @@ test('protection leaves only the checkbox and the amount column editable', () =>
   assert.equal(requests.filter((request) => request.deleteConditionalFormatRule).length, 2);
 });
 
+test('names wrap inside a fixed width instead of stretching past a phone screen', () => {
+  const requests = buildSheetRequests({
+    sheetId: 7,
+    rowCount: 3,
+    protectedRangeIds: [],
+    conditionalFormatCount: 0,
+    editors: ['o@example.com'],
+  });
+  const widths = requests
+    .filter((request) => request.updateDimensionProperties?.fields === 'pixelSize')
+    .map(({ updateDimensionProperties: { range, properties } }) => [range.startIndex, properties.pixelSize]);
+  assert.deepEqual(widths, [
+    [1, 220],
+    [2, 80],
+    [3, 100],
+    [5, 240],
+  ]);
+  const wrapped = requests
+    .filter((request) => request.repeatCell?.cell.userEnteredFormat.wrapStrategy === 'WRAP')
+    .map(({ repeatCell: { range } }) => [range.startColumnIndex, range.startRowIndex, range.endRowIndex]);
+  assert.deepEqual(wrapped, [
+    [1, 3, 6],
+    [5, 3, 6],
+  ]);
+});
+
 test('the red rule comes before the yellow one so a rejected cell reads as rejected', () => {
   const rules = buildSheetRequests({
     sheetId: 7,

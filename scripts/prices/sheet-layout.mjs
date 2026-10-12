@@ -6,6 +6,8 @@
 
 export const SHEET_NAME = 'Цены';
 export const PUBLISH_CELL = 'B1';
+export const PUBLISH_LABEL_CELL = 'B2';
+export const PUBLISH_LABEL = '↑ Опубликовать';
 export const STATUS_CELL = 'C1';
 export const HEADER_ROW = 3;
 export const FIRST_DATA_ROW = 4;
