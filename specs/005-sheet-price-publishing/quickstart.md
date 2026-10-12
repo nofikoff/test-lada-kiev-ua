@@ -16,7 +16,9 @@ npm run lint && npm run check && npm run build
 3. **Таблицы**: две пустые таблицы (боевая и копия для пробного прогона) с доступом «редактор» для service account.
 4. **GitHub**: environment `production` с правилом ветки `main`; секреты и переменные — [contracts/publish-workflow.md](contracts/publish-workflow.md) §Job invariants.
 5. **Перестройка**: Actions → publish → `mode: rebuild-sheet`, потом то же для копии. Таблица выглядит как [contracts/sheet-layout.md](contracts/sheet-layout.md), `D` = `E` = суммы `prices.json`.
-6. **Apps Script**: Расширения → Apps Script, вставить `apps-script/Code.js` и `appsscript.json`, выполнить `setup()` от имени автора. Функция просит PAT, кладёт его в UserProperties и создаёт установленные триггеры. PAT: fine-grained, один репозиторий, `Actions: Read and write`.
+6. **Apps Script**: Расширения → Apps Script, вставить `apps-script/Code.js` и `appsscript.json`, выполнить `setup()` от имени автора. Функция просит PAT, кладёт его в UserProperties и создаёт установленные триггеры. PAT: fine-grained, один репозиторий, `Actions: Read and write`, без срока (research.md §R5).
+
+Пункты 2–6 сделаны 2026-10-12. Таблица, созданная через sheets.new, приходит с пустым листом `Sheet1` — его удаляют вручную, чтобы Лада видела один лист.
 
 ## 2. Structure protection (SC-003, R8)
 

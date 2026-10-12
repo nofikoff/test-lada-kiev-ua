@@ -48,5 +48,5 @@
 
 - Таблица — на личном Google автора. Лада — редактор: без права выдавать доступ и снимать защиту.
 - Скрипт таблицы — `apps-script/` в репозитории; вставить в редактор скрипта таблицы и выполнить `setup()` от имени автора.
-- PAT для галочки — fine-grained, один репозиторий, `Actions: Read and write`. О сроке скрипт пишет за 14 дней. Новый токен → `setup()`.
+- PAT для галочки — fine-grained `lada-prices-sheet-dispatch`, один репозиторий, `Actions: Read and write`, без срока действия: GitHub даёт не больше года, а ежегодную замену забывают. Если токен когда-нибудь получит срок, скрипт напишет автору за 14 дней до истечения. Новый токен → `setup()`.
 - Google для workflow — Workload Identity Federation, без ключа. Сервер — пользователь `lada`, ключ ограничен `rrsync` корнем сайта. В `sshd_config` у `lada` блок `Match User lada`: вход только по ключу и `ForceCommand` на тот же `rrsync`, потому что вход по паролю на сервере включён, а у `lada` есть пароль Virtualmin. Убрать `lada` из `AllowUsers` — значит остановить выкладку. Cloudflare — токен Cache Purge. Секреты и переменные — environment `production`, только ветка `main`. Полный список — `specs/005-sheet-price-publishing/contracts/publish-workflow.md` §Job invariants.
