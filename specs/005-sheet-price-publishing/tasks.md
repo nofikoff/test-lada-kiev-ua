@@ -148,6 +148,7 @@ description: "Task list for sheet-driven price publishing"
 - [X] T033 [P] Add CLAUDE.md map rows: `scripts/prices/`, `.github/workflows/publish.yml`, `apps-script/` → docs/specs/content-model.md и docs/runbook-deploy.md; ADR в «Уже отвергнуто»; правило «всё в `main` уходит на сайт при следующей публикации» в шапке (FR-020)
 - [X] T034 Run all local gates (`npm run check`, `lint`, `test:unit`, `build`, `test:e2e`, `test:invalid-data`, `analyze`)
 - [ ] T035 (автор + агент) Run quickstart.md §3–§5 and record in research.md §R10: время публикации (SC-001), время отката revert + ручной запуск (SC-008), что перестройка создала защиту листа с нужным списком редакторов (R8)
+  - Сделано: §4, §5.1, §5.2 (2026-10-12, 13 сумм, запуск 38297920642), §5.3; SC-001 и SC-006 записаны в R10. Осталось: §3 с телефона, §5.4 `allow_large_change`, R8 под учётной записью-редактором (после T022).
 - [X] T036 Update memory notes deploy-target-ssh and cloudflare-cache-purge to the workflow path once T035 passes
 
 ---
