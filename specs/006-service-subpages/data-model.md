@@ -7,7 +7,7 @@
 | `slug` | `sugaring` \| `brows` | латиница, одинаковый во всех языках подстраницы; уникален внутри родителя |
 | `parent` | `ServiceCategory` | `depilation` для `sugaring`, `permanent` для `brows` |
 | `locales` | `['uk', 'ru']` | подмножество `locales`; украинский обязателен — он `x-default` |
-| `groups` | группы прайса | `sugaring` → все группы категории `depilation` (`womenDepilation`, `combos`, `menDepilation`); `brows` → `permanentBrows`. Каждая группа принадлежит категории `parent` |
+| `groups` | группы прайса | `sugaring` → `womenDepilation`, `combos`, `menDepilation`, `menCombos` (без `menTrimmer`, `menTrimmerCombos` — там нет пасты); `brows` → `permanentBrows`. Каждая группа принадлежит категории `parent` |
 | `method` | `'base'` \| `'sugar'` | `sugaring` → `sugar`, `brows` → `base` |
 
 Путь: `<префикс языка>/<parent>/<slug>/`. Языковые альтернативы — по `locales`, `x-default` — украинский адрес.
@@ -30,7 +30,7 @@
 
 | Поле | Тип | Правило |
 |---|---|---|
-| `sugar` | `fixed` \| `variants` \| `false`, необязательное | разрешено только у групп категории `depilation`; вид `share` запрещён; `false` — «пастой не делается» |
+| `sugar` | `fixed` \| `variants` \| `false`, необязательное | разрешено только у групп, которые читает страница способом `sugar` (реестр, `groups` у `sugaring`); вид `share` запрещён; `false` — «пастой не делается» |
 
 Цена позиции способом страницы:
 
@@ -44,6 +44,20 @@ method 'sugar' → sugar === false ? (позиция скрыта) : (sugar ?? p
 Затронутые расчёты:
 - `priceRange` организации (главная) — минимум и максимум по всем суммам `price` и `sugar` (кроме `false`), долевые не участвуют.
 - `Offer` подстраницы — по ценам её способа; число предложений = фиксированные + варианты − долевые − скрытые.
+
+## Sheet row of a sugar amount (`scripts/prices/sheet-layout.mjs`)
+
+Контракт строк таблицы — [specs/005-sheet-price-publishing/contracts/sheet-layout.md](../005-sheet-price-publishing/contracts/sheet-layout.md); пакет добавляет к нему один вид строки.
+
+| Столбец | Общая цена | Цена пастой |
+|---|---|---|
+| `ключ` | `<id>`, `<id>@<count>` | `<id>/sugar`, `<id>/sugar@<count>` |
+| `Услуга` | `name.ru` у первой строки позиции | пусто: строки пастой идут сразу за строками общей цены той же позиции |
+| `Вариант` | пусто или `60 мин` | `сахар` или `сахар, 60 мин` |
+
+`/` в `id` не встречается (ключи — kebab-case латиницей), поэтому ключ пастой не совпадает ни с одной позицией. `sugar: false` строк не даёт. Вид суммы знает один обход сумм позиции в `sheet-layout.mjs`; `publish`, `reconcile`, `report` и `rebuild-sheet` работают с ключами как с непрозрачными строками и получают строки пастой без правок.
+
+Порядок строк — часть контракта: `reconcile.mjs` сравнивает порядок ключей таблицы с порядком `amountsOf`, поэтому строки пастой стоят сразу за строками общей цены своей позиции. Столбец `Вариант` (80 px) получает перенос текста: `сахар, 60 мин` в него не помещается.
 
 ## Target query (`tests/support/site.ts` `QUERIES`, `docs/specs/page-head.md` §Целевые запросы)
 

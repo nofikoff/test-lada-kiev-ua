@@ -16,7 +16,7 @@
 
 **Storage**: файлы репозитория — `src/data/prices.json`, `src/content/**.md`
 
-**Testing**: Playwright против `astro preview` над `dist/` (ADR-012), `scripts/test-invalid-data.mjs` для испорченных данных, `astro check`, ESLint, анализ бандла
+**Testing**: Playwright против `astro preview` над `dist/` (ADR-012), `node:test` (`npm run test:unit`) для строк таблицы цен, `scripts/test-invalid-data.mjs` для испорченных данных, `astro check`, ESLint, анализ бандла; публикация гоняет из них только `test:publish` (ADR-027)
 
 **Target Platform**: статические файлы на Apache за Cloudflare
 
@@ -38,7 +38,8 @@
 | II. Контент — данные, а не разметка | текст в коллекции со схемой, цена пастой — поле прайса со схемой, недостающий файл текста роняет сборку | соответствует |
 | III. URL — публичный контракт | действующие адреса не меняются; четыре новых добавляются в `routes.md` | соответствует |
 | IV. Страница самодостаточна для машинного читателя | своя заголовочная часть, `canonical`, `hreflang`, JSON-LD `Service` + `BreadcrumbList` | соответствует; `hreflang` из двух языков — отклонение от `page-head.md`, обосновано ниже |
-| V. Готовность доказывается прогоном | шесть гейтов по собранному сайту | соответствует |
+| V. Готовность доказывается прогоном | гейты `CLAUDE.md` §Гейты (семь, с `test:unit`) по собранному сайту | соответствует |
+| ADR-025 (price input via Google Sheet) | сумма пастой — строка таблицы со своим ключом; структура (появление `sugar`, `false`) — в репозитории | соответствует |
 | ADR-004 (static Astro, no client framework) | без клиентского кода | соответствует |
 | ADR-006 (prices: single JSON, group defines category) | цена пастой живёт в той же записи прайса, второй записи цен нет | соответствует |
 | ADR-007 (content formats: markdown texts, ts dictionary) | тексты подстраниц — markdown в коллекции | соответствует |
@@ -50,7 +51,10 @@
 | ADR-021 (no query landing pages) | частично отменяется новым ADR пакета | отклонение, решение пакета — новый ADR |
 | ADR-023 (KB pages for informational queries) | пункт Rejected о `/sugaring/` и `/powder-brows/` снимается новым ADR | отклонение, решение пакета — новый ADR |
 
-ADRs without Affects: 23 (`adr_affects.py match` вернул `matched: []`; все ADR без поля `Affects`, перечень выше составлен чтением заголовков `docs/adr/`).
+| ADR-026 (single CI deploy path) | всё в `main` уходит на сайт со следующей галочкой Лады, поэтому пакет сливается целиком, а не по историям | соответствует |
+| ADR-027 (full e2e outside publish) | публикация гоняет `seo-contract.spec.ts`, который расширяют T017 и T023; полный `test:e2e` — локально до слияния | соответствует |
+
+ADRs without Affects: 27 (`adr_affects.py match` вернул `matched: []`; все ADR без поля `Affects`, перечень выше составлен чтением заголовков `docs/adr/`, пересчитан 2026-10-13).
 
 ## Project Structure
 
@@ -63,10 +67,12 @@ specs/006-service-subpages/
 ├── research.md
 ├── data-model.md
 ├── quickstart.md
+├── interview.md         # ответы Лады, источник утверждений из практики
 ├── contracts/
 │   └── subpage.md
 ├── checklists/
-│   └── requirements.md
+│   ├── requirements.md
+│   └── seo-and-data.md
 └── tasks.md             # /speckit-tasks
 ```
 
@@ -101,10 +107,12 @@ tests/
 └── routes.spec.ts, sitemap.spec.ts, seo-contract.spec.ts, voice.spec.ts, headings.spec.ts, llms.spec.ts
 
 scripts/test-invalid-data.mjs     # новые случаи порчи и допустимые правки прайса
+scripts/prices/sheet-layout.mjs   # строки таблицы для сумм пастой; тесты — sheet-layout.test.mjs
 
 docs/
 ├── adr/adr-NNN-*.md              # номер из get-id; ADR-021 и ADR-023 получают строку Superseded by
 ├── specs/{routes,page-head,structured-data,content-model}.md
+├── runbook-deploy.md             # список сброса кэша, строки пастой в §Changing the price list
 └── seo/{core.csv,map.md}         # только через /seo
 ```
 

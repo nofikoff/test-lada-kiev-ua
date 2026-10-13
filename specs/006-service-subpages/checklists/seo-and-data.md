@@ -45,7 +45,8 @@
 
 ## Dependencies and Assumptions
 
-- [x] CHK021 Is the dependency of package 005 on the new price field documented with the specific requirement it affects? [Dependency, Spec §Assumptions]
+- [x] CHK021 Is the dependency between package 005 and the new price field documented with the specific requirement it affects? [Dependency, Spec §Assumptions, §FR-004c]
+- [x] CHK024 Is the sheet row of a sugar amount specified — key, label, order, who edits the amount and who changes the structure? [Completeness, Spec §FR-004c, data-model §Sheet row]
 - [x] CHK022 Is the order dependency «subpages exist in the build → `/seo core` and `/seo map` update» stated? [Dependency, Spec §FR-020]
 - [x] CHK023 Is the assumption that depilation prices are shared between wax and paste marked as unverified, with the place where it would be corrected? [Assumption, Spec §Assumptions]
 
