@@ -96,4 +96,4 @@
 
 ## R14. Out of scope, found while planning
 
-- `public/llms.txt` пишет «touch-up within 6 months costs 80% of the original price», а `prices.json` — коррекция 28–60 дней за 50%. Пакет правит `llms.txt` только в перечне страниц; расхождение — отдельная правка по слову автора.
+- `public/llms.txt` пишет «touch-up within 6 months costs 80% of the original price», а `prices.json` — коррекция 28–60 дней за 50%. 2026-10-17: верен прайс (ADR-025, таблица Лады); правка `llms.txt:27` входит в T033 и уходит на сайт вместе с пакетом ([interview.md](interview.md) §Follow-up questions, п. 4).

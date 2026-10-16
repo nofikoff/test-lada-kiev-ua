@@ -146,7 +146,7 @@ description: "Task list for service subpages: sugaring and brow permanent makeup
 
 ### Implementation for User Story 4
 
-- [ ] T033 [US4] `public/llms.txt`: в §Pages — строки подстраниц в украинском блоке («Sugaring», «Brow permanent makeup» с одной строкой описания) и в русском перечне; фраза «The same fifteen pages exist in every language» → пятнадцать страниц во всех трёх языках плюс две подстраницы только на uk и ru; строка карты сайта «all fifteen pages» → девятнадцать. Расхождение про коррекцию 80% (research R14) не трогать
+- [ ] T033 [US4] `public/llms.txt`: в §Pages — строки подстраниц в украинском блоке («Sugaring», «Brow permanent makeup» с одной строкой описания) и в русском перечне; фраза «The same fifteen pages exist in every language» → пятнадцать страниц во всех трёх языках плюс две подстраницы только на uk и ru; строка карты сайта «all fifteen pages» → девятнадцать; строка 27 «touch-up within 6 months costs 80% of the original price» → «touch-up 28–60 days after the procedure costs 50% of it» — по прайсу (research R14)
 
 **Checkpoint**: все истории проходят независимо
 
