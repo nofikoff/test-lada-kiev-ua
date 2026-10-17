@@ -15,6 +15,7 @@ import {
   SERVICE_COPY_SELECTOR,
   servicePages,
   subpagePages,
+  type ServiceSubpage,
 } from './support/site';
 
 /**
@@ -87,6 +88,48 @@ test.describe('карта запросов', () => {
     test(`${page.path}: шугаринг назван`, async ({ page: browser }) => {
       await browser.goto(page.path);
       await expect(browser.locator(SERVICE_COPY_SELECTOR)).toContainText(/шугаринг|sugaring/i);
+    });
+  }
+
+  /**
+   * Категория отдала запрос своей подстранице (spec FR-009, FR-010). У бровей запрещена
+   * формулировка, а не слово: «ламінування брів» — запрос категории beauty, и абзацы о бровях
+   * в тексте категории перманента остаются.
+   */
+  const handedOver: Record<ServiceSubpage, RegExp> = {
+    sugaring: /шугаринг/i,
+    brows: /(перманент|татуаж|пудров)[^.]{0,40}бр(ів|ов)|бр(ів|ов)[^.]{0,40}(перманент|татуаж|пудров)/i,
+  };
+
+  for (const subpage of subpagePages) {
+    const category = categoryPages.find(
+      (entry) => entry.locale === subpage.locale && entry.category === subpage.category,
+    )!;
+
+    test(`${category.path}: запрос ${subpage.path} не стоит в заголовках категории`, async ({
+      request,
+    }) => {
+      const fields = head(await (await request.get(category.path)).text());
+      for (const [field, value] of Object.entries(fields)) {
+        expect(value, `${field}: ${value}`).not.toMatch(handedOver[subpage.subpage]);
+      }
+    });
+
+    // «Не ниже второго раздела»: после первого абзаца и до третьего h2 текста.
+    test(`${category.path}: одна ссылка на ${subpage.path} не ниже второго раздела`, async ({
+      page: browser,
+    }) => {
+      await browser.goto(category.path);
+      const placement = await browser.locator(SERVICE_COPY_SELECTOR).evaluate((copy, href) => {
+        const first = copy.querySelector('p');
+        const third = copy.querySelectorAll('h2')[2] ?? null;
+        return [...copy.querySelectorAll(`a[href="${href}"]`)].map((link) => ({
+          inFirstParagraph: Boolean(first?.contains(link)),
+          beforeThirdSection:
+            !third || Boolean(link.compareDocumentPosition(third) & Node.DOCUMENT_POSITION_FOLLOWING),
+        }));
+      }, subpage.path);
+      expect(placement).toEqual([{ inFirstParagraph: false, beforeThirdSection: true }]);
     });
   }
 

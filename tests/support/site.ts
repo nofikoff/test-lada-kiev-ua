@@ -231,7 +231,7 @@ const QUERIES: Record<
   uk: {
     home: [/студі[яї] масажу та краси/i],
     massage: [/масаж/i],
-    depilation: [/депіляці/i, /шугаринг/i],
+    depilation: [/депіляці/i, /воск/i],
     permanent: [/перманентн\S* макіяж/i],
     beauty: [/ламінуванн/i, /макіяж/i],
     'depilation/sugaring': [/шугаринг/i],
@@ -240,7 +240,7 @@ const QUERIES: Record<
   ru: {
     home: [/студи[яи] массажа и красоты/i],
     massage: [/массаж/i],
-    depilation: [/депиляци/i, /шугаринг/i],
+    depilation: [/депиляци/i, /воск/i],
     permanent: [/перманентн\S* макияж/i],
     beauty: [/ламинировани/i, /макияж/i],
     'depilation/sugaring': [/шугаринг/i],
