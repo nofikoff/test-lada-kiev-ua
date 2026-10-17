@@ -374,6 +374,15 @@ Task: "T017 [US1] seo-contract.spec.ts — head и JSON-LD подстраниц"
 
 Setup + Foundational → US1 (MVP) → US2 → US3 (снимает каннибализацию; без неё US1 и US2 делят запрос с категориями) → Polish. Всё идёт в ветке `006-service-subpages`, а в main сливается одним слиянием: выкладка Лады выкладывает main целиком (ADR-026, пакет 005 FR-020), и полуготовая каннибализация на проде хуже отсутствия подстраниц.
 
+---
+
+## Phase 8: Convergence
+
+**Purpose**: остаток работы по итогам `/speckit-converge` (гейты `check`, `lint`, `test:unit`, `build`, `test:e2e` на 2026-10-17 зелёные; найдены только утверждения из практики вне `interview.md`). T041 и T042 остаются открытыми намеренно — их делает основная сессия после прогона.
+
+- [ ] T046 [US1] Сверить тексты `src/content/subpages/uk/sugaring.md` и `src/content/subpages/ru/sugaring.md` с `specs/006-service-subpages/interview.md` и убрать утверждения из практики, которых в нём нет, либо вписать ответ Лады в `interview.md` с датой: (1) «Коротшу волосину паста не захопить, і вона залишиться на шкірі» / «Более короткий волос паста не захватит, и он останется на коже» — Лада назвала только минимум 5 мм, причину не называла; (2) §Запис, «під них резервується час сеансу» / «под них резервируется время сеанса» — про резерв времени под названные зоны в интервью ничего нет. Остальной текст и frontmatter не менять; ≥ 400 слов, уникальность абзацев и запрос в первом абзаце сохранить per FR-017 (unrequested)
+- [ ] T047 [US2] Сверить тексты `src/content/subpages/uk/brows.md` и `src/content/subpages/ru/brows.md` с `specs/006-service-subpages/interview.md` и убрать утверждения из практики, которых в нём нет, либо вписать ответ Лады в `interview.md` с датой: (1) §Пудрова техніка, «м'яке напилення без різкої межі … підфарбованою тінями, а не намальованою олівцем, і окремі волосинки не прорисовуються» / «мягкое напыление без резкой границы … не нарисованной карандашом, и отдельные волоски не прорисовываются» — описание результата техники не из ответов Лады; (2) §Як проходить процедура, «до того, як вводити пігмент, ми погоджуємо з вами їхню форму й колір» / «мы согласовываем с вами их форму и цвет» — Лада назвала эскиз и два часа вместе с ним, но не порядок согласования. Остальной текст и frontmatter не менять; ≥ 400 слов, «татуаж брів/бровей» в тексте и запрос в первом абзаце сохранить per FR-017 (unrequested)
+
 ## Session Map
 <!-- packed-for: bundle 600K -->
 
@@ -476,3 +485,9 @@ decided:
 
 ### S2 — dispatch 4 (2026-10-17)
 `kind=spec-verify agent=verifier model=claude-sonnet-5-5 effort=high turns=16 minutes=1.5 input=32 cache_write=72041 cache_read=711419 output=8931`
+
+### converge — observations (2026-10-17, dispatch 5)
+- The converge agent wrote tasks.md through a Bash heredoc instead of Edit/Write, so PostToolUse hooks did not fire on that write; the orchestrator checked the diff and moved the appended Phase 8 above the Session Map, because it had landed after the Progress Log.
+
+### converge — dispatch 5 (2026-10-17)
+`kind=converge agent=verifier model=claude-sonnet-5-5 effort=high turns=14 minutes=3.3 input=28 cache_write=81876 cache_read=798189 output=8211`
