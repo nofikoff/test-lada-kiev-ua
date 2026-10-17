@@ -473,3 +473,6 @@ decided:
 
 ### S2 — dispatch 3 (2026-10-17)
 `kind=bundle agent=implementer tier=strong model=claude-opus-5-5 effort=xhigh turns=82 minutes=29.6 input=164 cache_write=253474 cache_read=15511385 output=91586`
+
+### S2 — dispatch 4 (2026-10-17)
+`kind=spec-verify agent=verifier model=claude-sonnet-5-5 effort=high turns=16 minutes=1.5 input=32 cache_write=72041 cache_read=711419 output=8931`
