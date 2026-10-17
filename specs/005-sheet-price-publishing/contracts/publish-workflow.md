@@ -30,6 +30,7 @@ X-GitHub-Api-Version: 2022-11-28
 - Секреты environment: `DEPLOY_SSH_KEY`, `DEPLOY_KNOWN_HOSTS`, `CLOUDFLARE_API_TOKEN`. Переменные: `CLOUDFLARE_ZONE_ID`, `DEPLOY_HOST`, `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, `PRICES_SHEET_ID`, `PRICES_SHEET_ID_DRY_RUN`, `PRICES_SHEET_OWNER`.
 - Гейты: `check`, `lint`, `test:unit`, `build`, `test:publish` (или `test:e2e` при `e2e: true`), `test:invalid-data`, `analyze`. Любой красный → rsync не выполняется. Почему полный e2e не в каждой публикации — ADR-027.
 - Шаг `report` идёт с `if: always()` при `mode ≠ dry-run`; он пишет статус и для упавшего запуска.
+- Шаг перестройки таблиц запускает `rebuild-sheet.mjs` с `--experimental-strip-types --disable-warning=ExperimentalWarning`: скрипт импортирует `src/i18n/ui.ts` ради подписей групп (research.md §R12). Остальные шаги словарь не импортируют и идут без флага.
 - FR-028 держат `timeout-minutes` на каждом долгом шаге, а не только на job: шаг, прерванный по своему тайм-ауту, считается упавшим, и `report` после него выполняется. Тайм-аут job (20 мин) — страховка, после которой статус в таблице может остаться «публикация идёт». Этот случай закрывает письмо GitHub о неудачном запуске.
 - Запуск помечается неудачным, если `rejected` не пуст, — так GitHub шлёт письмо автору (FR-016). Сайт и commit при этом уже обновлены остальными суммами.
 

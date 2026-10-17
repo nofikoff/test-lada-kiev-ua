@@ -153,6 +153,31 @@ description: "Task list for sheet-driven price publishing"
 
 ---
 
+## Phase 8: Amendment 2026-10-17 - Group headers in the sheet (FR-032, SC-009)
+
+**Goal**: перед строками каждой группы в таблице — заголовок с русской подписью раздела сайта; отметки «На сайте» и пометки остаются на своих строках.
+
+**Independent Test**: quickstart.md §6 — после `rebuild-sheet` у каждой из 14 групп один заголовок, сумму в заголовок не ввести, публикация без изменений сумм пишет «На сайте» в строки позиций.
+
+### Tests for the amendment
+
+- [ ] T037 [P] [US1] Write tests for header layout in scripts/prices/sheet-layout.test.mjs: строки несут `group`; `sheetLines(rows, labels)` ставит заголовок перед первой строкой каждой группы и ни одного — группе без строк; группа не подряд и группа без подписи бросают ошибку с именем группы; на настоящем prices.json — 167 строк сумм и 14 заголовков
+- [ ] T038 [P] [US1] Write tests for line-aligned reporting in scripts/prices/report.test.mjs: блок `E4:F<последняя>` с пустыми значениями в строках заголовков; пометка отклонения попадает в строку своей позиции через заголовки между ними
+- [ ] T039 [P] [US1] Write tests in scripts/prices/publish.test.mjs: при строках с пустым ключом между позициями отчёт хранит номер строки листа у каждой позиции, сверка получает те же позиции, что без заголовков
+- [ ] T040 [P] [US1] Write tests in scripts/prices/rebuild-sheet.test.mjs: незащищённые диапазоны — `B1` и по одному `D` на группу от первой до последней её строки; строки заголовков жирные с серой заливкой `A:F`; блок значений включает заголовки с пустым `A`
+
+### Implementation for the amendment
+
+- [ ] T041 [US1] Add `group` to rows and the pure `sheetLines(rows, labels)` in scripts/prices/sheet-layout.mjs; the module does not import the dictionary (research.md §R12)
+- [ ] T042 [US1] Import `ui` from src/i18n/ui.ts in scripts/prices/rebuild-sheet.mjs, pass `ui.ru.priceList.sections` to `sheetLines`, write header rows with formatting, protect `D` per group (contracts/sheet-layout.md)
+- [ ] T043 [US1] Keep the sheet line number of every row in the report written by scripts/prices/publish.mjs
+- [ ] T044 [US1] Write `E4:F<last>` aligned to sheet line numbers in scripts/prices/report.mjs
+- [ ] T045 [US1] Add `--experimental-strip-types --disable-warning=ExperimentalWarning` to `test:unit` in package.json and to the rebuild step in .github/workflows/publish.yml (contracts/publish-workflow.md)
+- [ ] T046 [P] [US1] Replace the «в таблице нет заголовков групп» paragraph in docs/runbook-deploy.md §Changing the price list with the header rule: подпись группы берётся из `ui.ts`, новая группа получает заголовок после `rebuild-sheet`
+- [ ] T047 [US1] (автор + агент) Run all local gates, then quickstart.md §6 steps 2 and 4 (агент) and step 3 under the editor account (автор, после T022); до T022 защиту заголовков подтверждает агент — список `protectedRanges` листа, прочитанный через Sheets API
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -160,6 +185,7 @@ description: "Task list for sheet-driven price publishing"
 - **Setup (Phase 1)** → **Foundational (Phase 2)** → user stories.
 - **US1** зависит от Phase 2. **US2** дополняет файлы US1 (publish, report, workflow), поэтому идёт после US1. **US3** зависит только от Phase 2. **US4** зависит от workflow US1.
 - Задачи «(автор)» T022, T027, T028 не блокируют код, но блокируют T035.
+- **Phase 8** зависит от Phase 3–5 (те же файлы). Тесты T037–T040 параллельны между собой; T041 → T042; T043 → T044; T045 после T042; T046 параллельно с кодом; T047 последней. Код идёт в ветке: `main` уходит на сайт с галочкой Лады.
 
 ### Parallel Opportunities
 
