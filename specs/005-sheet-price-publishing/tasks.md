@@ -175,6 +175,7 @@ description: "Task list for sheet-driven price publishing"
 - [X] T045 [US1] Add `--experimental-strip-types --disable-warning=ExperimentalWarning` to `test:unit` in package.json and to the rebuild step in .github/workflows/publish.yml (contracts/publish-workflow.md)
 - [X] T046 [P] [US1] Replace the «в таблице нет заголовков групп» paragraph in docs/runbook-deploy.md §Changing the price list with the header rule: подпись группы берётся из `ui.ts`, новая группа получает заголовок после `rebuild-sheet`
 - [ ] T047 [US1] (автор + агент) Run all local gates, then quickstart.md §6 steps 2 and 4 (агент) and step 3 under the editor account (автор, после T022); до T022 защиту заголовков подтверждает агент — список `protectedRanges` листа, прочитанный через Sheets API
+  - Сделано 2026-10-17 на 139d3fe: локальные гейты зелёные (`test:unit` 45, `test:e2e` 1150 passed / 3 skipped). Запуск `rebuild-sheet` 39021269192, затем `dry-run` 39021389111, затем `publish` без изменений 39021623924 (2 мин 23 с). Живая таблица: 184 строки = 3 + 167 позиций + 14 заголовков в порядке разделов сайта, жирные на серой заливке. Исключения защиты в панели «Protected sheets & ranges»: `B1` и по одному диапазону `D` на группу, от `D5:D27` до `D183:D184`; строки заголовков в них не входят. После публикации `C1` = «опубликовано 17.10 12:36, изменений цен нет», `E` совпадает с `D` во всех 167 строках, в строках заголовков `C:F` пусты. Осталось: шаг 3 под учётной записью-редактором (после T022).
 
 ---
 
