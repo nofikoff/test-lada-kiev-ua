@@ -510,3 +510,15 @@ decided:
 
 ### review — dispatch 7 (2026-10-18)
 `kind=review-fix agent=implementer tier=standard model=claude-sonnet-5-5 effort=xhigh turns=57 minutes=14.9 input=114 cache_write=196975 cache_read=8451909 output=65855`
+
+### review — observations (2026-10-18, dispatch 8)
+- plan-wrong: TaskCreate is not exposed in this harness; the work was tracked without it.
+- plan-wrong: the finding says the build store is .astro/data-store.json, but the build writes node_modules/.astro/data-store.json. The .astro/ copy is a stale dev store from Sep 27, and ru/brows is only in the node_modules one. The new case reads the node_modules path.
+- plan-wrong: the checker suggested 'broken frontmatter' for the stray file. The glob loader only logs read errors (astro/dist/content/loaders/glob.js:74), so such a file would not prove it was skipped. The stray file has valid frontmatter that fails the schema (description under 120 characters).
+- decided: part 1 is cited, not re-tested, because the existing sugar-fixture cases go red when SeoHead drifts from ServicePage. If wrong, an amount mismatch for a non-fixture item (for example a variants kind) would go unnoticed.
+- decided: SubpageRefOf is exported only so the type test can compile against it, and the type test pins SubpageRefOf rather than the private subpageRefs table. If wrong, replacing satisfies with a cast would go unnoticed; the table's own entries are still checked by npm run check.
+- decided: the type test keeps only negative cases and no positive control, so adding a subpage to the registry does not force an edit there. TypeScript reports the foreign-parent error on the property line and hides the missing-entry error when a property mismatch exists, which I confirmed by experiment. If removing a slug from the registry leaves a stale key in the test, the excess-property error is suppressed by the same directive.
+- decided: comments in the edited files are Russian, per the prompt. test-invalid-data.mjs already mixed Russian with the English added by 016273e.
+
+### review — dispatch 8 (2026-10-18)
+`kind=review-fix agent=implementer tier=standard model=claude-sonnet-5-5 effort=xhigh turns=34 minutes=10.4 input=70 cache_write=122473 cache_read=3357272 output=40701`
