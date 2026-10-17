@@ -42,7 +42,7 @@ const services: { category: ServiceCategory; icon: IconName }[] = [
     <div class="doors">
       {
         services.map((service) => (
-          <a href={pagePath(locale, service.category)} class="door">
+          <a href={pagePath(locale, { category: service.category })} class="door">
             <Icon name={service.icon} size={26} class="text-brass" />
             <span class="eyebrow door__tool">{t.services[service.category].tool}</span>
             <h3 class="door__name">{t.services[service.category].name}</h3>

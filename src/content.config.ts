@@ -3,7 +3,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { file, glob } from 'astro/loaders';
 import { locales } from './i18n/ui';
-import { serviceCategories } from './i18n/paths';
+import { serviceCategories, serviceSubpages, subpageSlugs } from './i18n/paths';
 import { priceGroups } from './data/price-groups';
 
 /**
@@ -23,27 +23,43 @@ const localized = z.object(
 
 const positiveInteger = z.number().int().positive();
 
-const priceValue = z.discriminatedUnion('kind', [
-  z.object({ kind: z.literal('fixed'), amount: positiveInteger }),
-  z.object({
-    kind: z.literal('variants'),
-    unit: z.enum(['minutes', 'sessions']),
-    variants: z
-      .array(z.object({ count: positiveInteger, amount: positiveInteger }))
-      .min(1)
-      .refine(
-        (variants) => new Set(variants.map((variant) => variant.count)).size === variants.length,
-        { message: 'варианты внутри позиции не могут повторять одно и то же значение count' },
-      ),
+const fixedPrice = z.object({ kind: z.literal('fixed'), amount: positiveInteger });
+
+const variantsPrice = z.object({
+  kind: z.literal('variants'),
+  unit: z.enum(['minutes', 'sessions']),
+  variants: z
+    .array(z.object({ count: positiveInteger, amount: positiveInteger }))
+    .min(1)
+    .refine(
+      (variants) => new Set(variants.map((variant) => variant.count)).size === variants.length,
+      { message: 'варианты внутри позиции не могут повторять одно и то же значение count' },
+    ),
+});
+
+const sharePrice = z.object({
+  kind: z.literal('share'),
+  // Ноль означал бы бесплатную услугу, сто — что доля не доля. Действующий код хранит для
+  // долевой цены сумму 0 именно поэтому и оказывается неотличим от бесплатного.
+  percent: z.number().int().min(1).max(99),
+  note: localized,
+});
+
+const priceValue = z.discriminatedUnion('kind', [fixedPrice, variantsPrice, sharePrice]);
+
+/**
+ * Цена пастой: своя сумма, вид которой может отличаться от `price`, или `false` — «пастой не
+ * делается». Доля запрещена (docs/specs/content-model.md §Инварианты).
+ */
+const sugarValue = z.union([z.discriminatedUnion('kind', [fixedPrice, variantsPrice]), z.literal(false)]);
+
+/** Группы, которые хоть одна подстраница читает ценой пастой: только у них `sugar` что-то значит. */
+const sugarGroups = new Set<string>(
+  subpageSlugs.flatMap((subpage) => {
+    const { method, groups } = serviceSubpages[subpage];
+    return method === 'sugar' ? groups : [];
   }),
-  z.object({
-    kind: z.literal('share'),
-    // Ноль означал бы бесплатную услугу, сто — что доля не доля. Действующий код хранит для
-    // долевой цены сумму 0 именно поэтому и оказывается неотличим от бесплатного.
-    percent: z.number().int().min(1).max(99),
-    note: localized,
-  }),
-]);
+);
 
 /**
  * Уникальность идентификаторов схемой не проверяется и проверяться не может: zod видит одну
@@ -55,12 +71,25 @@ const priceValue = z.discriminatedUnion('kind', [
  */
 const prices = defineCollection({
   loader: file('src/data/prices.json'),
-  schema: z.object({
-    group: z.enum(priceGroups),
-    name: localized,
-    description: localized.optional(),
-    price: priceValue,
-  }),
+  schema: z
+    .object({
+      group: z.enum(priceGroups),
+      name: localized,
+      description: localized.optional(),
+      price: priceValue,
+      sugar: sugarValue.optional(),
+    })
+    .superRefine((item, context) => {
+      // Цена пастой у группы, которую страница шугаринга не показывает, — мёртвые данные:
+      // её не увидит ни посетитель, ни поисковик.
+      if (item.sugar !== undefined && !sugarGroups.has(item.group)) {
+        context.addIssue({
+          code: 'custom',
+          path: ['sugar'],
+          message: `цена пастой у группы «${item.group}», которую не читает ни одна подстраница способом sugar`,
+        });
+      }
+    }),
 });
 
 /**
@@ -77,6 +106,28 @@ const services = defineCollection({
     title: z.string().min(1),
     // Границы описания — требование контракта заголовочной части, а не вкус: короче обрезается
     // в выдаче до бессмысленного, длиннее обрезается поисковиком.
+    description: z.string().min(120).max(160),
+    heading: z.string().min(1),
+  }),
+});
+
+/**
+ * Тексты подстраниц: ровно файлы «подстраница × её язык» из реестра. Недостающий и чужой по языку
+ * ловит `subpageCopy`, а не схема — по той же причине, что у `services`.
+ */
+const subpageLocales = [
+  ...new Set(subpageSlugs.flatMap((subpage) => serviceSubpages[subpage].locales)),
+];
+
+const subpages = defineCollection({
+  loader: glob({
+    pattern: `+(${subpageLocales.join('|')})/+(${subpageSlugs.join('|')}).md`,
+    base: './src/content/subpages',
+  }),
+  schema: z.object({
+    subpage: z.enum(subpageSlugs),
+    title: z.string().min(1),
+    // Границы описания — те же, что у категорий (схема `services` выше).
     description: z.string().min(120).max(160),
     heading: z.string().min(1),
   }),
@@ -121,4 +172,4 @@ const gallery = defineCollection({
     }),
 });
 
-export const collections = { prices, services, about, gallery };
+export const collections = { prices, services, subpages, about, gallery };

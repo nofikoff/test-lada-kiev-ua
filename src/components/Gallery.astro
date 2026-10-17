@@ -80,7 +80,7 @@ const photos = await strip();
           return (
             <li class="gallery__card">
               {data.category ? (
-                <a href={pagePath(locale, data.category)} class="gallery__link" data-service={data.category}>
+                <a href={pagePath(locale, { category: data.category })} class="gallery__link" data-service={data.category}>
                   <figure class="gallery__figure">
                     <div class="gallery__frame">{image}</div>
                     <figcaption class="gallery__caption">{t.services[data.category].name}</figcaption>

@@ -50,8 +50,8 @@ const WEEK = [
 const { locale, category } = Astro.props;
 
 const t = ui[locale];
-const canonical = canonicalUrl(locale, category);
-const { alternates, xDefault } = languageAlternates(category);
+const canonical = canonicalUrl(locale, category && { category });
+const { alternates, xDefault } = languageAlternates(category && { category });
 const face = (await portrait()).data;
 
 /**

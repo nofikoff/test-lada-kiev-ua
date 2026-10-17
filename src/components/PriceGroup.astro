@@ -17,10 +17,12 @@ import type { CollectionEntry } from 'astro:content';
 import { pricesOfGroups } from '../data/price-list';
 import { formatDuration, formatSessions, ui, type Locale } from '../i18n/ui';
 import type { PriceGroup } from '../data/price-groups';
+import type { PriceMethod } from '../i18n/paths';
 
 interface Props {
   locale: Locale;
   group: PriceGroup;
+  method?: PriceMethod;
   /** Вкладка из одной группы заголовок не повторяет — её название и есть название группы. */
   heading?: boolean;
   /**
@@ -40,11 +42,11 @@ interface Tier {
   readonly currency: boolean;
 }
 
-const { locale, group, heading = true, phase = 0 } = Astro.props;
+const { locale, group, method = 'base', heading = true, phase = 0 } = Astro.props;
 
 const t = ui[locale];
 
-const items = await pricesOfGroups([group]);
+const items = await pricesOfGroups([group], method);
 
 const RULE_PHASE = ['', 'rule--slow', 'rule--late'];
 
@@ -63,39 +65,40 @@ function tiersOf(price: PriceValue): Tier[] {
 }
 ---
 
-<div class="group">
-  {
-    heading && (
-      <div class="group__top">
-        <h3 class="eyebrow">{t.priceList.sections[group]}</h3>
-        <div class:list={['rule', RULE_PHASE[phase % RULE_PHASE.length]]} />
-      </div>
-    )
-  }
-
-  <div class="items">
-    {
-      items.map(({ data }) => (
-        <div class="item">
-          <span class="item__name">
-            {data.name[locale]}
-            {data.description && <span class="item__note">{data.description[locale]}</span>}
-          </span>
-          <span class="item__leader" aria-hidden="true" />
-          <span class="item__prices">
-            {tiersOf(data.price).map((tier) => (
-              <span class="tier">
-                {tier.unit && <span class="tier__unit">{tier.unit}</span>}
-                <span class="tier__sum">{tier.sum}</span>
-                {tier.currency && <span class="tier__cur">{t.priceList.currency}</span>}
-              </span>
-            ))}
-          </span>
+{/* Группа, из которой способ цены убрал все позиции, не выводится: заголовок без строк. */}
+{
+  items.length > 0 && (
+    <div class="group">
+      {heading && (
+        <div class="group__top">
+          <h3 class="eyebrow">{t.priceList.sections[group]}</h3>
+          <div class:list={['rule', RULE_PHASE[phase % RULE_PHASE.length]]} />
         </div>
-      ))
-    }
-  </div>
-</div>
+      )}
+
+      <div class="items">
+        {items.map(({ data }) => (
+          <div class="item">
+            <span class="item__name">
+              {data.name[locale]}
+              {data.description && <span class="item__note">{data.description[locale]}</span>}
+            </span>
+            <span class="item__leader" aria-hidden="true" />
+            <span class="item__prices">
+              {tiersOf(data.price).map((tier) => (
+                <span class="tier">
+                  {tier.unit && <span class="tier__unit">{tier.unit}</span>}
+                  <span class="tier__sum">{tier.sum}</span>
+                  {tier.currency && <span class="tier__cur">{t.priceList.currency}</span>}
+                </span>
+              ))}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 <style>
   .group {

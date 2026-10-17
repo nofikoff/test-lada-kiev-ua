@@ -1,4 +1,5 @@
 import { defaultLocale, locales, type Locale } from './ui';
+import { categoryOf, type PriceGroup } from '../data/price-groups';
 
 export const serviceCategories = ['massage', 'depilation', 'permanent', 'beauty'] as const;
 
@@ -12,6 +13,90 @@ export function categoryStaticPaths(): { params: { category: ServiceCategory } }
   return serviceCategories.map((category) => ({ params: { category } }));
 }
 
+/** Цена позиции, которую показывает страница: общая или пастой (data-model §Price item пакета 006). */
+export type PriceMethod = 'base' | 'sugar';
+
+interface SubpageDefinition {
+  readonly parent: ServiceCategory;
+  readonly locales: readonly Locale[];
+  readonly groups: readonly PriceGroup[];
+  readonly method: PriceMethod;
+}
+
+/**
+ * Подстраницы услуг — единственное место, где подстраница существует: путь, языковые
+ * альтернативы, маршруты и схема текстов выводятся отсюда (ADR-028). Языки — те, на которых
+ * кластер есть в ядре, поэтому их набор у подстраницы свой, а не общий с категориями.
+ */
+export const serviceSubpages = {
+  sugaring: {
+    parent: 'depilation',
+    locales: ['uk', 'ru'],
+    // Группы триммера и бритвы не читаются: пасты в них нет.
+    groups: ['womenDepilation', 'combos', 'menDepilation', 'menCombos'],
+    method: 'sugar',
+  },
+  brows: {
+    parent: 'permanent',
+    locales: ['uk', 'ru'],
+    groups: ['permanentBrows'],
+    method: 'base',
+  },
+} as const satisfies Record<string, SubpageDefinition>;
+
+export type ServiceSubpage = keyof typeof serviceSubpages;
+
+export const subpageSlugs = Object.keys(serviceSubpages) as [ServiceSubpage, ...ServiceSubpage[]];
+
+/**
+ * Связи, которые тип не выражает, проверяются при загрузке модуля и роняют сборку: группа чужой
+ * категории показала бы на подстранице прайс другой услуги, а подстраница без украинской версии
+ * осталась бы без `x-default`.
+ */
+for (const subpage of subpageSlugs) {
+  const definition: SubpageDefinition = serviceSubpages[subpage];
+  for (const group of definition.groups) {
+    if (categoryOf(group) !== definition.parent) {
+      throw new Error(
+        `подстраница «${subpage}»: группа прайса «${group}» принадлежит категории ` +
+          `«${categoryOf(group)}», а не «${definition.parent}»`,
+      );
+    }
+  }
+  if (!definition.locales.includes(defaultLocale)) {
+    throw new Error(
+      `подстраница «${subpage}»: нет языка «${defaultLocale}», а он — версия по умолчанию (x-default)`,
+    );
+  }
+}
+
+/** Ссылка на подстраницу: категория в ней — всегда её родитель, другой тип не допускает. */
+export type SubpageRef = {
+  [S in ServiceSubpage]: {
+    readonly category: (typeof serviceSubpages)[S]['parent'];
+    readonly subpage: S;
+  };
+}[ServiceSubpage];
+
+/** Страница услуги — категория или подстраница; путь, альтернативы и состав страницы читают её. */
+export type ServicePageRef =
+  | { readonly category: ServiceCategory; readonly subpage?: undefined }
+  | SubpageRef;
+
+/** Пары `{ category, subpage }` для маршрута подстраниц одного языка. */
+export function subpageStaticPaths(locale: Locale): { params: SubpageRef }[] {
+  return subpageSlugs
+    .filter((subpage) => (serviceSubpages[subpage].locales as readonly Locale[]).includes(locale))
+    .map((subpage) => ({
+      params: { category: serviceSubpages[subpage].parent, subpage } as SubpageRef,
+    }));
+}
+
+/** Языки, на которых страница существует: у главной и категорий — все, у подстраницы — свои. */
+export function pageLocales(page?: ServicePageRef): readonly Locale[] {
+  return page?.subpage ? serviceSubpages[page.subpage].locales : locales;
+}
+
 /** Префикс раздела локали. Основная локаль живёт на корне — это действующая схема адресов. */
 function localePrefix(locale: Locale): string {
   return locale === defaultLocale ? '' : `/${locale}`;
@@ -22,10 +107,10 @@ function localePrefix(locale: Locale): string {
  * Apache перенаправляет форму без слеша на форму со слешем, и канонический адрес обязан
  * совпадать с конечным — иначе он указывает на перенаправление.
  */
-export function pagePath(locale: Locale, category?: ServiceCategory): string {
-  const prefix = localePrefix(locale);
-  const segment = category ? `/${category}` : '';
-  return `${prefix}${segment}/`;
+export function pagePath(locale: Locale, page?: ServicePageRef): string {
+  const category = page ? `/${page.category}` : '';
+  const subpage = page?.subpage ? `/${page.subpage}` : '';
+  return `${localePrefix(locale)}${category}${subpage}/`;
 }
 
 /**
@@ -36,8 +121,8 @@ export function absoluteUrl(path: string): string {
   return new URL(path, import.meta.env.SITE).href;
 }
 
-export function canonicalUrl(locale: Locale, category?: ServiceCategory): string {
-  return absoluteUrl(pagePath(locale, category));
+export function canonicalUrl(locale: Locale, page?: ServicePageRef): string {
+  return absoluteUrl(pagePath(locale, page));
 }
 
 export interface LanguageAlternate {
@@ -54,17 +139,18 @@ export interface LanguageAlternates {
 }
 
 /**
- * Полный набор языковых указаний страницы: три локали плюс версия по умолчанию.
- * Адрес категории одинаков во всех языках, поэтому соответствие вычисляется подстановкой
- * префикса и не требует таблицы — это причина, по которой адреса не локализуются.
+ * Языковые указания страницы: её языки плюс версия по умолчанию. Адрес одинаков во всех языках,
+ * поэтому соответствие вычисляется подстановкой префикса и не требует таблицы — это причина,
+ * по которой адреса не локализуются. Языка, на котором страницы нет, в наборе нет: ссылка на
+ * чужую страницу не эквивалент, и поисковик счёл бы альтернативу ошибочной.
  */
-export function languageAlternates(category?: ServiceCategory): LanguageAlternates {
+export function languageAlternates(page?: ServicePageRef): LanguageAlternates {
   return {
-    alternates: locales.map((locale) => ({
+    alternates: pageLocales(page).map((locale) => ({
       locale,
       hreflang: locale,
-      href: canonicalUrl(locale, category),
+      href: canonicalUrl(locale, page),
     })),
-    xDefault: canonicalUrl(defaultLocale, category),
+    xDefault: canonicalUrl(defaultLocale, page),
   };
 }

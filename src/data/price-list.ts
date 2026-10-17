@@ -1,6 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import priceFile from './prices.json';
 import type { PriceGroup } from './price-groups';
+import type { PriceMethod } from '../i18n/paths';
 
 /**
  * Единственная точка чтения прайса из коллекции.
@@ -15,9 +16,24 @@ const fileOrder = new Map(priceFile.map((item, index) => [item.id, index]));
 
 export type PriceEntry = CollectionEntry<'prices'>;
 
-export async function pricesOfGroups(groups: readonly PriceGroup[]): Promise<PriceEntry[]> {
+/**
+ * Позиции групп по цене способа страницы. Способ `sugar` подставляет цену пастой в `data.price`
+ * той же записи, а не отдаёт второе поле: читатели прайса (`PriceGroup.astro`, `SeoHead.astro`)
+ * знают одну цену и не могут показать посетителю одну, а поисковику другую.
+ */
+export async function pricesOfGroups(
+  groups: readonly PriceGroup[],
+  method: PriceMethod = 'base',
+): Promise<PriceEntry[]> {
   const wanted = new Set<string>(groups);
-  return (await getCollection('prices'))
+  const entries = (await getCollection('prices'))
     .filter((entry) => wanted.has(entry.data.group))
     .sort((first, second) => (fileOrder.get(first.id) ?? 0) - (fileOrder.get(second.id) ?? 0));
+  if (method === 'base') return entries;
+
+  return entries.flatMap((entry) => {
+    const { sugar } = entry.data;
+    if (sugar === false) return [];
+    return [{ ...entry, data: { ...entry.data, price: sugar ?? entry.data.price } }];
+  });
 }
