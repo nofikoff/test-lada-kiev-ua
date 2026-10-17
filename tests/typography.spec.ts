@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { categoryPages, homePages, SERVICE_COPY_SELECTOR, subpagePages } from './support/site';
+import { homePages, SERVICE_COPY_SELECTOR, servicePages } from './support/site';
 
 /**
  * Длина строки протяжённого текста (docs/specs/design-tokens.md §Мера колонки) и область нажатия
@@ -164,14 +164,8 @@ async function openWithSiteFonts(page: Page, path: string, width: number, select
 }
 
 test.describe('длина строки протяжённого текста', () => {
-  // Подстраница входит сюда вместе со своим текстом: в черновике мерить нечего.
-  const writtenPages = [
-    ...categoryPages,
-    ...subpagePages.filter((entry) => entry.subpage === 'sugaring'),
-  ];
-
   for (const width of WIDTHS) {
-    for (const { path } of writtenPages) {
+    for (const { path } of servicePages) {
       test(`${path} держит меру при ширине ${width}`, async ({ page }) => {
         const selector = `${SERVICE_COPY_SELECTOR} p, ${SERVICE_COPY_SELECTOR} li`;
         await openWithSiteFonts(page, path, width, selector);
@@ -180,7 +174,7 @@ test.describe('длина строки протяжённого текста', (
 
         // Пустой список абзацев прошёл бы проверку вхолостую: «ни одного длиннее предела»
         // верно и там, где мерить было нечего.
-        expect(measured.length, `${path}: текст категории не найден`).toBeGreaterThan(3);
+        expect(measured.length, `${path}: текст страницы услуги не найден`).toBeGreaterThan(3);
         expect(
           incomplete(measured).length,
           `${path}: обход знаков потерял текст\n${lostText(measured)}`,

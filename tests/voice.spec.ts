@@ -13,6 +13,7 @@ import {
   normalize,
   queryOf,
   SERVICE_COPY_SELECTOR,
+  servicePages,
   subpagePages,
 } from './support/site';
 
@@ -70,13 +71,7 @@ test.describe('карта запросов', () => {
     });
   }
 
-  // Подстраница входит сюда вместе со своим текстом: у черновика первого абзаца с запросом нет.
-  const writtenPages = [
-    ...categoryPages,
-    ...subpagePages.filter((entry) => entry.subpage === 'sugaring'),
-  ];
-
-  for (const page of writtenPages) {
+  for (const page of servicePages) {
     test(`${page.path}: первый абзац текста называет запрос`, async ({ page: browser }) => {
       await browser.goto(page.path);
       const first = normalize(
@@ -92,6 +87,18 @@ test.describe('карта запросов', () => {
     test(`${page.path}: шугаринг назван`, async ({ page: browser }) => {
       await browser.goto(page.path);
       await expect(browser.locator(SERVICE_COPY_SELECTOR)).toContainText(/шугаринг|sugaring/i);
+    });
+  }
+
+  // Третья формулировка кластера бровей держится текстом, а не заголовками (spec FR-007).
+  const browTattoo: Record<'uk' | 'ru', RegExp> = { uk: /татуаж брів/i, ru: /татуаж бровей/i };
+
+  for (const page of subpagePages.filter((entry) => entry.subpage === 'brows')) {
+    test(`${page.path}: татуаж бровей назван в тексте`, async ({ page: browser }) => {
+      await browser.goto(page.path);
+      await expect(browser.locator(SERVICE_COPY_SELECTOR)).toContainText(
+        browTattoo[page.locale as 'uk' | 'ru'],
+      );
     });
   }
 

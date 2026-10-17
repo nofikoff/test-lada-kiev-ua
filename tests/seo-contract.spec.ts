@@ -16,9 +16,11 @@ import {
   normalize,
   PHONE,
   priceRange,
+  readPrices,
   SERVICE_CATEGORIES,
   SERVICE_COPY_SELECTOR,
   SERVICE_SUBPAGES,
+  servicePages,
   SITE_ORIGIN,
   subpagePages,
   toLocalPath,
@@ -600,17 +602,56 @@ test.describe('прайс страницы шугаринга', () => {
 });
 
 /**
+ * Коррекция бровей — доля от процедуры (spec FR-005): подписью из прайса, без валюты. Подпись
+ * берётся из `prices.json`, а не литералом: доли и суммы правит Лада. Что предложения на долю нет,
+ * держит сверка прайса с `Offer` выше. Текст страницы долю обновления не называет и опирается на
+ * сноску под прайсом, поэтому сноска проверяется здесь же.
+ */
+test.describe('прайс страницы бровей', () => {
+  const browGroups: readonly string[] = SERVICE_SUBPAGES.brows.groups;
+  const shares = readPrices().filter(
+    (record) => browGroups.includes(record.group) && record.price.kind === 'share',
+  );
+
+  for (const { locale, path } of subpagePages.filter((entry) => entry.subpage === 'brows')) {
+    test(`${path}: коррекция показана долей из прайса, сноска об обновлении на месте`, async ({
+      page,
+    }) => {
+      expect(shares.length, 'в группе бровей нет долевой позиции').toBeGreaterThan(0);
+      await page.goto(path);
+
+      const rows = await page.locator('#services .item').evaluateAll((items) =>
+        items.map((row) => ({
+          name: [...row.querySelector('.item__name')!.childNodes]
+            .filter((node) => node.nodeType === Node.TEXT_NODE)
+            .map((node) => node.textContent)
+            .join('')
+            .trim(),
+          sums: [...row.querySelectorAll('.tier__sum')].map((sum) => sum.textContent!.trim()),
+          currency: row.querySelector('.tier__cur') !== null,
+        })),
+      );
+
+      for (const record of shares) {
+        const note = record.price.kind === 'share' ? record.price.note[locale] : '';
+        expect(rows.filter((row) => row.name === record.name[locale])).toEqual([
+          { name: record.name[locale], sums: [note], currency: false },
+        ]);
+      }
+
+      await expect(page.locator('#services .price__note')).toHaveCount(1);
+    });
+  }
+});
+
+/**
  * Объём и уникальность текста (docs/specs/content-model.md §Страница категории). Счётчик слов —
  * рабочее определение «содержательного текста»: четыреста слов нельзя набрать шаблоном
  * с подставленным названием. Считается только контейнер текста страницы — прайс и подвал
- * набрали бы норму сами. Подстраница входит сюда вместе со своим текстом: черновик норму не держит.
+ * набрали бы норму сами. Категории и подстраницы сверяются вместе: абзац, перенесённый из категории
+ * в подстраницу без удаления, повторяется внутри языка (spec FR-006).
  */
 test.describe('тексты страниц услуг', () => {
-  const writtenPages = [
-    ...categoryPages,
-    ...subpagePages.filter((entry) => entry.subpage === 'sugaring'),
-  ];
-
   for (const locale of LOCALES) {
     test(`тексты локали ${locale} не короче 400 слов и не повторяют друг друга`, async ({
       page,
@@ -618,7 +659,7 @@ test.describe('тексты страниц услуг', () => {
     }) => {
       const paragraphsByPage = new Map<string, string[]>();
 
-      for (const entry of writtenPages.filter((candidate) => candidate.locale === locale)) {
+      for (const entry of servicePages.filter((candidate) => candidate.locale === locale)) {
         await requireServicePage(request, entry.path);
         await page.goto(entry.path);
 

@@ -348,7 +348,7 @@ export function readLegacyFixture(): Record<Locale, string[]> {
 type PriceValue =
   | { kind: 'fixed'; amount: number }
   | { kind: 'variants'; unit: 'minutes' | 'sessions'; variants: { count: number; amount: number }[] }
-  | { kind: 'share'; percent: number };
+  | { kind: 'share'; percent: number; note: Record<Locale, string> };
 
 interface PriceRecord {
   id: string;
