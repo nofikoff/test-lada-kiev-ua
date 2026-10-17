@@ -494,3 +494,19 @@ decided:
 
 ### converge — dispatch 6 (2026-10-17)
 `kind=converge agent=verifier model=claude-sonnet-5-5 effort=high turns=11 minutes=0.7 input=22 cache_write=73434 cache_read=519483 output=4271`
+
+### review — observations (2026-10-18, dispatch 7)
+- plan-wrong: the harness exposes no TaskCreate tool, so the work was tracked without it.
+- plan-wrong: finding 9 asks for a typed helper keyed by the registry; TypeScript cannot express it (the key/parent pair widens to a union and the return type reduces to never), so a satisfies-checked table is used instead and a third subpage now needs one line there (compiler-enforced).
+- plan-wrong: finding 3's prescribed check compares a Map built from servicePages with servicePages itself, so it can only fail on duplicate paths; applied as written.
+- plan-wrong: finding 2 cannot get a regression test: with both subpages sharing the same languages the build output is identical under the old and new glob. Verified once by hand (brows made uk-only, astro sync, ru/brows absent from the store) and reverted. Findings 1 and 9 are behaviour-preserving, covered by the existing e2e and by npm run check.
+- plan-wrong: unrelated to this branch, tests/hero.spec.ts:42 (/en/, 2560x1440) timed out once in the first parallel e2e run and passed alone and in the rerun; src/scripts rebuild-sheet.mjs:56 keeps a pre-existing unused-parameter hint ('sheetId').
+- redone: the subpageRef<S>() generic helper for finding 9 was written twice (property access, then element access) before astro check error ts(2322) showed it cannot work; replaced by the satisfies table.
+- redone: test_full ran twice, the first e2e pass failed on the hero timeout above; the second was green with no code change in between.
+- decided: new or rewritten code comments are in English per the global rule, although the repo's existing comments are Russian; wrong if the repo wants one language per file.
+- decided: the dated sugar claims use 2026-10-18 (the day the absence was grepped in this session), not 2026-10-17 from the report.
+- decided: besides the listed sites I also dated the same claim in specs/006-service-subpages/data-model.md ('Сегодня') and dropped the written-out counts at tests/support/site.ts (subpage pages) and content-model.md:28 ('сейчас четыре'), same defect class as findings 7 and 8.
+- decided: the language guard in subpageCopy stays although no route reaches it, because it gives a precise message for a caller passing a language the subpage lacks; wrong if it is judged dead code.
+
+### review — dispatch 7 (2026-10-18)
+`kind=review-fix agent=implementer tier=standard model=claude-sonnet-5-5 effort=xhigh turns=57 minutes=14.9 input=114 cache_write=196975 cache_read=8451909 output=65855`
