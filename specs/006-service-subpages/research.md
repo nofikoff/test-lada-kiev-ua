@@ -34,7 +34,7 @@
 
 ## R6. Sugar price model
 
-- **Decision**: необязательное поле `sugar` у позиции прайса: цена вида `fixed` или `variants` (вид может отличаться от `price`), либо `false` — «пастой не делается». Схема запрещает `sugar` у групп, которых нет в `groups` страницы шугаринга, и запрещает долевую цену пастой. Чтение — `pricesOfGroups(groups, method)` в `src/data/price-list.ts`: способ `sugar` подставляет `sugar ?? price` и отбрасывает позиции с `false`. Пустая группа не выводится.
+- **Decision**: необязательное поле `sugar` у позиции прайса: цена вида `fixed` или `variants` (вид может отличаться от `price`), либо `false` — «пастой не делается». Схема запрещает `sugar` у групп, которых нет в `groups` страницы шугаринга, и запрещает долевую цену пастой. Чтение — `pricesOfGroups(groups, method)` в `src/data/price-list.ts`: способ `sugar` подставляет `sugar ?? price` в `data.price` той же записи `PriceEntry` и отбрасывает позиции с `false`. Форма результата не меняется, поэтому читатели прайса правок не требуют. Пустая группа не выводится.
 - **Rationale**: цена зоны остаётся в одной записи (ADR-006); сегодня полей `sugar` нет, и страница шугаринга показывает общие цены. Диапазон цен организации (`priceRange`) учитывает суммы пастой: это тоже цены студии.
 - **Alternatives considered**: отдельная группа прайса «шугаринг» — вторая запись тех же зон; поле `methods: { wax, sugar }` у каждой позиции — переписывает все позиции депиляции ради возможности, которой сегодня нет.
 - **Verification**: настоящий прайс полей `sugar` не содержит, поэтому e2e проверяет только ветку «общая цена». Ветки «своя цена пастой» и «пастой не делается» проверяет `scripts/test-invalid-data.mjs`: допустимая правка прайса, сборка, сверка `dist/depilation/sugaring/index.html` и `dist/depilation/index.html`, откат.
@@ -96,4 +96,6 @@
 
 ## R14. Out of scope, found while planning
 
-- `public/llms.txt` пишет «touch-up within 6 months costs 80% of the original price», а `prices.json` — коррекция 28–60 дней за 50%. 2026-10-17: верен прайс (ADR-025, таблица Лады); правка `llms.txt:27` входит в T033 и уходит на сайт вместе с пакетом ([interview.md](interview.md) §Follow-up questions, п. 4).
+- **Decision**: `public/llms.txt:27` называет обе услуги — коррекцию через 28–60 дней за 50% (`prices.json`, таблица Лады, ADR-025) и обновление до 6 месяцев за 80% (`permanentNote` в `src/i18n/ui.ts`). Правка входит в T033 и уходит на сайт вместе с пакетом ([interview.md](interview.md) §Follow-up questions, п. 4).
+- **Rationale**: это две услуги. Строка `llms.txt` «touch-up within 6 months costs 80%» описывает обновление словом «touch-up» и молчит про коррекцию, поэтому машинный читатель получает одну цифру из двух.
+- **Alternatives considered**: заменить 80% на 50% как устаревшую цифру (решение 2026-10-17) — отвергнуто: сноска об обновлении стоит на сайте сейчас, её держит `content-parity` (`tests/fixtures/legacy-content.json`), и `llms.txt` разошёлся бы с разметкой.

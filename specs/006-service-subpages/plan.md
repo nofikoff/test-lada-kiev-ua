@@ -49,8 +49,7 @@
 | ADR-019 (masters not named) | в текстах только Лада | соответствует |
 | ADR-020 (no FAQPage markup) | разметки FAQ нет | соответствует |
 | ADR-021 (no query landing pages) | частично отменяется новым ADR пакета | отклонение, решение пакета — новый ADR |
-| ADR-023 (KB pages for informational queries) | пункт Rejected о `/sugaring/` и `/powder-brows/` снимается новым ADR | отклонение, решение пакета — новый ADR |
-
+| ADR-023 (KB pages for informational queries) | пункт Rejected о `/sugaring/` и `/powder-brows/` снимается новым ADR | отклонение, решение пакета — ADR-028 |
 | ADR-026 (single CI deploy path) | всё в `main` уходит на сайт со следующей галочкой Лады, поэтому пакет сливается целиком, а не по историям | соответствует |
 | ADR-027 (full e2e outside publish) | публикация гоняет `seo-contract.spec.ts`, который расширяют T017 и T023; полный `test:e2e` — локально до слияния | соответствует |
 
@@ -110,9 +109,9 @@ scripts/test-invalid-data.mjs     # новые случаи порчи и доп
 scripts/prices/sheet-layout.mjs   # строки таблицы для сумм пастой; тесты — sheet-layout.test.mjs
 
 docs/
-├── adr/adr-NNN-*.md              # номер из get-id; ADR-021 и ADR-023 получают строку Superseded by
+├── adr/adr-028-commercial-service-subpages.md  # номер из get-id (2026-10-17); ADR-021 и ADR-023 получают строку Superseded by
 ├── specs/{routes,page-head,structured-data,content-model}.md
-├── runbook-deploy.md             # список сброса кэша, строки пастой в §Changing the price list
+├── runbook-deploy.md             # строки пастой в §Changing the price list; список сброса кэша берётся из dist/ (ADR-026)
 └── seo/{core.csv,map.md}         # только через /seo
 ```
 
