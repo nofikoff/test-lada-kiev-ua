@@ -49,9 +49,10 @@ export async function runPublish({ env, client, pricesPath, outDir }) {
   }
 
   const values = await client.getValues(a1(SHEET_NAME, `A${FIRST_DATA_ROW}:E`));
+  // Group header lines have no key; the line number keeps report.mjs on the right row past them.
   const rows = values
-    .filter(([key]) => key !== undefined && key !== '')
-    .map(([key, , , amount, published]) => ({ key, amount, published }));
+    .map(([key, , , amount, published], index) => ({ key, line: FIRST_DATA_ROW + index, amount, published }))
+    .filter(({ key }) => key !== undefined && key !== '');
   const prices = JSON.parse(readFileSync(pricesPath, 'utf8'));
 
   let result;
@@ -76,7 +77,7 @@ export async function runPublish({ env, client, pricesPath, outDir }) {
     ok: true,
     applied,
     rejected,
-    rows: rows.map(({ key }) => ({ key, published: published.get(key) })),
+    rows: rows.map(({ key, line }) => ({ key, line, published: published.get(key) })),
   });
   console.log(`applied ${applied.length}, rejected ${rejected.length}`);
   return rejected.length ? EXIT_REJECTED : EXIT_OK;

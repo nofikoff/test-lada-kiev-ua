@@ -80,9 +80,10 @@ jobs:
           GOOGLE_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
           LIVE_SHEET: ${{ vars.PRICES_SHEET_ID }}
           COPY_SHEET: ${{ vars.PRICES_SHEET_ID_DRY_RUN }}
+        # rebuild-sheet.mjs imports the group labels from src/i18n/ui.ts.
         run: |
-          PRICES_SHEET_ID="$LIVE_SHEET" node scripts/prices/rebuild-sheet.mjs
-          PRICES_SHEET_ID="$COPY_SHEET" node scripts/prices/rebuild-sheet.mjs
+          PRICES_SHEET_ID="$LIVE_SHEET" node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/prices/rebuild-sheet.mjs
+          PRICES_SHEET_ID="$COPY_SHEET" node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/prices/rebuild-sheet.mjs
 
       - name: Status — started
         if: inputs.mode == 'publish'

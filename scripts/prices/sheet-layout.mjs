@@ -39,11 +39,12 @@ export function rowsFromPrices(prices) {
   for (const item of prices) {
     const { price } = item;
     if (price.kind === 'fixed') {
-      rows.push({ key: rowKey(item.id), name: item.name.ru, variant: '', amount: price.amount });
+      rows.push({ key: rowKey(item.id), group: item.group, name: item.name.ru, variant: '', amount: price.amount });
     } else if (price.kind === 'variants') {
       price.variants.forEach((variant, index) => {
         rows.push({
           key: rowKey(item.id, variant.count),
+          group: item.group,
           name: index === 0 ? item.name.ru : '',
           variant: variantLabel(price.unit, variant.count),
           amount: variant.amount,
@@ -96,6 +97,29 @@ export function mergeRows(prices, currentRows) {
       published: row.amount,
     };
   });
+}
+
+/**
+ * Sheet lines from FIRST_DATA_ROW on: a header line before the first row of each group (FR-032).
+ * `labels` is ui.ru.priceList.sections, passed in so this module stays free of the TS dictionary
+ * import (research.md §R12). Throws before anything is written: a split group would get two headers,
+ * a group without a label would get an empty one.
+ */
+export function sheetLines(rows, labels) {
+  const lines = [];
+  const seen = new Set();
+  for (const row of rows) {
+    if (row.group !== lines.at(-1)?.group) {
+      if (seen.has(row.group)) throw new Error(`group ${row.group} is not contiguous in prices.json`);
+      if (!Object.hasOwn(labels, row.group)) {
+        throw new Error(`group ${row.group} has no label in ui.ru.priceList.sections`);
+      }
+      seen.add(row.group);
+      lines.push({ kind: 'header', group: row.group, label: labels[row.group] });
+    }
+    lines.push({ kind: 'row', ...row });
+  }
+  return lines;
 }
 
 export function lastDataRow(rowCount) {

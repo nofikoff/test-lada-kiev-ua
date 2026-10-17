@@ -161,19 +161,19 @@ description: "Task list for sheet-driven price publishing"
 
 ### Tests for the amendment
 
-- [ ] T037 [P] [US1] Write tests for header layout in scripts/prices/sheet-layout.test.mjs: строки несут `group`; `sheetLines(rows, labels)` ставит заголовок перед первой строкой каждой группы и ни одного — группе без строк; группа не подряд и группа без подписи бросают ошибку с именем группы; на настоящем prices.json — 167 строк сумм и 14 заголовков
-- [ ] T038 [P] [US1] Write tests for line-aligned reporting in scripts/prices/report.test.mjs: блок `E4:F<последняя>` с пустыми значениями в строках заголовков; пометка отклонения попадает в строку своей позиции через заголовки между ними
-- [ ] T039 [P] [US1] Write tests in scripts/prices/publish.test.mjs: при строках с пустым ключом между позициями отчёт хранит номер строки листа у каждой позиции, сверка получает те же позиции, что без заголовков
-- [ ] T040 [P] [US1] Write tests in scripts/prices/rebuild-sheet.test.mjs: незащищённые диапазоны — `B1` и по одному `D` на группу от первой до последней её строки; строки заголовков жирные с серой заливкой `A:F`; блок значений включает заголовки с пустым `A`
+- [X] T037 [P] [US1] Write tests for header layout in scripts/prices/sheet-layout.test.mjs: строки несут `group`; `sheetLines(rows, labels)` ставит заголовок перед первой строкой каждой группы и ни одного — группе без строк; группа не подряд и группа без подписи бросают ошибку с именем группы; на настоящем prices.json — 167 строк сумм и 14 заголовков
+- [X] T038 [P] [US1] Write tests for line-aligned reporting in scripts/prices/report.test.mjs: блок `E4:F<последняя>` с пустыми значениями в строках заголовков; пометка отклонения попадает в строку своей позиции через заголовки между ними
+- [X] T039 [P] [US1] Write tests in scripts/prices/publish.test.mjs: при строках с пустым ключом между позициями отчёт хранит номер строки листа у каждой позиции, сверка получает те же позиции, что без заголовков
+- [X] T040 [P] [US1] Write tests in scripts/prices/rebuild-sheet.test.mjs: незащищённые диапазоны — `B1` и по одному `D` на группу от первой до последней её строки; строки заголовков жирные с серой заливкой `A:F`; блок значений включает заголовки с пустым `A`
 
 ### Implementation for the amendment
 
-- [ ] T041 [US1] Add `group` to rows and the pure `sheetLines(rows, labels)` in scripts/prices/sheet-layout.mjs; the module does not import the dictionary (research.md §R12)
-- [ ] T042 [US1] Import `ui` from src/i18n/ui.ts in scripts/prices/rebuild-sheet.mjs, pass `ui.ru.priceList.sections` to `sheetLines`, write header rows with formatting, protect `D` per group (contracts/sheet-layout.md)
-- [ ] T043 [US1] Keep the sheet line number of every row in the report written by scripts/prices/publish.mjs
-- [ ] T044 [US1] Write `E4:F<last>` aligned to sheet line numbers in scripts/prices/report.mjs
-- [ ] T045 [US1] Add `--experimental-strip-types --disable-warning=ExperimentalWarning` to `test:unit` in package.json and to the rebuild step in .github/workflows/publish.yml (contracts/publish-workflow.md)
-- [ ] T046 [P] [US1] Replace the «в таблице нет заголовков групп» paragraph in docs/runbook-deploy.md §Changing the price list with the header rule: подпись группы берётся из `ui.ts`, новая группа получает заголовок после `rebuild-sheet`
+- [X] T041 [US1] Add `group` to rows and the pure `sheetLines(rows, labels)` in scripts/prices/sheet-layout.mjs; the module does not import the dictionary (research.md §R12)
+- [X] T042 [US1] Import `ui` from src/i18n/ui.ts in scripts/prices/rebuild-sheet.mjs, pass `ui.ru.priceList.sections` to `sheetLines`, write header rows with formatting, protect `D` per group (contracts/sheet-layout.md)
+- [X] T043 [US1] Keep the sheet line number of every row in the report written by scripts/prices/publish.mjs
+- [X] T044 [US1] Write `E4:F<last>` aligned to sheet line numbers in scripts/prices/report.mjs
+- [X] T045 [US1] Add `--experimental-strip-types --disable-warning=ExperimentalWarning` to `test:unit` in package.json and to the rebuild step in .github/workflows/publish.yml (contracts/publish-workflow.md)
+- [X] T046 [P] [US1] Replace the «в таблице нет заголовков групп» paragraph in docs/runbook-deploy.md §Changing the price list with the header rule: подпись группы берётся из `ui.ts`, новая группа получает заголовок после `rebuild-sheet`
 - [ ] T047 [US1] (автор + агент) Run all local gates, then quickstart.md §6 steps 2 and 4 (агент) and step 3 under the editor account (автор, после T022); до T022 защиту заголовков подтверждает агент — список `protectedRanges` листа, прочитанный через Sheets API
 
 ---

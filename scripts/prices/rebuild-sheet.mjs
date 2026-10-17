@@ -5,6 +5,8 @@
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+// Needs --experimental-strip-types: the group labels have one source, the site dictionary (research.md §R12).
+import { ui } from '../../src/i18n/ui.ts';
 import { a1, clientFromEnv } from './sheets-api.mjs';
 import {
   FIRST_DATA_ROW,
@@ -16,6 +18,7 @@ import {
   SHEET_NAME,
   lastDataRow,
   mergeRows,
+  sheetLines,
 } from './sheet-layout.mjs';
 
 const PRICES_PATH = fileURLToPath(new URL('../../src/data/prices.json', import.meta.url));
@@ -25,6 +28,9 @@ const MAX_AMOUNT = 100000;
 
 const RED = { red: 0.96, green: 0.8, blue: 0.8 };
 const YELLOW = { red: 1, green: 0.95, blue: 0.7 };
+const GREY = { red: 0.9, green: 0.9, blue: 0.9 };
+const WHITE = { red: 1, green: 1, blue: 1 };
+const LINE_FORMAT_FIELDS = 'userEnteredFormat.textFormat.bold,userEnteredFormat.backgroundColor';
 
 // Visible columns B, C, D, F in pixels. Names reach 54 characters, so B wraps instead of
 // stretching past a phone screen; F holds the rejection note written by report.mjs.
@@ -61,13 +67,38 @@ function highlight(sheetId, amounts, index, formula, color) {
   };
 }
 
+function lineFormat(range, bold, backgroundColor) {
+  return {
+    repeatCell: {
+      range,
+      cell: { userEnteredFormat: { textFormat: { bold }, backgroundColor } },
+      fields: LINE_FORMAT_FIELDS,
+    },
+  };
+}
+
+/** Grid row indices [start, end) of each group's amount rows; the header line above stays out. */
+function groupAmountSpans(lines) {
+  const spans = [];
+  lines.forEach((line, index) => {
+    const rowIndex = FIRST_DATA_ROW - 1 + index;
+    if (line.kind === 'header') spans.push([rowIndex + 1, rowIndex + 1]);
+    else spans.at(-1)[1] = rowIndex + 1;
+  });
+  return spans;
+}
+
 /** Structure requests only; values are written separately so they cannot clobber protection. */
-export function buildSheetRequests({ sheetId, rowCount, protectedRangeIds, conditionalFormatCount, editors }) {
+export function buildSheetRequests({ sheetId, lines, protectedRangeIds, conditionalFormatCount, editors }) {
   const users = editors.filter(Boolean);
   if (!users.length) throw new Error('protection needs at least one editor');
-  const lastRow = lastDataRow(rowCount);
+  const lastRow = lastDataRow(lines.length);
   const firstDataIndex = FIRST_DATA_ROW - 1;
   const amounts = gridRange(sheetId, firstDataIndex, lastRow, AMOUNT_COLUMN, AMOUNT_COLUMN + 1);
+  const groupAmounts = groupAmountSpans(lines).map(([start, end]) =>
+    gridRange(sheetId, start, end, AMOUNT_COLUMN, AMOUNT_COLUMN + 1),
+  );
+  const headerIndices = lines.flatMap((line, index) => (line.kind === 'header' ? [firstDataIndex + index] : []));
   const publishCell = gridRange(sheetId, 0, 1, 1, 2);
   const row = FIRST_DATA_ROW;
 
@@ -91,7 +122,7 @@ export function buildSheetRequests({ sheetId, rowCount, protectedRangeIds, condi
           range: { sheetId },
           description: 'Структура прайса меняется только из репозитория',
           warningOnly: false,
-          unprotectedRanges: [publishCell, amounts],
+          unprotectedRanges: [publishCell, ...groupAmounts],
           editors: { users },
         },
       },
@@ -141,9 +172,20 @@ export function buildSheetRequests({ sheetId, rowCount, protectedRangeIds, condi
         fields: 'userEnteredFormat.textFormat.bold',
       },
     },
+    // Lines shift between rebuilds, so a former header row would keep its fill without the reset.
+    lineFormat(gridRange(sheetId, firstDataIndex, lastRow, 0, COLUMN_COUNT), false, WHITE),
+    ...headerIndices.map((index) => lineFormat(gridRange(sheetId, index, index + 1, 0, COLUMN_COUNT), true, GREY)),
     highlight(sheetId, amounts, 0, `=$F${row}<>""`, RED),
     highlight(sheetId, amounts, 1, `=AND($D${row}<>"",$D${row}<>$E${row})`, YELLOW),
   ];
+}
+
+export function sheetValues(lines) {
+  return lines.map((line) =>
+    line.kind === 'header'
+      ? ['', line.label, '', '', '', '']
+      : [line.key, line.name, line.variant, line.amount, line.published, ''],
+  );
 }
 
 async function main() {
@@ -160,12 +202,12 @@ async function main() {
   const current = (await client.getValues(a1(SHEET_NAME, `A${FIRST_DATA_ROW}:E`)))
     .filter(([key]) => key)
     .map(([key, , , amount, published]) => ({ key, amount, published }));
-  const rows = mergeRows(prices, current);
+  const lines = sheetLines(mergeRows(prices, current), ui.ru.priceList.sections);
 
   await client.batchUpdate(
     buildSheetRequests({
       sheetId,
-      rowCount: rows.length,
+      lines,
       protectedRangeIds: (sheet.protectedRanges ?? []).map((range) => range.protectedRangeId),
       conditionalFormatCount: (sheet.conditionalFormats ?? []).length,
       editors: [process.env.PRICES_SHEET_OWNER, process.env.GCP_SERVICE_ACCOUNT],
@@ -178,11 +220,12 @@ async function main() {
     { range: a1(SHEET_NAME, PUBLISH_LABEL_CELL), values: [[PUBLISH_LABEL]] },
     { range: a1(SHEET_NAME, `A${HEADER_ROW}:F${HEADER_ROW}`), values: [HEADERS] },
     {
-      range: a1(SHEET_NAME, `A${FIRST_DATA_ROW}:F${lastDataRow(rows.length)}`),
-      values: rows.map((row) => [row.key, row.name, row.variant, row.amount, row.published, '']),
+      range: a1(SHEET_NAME, `A${FIRST_DATA_ROW}:F${lastDataRow(lines.length)}`),
+      values: sheetValues(lines),
     },
   ]);
-  console.log(`sheet rebuilt: ${rows.length} rows`);
+  const headers = lines.filter((line) => line.kind === 'header').length;
+  console.log(`sheet rebuilt: ${lines.length - headers} rows, ${headers} group headers`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

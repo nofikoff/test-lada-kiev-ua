@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { applyAmounts, rowsFromPrices, variantLabel } from './sheet-layout.mjs';
+import { ui } from '../../src/i18n/ui.ts';
+import { applyAmounts, rowsFromPrices, sheetLines, variantLabel } from './sheet-layout.mjs';
 
 const fixture = [
   {
@@ -33,10 +34,37 @@ const fixture = [
 
 test('one row per amount in file order, share skipped, name on the first variant only', () => {
   assert.deepEqual(rowsFromPrices(fixture), [
-    { key: 'massage@60', name: 'Массаж', variant: '60 мин', amount: 1600 },
-    { key: 'massage@90', name: '', variant: '90 мин', amount: 2300 },
-    { key: 'brows', name: 'Брови', variant: '', amount: 800 },
+    { key: 'massage@60', group: 'g', name: 'Массаж', variant: '60 мин', amount: 1600 },
+    { key: 'massage@90', group: 'g', name: '', variant: '90 мин', amount: 2300 },
+    { key: 'brows', group: 'g', name: 'Брови', variant: '', amount: 800 },
   ]);
+});
+
+const row = (key, group) => ({ key, group, name: key, variant: '', amount: 1 });
+const labels = { women: 'Женская депиляция', men: 'Мужская депиляция' };
+
+test('a header goes before the first row of each group, in file order', () => {
+  const lines = sheetLines([row('a', 'women'), row('b', 'women'), row('c', 'men')], labels);
+  assert.deepEqual(
+    lines.map((line) => (line.kind === 'header' ? `# ${line.label}` : line.key)),
+    ['# Женская депиляция', 'a', 'b', '# Мужская депиляция', 'c'],
+  );
+  assert.deepEqual(lines[0], { kind: 'header', group: 'women', label: 'Женская депиляция' });
+  assert.deepEqual(lines[1], { kind: 'row', ...row('a', 'women') });
+});
+
+test('a group without rows gets no header', () => {
+  const lines = sheetLines([row('a', 'women')], labels);
+  assert.equal(lines.filter((line) => line.kind === 'header').length, 1);
+});
+
+test('a group split by another group stops the layout and names the group', () => {
+  assert.throws(() => sheetLines([row('a', 'women'), row('c', 'men'), row('b', 'women')], labels), /women/);
+});
+
+test('a group without a section label stops the layout and names the group', () => {
+  assert.throws(() => sheetLines([row('a', 'kids')], labels), /kids/);
+  assert.throws(() => sheetLines([row('a', 'toString')], labels), /toString/);
 });
 
 test('session labels follow Russian plural rules', () => {
@@ -64,6 +92,14 @@ test('the real price list yields 167 rows with unique keys', () => {
   const rows = rowsFromPrices(prices);
   assert.equal(rows.length, 167);
   assert.equal(new Set(rows.map((row) => row.key)).size, rows.length);
+});
+
+test('the real price list gets one header per group, labelled from the Russian site dictionary', () => {
+  const prices = JSON.parse(readFileSync(new URL('../../src/data/prices.json', import.meta.url), 'utf8'));
+  const headers = sheetLines(rowsFromPrices(prices), ui.ru.priceList.sections).filter((line) => line.kind === 'header');
+  assert.equal(headers.length, 14);
+  assert.equal(new Set(headers.map((header) => header.group)).size, headers.length);
+  assert.ok(headers.every((header) => header.label === ui.ru.priceList.sections[header.group]));
 });
 
 test('applyAmounts changes amounts only and leaves the input untouched', () => {

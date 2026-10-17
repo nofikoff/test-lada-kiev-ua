@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { a1, clientFromEnv } from './sheets-api.mjs';
-import { FIRST_DATA_ROW, SHEET_NAME, STATUS_CELL, lastDataRow } from './sheet-layout.mjs';
+import { FIRST_DATA_ROW, SHEET_NAME, STATUS_CELL } from './sheet-layout.mjs';
 import { REPORT_FILE } from './publish.mjs';
 
 function kyivParts(date) {
@@ -43,6 +43,19 @@ function rejectionText({ from, to }) {
   return `изменение больше чем вдвое, не опубликовано: ${from} → ${to}`;
 }
 
+/** One E:F pair per sheet line from FIRST_DATA_ROW; group header lines get blanks. */
+function snapshotBlock(rows, rejected) {
+  for (const { key, line } of rows) {
+    if (!Number.isInteger(line) || line < FIRST_DATA_ROW) throw new Error(`report row ${key} has no sheet line`);
+  }
+  const last = Math.max(...rows.map(({ line }) => line));
+  const values = Array.from({ length: last - FIRST_DATA_ROW + 1 }, () => ['', '']);
+  for (const { key, line, published } of rows) {
+    values[line - FIRST_DATA_ROW] = [published, rejected.has(key) ? rejectionText(rejected.get(key)) : ''];
+  }
+  return { range: a1(SHEET_NAME, `E${FIRST_DATA_ROW}:F${last}`), values };
+}
+
 function publishedStatus(report, at) {
   if (report.rejected.length) {
     return `опубликовано ${at}, кроме ${report.rejected.length} ${positions(report.rejected.length)} — см. пометки`;
@@ -65,15 +78,7 @@ export function buildReportUpdates({ outcome, report, now }) {
     case 'published': {
       const rejected = new Map(report.rejected.map((item) => [item.key, item]));
       const updates = [statusUpdate(publishedStatus(report, at))];
-      if (report.rows.length) {
-        updates.push({
-          range: a1(SHEET_NAME, `E${FIRST_DATA_ROW}:F${lastDataRow(report.rows.length)}`),
-          values: report.rows.map(({ key, published }) => [
-            published,
-            rejected.has(key) ? rejectionText(rejected.get(key)) : '',
-          ]),
-        });
-      }
+      if (report.rows.length) updates.push(snapshotBlock(report.rows, rejected));
       return updates;
     }
     default:

@@ -11,8 +11,8 @@ const report = (overrides = {}) => ({
   applied: [{ key: 'a', from: 100, to: 110 }],
   rejected: [],
   rows: [
-    { key: 'a', published: 110 },
-    { key: 'b', published: 200 },
+    { key: 'a', line: 4, published: 110 },
+    { key: 'b', line: 5, published: 200 },
   ],
   ...overrides,
 });
@@ -62,6 +62,33 @@ test('a rejected row is marked with the reason and keeps the old snapshot', () =
     [110, ''],
     [200, 'изменение больше чем вдвое, не опубликовано: 200 → 900'],
   ]);
+});
+
+test('marks land on the sheet line of their position, header lines get blanks', () => {
+  const updates = buildReportUpdates({
+    outcome: 'published',
+    report: report({
+      rejected: [{ key: 'b', from: 200, to: 900, reason: 'jump' }],
+      rows: [
+        { key: 'a', line: 5, published: 110 },
+        { key: 'b', line: 7, published: 200 },
+      ],
+    }),
+    now,
+  });
+  assert.deepEqual(updates.find((update) => update.range.endsWith('E4:F7')).values, [
+    ['', ''],
+    [110, ''],
+    ['', ''],
+    [200, 'изменение больше чем вдвое, не опубликовано: 200 → 900'],
+  ]);
+});
+
+test('a report row without a sheet line is an error, not a guess', () => {
+  assert.throws(
+    () => buildReportUpdates({ outcome: 'published', report: report({ rows: [{ key: 'a', published: 110 }] }), now }),
+    /\ba\b/,
+  );
 });
 
 test('the count of rejected positions takes the genitive plural', () => {

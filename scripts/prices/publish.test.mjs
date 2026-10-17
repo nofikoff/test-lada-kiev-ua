@@ -15,17 +15,18 @@ const prices = [
   { id: 'brows', group: 'g', name: { uk: 'b', ru: 'б', en: 'b' }, price: { kind: 'fixed', amount: 800 } },
 ];
 
-function setup(amounts, env = {}) {
+function setup(amounts, env = {}, { headers = false } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'publish-'));
   const pricesPath = join(dir, 'prices.json');
   const original = `${JSON.stringify(prices, null, 2)}\n`;
   writeFileSync(pricesPath, original);
+  const massage = ['massage@60', 'а', '60 мин', amounts['massage@60'] ?? 1600, 1600];
+  const brows = ['brows', 'б', '', amounts.brows ?? 800, 800];
+  // values.get drops trailing empty cells, so a header line arrives as ['', label].
+  const values = headers ? [['', 'Массажи'], massage, ['', 'Брови и ресницы'], brows] : [massage, brows];
   const client = {
     async getValues() {
-      return [
-        ['massage@60', 'а', '60 мин', amounts['massage@60'] ?? 1600, 1600],
-        ['brows', 'б', '', amounts.brows ?? 800, 800],
-      ];
+      return values;
     },
   };
   return {
@@ -44,13 +45,26 @@ test('an accepted edit rewrites only that amount and exits 0', async () => {
   assert.equal(await ctx.run(), 0);
   assert.equal(ctx.prices(), ctx.original.replace('"amount": 1600', '"amount": 1700'));
   assert.deepEqual(ctx.report().rows, [
-    { key: 'massage@60', published: 1700 },
-    { key: 'brows', published: 800 },
+    { key: 'massage@60', line: 4, published: 1700 },
+    { key: 'brows', line: 5, published: 800 },
   ]);
   assert.equal(
     ctx.commitMessage(),
     'chore(prices): publish prices from the sheet\n\nmassage@60: 1600 → 1700\n\nSource: sheet\n',
   );
+});
+
+test('header lines are skipped and every position keeps its own sheet line', async () => {
+  const plain = setup({ 'massage@60': 1700 });
+  const ctx = setup({ 'massage@60': 1700 }, {}, { headers: true });
+  assert.equal(await ctx.run(), 0);
+  assert.equal(await plain.run(), 0);
+  assert.equal(ctx.prices(), plain.prices());
+  assert.deepEqual(ctx.report().applied, plain.report().applied);
+  assert.deepEqual(ctx.report().rows, [
+    { key: 'massage@60', line: 5, published: 1700 },
+    { key: 'brows', line: 7, published: 800 },
+  ]);
 });
 
 test('no edits leave the file byte for byte and write no commit message', async () => {
