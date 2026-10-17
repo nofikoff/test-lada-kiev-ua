@@ -70,7 +70,8 @@ for (const subpage of subpageSlugs) {
   }
 }
 
-type SubpageRefOf = {
+// Экспорт нужен `tests/types/subpage-refs.ts`: его негативные случаи компилируются против этого типа.
+export type SubpageRefOf = {
   [S in ServiceSubpage]: {
     readonly category: (typeof serviceSubpages)[S]['parent'];
     readonly subpage: S;

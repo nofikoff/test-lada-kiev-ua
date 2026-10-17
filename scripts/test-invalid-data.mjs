@@ -1,15 +1,15 @@
 /**
  * Приёмка модели данных (docs/specs/content-model.md §Инварианты): порча данных обязана ронять
  * сборку, а не проходить молча, а допустимая правка — проходить и менять ровно то, что должна.
- * Порча и правка прайса, текстов, обращения и фото Лады вносятся в сам файл и откатываются
- * в `finally`, поэтому прогон не оставляет за собой изменений в дереве.
+ * Порча и правка прайса, текстов, обращения, фото Лады и реестра подстраниц вносятся в сам файл
+ * и откатываются в `finally`, поэтому прогон не оставляет за собой изменений в дереве.
  *
  * Проверка сделана автоматической намеренно. Ручная процедура «сломать, посмотреть, откатить»
  * подтверждает схему один раз в жизни — в день, когда её написали; после первого расширения
  * схемы никто её не повторит, и требование останется утверждением без подтверждения.
  */
 import { spawnSync } from 'node:child_process';
-import { readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -18,6 +18,10 @@ const PRICES = 'src/data/prices.json';
 const GALLERY = 'src/data/gallery.json';
 const SERVICE_COPY = 'src/content/services/uk/massage.md';
 const SUBPAGE_COPY = 'src/content/subpages/uk/sugaring.md';
+const STRAY_SUBPAGE_COPY = 'src/content/subpages/ru/brows.md';
+const REGISTRY = 'src/i18n/paths.ts';
+// Хранилище коллекций, которое сборка пишет на диск: по нему видно, что загрузчик файл не читал.
+const DATA_STORE = 'node_modules/.astro/data-store.json';
 const ABOUT_COPY = 'src/content/about/uk.md';
 
 /** Поле `sugar` целиком, а не подстрока: «sugaring» стоит в адресах страниц сборки. */
@@ -67,6 +71,13 @@ function withCorruption(relativePath, corrupt, check) {
   } finally {
     writeFileSync(path, original);
   }
+}
+
+/** Несколько файлов портятся разом: правки вкладываются, и откат идёт в обратном порядке. */
+function withCorruptions(edits, check) {
+  const [first, ...rest] = edits;
+  if (!first) return check();
+  return withCorruption(first.file, first.corrupt, () => withCorruptions(rest, check));
 }
 
 function editJson(original, edit) {
@@ -231,6 +242,34 @@ function builtPage(path) {
   return readFileSync(new URL(`dist${path}index.html`, `file://${root}`), 'utf8');
 }
 
+function isBuilt(path) {
+  return existsSync(new URL(`dist${path}index.html`, `file://${root}`));
+}
+
+/** Бровям оставлен один украинский язык: `ru/brows.md` выпадает из пар «подстраница × язык». */
+function makeBrowsUkOnly(path, original) {
+  const edited = original.replace(
+    /(brows: \{\s*parent: 'permanent',\s*locales: )\['uk', 'ru'\]/,
+    "$1['uk']",
+  );
+  // Без этого проверка прошла бы вхолостую, если реестр перестанет быть записан так.
+  if (edited === original) throw new Error(`${REGISTRY}: не нашлось locales: ['uk', 'ru'] у brows`);
+  writeFileSync(path, edited);
+}
+
+/**
+ * Файл читается и разбирается, но схему не проходит (описание короче 120 знаков). Порча самой
+ * разметки не годится: ошибку чтения загрузчик `glob` только пишет в журнал и идёт дальше
+ * (`astro/dist/content/loaders/glob.js`), так что сборка прошла бы и при загруженном файле.
+ */
+const STRAY_COPY = `---
+subpage: brows
+title: Текст на языке, которого у подстраницы нет
+description: Короткое описание, которое схема отвергает
+heading: Текст на языке, которого у подстраницы нет
+---
+`;
+
 /** Price in the price-list markup and in the JSON-LD offer: both sides must agree (FR-004a). */
 const shownPrice = (amount) => `>${amount}</span>`;
 
@@ -276,6 +315,25 @@ const allowedEdits = [
       [builtPage('/depilation/').includes(FIXTURE_NAME), `на /depilation/ есть «${FIXTURE_NAME}»`],
     ],
   },
+  {
+    // Правило из content-model.md: файл вне пар «подстраница × её язык» не загружается, поэтому
+    // не роняет схему и не публикуется. Пары задаёт `glob` в `content.config.ts`; пока он берёт
+    // объединение языков и slug, `ru/brows.md` загрузился бы и сборка упала бы на его схеме.
+    name: 'файл текста на языке, которого у подстраницы нет, не загружается',
+    file: REGISTRY,
+    corrupt: makeBrowsUkOnly,
+    alsoCorrupt: [{ file: STRAY_SUBPAGE_COPY, corrupt: (path) => writeFileSync(path, STRAY_COPY) }],
+    expect: () => {
+      // Контроль `uk/brows`: без него «ru/brows нет» было бы верно и для пустого хранилища.
+      const store = readFileSync(new URL(DATA_STORE, `file://${root}`), 'utf8');
+      return [
+        [isBuilt('/permanent/brows/'), '/permanent/brows/ собрана'],
+        [!isBuilt('/ru/permanent/brows/'), '/ru/permanent/brows/ не собрана'],
+        [store.includes('"uk/brows"'), 'в хранилище коллекции есть uk/brows'],
+        [!store.includes('"ru/brows"'), 'в хранилище коллекции нет ru/brows'],
+      ];
+    },
+  },
 ];
 
 let failed = 0;
@@ -307,7 +365,8 @@ for (const testCase of cases) {
 for (const edit of allowedEdits) {
   // Проверка `dist/` идёт внутри правки: после отката сборка ещё не пересобрана, но читать
   // приходится именно сборку на правленых данных.
-  const outcome = withCorruption(edit.file, edit.corrupt, () => {
+  const edits = [{ file: edit.file, corrupt: edit.corrupt }, ...(edit.alsoCorrupt ?? [])];
+  const outcome = withCorruptions(edits, () => {
     const result = build();
     return { ...result, checks: result.status === 0 ? edit.expect() : [] };
   });
