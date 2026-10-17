@@ -1,6 +1,8 @@
 # ADR-021: отдельных страниц под поисковые запросы нет
 
 > **Superseded by:** [ADR-023](adr-023-knowledge-base-pages-for-informational-queries.md) (частично — информационные запросы)
+>
+> **Superseded by:** [ADR-028](adr-028-commercial-service-subpages.md) (частично — коммерческий кластер, чью выдачу заняли специализированные страницы, получает подстраницу категории)
 
 - **Related:** [docs/specs/page-head.md](../specs/page-head.md) §Целевые запросы · [docs/specs/routes.md](../specs/routes.md)
 

@@ -1,6 +1,8 @@
 # ADR-023: Knowledge-base pages for informational queries
 
 > **Supersedes:** ADR-021 (частично — информационные запросы)
+>
+> **Superseded by:** [ADR-028](adr-028-commercial-service-subpages.md) (частично — пункт Rejected о `/sugaring/` и `/powder-brows/`)
 
 - **Related:** [ADR-008](adr-008-urls-directory-format-latin-category-slugs.md) · [docs/specs/routes.md](../specs/routes.md) · [docs/specs/page-head.md](../specs/page-head.md) · `docs/seo/core.csv`
 
