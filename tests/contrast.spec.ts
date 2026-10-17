@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { categoryPages, homePages, type PageUnderTest } from './support/site';
+import { homePages, servicePages, type PageUnderTest } from './support/site';
 
 /**
  * Контраст текста к своей подложке на СОБРАННОЙ странице (docs/specs/accessibility.md).
@@ -54,7 +54,7 @@ interface Scope {
 
 /**
  * Области разведены по частям страницы, а не по адресам целиком: прайс живёт на тех же
- * пятнадцати адресах, что и всё остальное, а шапка и подвал стоят на каждой странице. Провал
+ * девятнадцати адресах, что и всё остальное, а шапка и подвал стоят на каждой странице. Провал
  * поэтому указывает на часть страницы, а не только на адрес.
  */
 const SCOPES: readonly Scope[] = [
@@ -70,8 +70,9 @@ const SCOPES: readonly Scope[] = [
     within: '#services',
   },
   {
-    name: 'страницы категорий',
-    pages: categoryPages,
+    // Категории и подстраницы: один шаблон, но у подстраницы свои крошки из трёх звеньев.
+    name: 'страницы услуг',
+    pages: servicePages,
     within: 'main',
   },
   {

@@ -1,0 +1,16 @@
+---
+/** Маршрута под `en` нет: у ядра нет английского спроса на эти кластеры, адрес отвечает 404 (ADR-028). */
+import type { InferGetStaticParamsType } from 'astro';
+import ServicePage from '../../components/ServicePage.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { subpageStaticPaths } from '../../i18n/paths';
+
+export const getStaticPaths = () => subpageStaticPaths('uk');
+
+const locale = 'uk';
+const page = Astro.params as InferGetStaticParamsType<typeof getStaticPaths>;
+---
+
+<BaseLayout locale={locale} page={page}>
+  <ServicePage locale={locale} page={page} />
+</BaseLayout>

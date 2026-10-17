@@ -30,6 +30,35 @@ export const SERVICE_CATEGORIES = ['massage', 'depilation', 'permanent', 'beauty
 
 export type ServiceCategory = (typeof SERVICE_CATEGORIES)[number];
 
+type PriceMethod = 'base' | 'sugar';
+
+/**
+ * Подстраницы услуг (ADR-028): родитель, группы прайса, способ цены и языки. Литерал, а не импорт
+ * реестра `src/i18n/paths.ts`, по тому же доводу, что и хост выше.
+ */
+export const SERVICE_SUBPAGES = {
+  sugaring: {
+    parent: 'depilation',
+    // Без групп триммера и бритвы: пасты в них нет.
+    groups: ['womenDepilation', 'combos', 'menDepilation', 'menCombos'],
+    method: 'sugar',
+    locales: ['uk', 'ru'],
+  },
+  brows: {
+    parent: 'permanent',
+    groups: ['permanentBrows'],
+    method: 'base',
+    locales: ['uk', 'ru'],
+  },
+} as const satisfies Record<
+  string,
+  { parent: ServiceCategory; groups: readonly string[]; method: PriceMethod; locales: readonly Locale[] }
+>;
+
+export type ServiceSubpage = keyof typeof SERVICE_SUBPAGES;
+
+const SUBPAGES = Object.keys(SERVICE_SUBPAGES) as ServiceSubpage[];
+
 export type GalleryCategory = Extract<ServiceCategory, 'massage' | 'depilation' | 'beauty'>;
 
 /**
@@ -61,6 +90,15 @@ export interface CategoryPageUnderTest extends PageUnderTest {
   readonly category: ServiceCategory;
 }
 
+/** Страница услуги: категория или подстраница, у которой `category` — её родитель. */
+export interface ServicePageUnderTest extends CategoryPageUnderTest {
+  readonly subpage?: ServiceSubpage;
+}
+
+export interface SubpagePageUnderTest extends ServicePageUnderTest {
+  readonly subpage: ServiceSubpage;
+}
+
 export const homePages: readonly PageUnderTest[] = [
   { locale: 'uk', path: '/' },
   { locale: 'ru', path: '/ru/' },
@@ -85,8 +123,25 @@ export const categoryPages: readonly CategoryPageUnderTest[] = LOCALES.flatMap((
   })),
 );
 
-/** Пятнадцать страниц сайта: три языковые версии главной и двенадцать страниц категорий. */
-export const allPages: readonly PageUnderTest[] = [...homePages, ...categoryPages];
+/**
+ * Четыре подстраницы: у каждой свои языки, английской версии нет (ADR-028). Адрес — путь
+ * категории плюс slug, одинаковый во всех языках подстраницы.
+ */
+export const subpagePages: readonly SubpagePageUnderTest[] = SUBPAGES.flatMap((subpage) => {
+  const { parent, locales } = SERVICE_SUBPAGES[subpage];
+  return locales.map((locale) => ({
+    locale,
+    category: parent,
+    subpage,
+    path: `${localePrefix(locale)}/${parent}/${subpage}/`,
+  }));
+});
+
+/** Шестнадцать страниц услуг: двенадцать категорий и четыре подстраницы. */
+export const servicePages: readonly ServicePageUnderTest[] = [...categoryPages, ...subpagePages];
+
+/** Девятнадцать страниц сайта: три языковые версии главной и шестнадцать страниц услуг. */
+export const allPages: readonly PageUnderTest[] = [...homePages, ...servicePages];
 
 /**
  * Файлы страниц ошибок. Адресами они не являются — сервер отдаёт их на месте запрошенного, —
@@ -100,7 +155,7 @@ export const errorPages: Record<Locale, string> = {
 };
 
 /**
- * Восемнадцать собранных страниц: пятнадцать адресуемых плюс три страницы ошибок. Свойства
+ * Двадцать две собранные страницы: девятнадцать адресуемых плюс три страницы ошибок. Свойства
  * самого документа — заголовки, язык, разметка — проверяются по этому списку: страница ошибки
  * такой же собранный файл, и дефект структуры в ней ничем не лучше.
  */
@@ -164,13 +219,23 @@ const KYIV: Record<Locale, RegExp> = { uk: /Ки(їв|єв)/i, ru: /Киев/i, 
  * формулировка страницы, остальные обязаны стоять рядом с ней. Выражения, а не строки: заголовок
  * пишет «у Києві», описание — «Києва», и буквальная строка отвергла бы оба.
  */
-const QUERIES: Record<Locale, Record<'home' | ServiceCategory, RegExp[]>> = {
+type SubpageQuery = {
+  [S in ServiceSubpage]: `${(typeof SERVICE_SUBPAGES)[S]['parent']}/${S}`;
+}[ServiceSubpage];
+
+/** Подстраницы есть не на всех языках, поэтому их запросы в карте языка необязательны. */
+const QUERIES: Record<
+  Locale,
+  Record<'home' | ServiceCategory, RegExp[]> & Partial<Record<SubpageQuery, RegExp[]>>
+> = {
   uk: {
     home: [/студі[яї] масажу та краси/i],
     massage: [/масаж/i],
     depilation: [/депіляці/i, /шугаринг/i],
     permanent: [/перманентн\S* макіяж/i],
     beauty: [/ламінуванн/i, /макіяж/i],
+    'depilation/sugaring': [/шугаринг/i],
+    'permanent/brows': [/перманентн\S* макіяж\S* брів/i, /пудров\S* бров/i],
   },
   ru: {
     home: [/студи[яи] массажа и красоты/i],
@@ -178,6 +243,8 @@ const QUERIES: Record<Locale, Record<'home' | ServiceCategory, RegExp[]>> = {
     depilation: [/депиляци/i, /шугаринг/i],
     permanent: [/перманентн\S* макияж/i],
     beauty: [/ламинировани/i, /макияж/i],
+    'depilation/sugaring': [/шугаринг/i],
+    'permanent/brows': [/перманентн\S* макияж\S* бровей/i, /пудров\S* бров/i],
   },
   en: {
     home: [/massage and beauty studio/i],
@@ -188,8 +255,13 @@ const QUERIES: Record<Locale, Record<'home' | ServiceCategory, RegExp[]>> = {
   },
 };
 
-export function queryOf(page: PageUnderTest & { category?: ServiceCategory }): RegExp[] {
-  return [...QUERIES[page.locale][page.category ?? 'home'], KYIV[page.locale]];
+export function queryOf(
+  page: PageUnderTest & { category?: ServiceCategory; subpage?: ServiceSubpage },
+): RegExp[] {
+  const key = page.subpage ? (`${page.category}/${page.subpage}` as SubpageQuery) : (page.category ?? 'home');
+  const query = QUERIES[page.locale][key];
+  if (!query) throw new Error(`${page.path}: нет запроса в карте QUERIES`);
+  return [...query, KYIV[page.locale]];
 }
 
 /**
@@ -283,6 +355,8 @@ interface PriceRecord {
   group: string;
   name: Record<Locale, string>;
   price: PriceValue;
+  /** Цена пастой; `false` — «пастой не делается». */
+  sugar?: PriceValue | false;
 }
 
 export function readPrices(): PriceRecord[] {
@@ -311,33 +385,48 @@ const GROUP_CATEGORY: Record<string, ServiceCategory> = {
   makeupHair: 'beauty',
 };
 
-/**
- * Сколько предложений обязано быть в машиночитаемом описании категории: позиция с фиксированной
- * ценой даёт одно, позиция с вариантами — по одному на вариант, долевая не даёт ни одного
- * (docs/specs/structured-data.md §Страница категории).
- */
-export function expectedOfferCount(category: ServiceCategory): number {
-  return readPrices()
-    .filter((record) => GROUP_CATEGORY[record.group] === category)
-    .reduce((sum, record) => {
-      if (record.price.kind === 'fixed') return sum + 1;
-      if (record.price.kind === 'variants') return sum + record.price.variants.length;
-      return sum;
-    }, 0);
+/** Цена позиции способом страницы; `null` — позиции на странице нет. */
+function priceByMethod(record: PriceRecord, method: PriceMethod): PriceValue | null {
+  if (method === 'base') return record.price;
+  if (record.sugar === false) return null;
+  return record.sugar ?? record.price;
+}
+
+/** Суммы одной цены: фиксированная — одна, варианты — по одной на вариант, доля — ни одной. */
+function amountsOf(price: PriceValue | null | undefined | false): number[] {
+  if (!price) return [];
+  if (price.kind === 'fixed') return [price.amount];
+  if (price.kind === 'variants') return price.variants.map((variant) => variant.amount);
+  return [];
 }
 
 /**
- * Фактический диапазон прайса. Долевые позиции не участвуют: доля не сумма, а нулевой суммой
- * она превращается в бесплатную услугу (docs/specs/structured-data.md §Главная, три локали).
+ * Сколько предложений обязано быть в машиночитаемом описании страницы услуги: позиция
+ * с фиксированной ценой даёт одно, позиция с вариантами — по одному на вариант, долевая и скрытая
+ * способом страницы — ни одного (docs/specs/structured-data.md §Страница категории). Категория
+ * читает свои группы по общей цене, подстраница — группы и способ своей записи в SERVICE_SUBPAGES.
+ */
+export function expectedOfferCount(page: ServiceCategory | ServiceSubpage): number {
+  const subpage = (SUBPAGES as string[]).includes(page) ? SERVICE_SUBPAGES[page as ServiceSubpage] : null;
+  const groups: readonly string[] = subpage
+    ? subpage.groups
+    : Object.keys(GROUP_CATEGORY).filter((group) => GROUP_CATEGORY[group] === page);
+  const method: PriceMethod = subpage ? subpage.method : 'base';
+  return readPrices()
+    .filter((record) => groups.includes(record.group))
+    .reduce((sum, record) => sum + amountsOf(priceByMethod(record, method)).length, 0);
+}
+
+/**
+ * Фактический диапазон прайса по общим ценам и ценам пастой. Долевые позиции не участвуют: доля
+ * не сумма, а нулевой суммой она превращается в бесплатную услугу
+ * (docs/specs/structured-data.md §Главная, три локали).
  */
 export function priceRange(): { min: number; max: number } {
-  const amounts: number[] = [];
-  for (const record of readPrices()) {
-    if (record.price.kind === 'fixed') amounts.push(record.price.amount);
-    if (record.price.kind === 'variants') {
-      for (const variant of record.price.variants) amounts.push(variant.amount);
-    }
-  }
+  const amounts = readPrices().flatMap((record) => [
+    ...amountsOf(record.price),
+    ...amountsOf(record.sugar),
+  ]);
   return { min: Math.min(...amounts), max: Math.max(...amounts) };
 }
 

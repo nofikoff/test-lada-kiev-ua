@@ -1,7 +1,8 @@
 /**
  * Приёмка модели данных (docs/specs/content-model.md §Инварианты): порча данных обязана ронять
- * сборку, а не проходить молча. Порча прайса, текстов категорий, обращения и фото Лады вносится в сам файл
- * и откатывается в `finally`, поэтому прогон не оставляет за собой изменений в дереве.
+ * сборку, а не проходить молча, а допустимая правка — проходить и менять ровно то, что должна.
+ * Порча и правка прайса, текстов, обращения и фото Лады вносятся в сам файл и откатываются
+ * в `finally`, поэтому прогон не оставляет за собой изменений в дереве.
  *
  * Проверка сделана автоматической намеренно. Ручная процедура «сломать, посмотреть, откатить»
  * подтверждает схему один раз в жизни — в день, когда её написали; после первого расширения
@@ -16,7 +17,21 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const PRICES = 'src/data/prices.json';
 const GALLERY = 'src/data/gallery.json';
 const SERVICE_COPY = 'src/content/services/uk/massage.md';
+const SUBPAGE_COPY = 'src/content/subpages/uk/sugaring.md';
 const ABOUT_COPY = 'src/content/about/uk.md';
+
+/** Поле `sugar` целиком, а не подстрока: «sugaring» стоит в адресах страниц сборки. */
+const SUGAR_FIELD = /\bsugar\b/;
+
+function setSugar(id, sugar) {
+  return (path, original) =>
+    writeFileSync(
+      path,
+      editJson(original, (items) => {
+        items.find((item) => item.id === id).sugar = sugar;
+      }),
+    );
+}
 
 /** Astro раскрашивает вывод собственным средством, поэтому FORCE_COLOR его не гасит. */
 const ANSI = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g');
@@ -149,6 +164,103 @@ const cases = [
         }),
       ),
   },
+  {
+    // Цена пастой у группы, которую страница шугаринга не читает, — мёртвые данные.
+    name: 'цена пастой у позиции бровей',
+    file: PRICES,
+    expect: SUGAR_FIELD,
+    corrupt: setSugar('permanent-brows-powder', { kind: 'fixed', amount: 999 }),
+  },
+  {
+    name: 'цена пастой у позиции триммера',
+    file: PRICES,
+    expect: SUGAR_FIELD,
+    corrupt: setSugar('men-trimmer-underarms', { kind: 'fixed', amount: 999 }),
+  },
+  {
+    name: 'цена пастой долей',
+    file: PRICES,
+    expect: SUGAR_FIELD,
+    corrupt: setSugar('women-depilation-underarms', {
+      kind: 'share',
+      percent: 50,
+      note: { uk: '50%', ru: '50%', en: '50%' },
+    }),
+  },
+  {
+    name: 'отсутствующий файл текста подстраницы',
+    file: SUBPAGE_COPY,
+    expect: /нет текста подстраницы: src\/content\/subpages\/uk\/sugaring\.md/,
+    corrupt: (path) => rmSync(path),
+  },
+];
+
+const UPPER_LIP = 'women-depilation-upper-lip';
+
+/**
+ * Допустимые правки прайса: сборка обязана пройти, а `dist/` — показать их там и только там, где
+ * требует модель (docs/specs/content-model.md §Инварианты). В настоящем прайсе цен пастой нет,
+ * поэтому без этих случаев ветки «своя цена пастой» и «пастой не делается» не проверял бы никто.
+ * Название и общая сумма позиции читаются из прайса в момент прогона: суммы правит Лада.
+ */
+function upperLip() {
+  const item = JSON.parse(readFileSync(new URL(PRICES, `file://${root}`), 'utf8')).find(
+    (entry) => entry.id === UPPER_LIP,
+  );
+  return { name: item.name.uk, amount: item.price.amount };
+}
+
+/** Сумма, которой нет в прайсе: иначе её появление на странице ничего бы не доказало. */
+function unusedAmount() {
+  const amounts = (price) =>
+    !price ? [] : price.kind === 'fixed' ? [price.amount] : (price.variants ?? []).map((variant) => variant.amount);
+  const used = new Set(
+    JSON.parse(readFileSync(new URL(PRICES, `file://${root}`), 'utf8')).flatMap(({ price, sugar }) => [
+      ...amounts(price),
+      ...amounts(sugar),
+    ]),
+  );
+  let amount = 999;
+  while (used.has(amount)) amount += 1;
+  return amount;
+}
+
+function builtPage(path) {
+  return readFileSync(new URL(`dist${path}index.html`, `file://${root}`), 'utf8');
+}
+
+/** Цена в разметке прайса и в предложении JSON-LD: обе стороны обязаны совпадать (FR-004a). */
+const shownPrice = (amount) => `>${amount}</span>`;
+const offer = (name, amount) => `"name":${JSON.stringify(name)},"price":${amount}`;
+
+const { name: LIP_NAME, amount: LIP_AMOUNT } = upperLip();
+const SUGAR_AMOUNT = unusedAmount();
+
+const allowedEdits = [
+  {
+    name: `своя цена пастой у «${LIP_NAME}»`,
+    file: PRICES,
+    corrupt: setSugar(UPPER_LIP, { kind: 'fixed', amount: SUGAR_AMOUNT }),
+    expect: () => {
+      const sugaring = builtPage('/depilation/sugaring/');
+      const depilation = builtPage('/depilation/');
+      return [
+        [sugaring.includes(shownPrice(SUGAR_AMOUNT)), `/depilation/sugaring/ показывает ${SUGAR_AMOUNT}`],
+        [sugaring.includes(offer(LIP_NAME, SUGAR_AMOUNT)), `/depilation/sugaring/ предлагает «${LIP_NAME}» за ${SUGAR_AMOUNT}`],
+        [!depilation.includes(shownPrice(SUGAR_AMOUNT)), `/depilation/ не показывает ${SUGAR_AMOUNT}`],
+        [depilation.includes(offer(LIP_NAME, LIP_AMOUNT)), `/depilation/ предлагает «${LIP_NAME}» за общую ${LIP_AMOUNT}`],
+      ];
+    },
+  },
+  {
+    name: `«${LIP_NAME}» пастой не делается`,
+    file: PRICES,
+    corrupt: setSugar(UPPER_LIP, false),
+    expect: () => [
+      [!builtPage('/depilation/sugaring/').includes(LIP_NAME), `на /depilation/sugaring/ нет «${LIP_NAME}»`],
+      [builtPage('/depilation/').includes(LIP_NAME), `на /depilation/ есть «${LIP_NAME}»`],
+    ],
+  },
 ];
 
 let failed = 0;
@@ -177,6 +289,30 @@ for (const testCase of cases) {
   console.error(tail(output));
 }
 
+for (const edit of allowedEdits) {
+  // Проверка `dist/` идёт внутри правки: после отката сборка ещё не пересобрана, но читать
+  // приходится именно сборку на правленых данных.
+  const outcome = withCorruption(edit.file, edit.corrupt, () => {
+    const result = build();
+    return { ...result, checks: result.status === 0 ? edit.expect() : [] };
+  });
+
+  const missed = outcome.checks.filter(([held]) => !held).map(([, label]) => label);
+  if (outcome.status === 0 && missed.length === 0) {
+    console.log(`✓ допустимая правка: ${edit.name}`);
+    for (const [, label] of outcome.checks) console.log(`  ${label}`);
+    continue;
+  }
+
+  failed += 1;
+  console.error(`✗ допустимая правка: ${edit.name}`);
+  if (outcome.status !== 0) {
+    console.error('  сборка упала на допустимых данных');
+    console.error(tail(outcome.output));
+  }
+  for (const label of missed) console.error(`  не выполнено: ${label}`);
+}
+
 // Последняя сборка шла на испорченных данных, и dist/ остался от неё: следующий прогон проверок
 // пошёл бы против мусора. Дерево уже восстановлено — сборка возвращает к нему и сборку.
 const restored = build();
@@ -187,8 +323,11 @@ if (restored.status !== 0) {
 }
 
 if (failed > 0) {
-  console.error(`\nПровалено случаев: ${failed} из ${cases.length}`);
+  console.error(`\nПровалено случаев: ${failed} из ${cases.length + allowedEdits.length}`);
   process.exit(1);
 }
 
-console.log(`\nВсе случаи порчи данных (${cases.length}) останавливают сборку; дерево восстановлено.`);
+console.log(
+  `\nВсе случаи порчи данных (${cases.length}) останавливают сборку, допустимые правки ` +
+    `(${allowedEdits.length}) видны в dist/; дерево восстановлено.`,
+);

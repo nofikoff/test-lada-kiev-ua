@@ -1,11 +1,12 @@
 ---
 /**
- * Состав страницы категории — в одном месте на три языковые версии, как и у главной.
- * Страницы `src/pages/**` остаются объявлением локали и ничем больше.
+ * Состав страницы услуги — категории или подстраницы — в одном месте на все языковые версии,
+ * как и у главной: копия для подстраницы разошлась бы с ним на первой правке. Страницы
+ * `src/pages/**` остаются объявлением локали и ничем больше.
  *
  * Текст берётся из коллекции, цены — из тех же данных, что и прайс главной, по группам
- * категории (docs/specs/content-model.md §Инварианты). Второй записи цен на сайте нет, поэтому
- * страница категории и главная разойтись не могут.
+ * категории или реестра подстраницы (docs/specs/content-model.md §Инварианты). Второй записи цен
+ * на сайте нет, поэтому страница услуги и главная разойтись не могут.
  */
 import { render } from 'astro:content';
 import Icon from './Icon.astro';
@@ -15,24 +16,35 @@ import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { groupsOfCategory } from '../data/price-groups';
 import { serviceCopy } from '../data/services';
-import { pagePath, type ServiceCategory } from '../i18n/paths';
+import { subpageCopy } from '../data/subpages';
+import { pagePath, serviceSubpages, type ServicePageRef } from '../i18n/paths';
 import { ui, type Locale } from '../i18n/ui';
 
 interface Props {
   locale: Locale;
-  category: ServiceCategory;
+  page: ServicePageRef;
 }
 
-const { locale, category } = Astro.props;
+const { locale, page } = Astro.props;
 const t = ui[locale];
 
-const copy = await serviceCopy(locale, category);
+const copy = page.subpage
+  ? await subpageCopy(locale, page.subpage)
+  : await serviceCopy(locale, page.category);
 const { Content } = await render(copy);
 
-const groups = groupsOfCategory(category);
+const subpage = page.subpage ? serviceSubpages[page.subpage] : null;
+const groups = subpage ? subpage.groups : groupsOfCategory(page.category);
+const method = subpage ? subpage.method : 'base';
 
-/** Сноска об обновлении относится к перманентному макияжу — ровно как на вкладке главной. */
-const withNote = category === 'permanent';
+/** Средняя ступень крошек подстраницы называет категорию так же, как её собственный `<h1>`. */
+const parent = page.subpage ? (await serviceCopy(locale, page.category)).data.heading : null;
+
+/**
+ * Сноска об обновлении относится к перманентному макияжу — ровно как на вкладке главной; страница
+ * бровей — его часть, поэтому сноска стоит и на ней.
+ */
+const withNote = page.category === 'permanent';
 ---
 
 <Section rhythm="air">
@@ -45,6 +57,18 @@ const withNote = category === 'permanent';
       <ol class="flex flex-wrap items-center gap-2">
         <li><a href={pagePath(locale)} class="crumbs__link">{t.nav.home}</a></li>
         <li aria-hidden="true">/</li>
+        {
+          parent && (
+            <>
+              <li>
+                <a href={pagePath(locale, { category: page.category })} class="crumbs__link">
+                  {parent}
+                </a>
+              </li>
+              <li aria-hidden="true">/</li>
+            </>
+          )
+        }
         <li aria-current="page" class="crumbs__here">{copy.data.heading}</li>
       </ol>
     </nav>
@@ -55,7 +79,7 @@ const withNote = category === 'permanent';
       {/*
         Атрибут — договорённость со сквозной проверкой: объём и уникальность текста считаются
         по этому контейнеру (tests/support/site.ts), поэтому внутри него лежит ТОЛЬКО текст
-        категории. Врезка повторяется на всех четырёх категориях слово в слово, и попади она
+        страницы. Врезка повторяется на всех страницах услуг слово в слово, и попади она
         внутрь — сверка уникальности абзацев справедливо покраснела бы.
 
         Обёртка объявлена `display: contents`: сама она в раскладке не участвует, а абзацы
@@ -98,7 +122,11 @@ const withNote = category === 'permanent';
     </div>
 
     <div class="price__groups">
-      {groups.map((group, index) => <PriceGroup locale={locale} group={group} phase={index} />)}
+      {
+        groups.map((group, index) => (
+          <PriceGroup locale={locale} group={group} method={method} phase={index} />
+        ))
+      }
 
       {withNote && <p class="price__note">{t.priceList.permanentNote}</p>}
     </div>

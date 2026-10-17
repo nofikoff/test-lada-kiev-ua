@@ -10,6 +10,6 @@ const locale = 'en';
 const { category } = Astro.params as InferGetStaticParamsType<typeof getStaticPaths>;
 ---
 
-<BaseLayout locale={locale} category={category}>
-  <ServicePage locale={locale} category={category} />
+<BaseLayout locale={locale} page={{ category }}>
+  <ServicePage locale={locale} page={{ category }} />
 </BaseLayout>

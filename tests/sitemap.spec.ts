@@ -1,5 +1,5 @@
 import { expect, test, type APIRequestContext } from '@playwright/test';
-import { allPages, SITE_ORIGIN, toLocalPath } from './support/site';
+import { allPages, SITE_ORIGIN, subpagePages, toLocalPath } from './support/site';
 
 /**
  * Карта сайта (docs/specs/routes.md §Route map) против собранного сайта.
@@ -11,6 +11,11 @@ import { allPages, SITE_ORIGIN, toLocalPath } from './support/site';
 
 /** Теги языка в карте сайта — полные, с регионом, в отличие от кода языка в разметке страницы. */
 const SITEMAP_HREFLANGS = ['uk-UA', 'ru-UA', 'en'];
+
+/** У подстраницы английской версии нет (ADR-028), поэтому и альтернативы `en` у неё нет. */
+const SUBPAGE_HREFLANGS = ['uk-UA', 'ru-UA'];
+
+const SUBPAGE_ADDRESSES = new Set(subpagePages.map((page) => `${SITE_ORIGIN}${page.path}`));
 
 const INDEX = '/sitemap-index.xml';
 
@@ -54,24 +59,27 @@ async function allEntries(request: APIRequestContext): Promise<SitemapEntry[]> {
 }
 
 test.describe('карта сайта', () => {
-  test('отдаётся как XML и перечисляет ровно пятнадцать адресов', async ({ request }) => {
+  test('отдаётся как XML и перечисляет ровно девятнадцать адресов', async ({ request }) => {
     const entries = await allEntries(request);
     const expected = allPages.map((page) => `${SITE_ORIGIN}${page.path}`).sort();
 
     expect(
       entries.map((entry) => entry.loc).sort(),
-      'адреса карты сайта против пятнадцати страниц',
+      'адреса карты сайта против девятнадцати страниц',
     ).toEqual(expected);
   });
 
-  test('у каждого адреса три языковые альтернативы', async ({ request }) => {
+  test('у каждого адреса альтернативы всех его языков: три, у подстраницы — две', async ({
+    request,
+  }) => {
     const entries = await allEntries(request);
 
     for (const entry of entries) {
+      const hreflangs = SUBPAGE_ADDRESSES.has(entry.loc) ? SUBPAGE_HREFLANGS : SITEMAP_HREFLANGS;
       expect(
         entry.alternates.map((alternate) => alternate.hreflang).sort(),
         `языковые альтернативы ${entry.loc}`,
-      ).toEqual([...SITEMAP_HREFLANGS].sort());
+      ).toEqual([...hreflangs].sort());
 
       // Альтернативы страницы категории ведут на ту же категорию, а не на главную.
       for (const alternate of entry.alternates) {

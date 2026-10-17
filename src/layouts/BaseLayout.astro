@@ -18,16 +18,16 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import SeoHead from '../components/SeoHead.astro';
 import { type Locale } from '../i18n/ui';
-import { type ServiceCategory } from '../i18n/paths';
+import { type ServicePageRef } from '../i18n/paths';
 
 interface Props {
   locale: Locale;
-  category?: ServiceCategory;
+  page?: ServicePageRef;
   /** Страница ошибки: у неё другой состав заголовочной части, а не урезанный тот же. */
   error?: boolean;
 }
 
-const { locale, category, error = false } = Astro.props;
+const { locale, page, error = false } = Astro.props;
 
 /**
  * Предзагружается подмножество языка страницы: английская версия не тянет кириллицу, и наоборот.
@@ -65,7 +65,7 @@ const subset = locale === 'en' ? 'latin' : 'cyrillic';
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    {error ? <ErrorHead locale={locale} /> : <SeoHead locale={locale} category={category} />}
+    {error ? <ErrorHead locale={locale} /> : <SeoHead locale={locale} page={page} />}
 
     {/* Шрифты отдаются с собственного домена: файлы скачаны на сборке, объявления @font-face
          и метрики запасного шрифта Astro выводит сюда сам. Сторонних доменов в загрузке нет. */}
