@@ -9,17 +9,14 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import logo from '../assets/logo.jpg';
 import { aboutCopy } from '../data/about';
 import { portrait } from '../data/gallery';
-import { groupsOfCategory } from '../data/price-groups';
 import { pricesOfGroups } from '../data/price-list';
-import { serviceCopy } from '../data/services';
-import { subpageCopy } from '../data/subpages';
+import { servicePageOf } from '../data/subpages';
 import { formatDuration, formatSessions, ui, locales, type Locale } from '../i18n/ui';
 import {
   absoluteUrl,
   canonicalUrl,
   languageAlternates,
   pageLocales,
-  serviceSubpages,
   type ServicePageRef,
 } from '../i18n/paths';
 
@@ -76,15 +73,12 @@ const ogImage = absoluteUrl(preview.src);
 
 /**
  * Заголовок и описание страницы услуги — категории или подстраницы — берутся из frontmatter её
- * текста, а не собираются шаблоном с подставленным названием: одинаково устроенные заголовки на
- * шестнадцати страницах услуг — тот же дубль, только автоматический (docs/specs/page-head.md
+ * текста, а не собираются шаблоном с подставленным названием: одинаково устроенные заголовки
+ * страниц услуг — тот же дубль, только автоматический (docs/specs/page-head.md
  * §Заголовки и описания).
  */
-const copy = !page
-  ? null
-  : page.subpage
-    ? await subpageCopy(locale, page.subpage)
-    : await serviceCopy(locale, page.category);
+const servicePage = page ? await servicePageOf(locale, page) : null;
+const copy = servicePage?.copy ?? null;
 
 const title = copy ? copy.data.title : t.meta.title;
 const description = copy ? copy.data.description : t.meta.description;
@@ -189,12 +183,7 @@ const business = page
  * с вариантами — по одному на вариант, долевая не даёт ни одного: предложение без суммы или
  * с нулевой суммой описывает бесплатную услугу (ADR-013).
  */
-const subpage = page?.subpage ? serviceSubpages[page.subpage] : null;
-const priced = !page
-  ? []
-  : subpage
-    ? await pricesOfGroups(subpage.groups, subpage.method)
-    : await pricesOfGroups(groupsOfCategory(page.category));
+const priced = servicePage ? await pricesOfGroups(servicePage.groups, servicePage.method) : [];
 
 /** Длительность или число сеансов — свойство самого предложения, а не часть его названия. */
 function quantityOf(unit: 'minutes' | 'sessions', count: number) {
@@ -245,14 +234,10 @@ const service = copy
   : null;
 
 /** Подстраница стоит под своей категорией: путь главная → категория → подстраница. */
-const parentStep = page?.subpage
-  ? [
-      {
-        name: (await serviceCopy(locale, page.category)).data.heading,
-        item: canonicalUrl(locale, { category: page.category }),
-      },
-    ]
-  : [];
+const parentStep =
+  page && servicePage?.parentHeading
+    ? [{ name: servicePage.parentHeading, item: canonicalUrl(locale, { category: page.category }) }]
+    : [];
 
 const breadcrumb = copy
   ? {

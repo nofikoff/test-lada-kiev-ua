@@ -124,7 +124,7 @@ export const categoryPages: readonly CategoryPageUnderTest[] = LOCALES.flatMap((
 );
 
 /**
- * Четыре подстраницы: у каждой свои языки, английской версии нет (ADR-028). Адрес — путь
+ * Страницы подстраниц: у каждой свои языки, английской версии нет (ADR-028). Адрес — путь
  * категории плюс slug, одинаковый во всех языках подстраницы.
  */
 export const subpagePages: readonly SubpagePageUnderTest[] = SUBPAGES.flatMap((subpage) => {
@@ -137,10 +137,10 @@ export const subpagePages: readonly SubpagePageUnderTest[] = SUBPAGES.flatMap((s
   }));
 });
 
-/** Шестнадцать страниц услуг: двенадцать категорий и четыре подстраницы. */
+/** Страницы услуг: категории на всех языках и подстраницы. */
 export const servicePages: readonly ServicePageUnderTest[] = [...categoryPages, ...subpagePages];
 
-/** Девятнадцать страниц сайта: три языковые версии главной и шестнадцать страниц услуг. */
+/** Страницы сайта: языковые версии главной и страницы услуг. */
 export const allPages: readonly PageUnderTest[] = [...homePages, ...servicePages];
 
 /**
@@ -155,7 +155,7 @@ export const errorPages: Record<Locale, string> = {
 };
 
 /**
- * Двадцать две собранные страницы: девятнадцать адресуемых плюс три страницы ошибок. Свойства
+ * Собранные страницы: адресуемые плюс страница ошибки каждой локали. Свойства
  * самого документа — заголовки, язык, разметка — проверяются по этому списку: страница ошибки
  * такой же собранный файл, и дефект структуры в ней ничем не лучше.
  */

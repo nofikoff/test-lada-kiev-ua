@@ -112,16 +112,16 @@ const services = defineCollection({
 });
 
 /**
- * Тексты подстраниц: ровно файлы «подстраница × её язык» из реестра. Недостающий и чужой по языку
- * ловит `subpageCopy`, а не схема — по той же причине, что у `services`.
+ * Subpage copy: exactly the registry's «subpage × its language» files, one glob per pair. A file
+ * outside the pairs (e.g. `ru/<slug>.md` of a uk-only subpage) is never loaded, so it can neither
+ * fail the schema nor be published. A missing file is caught by `subpageCopy`, not the schema,
+ * for the same reason as in `services`.
  */
-const subpageLocales = [
-  ...new Set(subpageSlugs.flatMap((subpage) => serviceSubpages[subpage].locales)),
-];
-
 const subpages = defineCollection({
   loader: glob({
-    pattern: `+(${subpageLocales.join('|')})/+(${subpageSlugs.join('|')}).md`,
+    pattern: subpageSlugs.flatMap((subpage) =>
+      serviceSubpages[subpage].locales.map((locale) => `${locale}/${subpage}.md`),
+    ),
     base: './src/content/subpages',
   }),
   schema: z.object({

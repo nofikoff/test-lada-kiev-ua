@@ -17,7 +17,6 @@ import {
   PHONE,
   priceRange,
   readPrices,
-  SERVICE_CATEGORIES,
   SERVICE_COPY_SELECTOR,
   SERVICE_SUBPAGES,
   servicePages,
@@ -679,7 +678,10 @@ test.describe('тексты страниц услуг', () => {
         paragraphsByPage.set(entry.path, paragraphs);
       }
 
-      expect(paragraphsByPage.size).toBeGreaterThanOrEqual(SERVICE_CATEGORIES.length);
+      // Two pages sharing a path would collapse into one entry and silently leave the check below.
+      expect(paragraphsByPage.size, `страниц услуг локали ${locale} в сверке`).toBe(
+        servicePages.filter((candidate) => candidate.locale === locale).length,
+      );
 
       const owner = new Map<string, string>();
       for (const [path, paragraphs] of paragraphsByPage) {
@@ -699,7 +701,7 @@ test.describe('сквозные требования ко всем страни�
   test('пара «заголовок + описание» уникальна', async ({ request }) => {
     const pairs: string[] = [];
 
-    // Требование проверяется по всем девятнадцати страницам: нарушение возникает между файлами,
+    // Требование проверяется по всем страницам сайта: нарушение возникает между файлами,
     // и одна только главная его не покажет (docs/specs/page-head.md §Заголовки и описания).
     for (const { path } of allPages) {
       const response = await request.get(path);
@@ -719,7 +721,7 @@ test.describe('сквозные требования ко всем страни�
   });
 
   /**
-   * Превью — кадр портрета Лады, одинаковый на всех девятнадцати страницах, собранный в `_astro/`
+   * Превью — кадр портрета Лады, одинаковый на всех страницах сайта, собранный в `_astro/`
    * (docs/specs/home-hero.md §Превью ссылок и JSON-LD). Скриншот сайта и стоковый кадр из выдачи
    * ушли совсем.
    */

@@ -70,13 +70,26 @@ for (const subpage of subpageSlugs) {
   }
 }
 
-/** Ссылка на подстраницу: категория в ней — всегда её родитель, другой тип не допускает. */
-export type SubpageRef = {
+type SubpageRefOf = {
   [S in ServiceSubpage]: {
     readonly category: (typeof serviceSubpages)[S]['parent'];
     readonly subpage: S;
   };
-}[ServiceSubpage];
+};
+
+/** Ссылка на подстраницу: категория в ней — всегда её родитель, другой тип не допускает. */
+export type SubpageRef = SubpageRefOf[ServiceSubpage];
+
+/**
+ * The only place that creates `SubpageRef` values. TypeScript cannot correlate a registry key with
+ * its parent inside a generic function (the pair widens to a union), so each ref is written out and
+ * `satisfies` makes the compiler hold both halves: every registry entry needs a ref here, and a ref
+ * pairing a slug with a foreign parent does not compile.
+ */
+const subpageRefs = {
+  sugaring: { category: serviceSubpages.sugaring.parent, subpage: 'sugaring' },
+  brows: { category: serviceSubpages.brows.parent, subpage: 'brows' },
+} satisfies SubpageRefOf;
 
 /** Страница услуги — категория или подстраница; путь, альтернативы и состав страницы читают её. */
 export type ServicePageRef =
@@ -87,9 +100,7 @@ export type ServicePageRef =
 export function subpageStaticPaths(locale: Locale): { params: SubpageRef }[] {
   return subpageSlugs
     .filter((subpage) => (serviceSubpages[subpage].locales as readonly Locale[]).includes(locale))
-    .map((subpage) => ({
-      params: { category: serviceSubpages[subpage].parent, subpage } as SubpageRef,
-    }));
+    .map((subpage) => ({ params: subpageRefs[subpage] }));
 }
 
 /** Языки, на которых страница существует: у главной и категорий — все, у подстраницы — свои. */

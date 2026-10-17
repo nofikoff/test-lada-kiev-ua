@@ -195,17 +195,19 @@ const cases = [
   },
 ];
 
-const UPPER_LIP = 'women-depilation-upper-lip';
+// The id is historical: the item is «Ніс / Вуха / Брови / Шия», not the upper lip.
+const SUGAR_FIXTURE_ID = 'women-depilation-upper-lip';
 
 /**
- * Допустимые правки прайса: сборка обязана пройти, а `dist/` — показать их там и только там, где
- * требует модель (docs/specs/content-model.md §Инварианты). В настоящем прайсе цен пастой нет,
- * поэтому без этих случаев ветки «своя цена пастой» и «пастой не делается» не проверял бы никто.
- * Название и общая сумма позиции читаются из прайса в момент прогона: суммы правит Лада.
+ * Allowed price edits: the build must pass, and `dist/` must show them where the model requires and
+ * nowhere else (docs/specs/content-model.md §Инварианты). On 2026-10-18 the real price list has no
+ * `sugar` field, so until it appears nothing but these cases exercises the «own sugar price» and
+ * «not done with paste» branches. Name and base amount of the fixture item are read from the price
+ * list at run time, because Lada edits the amounts.
  */
-function upperLip() {
+function fixtureItem() {
   const item = JSON.parse(readFileSync(new URL(PRICES, `file://${root}`), 'utf8')).find(
-    (entry) => entry.id === UPPER_LIP,
+    (entry) => entry.id === SUGAR_FIXTURE_ID,
   );
   return { name: item.name.uk, amount: item.price.amount };
 }
@@ -229,36 +231,49 @@ function builtPage(path) {
   return readFileSync(new URL(`dist${path}index.html`, `file://${root}`), 'utf8');
 }
 
-/** Цена в разметке прайса и в предложении JSON-LD: обе стороны обязаны совпадать (FR-004a). */
+/** Price in the price-list markup and in the JSON-LD offer: both sides must agree (FR-004a). */
 const shownPrice = (amount) => `>${amount}</span>`;
-const offer = (name, amount) => `"name":${JSON.stringify(name)},"price":${amount}`;
 
-const { name: LIP_NAME, amount: LIP_AMOUNT } = upperLip();
+/**
+ * Offers of a built page, read from its JSON-LD as data: the key order of the markup is not part
+ * of the contract, so a substring match on it would fail on a harmless reordering.
+ */
+function offersOf(html) {
+  return [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
+    .map(([, json]) => JSON.parse(json))
+    .flatMap((document) => document['@graph'] ?? [])
+    .flatMap((node) => node.hasOfferCatalog?.itemListElement ?? []);
+}
+
+const offers = (html, name, amount) =>
+  offersOf(html).some((entry) => entry.name === name && entry.price === amount);
+
+const { name: FIXTURE_NAME, amount: FIXTURE_AMOUNT } = fixtureItem();
 const SUGAR_AMOUNT = unusedAmount();
 
 const allowedEdits = [
   {
-    name: `своя цена пастой у «${LIP_NAME}»`,
+    name: `своя цена пастой у «${FIXTURE_NAME}»`,
     file: PRICES,
-    corrupt: setSugar(UPPER_LIP, { kind: 'fixed', amount: SUGAR_AMOUNT }),
+    corrupt: setSugar(SUGAR_FIXTURE_ID, { kind: 'fixed', amount: SUGAR_AMOUNT }),
     expect: () => {
       const sugaring = builtPage('/depilation/sugaring/');
       const depilation = builtPage('/depilation/');
       return [
         [sugaring.includes(shownPrice(SUGAR_AMOUNT)), `/depilation/sugaring/ показывает ${SUGAR_AMOUNT}`],
-        [sugaring.includes(offer(LIP_NAME, SUGAR_AMOUNT)), `/depilation/sugaring/ предлагает «${LIP_NAME}» за ${SUGAR_AMOUNT}`],
+        [offers(sugaring, FIXTURE_NAME, SUGAR_AMOUNT), `/depilation/sugaring/ предлагает «${FIXTURE_NAME}» за ${SUGAR_AMOUNT}`],
         [!depilation.includes(shownPrice(SUGAR_AMOUNT)), `/depilation/ не показывает ${SUGAR_AMOUNT}`],
-        [depilation.includes(offer(LIP_NAME, LIP_AMOUNT)), `/depilation/ предлагает «${LIP_NAME}» за общую ${LIP_AMOUNT}`],
+        [offers(depilation, FIXTURE_NAME, FIXTURE_AMOUNT), `/depilation/ предлагает «${FIXTURE_NAME}» за общую ${FIXTURE_AMOUNT}`],
       ];
     },
   },
   {
-    name: `«${LIP_NAME}» пастой не делается`,
+    name: `«${FIXTURE_NAME}» пастой не делается`,
     file: PRICES,
-    corrupt: setSugar(UPPER_LIP, false),
+    corrupt: setSugar(SUGAR_FIXTURE_ID, false),
     expect: () => [
-      [!builtPage('/depilation/sugaring/').includes(LIP_NAME), `на /depilation/sugaring/ нет «${LIP_NAME}»`],
-      [builtPage('/depilation/').includes(LIP_NAME), `на /depilation/ есть «${LIP_NAME}»`],
+      [!builtPage('/depilation/sugaring/').includes(FIXTURE_NAME), `на /depilation/sugaring/ нет «${FIXTURE_NAME}»`],
+      [builtPage('/depilation/').includes(FIXTURE_NAME), `на /depilation/ есть «${FIXTURE_NAME}»`],
     ],
   },
 ];

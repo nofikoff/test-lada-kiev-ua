@@ -13,7 +13,7 @@ async function llms(request: APIRequestContext): Promise<string> {
 }
 
 test.describe('описание для языковых моделей', () => {
-  test('перечисляет все девятнадцать адресов сайта', async ({ request }) => {
+  test('перечисляет все адреса сайта', async ({ request }) => {
     const body = await llms(request);
 
     for (const page of allPages) {

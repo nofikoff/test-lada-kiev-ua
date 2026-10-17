@@ -115,21 +115,19 @@ test.describe('карта запросов', () => {
       }
     });
 
-    // «Не ниже второго раздела»: после первого абзаца и до третьего h2 текста.
+    // «Не ниже второго раздела»: до третьего h2 текста; место выше выбирает автор текста (FR-009, FR-010).
     test(`${category.path}: одна ссылка на ${subpage.path} не ниже второго раздела`, async ({
       page: browser,
     }) => {
       await browser.goto(category.path);
       const placement = await browser.locator(SERVICE_COPY_SELECTOR).evaluate((copy, href) => {
-        const first = copy.querySelector('p');
         const third = copy.querySelectorAll('h2')[2] ?? null;
         return [...copy.querySelectorAll(`a[href="${href}"]`)].map((link) => ({
-          inFirstParagraph: Boolean(first?.contains(link)),
           beforeThirdSection:
             !third || Boolean(link.compareDocumentPosition(third) & Node.DOCUMENT_POSITION_FOLLOWING),
         }));
       }, subpage.path);
-      expect(placement).toEqual([{ inFirstParagraph: false, beforeThirdSection: true }]);
+      expect(placement).toEqual([{ beforeThirdSection: true }]);
     });
   }
 

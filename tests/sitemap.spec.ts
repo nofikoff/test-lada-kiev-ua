@@ -59,13 +59,13 @@ async function allEntries(request: APIRequestContext): Promise<SitemapEntry[]> {
 }
 
 test.describe('карта сайта', () => {
-  test('отдаётся как XML и перечисляет ровно девятнадцать адресов', async ({ request }) => {
+  test('отдаётся как XML и перечисляет ровно адреса страниц сайта', async ({ request }) => {
     const entries = await allEntries(request);
     const expected = allPages.map((page) => `${SITE_ORIGIN}${page.path}`).sort();
 
     expect(
       entries.map((entry) => entry.loc).sort(),
-      'адреса карты сайта против девятнадцати страниц',
+      'адреса карты сайта против списка страниц сайта',
     ).toEqual(expected);
   });
 

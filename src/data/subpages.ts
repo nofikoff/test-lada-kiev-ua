@@ -1,10 +1,15 @@
 import { getEntry, type CollectionEntry } from 'astro:content';
-import { serviceSubpages, type ServiceSubpage } from '../i18n/paths';
+import { serviceSubpages, type PriceMethod, type ServicePageRef, type ServiceSubpage } from '../i18n/paths';
 import type { Locale } from '../i18n/ui';
+import { groupsOfCategory, type PriceGroup } from './price-groups';
+import { serviceCopy } from './services';
 
 /**
- * Текст подстраницы на языке страницы. Ошибки останавливают сборку здесь, а не в схеме, — довод
- * тот же, что у `serviceCopy` (src/data/services.ts): схема видит только существующие файлы.
+ * Subpage copy in the page's language. Errors stop the build here rather than in the schema, for
+ * the reason `serviceCopy` (src/data/services.ts) gives: a schema only sees files that exist.
+ * The collection holds exactly the registry's «subpage × its language» pairs
+ * (src/content.config.ts), so the language guard below rejects a call with a foreign language;
+ * it is not what catches a stray file.
  */
 export async function subpageCopy(
   locale: Locale,
@@ -25,4 +30,38 @@ export async function subpageCopy(
     );
   }
   return entry;
+}
+
+export interface ServicePageData {
+  readonly copy: CollectionEntry<'services'> | CollectionEntry<'subpages'>;
+  readonly groups: readonly PriceGroup[];
+  readonly method: PriceMethod;
+  /** Parent category heading for the middle breadcrumb step; a category itself has none. */
+  readonly parentHeading: string | null;
+}
+
+/**
+ * Everything a service page derives from its ref, in one place: `ServicePage.astro` (visible price
+ * list) and `SeoHead.astro` (`Offer` list) both read it, so the two cannot select different
+ * copy, groups or price method for the same page (FR-004a).
+ */
+export async function servicePageOf(locale: Locale, page: ServicePageRef): Promise<ServicePageData> {
+  const subpage = page.subpage;
+  if (!subpage) {
+    return {
+      copy: await serviceCopy(locale, page.category),
+      groups: groupsOfCategory(page.category),
+      method: 'base',
+      parentHeading: null,
+    };
+  }
+
+  const { groups, method } = serviceSubpages[subpage];
+  return {
+    copy: await subpageCopy(locale, subpage),
+    groups,
+    method,
+    // The crumb names the category exactly as its own `<h1>` does.
+    parentHeading: (await serviceCopy(locale, page.category)).data.heading,
+  };
 }
