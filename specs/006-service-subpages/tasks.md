@@ -373,3 +373,9 @@ Task: "T017 [US1] seo-contract.spec.ts — head и JSON-LD подстраниц"
 ### Incremental Delivery
 
 Setup + Foundational → US1 (MVP) → US2 → US3 (снимает каннибализацию; без неё US1 и US2 делят запрос с категориями) → Polish. Всё идёт в ветке `006-service-subpages`, а в main сливается одним слиянием: выкладка Лады выкладывает main целиком (ADR-026, пакет 005 FR-020), и полуготовая каннибализация на проде хуже отсутствия подстраниц.
+
+## Session Map
+<!-- packed-for: bundle 600K -->
+
+- [ ] S1 (~600K) Steps 1.2, 2.1, 2.2, 2.3, 3.1 — **current**
+- [ ] S2 (~430K) Steps 4.1, 5.1, 7.1, 7.2
