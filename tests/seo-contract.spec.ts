@@ -10,13 +10,17 @@ import {
   expectedOfferCount,
   FOUNDER_ROLE,
   homePages,
+  htmlToText,
   INSTAGRAM,
+  LOCALES,
   normalize,
   PHONE,
   priceRange,
   SERVICE_CATEGORIES,
   SERVICE_COPY_SELECTOR,
+  SERVICE_SUBPAGES,
   SITE_ORIGIN,
+  subpagePages,
   toLocalPath,
   type Locale,
 } from './support/site';
@@ -73,13 +77,22 @@ function asArray(value: unknown): unknown[] {
 }
 
 /**
- * Страница категории, которая не отдаётся, останавливает каждую проверку ниже здесь — с указанием
+ * Страница услуги, которая не отдаётся, останавливает каждую проверку ниже здесь — с указанием
  * адреса, а не с разбором `null` там, где ожидалась разметка.
  */
-async function requireCategoryPage(request: APIRequestContext, path: string): Promise<string> {
+async function requireServicePage(request: APIRequestContext, path: string): Promise<string> {
   const response = await request.get(path);
-  expect(response.status(), `${path}: страница категории не отдаётся`).toBe(200);
+  expect(response.status(), `${path}: страница услуги не отдаётся`).toBe(200);
   return response.text();
+}
+
+function homeOf(locale: Locale): string {
+  return homePages.find((entry) => entry.locale === locale)!.path;
+}
+
+/** Адрес цепочки навигации: строкой или узлом с `@id`. */
+function crumbAddress(item: Record<string, unknown>): unknown {
+  return typeof item.item === 'string' ? item.item : (item.item as Record<string, unknown>)?.['@id'];
 }
 
 for (const { locale, path } of homePages) {
@@ -271,7 +284,7 @@ for (const { locale, category, path } of categoryPages) {
       page,
       request,
     }) => {
-      await requireCategoryPage(request, path);
+      await requireServicePage(request, path);
       await page.goto(path);
 
       await expect(page.locator('html')).toHaveAttribute('lang', locale);
@@ -284,7 +297,7 @@ for (const { locale, category, path } of categoryPages) {
 
     /** Страница категории ссылается на ту же категорию в других локалях, а не на главную. */
     test('языковые альтернативы ведут на ту же категорию', async ({ page, request }) => {
-      await requireCategoryPage(request, path);
+      await requireServicePage(request, path);
       await page.goto(path);
 
       const alternates = page.locator('link[rel="alternate"][hreflang]');
@@ -309,7 +322,7 @@ for (const { locale, category, path } of categoryPages) {
     });
 
     test('описание услуги с перечнем предложений', async ({ page, request }) => {
-      await requireCategoryPage(request, path);
+      await requireServicePage(request, path);
       await page.goto(path);
       const nodes = await structuredData(page);
 
@@ -344,7 +357,7 @@ for (const { locale, category, path } of categoryPages) {
     });
 
     test('цепочка навигации ведёт с главной на страницу категории', async ({ page, request }) => {
-      await requireCategoryPage(request, path);
+      await requireServicePage(request, path);
       await page.goto(path);
       const nodes = await structuredData(page);
 
@@ -369,28 +382,250 @@ for (const { locale, category, path } of categoryPages) {
   });
 }
 
+/** Формат площадок предпросмотра для языков, которые у подстраницы есть. */
+function ogAlternates(pageLocales: readonly Locale[], own: Locale): string[] {
+  return pageLocales.filter((code) => code !== own).map((code) => OG_LOCALE[code]);
+}
+
+/**
+ * Подстраницы (ADR-028): та же заголовочная часть, что у категории, кроме языков — английской
+ * версии нет, поэтому её нет ни в `hreflang`, ни в `og:locale:alternate`.
+ */
+for (const { locale, category, subpage, path } of subpagePages) {
+  const categoryPath = categoryPages.find(
+    (entry) => entry.locale === locale && entry.category === category,
+  )!.path;
+  const siblings = subpagePages.filter((entry) => entry.subpage === subpage);
+  const ukPath = siblings.find((entry) => entry.locale === 'uk')!.path;
+
+  test.describe(`подстраница ${path}`, () => {
+    test('язык документа, единственный заголовок и канонический адрес на себя', async ({
+      page,
+      request,
+    }) => {
+      await requireServicePage(request, path);
+      await page.goto(path);
+
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${SITE_ORIGIN}${path}`);
+    });
+
+    test('языковые альтернативы — только языки подстраницы и x-default на украинскую', async ({
+      page,
+      request,
+    }) => {
+      await requireServicePage(request, path);
+      await page.goto(path);
+
+      const pairs = await page
+        .locator('link[rel="alternate"][hreflang]')
+        .evaluateAll((links) =>
+          links.map((link) => [link.getAttribute('hreflang'), link.getAttribute('href')] as const),
+        );
+      expect(Object.fromEntries(pairs)).toEqual({
+        ...Object.fromEntries(siblings.map((entry) => [entry.locale, `${SITE_ORIGIN}${entry.path}`])),
+        'x-default': `${SITE_ORIGIN}${ukPath}`,
+      });
+      expect(siblings.map((entry) => entry.locale).sort()).toEqual(
+        [...SERVICE_SUBPAGES[subpage].locales].sort(),
+      );
+
+      for (const [, href] of pairs) {
+        const response = await request.get(toLocalPath(href!), { maxRedirects: 0 });
+        expect(response.status(), `языковая альтернатива ${href}`).toBe(200);
+      }
+    });
+
+    test('альтернативные локали предпросмотра — только второй язык подстраницы', async ({
+      page,
+    }) => {
+      await page.goto(path);
+
+      expect(await metaContent(page, 'meta[property="og:locale"]')).toBe(OG_LOCALE[locale]);
+      const alternates = await page
+        .locator('meta[property="og:locale:alternate"]')
+        .evaluateAll((tags) => tags.map((tag) => tag.getAttribute('content')));
+      expect(alternates.sort()).toEqual(ogAlternates(SERVICE_SUBPAGES[subpage].locales, locale).sort());
+    });
+
+    test('описание услуги с предложениями по ценам способа страницы', async ({ page }) => {
+      await page.goto(path);
+      const nodes = await structuredData(page);
+
+      const service = nodes.find((node) => node['@type'] === 'Service');
+      expect(service, 'нет описания услуги').toBeDefined();
+      expect(service!.name).toBe((await page.locator('h1').innerText()).trim());
+      expect(service!.url).toBe(`${SITE_ORIGIN}${path}`);
+      expect(service!.description).toBe(await metaContent(page, 'meta[name="description"]'));
+      expect((service!.provider as Record<string, unknown>)['@id']).toBe(
+        `${SITE_ORIGIN}${homeOf(locale)}#business`,
+      );
+
+      const offers = nodes.filter((node) => node['@type'] === 'Offer');
+      expect(offers.length, `предложений на ${path}`).toBe(expectedOfferCount(subpage));
+      for (const offer of offers) {
+        expect(Number(offer.price), `нулевая цена в ${JSON.stringify(offer)}`).toBeGreaterThan(0);
+        expect(offer.priceCurrency).toBe('UAH');
+      }
+    });
+
+    test('цепочка навигации из трёх звеньев: главная, категория, подстраница', async ({
+      page,
+      request,
+    }) => {
+      await page.goto(path);
+      const nodes = await structuredData(page);
+
+      const breadcrumb = nodes.find((node) => node['@type'] === 'BreadcrumbList');
+      expect(breadcrumb, 'нет цепочки навигации').toBeDefined();
+      const items = asArray(breadcrumb!.itemListElement) as Record<string, unknown>[];
+
+      expect(items.map(crumbAddress)).toEqual([
+        `${SITE_ORIGIN}${homeOf(locale)}`,
+        `${SITE_ORIGIN}${categoryPath}`,
+        `${SITE_ORIGIN}${path}`,
+      ]);
+      expect(items.map((item) => Number(item.position))).toEqual([1, 2, 3]);
+
+      // Среднее звено называет категорию так же, как её собственный главный заголовок.
+      const categoryHtml = await requireServicePage(request, categoryPath);
+      const categoryHeading = /<h1\b[^>]*>([\s\S]*?)<\/h1>/.exec(categoryHtml)?.[1] ?? '';
+      expect(normalize(String(items[1].name))).toBe(normalize(htmlToText(categoryHeading)));
+      expect(normalize(String(items[2].name))).toBe(normalize(await page.locator('h1').innerText()));
+    });
+
+    test('видимые крошки ведут на главную и категорию своего языка', async ({ page }) => {
+      await page.goto(path);
+
+      const crumbs = page.locator('main nav ol > li:not([aria-hidden="true"])');
+      await expect(crumbs).toHaveCount(3);
+      await expect(crumbs.nth(0).locator('a')).toHaveAttribute('href', homeOf(locale));
+      await expect(crumbs.nth(1).locator('a')).toHaveAttribute('href', categoryPath);
+      await expect(crumbs.nth(2)).toHaveAttribute('aria-current', 'page');
+      await expect(crumbs.nth(2).locator('a')).toHaveCount(0);
+    });
+
+    test('переключатель языка ведёт на главные языков, как на всём сайте', async ({ page }) => {
+      await page.goto(path);
+
+      const links = await page
+        .locator('header a[hreflang]')
+        .evaluateAll((anchors) =>
+          anchors.map((anchor) => [anchor.getAttribute('hreflang'), anchor.getAttribute('href')] as const),
+        );
+      expect(new Set(links.map(([code]) => code))).toEqual(new Set(LOCALES));
+      for (const [code, href] of links) {
+        expect(href, `переключатель ${code}`).toBe(homeOf(code as Locale));
+      }
+    });
+
+    /**
+     * Посетитель и поисковик видят одни и те же позиции в одном порядке (spec FR-004a). Сравнивается
+     * список, а не множество: «Пахви» стоит и в женской, и в мужской группе. Долевая цена
+     * печатается подписью без валюты и предложения не даёт, поэтому из списка прайса исключена.
+     */
+    test('прайс и предложения перечисляют одни и те же позиции в одном порядке', async ({
+      page,
+    }) => {
+      await page.goto(path);
+
+      const shown = await page.locator('#services .item').evaluateAll((rows) =>
+        rows
+          .filter((row) => row.querySelector('.tier__cur'))
+          .map((row) =>
+            [...row.querySelector('.item__name')!.childNodes]
+              .filter((node) => node.nodeType === Node.TEXT_NODE)
+              .map((node) => node.textContent)
+              .join('')
+              .trim(),
+          ),
+      );
+
+      const offered: string[] = [];
+      let variantOf: string | null = null;
+      for (const offer of (await structuredData(page)).filter((node) => node['@type'] === 'Offer')) {
+        const name = String(offer.name);
+        if (!offer.eligibleQuantity) {
+          offered.push(name);
+          variantOf = null;
+          continue;
+        }
+        // Вариант называется «позиция — длительность»; позиция с вариантами в прайсе — одна строка.
+        const position = name.slice(0, name.lastIndexOf(' — '));
+        if (position !== variantOf) offered.push(position);
+        variantOf = position;
+      }
+
+      expect(shown.length, `${path}: прайс пуст`).toBeGreaterThan(0);
+      expect(offered).toEqual(shown);
+    });
+  });
+}
+
+/** Подписи групп прайса из словаря интерфейса (`priceList.sections`) — литералами, как хост. */
+const SUGARING_SECTIONS: Record<'uk' | 'ru', { shown: string[]; absent: string[] }> = {
+  uk: {
+    shown: [
+      'Жіноча депіляція',
+      'Жіночі комплекси (Вигідно!)',
+      'Чоловіча депіляція (Віск / Цукор)',
+      'Чоловічі комплекси — Віск / Цукор (Вигідно!)',
+    ],
+    absent: ['Чоловіча депіляція (Тример / Бритва)', 'Чоловічі комплекси — Тример / Бритва (Вигідно!)'],
+  },
+  ru: {
+    shown: [
+      'Женская депиляция',
+      'Женские комплексы (Выгодно!)',
+      'Мужская депиляция (Воск / Сахар)',
+      'Мужские комплексы — Воск / Сахар (Выгодно!)',
+    ],
+    absent: ['Мужская депиляция (Триммер / Бритва)', 'Мужские комплексы — Триммер / Бритва (Выгодно!)'],
+  },
+};
+
+test.describe('прайс страницы шугаринга', () => {
+  for (const { locale, path } of subpagePages.filter((entry) => entry.subpage === 'sugaring')) {
+    test(`${path}: четыре раздела «Віск / Цукор», разделов триммера нет`, async ({ page }) => {
+      await page.goto(path);
+
+      // Текстом узла, а не отрисовки: надзаголовок может быть набран через `text-transform`.
+      const sections = (await page.locator('#services h3').allTextContents()).map(normalize);
+      const expected = SUGARING_SECTIONS[locale as 'uk' | 'ru'];
+      expect(sections).toEqual(expected.shown);
+      for (const label of expected.absent) expect(sections).not.toContain(label);
+    });
+  }
+});
+
 /**
  * Объём и уникальность текста (docs/specs/content-model.md §Страница категории). Счётчик слов —
  * рабочее определение «содержательного текста»: четыреста слов нельзя набрать шаблоном
- * с подставленным названием. Считается только контейнер текста категории — прайс и подвал
- * набрали бы норму сами.
+ * с подставленным названием. Считается только контейнер текста страницы — прайс и подвал
+ * набрали бы норму сами. Подстраница входит сюда вместе со своим текстом: черновик норму не держит.
  */
-test.describe('тексты страниц категорий', () => {
-  for (const locale of ['uk', 'ru', 'en'] as const) {
+test.describe('тексты страниц услуг', () => {
+  const writtenPages = [
+    ...categoryPages,
+    ...subpagePages.filter((entry) => entry.subpage === 'sugaring'),
+  ];
+
+  for (const locale of LOCALES) {
     test(`тексты локали ${locale} не короче 400 слов и не повторяют друг друга`, async ({
       page,
       request,
     }) => {
-      const paragraphsByCategory = new Map<string, string[]>();
+      const paragraphsByPage = new Map<string, string[]>();
 
-      for (const entry of categoryPages.filter((candidate) => candidate.locale === locale)) {
-        await requireCategoryPage(request, entry.path);
+      for (const entry of writtenPages.filter((candidate) => candidate.locale === locale)) {
+        await requireServicePage(request, entry.path);
         await page.goto(entry.path);
 
         const copy = page.locator(SERVICE_COPY_SELECTOR);
         await expect(
           copy,
-          `${entry.path}: контейнер ${SERVICE_COPY_SELECTOR} — договорённость с шаблоном страницы категории`,
+          `${entry.path}: контейнер ${SERVICE_COPY_SELECTOR} — договорённость с шаблоном страницы услуги`,
         ).toHaveCount(1);
 
         const words = countWords(await copy.innerText());
@@ -400,19 +635,19 @@ test.describe('тексты страниц категорий', () => {
           .map(normalize)
           .filter((paragraph) => paragraph.length > 0);
         expect(paragraphs.length, `${entry.path}: текст без абзацев`).toBeGreaterThan(0);
-        paragraphsByCategory.set(entry.category, paragraphs);
+        paragraphsByPage.set(entry.path, paragraphs);
       }
 
-      expect(paragraphsByCategory.size).toBe(SERVICE_CATEGORIES.length);
+      expect(paragraphsByPage.size).toBeGreaterThanOrEqual(SERVICE_CATEGORIES.length);
 
       const owner = new Map<string, string>();
-      for (const [category, paragraphs] of paragraphsByCategory) {
+      for (const [path, paragraphs] of paragraphsByPage) {
         for (const paragraph of paragraphs) {
           expect(
             owner.get(paragraph),
-            `абзац повторяется в «${owner.get(paragraph)}» и «${category}»: ${paragraph.slice(0, 60)}…`,
+            `абзац повторяется в «${owner.get(paragraph)}» и «${path}»: ${paragraph.slice(0, 60)}…`,
           ).toBeUndefined();
-          owner.set(paragraph, category);
+          owner.set(paragraph, path);
         }
       }
     });

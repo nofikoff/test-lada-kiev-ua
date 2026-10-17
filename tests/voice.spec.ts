@@ -13,6 +13,7 @@ import {
   normalize,
   queryOf,
   SERVICE_COPY_SELECTOR,
+  subpagePages,
 } from './support/site';
 
 /**
@@ -69,7 +70,13 @@ test.describe('карта запросов', () => {
     });
   }
 
-  for (const page of categoryPages) {
+  // Подстраница входит сюда вместе со своим текстом: у черновика первого абзаца с запросом нет.
+  const writtenPages = [
+    ...categoryPages,
+    ...subpagePages.filter((entry) => entry.subpage === 'sugaring'),
+  ];
+
+  for (const page of writtenPages) {
     test(`${page.path}: первый абзац текста называет запрос`, async ({ page: browser }) => {
       await browser.goto(page.path);
       const first = normalize(

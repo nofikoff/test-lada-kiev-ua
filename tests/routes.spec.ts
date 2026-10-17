@@ -63,6 +63,27 @@ test.describe('форма адреса со слешем', () => {
   }
 });
 
+test.describe('адреса подстраниц', () => {
+  /**
+   * Подстраница существует только на своих языках и только под своей категорией (ADR-028):
+   * английский адрес и плоский адрес без категории — не страницы.
+   */
+  for (const path of ['/en/depilation/sugaring/', '/sugaring/']) {
+    test(`${path} отвечает кодом 404`, async ({ request }) => {
+      expect((await request.get(path)).status()).toBe(404);
+    });
+  }
+
+  // Перенаправление на форму со слешем делает Apache, как у `/ru` выше; от сборки — canonical.
+  for (const path of ['/depilation/sugaring']) {
+    test(`${path} приводит на ${path}/`, async ({ request }) => {
+      const response = await request.get(path);
+      expect(response.status()).toBe(200);
+      expect(await response.text()).toContain(`<link rel="canonical" href="${SITE_ORIGIN}${path}/"`);
+    });
+  }
+});
+
 test.describe('несуществующий адрес', () => {
   /**
    * Действующий сайт отвечает на любой битый адрес кодом 200 с главной страницей — механика

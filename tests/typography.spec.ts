@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { categoryPages, homePages, SERVICE_COPY_SELECTOR } from './support/site';
+import { categoryPages, homePages, SERVICE_COPY_SELECTOR, subpagePages } from './support/site';
 
 /**
  * Длина строки протяжённого текста (docs/specs/design-tokens.md §Мера колонки) и область нажатия
@@ -164,8 +164,14 @@ async function openWithSiteFonts(page: Page, path: string, width: number, select
 }
 
 test.describe('длина строки протяжённого текста', () => {
+  // Подстраница входит сюда вместе со своим текстом: в черновике мерить нечего.
+  const writtenPages = [
+    ...categoryPages,
+    ...subpagePages.filter((entry) => entry.subpage === 'sugaring'),
+  ];
+
   for (const width of WIDTHS) {
-    for (const { path } of categoryPages) {
+    for (const { path } of writtenPages) {
       test(`${path} держит меру при ширине ${width}`, async ({ page }) => {
         const selector = `${SERVICE_COPY_SELECTOR} p, ${SERVICE_COPY_SELECTOR} li`;
         await openWithSiteFonts(page, path, width, selector);
