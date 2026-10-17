@@ -14,7 +14,7 @@ npm run check && npm run lint && npm run test:unit && npm run build && npm run t
 |---|---|---|---|
 | 1 | `curl -s -o /dev/null -w '%{http_code}' http://localhost:4329/depilation/sugaring/` (и три других адреса) | `200` | [contracts/subpage.md](contracts/subpage.md) §Routes |
 | 2 | то же для `/en/depilation/sugaring/` | `404` | §Routes |
-| 3 | `grep -o 'hreflang="[a-z-]*"' dist/depilation/sugaring/index.html` | `uk`, `ru`, `x-default`, без `en` | §Head |
+| 3 | `grep -o '<link rel="alternate" hreflang="[a-z-]*"' dist/depilation/sugaring/index.html` — только `<link>`: переключатель языка в шапке несёт `<a hreflang="en">` на главную (FR-013) | `uk`, `ru`, `x-default`, без `en` | §Head |
 | 4 | `grep -c 'шугаринг' <<< "$(grep -o '<title>[^<]*' dist/depilation/index.html)"` | `0` | §Category pages |
 | 5 | в `dist/sitemap-0.xml` найти `depilation/sugaring` | две `xhtml:link`, uk-UA и ru-UA | §Sitemap |
 | 6 | в JSON-LD `dist/permanent/brows/index.html` | `BreadcrumbList` из трёх, `Offer` без коррекции (доля) | §JSON-LD, [data-model.md](data-model.md) |
