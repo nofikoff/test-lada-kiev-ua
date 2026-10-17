@@ -96,6 +96,34 @@ test('allow_large_change is refused when the run comes from the sheet', async ()
   assert.equal(ctx.prices(), ctx.original);
 });
 
+test('a sugar amount row keeps its own sheet line and publishes into sugar', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'publish-sugar-'));
+  const pricesPath = join(dir, 'prices.json');
+  const legs = {
+    id: 'legs',
+    group: 'g',
+    name: { uk: 'н', ru: 'н', en: 'n' },
+    price: { kind: 'fixed', amount: 600 },
+    sugar: { kind: 'fixed', amount: 650 },
+  };
+  writeFileSync(pricesPath, `${JSON.stringify([legs], null, 2)}\n`);
+  const values = [['', 'Женская депиляция'], ['legs', 'н', '', 600, 600], ['legs/sugar', '', 'сахар', 700, 650]];
+  const client = {
+    async getValues() {
+      return values;
+    },
+  };
+  assert.equal(await runPublish({ env: { SOURCE: 'sheet' }, client, pricesPath, outDir: dir }), 0);
+  const report = JSON.parse(readFileSync(join(dir, 'prices-report.json'), 'utf8'));
+  assert.deepEqual(report.rows, [
+    { key: 'legs', line: 5, published: 600 },
+    { key: 'legs/sugar', line: 6, published: 700 },
+  ]);
+  const [published] = JSON.parse(readFileSync(pricesPath, 'utf8'));
+  assert.equal(published.sugar.amount, 700);
+  assert.equal(published.price.amount, 600);
+});
+
 test('a conflict exits 1 and does not touch the price list', async () => {
   const ctx = setup({});
   writeFileSync(ctx.pricesPath, ctx.original.replace('"amount": 800', '"amount": 850'));

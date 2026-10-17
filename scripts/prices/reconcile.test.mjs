@@ -107,6 +107,17 @@ test('allowLarge lifts the threshold for its own keys only', () => {
   assert.deepEqual(result.rejected, [{ key: 'massage@60', from: 1600, to: 5000, reason: 'jump' }]);
 });
 
+test('a sugar amount edited in the sheet lands in sugar and the shared price stays', () => {
+  const withSugar = structuredClone(prices);
+  withSugar[2].sugar = { kind: 'fixed', amount: 850 };
+  const rows = [...sheet(), { key: 'brows/sugar', published: 850, amount: 900 }];
+  const result = reconcile(withSugar, rows);
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.applied, [{ key: 'brows/sugar', from: 850, to: 900 }]);
+  assert.equal(result.next[2].sugar.amount, 900);
+  assert.equal(result.next[2].price.amount, 800);
+});
+
 test('allowLarge naming a key the sheet does not have is a call error', () => {
   assert.throws(() => reconcile(prices, sheet(), { allowLarge: new Set(['ghost']) }), /ghost/);
 });

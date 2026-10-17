@@ -33,14 +33,15 @@ const WHITE = { red: 1, green: 1, blue: 1 };
 const LINE_FORMAT_FIELDS = 'userEnteredFormat.textFormat.bold,userEnteredFormat.backgroundColor';
 
 // Visible columns B, C, D, F in pixels. Names reach 54 characters, so B wraps instead of
-// stretching past a phone screen; F holds the rejection note written by report.mjs.
+// stretching past a phone screen; C wraps because `сахар, 60 мин` does not fit 80 px; F holds the
+// rejection note written by report.mjs.
 const COLUMN_WIDTHS = [
   [1, 220],
   [2, 80],
   [3, 100],
   [5, 240],
 ];
-const WRAPPED_COLUMNS = [1, 5];
+const WRAPPED_COLUMNS = [1, 2, 5];
 
 function gridRange(sheetId, startRow, endRow, startColumn, endColumn) {
   return {

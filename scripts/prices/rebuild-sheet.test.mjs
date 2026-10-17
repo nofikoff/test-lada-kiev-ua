@@ -48,6 +48,18 @@ test('rebuild keeps a pending edit, lets git win on a conflict, seeds new rows, 
   );
 });
 
+test('a new sugar key is seeded with the repository amount next to the kept shared row', () => {
+  const withSugar = [{ ...prices[0], sugar: { kind: 'fixed', amount: 130 } }];
+  const merged = mergeRows(withSugar, [{ key: 'a', amount: 120, published: 100 }]);
+  assert.deepEqual(
+    merged.map(({ key, variant, amount, published }) => ({ key, variant, amount, published })),
+    [
+      { key: 'a', variant: '', amount: 120, published: 100 },
+      { key: 'a/sugar', variant: 'сахар', amount: 130, published: 130 },
+    ],
+  );
+});
+
 test('protection leaves the checkbox and one amount range per group editable, never a header', () => {
   const requests = requestsFor({
     protectedRangeIds: [11],
@@ -91,7 +103,7 @@ test('the value block carries header lines with an empty key and the label in B'
   ]);
 });
 
-test('names wrap inside a fixed width instead of stretching past a phone screen', () => {
+test('names and variant labels wrap inside a fixed width instead of stretching past a phone screen', () => {
   const requests = requestsFor();
   const widths = requests
     .filter((request) => request.updateDimensionProperties?.fields === 'pixelSize')
@@ -107,6 +119,7 @@ test('names wrap inside a fixed width instead of stretching past a phone screen'
     .map(({ repeatCell: { range } }) => [range.startColumnIndex, range.startRowIndex, range.endRowIndex]);
   assert.deepEqual(wrapped, [
     [1, 3, 8],
+    [2, 3, 8],
     [5, 3, 8],
   ]);
 });

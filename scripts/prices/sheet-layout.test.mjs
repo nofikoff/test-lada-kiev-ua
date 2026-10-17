@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { ui } from '../../src/i18n/ui.ts';
-import { applyAmounts, rowsFromPrices, sheetLines, variantLabel } from './sheet-layout.mjs';
+import { applyAmounts, rowKey, rowsFromPrices, sheetLines, variantLabel } from './sheet-layout.mjs';
 
 const fixture = [
   {
@@ -114,4 +114,88 @@ test('applyAmounts changes amounts only and leaves the input untouched', () => {
 
 test('applyAmounts refuses a key the price list does not have', () => {
   assert.throws(() => applyAmounts(fixture, new Map([['ghost', 1]])), /ghost/);
+});
+
+const names = (ru) => ({ uk: ru, ru, en: ru });
+
+// Sugar amounts (specs/006-service-subpages/data-model.md §Sheet row): a fixed sugar price on a
+// fixed one, a variants sugar price on a fixed one, "not done with paste", and a second group.
+const sugarFixture = [
+  {
+    id: 'legs',
+    group: 'women',
+    name: names('Ноги'),
+    price: { kind: 'fixed', amount: 600 },
+    sugar: { kind: 'fixed', amount: 650 },
+  },
+  {
+    id: 'bikini',
+    group: 'women',
+    name: names('Бикини'),
+    price: { kind: 'fixed', amount: 700 },
+    sugar: {
+      kind: 'variants',
+      unit: 'minutes',
+      variants: [
+        { count: 60, amount: 750 },
+        { count: 90, amount: 900 },
+      ],
+    },
+  },
+  { id: 'nose', group: 'women', name: names('Нос'), price: { kind: 'fixed', amount: 200 }, sugar: false },
+  {
+    id: 'chest',
+    group: 'men',
+    name: names('Грудь'),
+    price: { kind: 'fixed', amount: 500 },
+    sugar: { kind: 'fixed', amount: 550 },
+  },
+];
+
+test('rowKey names the sugar amount apart from the shared one', () => {
+  assert.equal(rowKey('legs'), 'legs');
+  assert.equal(rowKey('legs', 60), 'legs@60');
+  assert.equal(rowKey('legs', undefined, 'base'), 'legs');
+  assert.equal(rowKey('legs', undefined, 'sugar'), 'legs/sugar');
+  assert.equal(rowKey('legs', 60, 'sugar'), 'legs/sugar@60');
+});
+
+test('sugar rows follow the shared rows of their position, unnamed, in the same group; false gives none', () => {
+  assert.deepEqual(rowsFromPrices(sugarFixture), [
+    { key: 'legs', group: 'women', name: 'Ноги', variant: '', amount: 600 },
+    { key: 'legs/sugar', group: 'women', name: '', variant: 'сахар', amount: 650 },
+    { key: 'bikini', group: 'women', name: 'Бикини', variant: '', amount: 700 },
+    { key: 'bikini/sugar@60', group: 'women', name: '', variant: 'сахар, 60 мин', amount: 750 },
+    { key: 'bikini/sugar@90', group: 'women', name: '', variant: 'сахар, 90 мин', amount: 900 },
+    { key: 'nose', group: 'women', name: 'Нос', variant: '', amount: 200 },
+    { key: 'chest', group: 'men', name: 'Грудь', variant: '', amount: 500 },
+    { key: 'chest/sugar', group: 'men', name: '', variant: 'сахар', amount: 550 },
+  ]);
+});
+
+test('applyAmounts changes a sugar amount by its key and leaves the shared one alone', () => {
+  const next = applyAmounts(sugarFixture, new Map([['legs/sugar', 700], ['bikini/sugar@90', 950]]));
+  assert.equal(next[0].sugar.amount, 700);
+  assert.equal(next[0].price.amount, 600);
+  assert.equal(next[1].sugar.variants[1].amount, 950);
+  assert.equal(next[1].sugar.variants[0].amount, 750);
+  assert.equal(next[1].price.amount, 700);
+  assert.equal(sugarFixture[0].sugar.amount, 650);
+});
+
+test('a sugar key on a position without a sugar price is refused', () => {
+  assert.throws(() => applyAmounts(fixture, new Map([['brows/sugar', 900]])), /price list has no row brows\/sugar/);
+});
+
+test('sugar rows add no group header and do not split their group', () => {
+  const withoutSugar = sugarFixture.map((item) => {
+    const copy = structuredClone(item);
+    delete copy.sugar;
+    return copy;
+  });
+  const linesOf = (prices) => sheetLines(rowsFromPrices(prices), { women: 'Женская', men: 'Мужская' });
+  const count = (lines, kind) => lines.filter((line) => line.kind === kind).length;
+  const lines = linesOf(sugarFixture);
+  assert.equal(count(lines, 'header'), count(linesOf(withoutSugar), 'header'));
+  assert.equal(count(lines, 'row'), 8);
 });

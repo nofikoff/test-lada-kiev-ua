@@ -1,7 +1,8 @@
 /**
  * Mapping between src/data/prices.json and the rows of the price sheet. Cell addresses are the
  * contract shared with publish.mjs, report.mjs, rebuild-sheet.mjs and apps-script/Code.js:
- * specs/005-sheet-price-publishing/contracts/sheet-layout.md.
+ * specs/005-sheet-price-publishing/contracts/sheet-layout.md. Rows of a sugar amount:
+ * specs/006-service-subpages/data-model.md §Sheet row of a sugar amount.
  */
 
 export const SHEET_NAME = 'Цены';
@@ -13,10 +14,17 @@ export const HEADER_ROW = 3;
 export const FIRST_DATA_ROW = 4;
 export const HEADERS = ['ключ', 'Услуга', 'Вариант', 'Сумма, грн', 'На сайте', 'Пометка'];
 
-/** `<id>` for a fixed price, `<id>@<count>` for one variant. */
-export function rowKey(id, count) {
-  return count === undefined ? id : `${id}@${count}`;
+/** `<id>` for a fixed price, `<id>@<count>` for one variant; the sugar price inserts `/sugar` after the id. */
+export function rowKey(id, count, method = 'base') {
+  const base = method === 'base' ? id : `${id}/${method}`;
+  return count === undefined ? base : `${base}@${count}`;
 }
+
+/** Price fields of a position in sheet order: the shared price first, then the sugar one. */
+const PRICE_FIELDS = [
+  { method: 'base', field: 'price', label: '' },
+  { method: 'sugar', field: 'sugar', label: 'сахар' },
+];
 
 function sessionsWord(count) {
   const lastTwo = count % 100;
@@ -33,26 +41,38 @@ export function variantLabel(unit, count) {
   throw new Error(`unknown variant unit: ${unit}`);
 }
 
-/** One row per editable amount; `share` positions have no amount and stay out of the sheet. */
-export function rowsFromPrices(prices) {
-  const rows = [];
-  for (const item of prices) {
-    const { price } = item;
-    if (price.kind === 'fixed') {
-      rows.push({ key: rowKey(item.id), group: item.group, name: item.name.ru, variant: '', amount: price.amount });
-    } else if (price.kind === 'variants') {
-      price.variants.forEach((variant, index) => {
-        rows.push({
-          key: rowKey(item.id, variant.count),
-          group: item.group,
-          name: index === 0 ? item.name.ru : '',
-          variant: variantLabel(price.unit, variant.count),
-          amount: variant.amount,
-        });
-      });
+/**
+ * Every editable amount of one position with its row key, its `Вариант` label and the object that
+ * owns the `amount`. The only place that knows the price shapes: rowsFromPrices reads through it and
+ * applyAmounts writes through it, so a key cannot mean one amount when read and another when written.
+ * `share` has no amount, and `sugar: false` or no `sugar` gives no row.
+ */
+function amountSlots(item) {
+  return PRICE_FIELDS.flatMap(({ method, field, label }) => {
+    const price = item[field];
+    if (price?.kind === 'fixed') return [{ key: rowKey(item.id, undefined, method), variant: label, owner: price }];
+    if (price?.kind === 'variants') {
+      return price.variants.map((variant) => ({
+        key: rowKey(item.id, variant.count, method),
+        variant: [label, variantLabel(price.unit, variant.count)].filter(Boolean).join(', '),
+        owner: variant,
+      }));
     }
-  }
-  return rows;
+    return [];
+  });
+}
+
+/** One row per editable amount, named on the first row of its position only. */
+export function rowsFromPrices(prices) {
+  return prices.flatMap((item) =>
+    amountSlots(item).map((slot, index) => ({
+      key: slot.key,
+      group: item.group,
+      name: index === 0 ? item.name.ru : '',
+      variant: slot.variant,
+      amount: slot.owner.amount,
+    })),
+  );
 }
 
 export function amountsOf(prices) {
@@ -67,15 +87,9 @@ export function applyAmounts(prices, amountsByKey) {
   }
   const next = structuredClone(prices);
   for (const item of next) {
-    const { price } = item;
-    if (price.kind === 'fixed') {
-      const amount = amountsByKey.get(rowKey(item.id));
-      if (amount !== undefined) price.amount = amount;
-    } else if (price.kind === 'variants') {
-      for (const variant of price.variants) {
-        const amount = amountsByKey.get(rowKey(item.id, variant.count));
-        if (amount !== undefined) variant.amount = amount;
-      }
+    for (const slot of amountSlots(item)) {
+      const amount = amountsByKey.get(slot.key);
+      if (amount !== undefined) slot.owner.amount = amount;
     }
   }
   return next;
