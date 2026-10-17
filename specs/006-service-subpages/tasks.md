@@ -199,14 +199,14 @@ tier: strong
 
 **Tests:**
 
-- [ ] T021 [P] [US2] `tests/routes.spec.ts`: `/permanent/brows/`, `/ru/permanent/brows/` — 200; `/en/permanent/brows/`, `/powder-brows/` — 404; `/permanent/brows` без слеша — 200 и `canonical` на форму со слешем (как T015)
-- [ ] T022 [P] [US2] `tests/voice.spec.ts`: проверка «татуаж брів|татуаж бровей» в `[data-service-copy]` страниц бровей (`QUERIES` бровей уже в T004)
-- [ ] T023 [P] [US2] `tests/seo-contract.spec.ts`: для `brows` число `Offer` = `expectedOfferCount` страницы бровей (на 2026-10-17 это 2: пудровые и перекрытие; коррекция — доля), подпись доли коррекции в прайсе страницы — из `prices.json`, не литералом: суммы и доли правит Лада. Цикл «первый абзац называет запрос» (`tests/voice.spec.ts`, T016) и блок объёма и уникальности абзацев (T017) перевести на весь `servicePages` — категории и обе подстраницы вместе. Проверку длины строки в `tests/typography.spec.ts` распространить на страницы бровей (в 3.1 она получила только шугаринг). Число `Offer` бровей уже проверяет блок подстраниц из T017 (`expectedOfferCount(subpage)`) — второй такой проверки не заводить
+- [x] T021 [P] [US2] `tests/routes.spec.ts`: `/permanent/brows/`, `/ru/permanent/brows/` — 200; `/en/permanent/brows/`, `/powder-brows/` — 404; `/permanent/brows` без слеша — 200 и `canonical` на форму со слешем (как T015)
+- [x] T022 [P] [US2] `tests/voice.spec.ts`: проверка «татуаж брів|татуаж бровей» в `[data-service-copy]` страниц бровей (`QUERIES` бровей уже в T004)
+- [x] T023 [P] [US2] `tests/seo-contract.spec.ts`: для `brows` число `Offer` = `expectedOfferCount` страницы бровей (на 2026-10-17 это 2: пудровые и перекрытие; коррекция — доля), подпись доли коррекции в прайсе страницы — из `prices.json`, не литералом: суммы и доли правит Лада. Цикл «первый абзац называет запрос» (`tests/voice.spec.ts`, T016) и блок объёма и уникальности абзацев (T017) перевести на весь `servicePages` — категории и обе подстраницы вместе. Проверку длины строки в `tests/typography.spec.ts` распространить на страницы бровей (в 3.1 она получила только шугаринг). Число `Offer` бровей уже проверяет блок подстраниц из T017 (`expectedOfferCount(subpage)`) — второй такой проверки не заводить
 
 **Implementation:**
 
-- [ ] T024 [US2] Тело `src/content/subpages/uk/brows.md`: ≥ 400 слов; первый абзац с «перманентний макіяж брів у Києві» и «пудрові брови»; «татуаж брів» в тексте; разделы — пудровая техника, как проходит процедура и сколько длится, подготовка и уход, заживление (около месяца; корочки, шелушение, посветление — разбивку по дням не писать: Лада её не дала), коррекция через 28–60 днів (срок — из названия позиции в прайсе) и оновлення до 6 місяців — две разные услуги, обе называются; их доли текст не повторяет: 50% показывает прайс, 80% — сноска `permanentNote` (T011), а доли принадлежат прайсу и словарю. Позиция «Перекриття старого перманенту, оновлення, виправлення» — отдельная услуга прайса; срок, после которого обновление переходит в неё, Лада не называла, и текст его не пишет; сколько держится, перекриття старого перманенту, кому не робимо; практика — только из `interview.md`; те же ограничения, что T019
-- [ ] T025 [US2] Тело `src/content/subpages/ru/brows.md` — по смыслу T024, запрос «перманентный макияж бровей в Киеве», «пудровые брови», «татуаж бровей». Блокирован T024
+- [x] T024 [US2] Тело `src/content/subpages/uk/brows.md`: ≥ 400 слов; первый абзац с «перманентний макіяж брів у Києві» и «пудрові брови»; «татуаж брів» в тексте; разделы — пудровая техника, как проходит процедура и сколько длится, подготовка и уход, заживление (около месяца; корочки, шелушение, посветление — разбивку по дням не писать: Лада её не дала), коррекция через 28–60 днів (срок — из названия позиции в прайсе) и оновлення до 6 місяців — две разные услуги, обе называются; их доли текст не повторяет: 50% показывает прайс, 80% — сноска `permanentNote` (T011), а доли принадлежат прайсу и словарю. Позиция «Перекриття старого перманенту, оновлення, виправлення» — отдельная услуга прайса; срок, после которого обновление переходит в неё, Лада не называла, и текст его не пишет; сколько держится, перекриття старого перманенту, кому не робимо; практика — только из `interview.md`; те же ограничения, что T019
+- [x] T025 [US2] Тело `src/content/subpages/ru/brows.md` — по смыслу T024, запрос «перманентный макияж бровей в Киеве», «пудровые брови», «татуаж бровей». Блокирован T024
 
 **Checkpoint**: US1 и US2 проходят независимо
 
@@ -235,14 +235,14 @@ tier: strong
 
 **Tests:**
 
-- [ ] T026 [P] [US3] `QUERIES` в `tests/support/site.ts`: `depilation` uk `[/депіляці/i, /воск/i]`, ru `[/депиляци/i, /воск/i]`; `permanent` без изменений; `en` без изменений
-- [ ] T027 [P] [US3] `tests/voice.spec.ts`: для `depilation` uk и ru — нет `/шугаринг/i` в `<title>`, `<h1>`, описании; для `permanent` uk и ru — нет `/(перманент|татуаж|пудров)[^.]{0,40}бр(ів|ов)|бр(ів|ов)[^.]{0,40}(перманент|татуаж|пудров)/i` там же (spec FR-010 — запрет на формулировку, не на слово); в `[data-service-copy]` категории — `a[href="<путь подстраницы своего языка>"]`, ровно одна, не в первом абзаце и до третьего `h2` текста (spec FR-009, FR-010: «не ниже второго раздела»); тест «шугаринг назван» в тексте категории оставить
+- [x] T026 [P] [US3] `QUERIES` в `tests/support/site.ts`: `depilation` uk `[/депіляці/i, /воск/i]`, ru `[/депиляци/i, /воск/i]`; `permanent` без изменений; `en` без изменений
+- [x] T027 [P] [US3] `tests/voice.spec.ts`: для `depilation` uk и ru — нет `/шугаринг/i` в `<title>`, `<h1>`, описании; для `permanent` uk и ru — нет `/(перманент|татуаж|пудров)[^.]{0,40}бр(ів|ов)|бр(ів|ов)[^.]{0,40}(перманент|татуаж|пудров)/i` там же (spec FR-010 — запрет на формулировку, не на слово); в `[data-service-copy]` категории — `a[href="<путь подстраницы своего языка>"]`, ровно одна, не в первом абзаце и до третьего `h2` текста (spec FR-009, FR-010: «не ниже второго раздела»); тест «шугаринг назван» в тексте категории оставить
 
 **Implementation:**
 
-- [ ] T028 [US3] `src/content/services/uk/depilation.md` и `src/content/services/ru/depilation.md`: `title`, `description`, `heading` и первый абзац — «депіляція у Києві» + «воскова депіляція» / «депиляция в Киеве» + «депиляция воском», без «шугаринг»; абзацы, целиком про пасту, удалить (их содержание уже в T019/T020 своими словами — повтор абзацев запрещён); добавить абзац со ссылкой на `/depilation/sugaring/` (`/ru/depilation/sugaring/`) не ниже второго раздела — после первого абзаца и до третьего `h2`; объём ≥ 400 слов в каждом. `en/depilation.md` не трогать
-- [ ] T029 [US3] `src/content/services/uk/permanent.md` и `src/content/services/ru/permanent.md`: `title`, `description`, `heading`, первый абзац — «перманентний макіяж у Києві» / «перманентный макияж в Киеве» без формулировок запроса бровей; ссылка на `/permanent/brows/` (`/ru/permanent/brows/`) не ниже второго раздела — после первого абзаца и до третьего `h2`; объём ≥ 400 слов. `en/permanent.md` не трогать
-- [ ] T030 [US3] `docs/specs/page-head.md` §Целевые запросы: таблица — `depilation` uk «депіляція у Києві; воскова депіляція», ru «депиляция в Киеве; депиляция воском»; `permanent` uk «перманентний макіяж у Києві», ru «перманентный макияж в Киеве»; новые строки `depilation/sugaring` и `permanent/brows` (uk, ru; en — «—»); пункт о том, что запрос подстраницы не стоит в заголовках её категории, со ссылкой на ADR-028
+- [x] T028 [US3] `src/content/services/uk/depilation.md` и `src/content/services/ru/depilation.md`: `title`, `description`, `heading` и первый абзац — «депіляція у Києві» + «воскова депіляція» / «депиляция в Киеве» + «депиляция воском», без «шугаринг»; абзацы, целиком про пасту, удалить (их содержание уже в T019/T020 своими словами — повтор абзацев запрещён); добавить абзац со ссылкой на `/depilation/sugaring/` (`/ru/depilation/sugaring/`) не ниже второго раздела — после первого абзаца и до третьего `h2`; объём ≥ 400 слов в каждом. `en/depilation.md` не трогать
+- [x] T029 [US3] `src/content/services/uk/permanent.md` и `src/content/services/ru/permanent.md`: `title`, `description`, `heading`, первый абзац — «перманентний макіяж у Києві» / «перманентный макияж в Киеве» без формулировок запроса бровей; ссылка на `/permanent/brows/` (`/ru/permanent/brows/`) не ниже второго раздела — после первого абзаца и до третьего `h2`; объём ≥ 400 слов. `en/permanent.md` не трогать
+- [x] T030 [US3] `docs/specs/page-head.md` §Целевые запросы: таблица — `depilation` uk «депіляція у Києві; воскова депіляція», ru «депиляция в Киеве; депиляция воском»; `permanent` uk «перманентний макіяж у Києві», ru «перманентный макияж в Киеве»; новые строки `depilation/sugaring` и `permanent/brows` (uk, ru; en — «—»); пункт о том, что запрос подстраницы не стоит в заголовках её категории, со ссылкой на ADR-028
 
 **Checkpoint**: US1–US3 проходят вместе; каннибализации нет
 
@@ -275,12 +275,12 @@ gate_commands:
   test_full: "npm run build && npm run test:e2e"
 -->
 
-- [ ] T034 [P] `docs/specs/routes.md` §Route map: строка подстраниц (четыре адреса — 200; en и плоские — 404; без слеша — 301 от Apache), «пятнадцать страниц» → девятнадцать, ссылка на ADR-028
-- [ ] T035 [P] `docs/specs/page-head.md` §Состав и §Языковые альтернативы: исключение для подстраниц — две ссылки `hreflang` плюс `x-default`, пример `/depilation/sugaring/`; все вхождения числа страниц в файле (на 2026-10-13 — строки 3, 33, 37: «пятнадцати» → девятнадцати, «двенадцать заголовков» → шестнадцать с подстраницами)
-- [ ] T036 [P] `docs/specs/structured-data.md`: раздел `## Service subpage` — `Service` с предложениями по ценам способа страницы, `BreadcrumbList` из трёх; `priceRange` учитывает цены пастой
-- [ ] T037 [P] `docs/specs/content-model.md`: поле `sugar` в §Инварианты (только группы страницы шугаринга, без доли, `false` — «пастой не делается», цена способа страницы; сумма пастой — строка таблицы `<id>/sugar[@<count>]`); в `specs/005-sheet-price-publishing/data-model.md` §SheetRow, строка `key` — `<id>/sugar` и `<id>/sugar@<count>` для цены пастой и порядок строк по data-model §Sheet row этого пакета, строка пастой несёт `group` своей позиции (если 005 к тому времени растворён — в документ, который его заменил по `specs/RETIRED.md`); раздел о текстах подстраниц (ровно файлы языков из реестра, ≥ 400 слов, уникальность абзацев вместе с категориями)
-- [ ] T038 [P] `docs/runbook-deploy.md` §Changing the price list: шаг 2 — ключи `<id>/sugar` и `<id>/sugar@<count>` рядом с `<id>` и `<id>@<count>`; цена пастой у позиции и `sugar: false` относятся к структуре, после слияния `mode: rebuild-sheet`; строка пастой в таблице подписана «сахар» в столбце «Вариант». Перенос текста в столбце «Вариант» (T044) вступает в силу при следующем `rebuild-sheet`; пока у позиций нет `sugar`, отдельно ради него перестройку не запускать. Списка адресов для сброса кэша нет — его берут из `dist/` (ADR-026), правка не нужна
-- [ ] T039 Комментарии с числами страниц в `tests/seo-contract.spec.ts`, `tests/contrast.spec.ts`, `src/components/SeoHead.astro` (`двенадцати страницах` — заголовки категорий и подстраниц), `src/data/services.ts` — привести к факту
+- [x] T034 [P] `docs/specs/routes.md` §Route map: строка подстраниц (четыре адреса — 200; en и плоские — 404; без слеша — 301 от Apache), «пятнадцать страниц» → девятнадцать, ссылка на ADR-028
+- [x] T035 [P] `docs/specs/page-head.md` §Состав и §Языковые альтернативы: исключение для подстраниц — две ссылки `hreflang` плюс `x-default`, пример `/depilation/sugaring/`; все вхождения числа страниц в файле (на 2026-10-13 — строки 3, 33, 37: «пятнадцати» → девятнадцати, «двенадцать заголовков» → шестнадцать с подстраницами)
+- [x] T036 [P] `docs/specs/structured-data.md`: раздел `## Service subpage` — `Service` с предложениями по ценам способа страницы, `BreadcrumbList` из трёх; `priceRange` учитывает цены пастой
+- [x] T037 [P] `docs/specs/content-model.md`: поле `sugar` в §Инварианты (только группы страницы шугаринга, без доли, `false` — «пастой не делается», цена способа страницы; сумма пастой — строка таблицы `<id>/sugar[@<count>]`); в `specs/005-sheet-price-publishing/data-model.md` §SheetRow, строка `key` — `<id>/sugar` и `<id>/sugar@<count>` для цены пастой и порядок строк по data-model §Sheet row этого пакета, строка пастой несёт `group` своей позиции (если 005 к тому времени растворён — в документ, который его заменил по `specs/RETIRED.md`); раздел о текстах подстраниц (ровно файлы языков из реестра, ≥ 400 слов, уникальность абзацев вместе с категориями)
+- [x] T038 [P] `docs/runbook-deploy.md` §Changing the price list: шаг 2 — ключи `<id>/sugar` и `<id>/sugar@<count>` рядом с `<id>` и `<id>@<count>`; цена пастой у позиции и `sugar: false` относятся к структуре, после слияния `mode: rebuild-sheet`; строка пастой в таблице подписана «сахар» в столбце «Вариант». Перенос текста в столбце «Вариант» (T044) вступает в силу при следующем `rebuild-sheet`; пока у позиций нет `sugar`, отдельно ради него перестройку не запускать. Списка адресов для сброса кэша нет — его берут из `dist/` (ADR-026), правка не нужна
+- [x] T039 Комментарии с числами страниц в `tests/seo-contract.spec.ts`, `tests/contrast.spec.ts`, `src/components/SeoHead.astro` (`двенадцати страницах` — заголовки категорий и подстраниц), `src/data/services.ts` — привести к факту
 
 ### Step 7.2: Gates and quickstart
 
@@ -299,7 +299,7 @@ gate_commands:
   test_full: "npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze"
 -->
 
-- [ ] T040 Прогнать гейты `CLAUDE.md` §Гейты (`npm run check`, `npm run lint`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze`) и сценарии `specs/006-service-subpages/quickstart.md`; вывод — в отчёт
+- [x] T040 Прогнать гейты `CLAUDE.md` §Гейты (`npm run check`, `npm run lint`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze`) и сценарии `specs/006-service-subpages/quickstart.md`; вывод — в отчёт
 
 ### Step 7.3: Core and map via /seo
 
@@ -378,7 +378,7 @@ Setup + Foundational → US1 (MVP) → US2 → US3 (снимает канниб�
 <!-- packed-for: bundle 600K -->
 
 - [x] S1 (~600K) Steps 1.2, 2.1, 2.2, 2.3, 3.1 — done 2026-10-17 12:40–13:15 (0h34m)
-- [ ] S2 (~430K) Steps 4.1, 5.1, 7.1, 7.2 — **current**
+- [x] S2 (~430K) Steps 4.1, 5.1, 7.1, 7.2 — done 2026-10-17 13:18–13:48 (0h29m)
 
 ## Progress Log
 
@@ -429,3 +429,47 @@ decided:
 
 ### S1 — dispatch 2 (2026-10-17)
 `kind=spec-verify agent=verifier model=claude-sonnet-5-5 effort=high turns=17 minutes=1.4 input=34 cache_write=105262 cache_read=1033489 output=9273`
+
+### S2.step-4.1 — 2026-10-17
+**Completed steps:** 4.1
+**Commits:** 3ed3a05
+
+### S2.step-5.1 — 2026-10-17
+**Completed steps:** 5.1
+**Commits:** 9d670bb
+
+### S2.step-7.1 — 2026-10-17
+**Completed steps:** 7.1
+**Commits:** ef4f0d5
+
+### S2.step-7.2 — 2026-10-17
+**Completed steps:** 7.2
+**Commits:** 979fbb8
+
+### S2 — observations (2026-10-17, dispatch 3)
+gate report 7.2 (979fbb8): check 0 errors; lint ok; test:unit 53/53; build 22 pages; test:e2e 1438 passed, 3 skipped (interaction.spec.ts viewport-conditional); test:invalid-data 12 corruptions stop the build, 2 permitted edits visible in dist, tree restored; analyze largest page 1287 B (83.8% of 1536 B); quickstart 1–10 pass, scenario 3 command narrowed to head links.
+plan-wrong:
+- TaskCreate is not exposed in this harness; the bundle was tracked without it.
+- The T021 route checks and the T023 share-label check passed before any brow text existed: the 2.3 routes and price rendering already satisfy them. Only the text checks (first paragraph, tattoo wording, volume/uniqueness, line measure) were red first.
+- T039 lists src/data/services.ts, but its 'двенадцати файлов' counts category text files, still twelve. Left unchanged.
+- quickstart.md scenario 3 grepped every hreflang attribute and fails on a correct page: the header language switcher carries <a hreflang="en"> to /en/ (FR-013). Narrowed to <link rel="alternate">; this is the only reason step 7.2 has a commit.
+- data-model.md §Subpage copy claims a file in a language the subpage lacks fails the build in subpageCopy(). In fact the subpages glob loads only uk|ru and no route requests en, so such a file is silently ignored. content-model.md §Service subpage documents the real behaviour; code unchanged.
+- src/content/services/en/permanent.md still says the pigment 'holds for months', against the brow page's 2–3 years. en is out of scope per T029.
+- Unrelated, not fixed: the header language switcher puts aria-current="page" on the current-language link (href "/" while on /depilation/sugaring/). Pre-existing on main, Header.astro:71 and :119.
+- S1's open pointer is resolved: content.config.ts points its sugar comment at content-model.md §Инварианты, which now holds the sugar invariant (T037).
+redone:
+- uk/ru brow texts: the first draft added 'а не невдала робота' (healing reassurance), 'закладайте цей час' and a second 'окрема позиція прайсу'. None of these is in the interview; all removed in a self-review against interview.md §How the answers reach the pages, before the first gate run.
+- Both depilation descriptions came out at 161 characters against the 160 schema limit (measured before building). Dropped 'комплекси' from the description; the title keeps it.
+- The content-model.md subpage bullet first cited voice.md for the practice-claims rule; voice.md does not hold that rule, so the link was removed.
+- The 005 SheetRow model first linked the 006 package for sugar row order. Re-pointed to docs/specs/content-model.md so the link survives retiring 006.
+decided:
+- The brow price check also asserts the permanentNote footnote is present: the text leaves the 80% refresh price to it. If unwanted, it is one expect to drop.
+- The category h2 'Пудрові брови'/'Пудровые брови' became 'Брови', keeping the brow query out of category headings beyond FR-010's title/h1/description. If wrong, one heading per language to restore.
+- The uk/ru permanent first paragraph changed 'тримається місяцями' to 'тримається довго', so it no longer contradicts the brow page's 2–3 years. If wrong, it is a one-word revert.
+- The depilation h1 is 'Депіляція у Києві: воскова, жіноча й чоловіча', not 'Воскова депіляція у Києві', because the h1 is also the middle breadcrumb on the sugaring page. If wrong, only the wording changes.
+- page-head.md §Целевые запросы now records that the subpage queries were chosen 2026-10-11 from Keyword Planner data; the section said all queries were picked 2026-09-27 without statistics. If wrong, it is one sentence.
+- New doc headings are English ('## Service subpage' in content-model.md, matching T036's name in structured-data.md). Existing Cyrillic headings were not translated, because code comments cite them by name. If wrong, only heading style differs.
+- runbook step 2 treats 'sugar: false' as structure needing rebuild-sheet, as T038 says, although false alone adds no sheet row. If wrong, it costs one unnecessary rebuild.
+
+### S2 — dispatch 3 (2026-10-17)
+`kind=bundle agent=implementer tier=strong model=claude-opus-5-5 effort=xhigh turns=82 minutes=29.6 input=164 cache_write=253474 cache_read=15511385 output=91586`
