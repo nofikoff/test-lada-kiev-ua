@@ -2,17 +2,17 @@
 
 ## PriceItem — `src/data/prices.json`
 
-Без изменений (ADR-006, `src/content.config.ts`). Публикация меняет только `price.amount` у `fixed` и `price.variants[i].amount` у `variants`. Состав, порядок, `id`, `group`, `name`, `description`, `unit`, `count`, `share` не трогает.
+Без изменений (ADR-006, `src/content.config.ts`). Публикация меняет только `price.amount` у `fixed` и `price.variants[i].amount` у `variants` — и те же суммы цены пастой `sugar`, когда она у позиции есть (пакет 006, [content-model.md](../../docs/specs/content-model.md) §Инварианты). Состав, порядок, `id`, `group`, `name`, `description`, `unit`, `count`, `share` не трогает.
 
 ## SheetRow
 
-Одна строка листа «Цены» на одну сумму, в порядке `prices.json`, варианты — в порядке массива `variants`.
+Одна строка листа «Цены» на одну сумму, в порядке `prices.json`, варианты — в порядке массива `variants`. Строки цены пастой стоят сразу за строками общей цены своей позиции и несут её `group`, поэтому заголовка не получают и группу не разрывают ([content-model.md](../../docs/specs/content-model.md) §Инварианты).
 
 | Поле | Столбец | Кто пишет | Значение |
 |---|---|---|---|
-| `key` | A (скрыт) | rebuild | `<id>` для `fixed`, `<id>@<count>` для варианта |
-| `name` | B | rebuild | `name.ru`; у второго и третьего варианта позиции пусто |
-| `variant` | C | rebuild | `60 мин`, `5 сеансов`, `1 сеанс`; у `fixed` пусто |
+| `key` | A (скрыт) | rebuild | `<id>` для `fixed`, `<id>@<count>` для варианта; цена пастой — `<id>/sugar` и `<id>/sugar@<count>` |
+| `name` | B | rebuild | `name.ru`; у второго и третьего варианта позиции и у строк пастой пусто |
+| `variant` | C | rebuild | `60 мин`, `5 сеансов`, `1 сеанс`; у `fixed` пусто; у строк пастой — `сахар`, `сахар, 60 мин` |
 | `amount` | D | Лада | целое > 0; проверка ввода таблицы |
 | `published` | E | workflow после выкладки, rebuild | сумма на сайте, снимок синхронизации |
 | `mark` | F | workflow | пусто или причина отклонения |
