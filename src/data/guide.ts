@@ -24,6 +24,10 @@ export interface GuideIndex {
   articles(locale: GuideLocale): readonly GuideEntry[];
   /** Собранные адреса раздела на языке. */
   pathsOf(locale: GuideLocale): readonly string[];
+  /** Запись страницы на языке; страницы на нём нет — исключение: маршрут её бы не собрал. */
+  entryOf(locale: GuideLocale, ref: GuidePageRef): GuideEntry;
+  /** Ссылка на страницу записи — для адреса статьи в списках хаба и эксперта. */
+  refOf(entry: GuideEntry): GuidePageRef;
 }
 
 const BASE = 'src/content/guide/';
@@ -209,6 +213,10 @@ async function buildIndex(): Promise<GuideIndex> {
       .map((item) => item.entry)
       .sort(newestFirst(locale));
 
+  const refs = new Map(
+    pages.flatMap((page) => Object.values(page.entries).map((entry) => [entry, page.ref] as const)),
+  );
+
   return {
     pages,
     map,
@@ -217,6 +225,18 @@ async function buildIndex(): Promise<GuideIndex> {
     articlesOf: (locale, category) => articleEntries(locale, category),
     articles: (locale) => articleEntries(locale),
     pathsOf: (locale) => pages.filter((page) => page.entries[locale]).map((page) => pagePath(locale, page.ref)),
+    entryOf: (locale, ref) => {
+      const entry = pages.find(
+        (page) => page.ref.category === ref.category && page.ref.article === ref.article,
+      )?.entries[locale];
+      if (!entry) throw new Error(`в базе знаний нет страницы ${pagePath(locale, ref)}`);
+      return entry;
+    },
+    refOf: (entry) => {
+      const ref = refs.get(entry);
+      if (!ref) throw new Error(`${entry.filePath ?? entry.id}: запись не из индекса базы знаний`);
+      return ref;
+    },
   };
 }
 

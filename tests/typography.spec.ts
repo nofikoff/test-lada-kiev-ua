@@ -1,5 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
-import { homePages, SERVICE_COPY_SELECTOR, servicePages } from './support/site';
+import {
+  GUIDE_COPY_SELECTOR,
+  GUIDE_PAGES,
+  homePages,
+  SERVICE_COPY_SELECTOR,
+  servicePages,
+} from './support/site';
 
 /**
  * Длина строки протяжённого текста (docs/specs/design-tokens.md §Мера колонки) и область нажатия
@@ -175,6 +181,23 @@ test.describe('длина строки протяжённого текста', (
         // Пустой список абзацев прошёл бы проверку вхолостую: «ни одного длиннее предела»
         // верно и там, где мерить было нечего.
         expect(measured.length, `${path}: текст страницы услуги не найден`).toBeGreaterThan(3);
+        expect(
+          incomplete(measured).length,
+          `${path}: обход знаков потерял текст\n${lostText(measured)}`,
+        ).toBe(0);
+        expect(tooLong(measured).length, report(width, measured)).toBe(0);
+      });
+    }
+
+    // У хаба вступление в два абзаца, поэтому нижняя граница числа абзацев — одна на оба вида.
+    for (const { path } of GUIDE_PAGES) {
+      test(`текст базы знаний ${path} держит меру при ширине ${width}`, async ({ page }) => {
+        const selector = `${GUIDE_COPY_SELECTOR} p, ${GUIDE_COPY_SELECTOR} li`;
+        await openWithSiteFonts(page, path, width, selector);
+
+        const measured = await page.evaluate(measureInBrowser, { selector, minimum: MEANINGFUL_LENGTH });
+
+        expect(measured.length, `${path}: текст базы знаний не найден`).toBeGreaterThan(0);
         expect(
           incomplete(measured).length,
           `${path}: обход знаков потерял текст\n${lostText(measured)}`,

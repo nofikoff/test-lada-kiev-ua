@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { homePages, servicePages, type PageUnderTest } from './support/site';
+import { GUIDE_PAGES, homePages, servicePages, type PageUnderTest } from './support/site';
 
 /**
  * Контраст текста к своей подложке на СОБРАННОЙ странице (docs/specs/accessibility.md).
@@ -73,6 +73,12 @@ const SCOPES: readonly Scope[] = [
     // Категории и подстраницы: один шаблон, но у подстраницы свои крошки из трёх звеньев.
     name: 'страницы услуг',
     pages: servicePages,
+    within: 'main',
+  },
+  {
+    // Хаб и статья: крошки, даты, текст и блок ссылок карты.
+    name: 'база знаний',
+    pages: GUIDE_PAGES,
     within: 'main',
   },
   {

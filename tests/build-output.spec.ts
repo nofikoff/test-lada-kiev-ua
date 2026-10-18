@@ -1,5 +1,5 @@
-import { readdirSync, readFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
 import { expect, test } from '@playwright/test';
 
 /**
@@ -64,4 +64,46 @@ test.describe('выдача без комментариев кода', () => {
 
     expect(found, `комментариев в коде выдачи: ${found.length}\n${report(found)}`).toEqual([]);
   });
+});
+
+/**
+ * Каталог без `index.html` Apache отдаёт кодом 403, а не 404 (specs/007-knowledge-base-pilot/contracts/routes.md
+ * §Directories without index). Таких каталогов в выдаче ровно три, и у корня раздела базы знаний есть
+ * правило 404 в `.htaccess` своего языка. Новый каталог без индекса — например, маршрут `x/y.astro`
+ * без `x/` — краснит проверку раньше, чем прод ответит на него 403.
+ */
+const WITHOUT_INDEX: Record<string, string | null> = {
+  // Файлы сборки: адрес не публичный, 403 допустим.
+  _astro: null,
+  guide: '.htaccess',
+  'ru/guide': 'ru/.htaccess',
+};
+
+function directoriesOf(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .flatMap((entry) => {
+      const path = join(directory, entry.name);
+      return [path, ...directoriesOf(path)];
+    });
+}
+
+test.describe('каталоги выдачи без index.html', () => {
+  test(`только _astro/ и корни раздела базы знаний ${BUILD_TAG}`, () => {
+    const bare = directoriesOf(DIST)
+      .filter((directory) => !existsSync(join(directory, 'index.html')))
+      .map((directory) => relative(DIST, directory).split(sep).join('/'))
+      // Подкаталоги сборки — часть `_astro/`.
+      .filter((directory) => !directory.startsWith('_astro/'));
+    expect(bare.sort()).toEqual(Object.keys(WITHOUT_INDEX).sort());
+  });
+
+  for (const [directory, config] of Object.entries(WITHOUT_INDEX)) {
+    if (!config) continue;
+    test(`/${directory}/ закрыт правилом 404 в ${config} ${BUILD_TAG}`, () => {
+      const rules = readFileSync(join(DIST, config), 'utf8');
+      const escaped = directory.replace(/\//g, '\\/');
+      expect(rules).toMatch(new RegExp(`^\\s*RedirectMatch\\s+404\\s+\\^\\/${escaped}\\/\\?\\$\\s*$`, 'm'));
+    });
+  }
 });

@@ -1,0 +1,101 @@
+---
+/**
+ * Хаб категории базы знаний: крошки «главная → хаб», вступление, список всех статей категории
+ * и языка, затем ребро к услуге (specs/007-knowledge-base-pilot/contracts/links.md §Placement).
+ * Статьи перечисляет список, а блок ссылок карты выводит только ребро к услуге: иначе ссылка на
+ * статью стояла бы дважды. Новая статья появляется в списке файлом, без правки хаба.
+ */
+import { render } from 'astro:content';
+import Breadcrumbs from './Breadcrumbs.astro';
+import MapLinks from './MapLinks.astro';
+import Monogram from './Monogram.astro';
+import Section from './Section.astro';
+import { guideIndex } from '../data/guide';
+import { pageLinks } from '../data/map-links';
+import { displayAnchor, type GuideLocale } from '../i18n/guide';
+import { pagePath, type GuidePageRef } from '../i18n/paths';
+
+interface Props {
+  locale: GuideLocale;
+  page: GuidePageRef;
+}
+
+const { locale, page } = Astro.props;
+
+const index = await guideIndex();
+const entry = index.entryOf(locale, page);
+const { Content } = await render(entry);
+
+/**
+ * Текст пункта — анкор ребра «хаб → статья» из карты. Ребро есть у каждой статьи: без него сборка
+ * остановлена раньше (остановка № 11, src/data/guide.ts), поэтому промах здесь — дефект индекса.
+ */
+const edges = await pageLinks(locale, pagePath(locale, page));
+const articles = index.articlesOf(locale, page.category).map((article) => {
+  const href = pagePath(locale, index.refOf(article));
+  const edge = edges.find((candidate) => candidate.href === href);
+  if (!edge) throw new Error(`${article.filePath}: у хаба нет ребра карты к ${href}`);
+  return { href, text: displayAnchor(locale, edge.anchor) };
+});
+---
+
+<Section rhythm="air">
+  <Fragment slot="backdrop">
+    <Monogram mode="watermark" side="right" />
+  </Fragment>
+
+  <div class="mx-auto w-full max-w-4xl px-4">
+    <Breadcrumbs locale={locale} current={entry.data.heading} />
+
+    <h1 class="section-title hub__title">{entry.data.heading}</h1>
+
+    {/* Атрибут — договорённость с проверками: уникальность абзацев считается по нему (tests/support/site.ts). */}
+    <div class="copy hub__intro" data-guide-copy>
+      <Content />
+    </div>
+
+    <ul class="hub__list">
+      {
+        articles.map((article) => (
+          <li>
+            <a href={article.href} class="hub__link">
+              {article.text}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <MapLinks locale={locale} page={page} toKind="service" />
+  </div>
+</Section>
+
+<style>
+  .hub__title {
+    margin-bottom: var(--rhythm-tight);
+  }
+
+  .hub__intro {
+    max-width: var(--measure);
+  }
+
+  .hub__list {
+    display: grid;
+    gap: 1rem;
+    max-width: var(--measure);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--hair);
+  }
+
+  .hub__link {
+    @apply font-serif text-brass underline underline-offset-4;
+    font-size: var(--step-subtitle);
+    font-weight: 400;
+    line-height: 1.2;
+    transition: color 0.3s;
+  }
+
+  .hub__link:hover {
+    @apply text-brass-lt;
+  }
+</style>

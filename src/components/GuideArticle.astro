@@ -1,0 +1,88 @@
+---
+/**
+ * Статья базы знаний: крошки «главная → хаб → статья», заголовок, даты публикации и правки, текст
+ * и ссылки карты после него (specs/007-knowledge-base-pilot/contracts/links.md §Placement).
+ * Скрипта нет: всё собирается на сборке.
+ */
+import { render } from 'astro:content';
+import Breadcrumbs from './Breadcrumbs.astro';
+import MapLinks from './MapLinks.astro';
+import Monogram from './Monogram.astro';
+import Section from './Section.astro';
+import { guideIndex } from '../data/guide';
+import { displayDate, guide, isoDay, type GuideLocale } from '../i18n/guide';
+import { pagePath, type GuidePageRef } from '../i18n/paths';
+
+interface Props {
+  locale: GuideLocale;
+  page: GuidePageRef;
+}
+
+const { locale, page } = Astro.props;
+const t = guide[locale];
+
+const index = await guideIndex();
+const entry = index.entryOf(locale, page);
+// Хаб языка у статьи есть всегда: без него сборка остановлена (остановка № 8, src/data/guide.ts).
+const hub = index.hubOf(locale, page.category)!;
+const { Content } = await render(entry);
+
+/** Обе даты видны всегда: их же сверяет с `datePublished` и `dateModified` tests/seo-contract.spec.ts. */
+const dates = [
+  { label: t.published, date: entry.data.published },
+  { label: t.modified, date: entry.data.modified },
+];
+---
+
+<Section rhythm="air">
+  <Fragment slot="backdrop">
+    <Monogram mode="watermark" side="right" />
+  </Fragment>
+
+  <div class="mx-auto w-full max-w-4xl px-4">
+    <Breadcrumbs
+      locale={locale}
+      parents={[{ name: index.entryOf(locale, hub.ref).data.heading, href: pagePath(locale, hub.ref) }]}
+      current={entry.data.heading}
+    />
+
+    <h1 class="section-title article__title">{entry.data.heading}</h1>
+
+    <p class="article__byline">
+      {
+        dates.map(({ label, date }) => (
+          <span class="article__date">
+            {label} <time datetime={isoDay(date)}>{displayDate(locale, date)}</time>
+          </span>
+        ))
+      }
+    </p>
+
+    {/* Атрибут — договорённость с проверками: объём и уникальность текста считаются по нему (tests/support/site.ts). */}
+    <div class="copy article__copy" data-guide-copy>
+      <Content />
+    </div>
+
+    <MapLinks locale={locale} page={page} />
+  </div>
+</Section>
+
+<style>
+  .article__title {
+    margin-bottom: 1.25rem;
+  }
+
+  .article__byline {
+    @apply text-silk-dim;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin-bottom: var(--rhythm-tight);
+    font-size: var(--step-caption);
+  }
+
+  /* Мера колонки — та же, что у текста страницы услуги: у `.copy` своей меры нет (src/index.css). */
+  .article__copy {
+    max-width: var(--measure);
+  }
+</style>

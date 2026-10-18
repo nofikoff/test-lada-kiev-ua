@@ -219,8 +219,30 @@ export const PILOT_EDGES: readonly { readonly locale: GuideLocale; readonly from
   { locale: 'ru', from: '/ru/guide/depilation/', to: '/ru/depilation/' },
 ];
 
-/** Страницы сайта: языковые версии главной и страницы услуг. */
-export const allPages: readonly PageUnderTest[] = [...homePages, ...servicePages];
+/** Страницы сайта: языковые версии главной, страницы услуг и база знаний. */
+export const allPages: readonly PageUnderTest[] = [...homePages, ...servicePages, ...GUIDE_PAGES];
+
+/**
+ * Языки страницы: у главной и категорий — все три, у подстраницы — свои, у страниц базы знаний
+ * и эксперта — языки их файлов. По ним считаются `hreflang` и альтернативы карты сайта.
+ */
+export function localesOf(
+  page: PageUnderTest & { subpage?: ServiceSubpage; locales?: readonly Locale[] },
+): readonly Locale[] {
+  if (page.locales) return page.locales;
+  if (page.subpage) return SERVICE_SUBPAGES[page.subpage].locales;
+  return LOCALES;
+}
+
+/** Путь страницы без префикса языка: версии одной страницы различаются только префиксом (ADR-008). */
+export function barePath(path: string): string {
+  return path.replace(/^\/(ru|en)\//, '/');
+}
+
+/** Адрес версии страницы на языке `locale`. */
+export function pathIn(locale: Locale, bare: string): string {
+  return `${localePrefix(locale)}${bare}`;
+}
 
 /**
  * Файлы страниц ошибок. Адресами они не являются — сервер отдаёт их на месте запрошенного, —

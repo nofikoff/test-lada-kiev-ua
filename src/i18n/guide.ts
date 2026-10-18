@@ -7,12 +7,33 @@
  * `src/` он импортирует только типы: значение по пути без расширения Node в ESM не найдёт.
  */
 
+import type { Locale } from './ui';
+
 export const guideLocales = ['uk', 'ru'] as const;
 
 export type GuideLocale = (typeof guideLocales)[number];
 
 export function isGuideLocale(value: string): value is GuideLocale {
   return (guideLocales as readonly string[]).includes(value);
+}
+
+/** Язык страницы базы знаний или эксперта; `en` сюда попасть не может — маршрута под ним нет. */
+export function guideLocaleOf(locale: Locale): GuideLocale {
+  if (!isGuideLocale(locale)) throw new Error(`страниц базы знаний на языке «${locale}» нет`);
+  return locale;
+}
+
+/** Календарный день записи — для `datetime` и JSON-LD. Дата без времени разобрана в полночь UTC. */
+export function isoDay(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Видимая дата. `timeZone: 'UTC'` обязателен: дата без времени — полночь UTC, и в поясе западнее
+ * она показалась бы предыдущим днём (specs/007-knowledge-base-pilot/research.md R9).
+ */
+export function displayDate(locale: GuideLocale, date: Date): string {
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' }).format(date);
 }
 
 export interface GuideDictionary {

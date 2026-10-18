@@ -1,5 +1,13 @@
 import { expect, test, type APIRequestContext } from '@playwright/test';
-import { allPages, SITE_ORIGIN, subpagePages, toLocalPath } from './support/site';
+import {
+  allPages,
+  barePath,
+  localesOf,
+  pathIn,
+  SITE_ORIGIN,
+  toLocalPath,
+  type Locale,
+} from './support/site';
 
 /**
  * Карта сайта (docs/specs/routes.md §Route map) против собранного сайта.
@@ -10,12 +18,9 @@ import { allPages, SITE_ORIGIN, subpagePages, toLocalPath } from './support/site
  */
 
 /** Теги языка в карте сайта — полные, с регионом, в отличие от кода языка в разметке страницы. */
-const SITEMAP_HREFLANGS = ['uk-UA', 'ru-UA', 'en'];
+const SITEMAP_HREFLANG: Record<Locale, string> = { uk: 'uk-UA', ru: 'ru-UA', en: 'en' };
 
-/** У подстраницы английской версии нет (ADR-028), поэтому и альтернативы `en` у неё нет. */
-const SUBPAGE_HREFLANGS = ['uk-UA', 'ru-UA'];
-
-const SUBPAGE_ADDRESSES = new Set(subpagePages.map((page) => `${SITE_ORIGIN}${page.path}`));
+const PAGE_BY_ADDRESS = new Map(allPages.map((page) => [`${SITE_ORIGIN}${page.path}`, page]));
 
 const INDEX = '/sitemap-index.xml';
 
@@ -69,22 +74,31 @@ test.describe('карта сайта', () => {
     ).toEqual(expected);
   });
 
-  test('у каждого адреса альтернативы всех его языков: три, у подстраницы — две', async ({
+  /**
+   * Альтернативы — по одной на каждый язык страницы и на ту же страницу этого языка. У страницы
+   * на одном языке альтернатив нет: так ведёт себя `@astrojs/sitemap` (research.md R6 пакета 007).
+   */
+  test('у каждого адреса альтернативы ровно его языков, у одноязычной страницы — ни одной', async ({
     request,
   }) => {
     const entries = await allEntries(request);
 
     for (const entry of entries) {
-      const hreflangs = SUBPAGE_ADDRESSES.has(entry.loc) ? SUBPAGE_HREFLANGS : SITEMAP_HREFLANGS;
-      expect(
-        entry.alternates.map((alternate) => alternate.hreflang).sort(),
-        `языковые альтернативы ${entry.loc}`,
-      ).toEqual([...hreflangs].sort());
+      const page = PAGE_BY_ADDRESS.get(entry.loc);
+      expect(page, `${entry.loc} нет среди страниц сайта`).toBeDefined();
+
+      const own = localesOf(page!);
+      const bare = barePath(page!.path);
+      const expected =
+        own.length > 1
+          ? own.map((locale) => [SITEMAP_HREFLANG[locale], `${SITE_ORIGIN}${pathIn(locale, bare)}`])
+          : [];
 
       // Альтернативы страницы категории ведут на ту же категорию, а не на главную.
-      for (const alternate of entry.alternates) {
-        expect(alternate.href.startsWith(SITE_ORIGIN), `${alternate.href} — чужой хост`).toBe(true);
-      }
+      expect(
+        entry.alternates.map((alternate) => [alternate.hreflang, alternate.href]).sort(),
+        `языковые альтернативы ${entry.loc}`,
+      ).toEqual(expected.sort());
     }
   });
 

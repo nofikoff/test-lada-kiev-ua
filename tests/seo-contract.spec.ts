@@ -1,19 +1,25 @@
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
 import {
   ABOUT,
+  ABOUT_COPY_SELECTOR,
   ALUMNI,
   allPages,
   ANALYTICS_ID,
   APEX_ORIGIN,
+  barePath,
   categoryPages,
   countWords,
   expectedPricedRows,
   FOUNDER_ROLE,
+  GUIDE_COPY_SELECTOR,
+  GUIDE_PAGES,
   homePages,
   htmlToText,
   INSTAGRAM,
   LOCALES,
+  localesOf,
   normalize,
+  pathIn,
   PHONE,
   priceRange,
   readPrices,
@@ -700,6 +706,215 @@ test.describe('тексты страниц услуг', () => {
 
       const owner = new Map<string, string>();
       for (const [path, paragraphs] of paragraphsByPage) {
+        for (const paragraph of paragraphs) {
+          expect(
+            owner.get(paragraph),
+            `абзац повторяется в «${owner.get(paragraph)}» и «${path}»: ${paragraph.slice(0, 60)}…`,
+          ).toBeUndefined();
+          owner.set(paragraph, path);
+        }
+      }
+    });
+  }
+});
+
+/** `@id` основательницы и организации на главной языка: страницы базы знаний ссылаются на них. */
+async function homeIds(request: APIRequestContext, locale: Locale): Promise<{ founder: string; business: string }> {
+  const response = await request.get(homeOf(locale));
+  expect(response.status(), `${homeOf(locale)} не отдаётся`).toBe(200);
+  const html = await response.text();
+  const nodes = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].flatMap(
+    ([, block]) => flattenGraph(JSON.parse(block)),
+  );
+  const business = nodes.find((node) => node['@type'] === 'HealthAndBeautyBusiness')!;
+  return {
+    founder: String((business.founder as Record<string, unknown>)['@id']),
+    business: String(business['@id']),
+  };
+}
+
+/** Видимые крошки: имя и адрес каждого звена, текущая страница — без ссылки. */
+async function visibleCrumbs(page: Page): Promise<{ name: string; href: string | null }[]> {
+  return page.locator('main nav ol > li:not([aria-hidden="true"])').evaluateAll((items) =>
+    items.map((item) => ({
+      name: (item.textContent ?? '').replace(/\s+/g, ' ').trim(),
+      href: item.querySelector('a')?.getAttribute('href') ?? (item.getAttribute('aria-current') ? null : '?'),
+    })),
+  );
+}
+
+/**
+ * Хаб и статья базы знаний: заголовочная часть и JSON-LD по
+ * specs/007-knowledge-base-pilot/contracts/page-head-and-jsonld.md §Checks.
+ */
+for (const guidePage of GUIDE_PAGES) {
+  const { locale, path, kind, category } = guidePage;
+  const own = localesOf(guidePage);
+  const bare = barePath(path);
+  const canonical = `${SITE_ORIGIN}${path}`;
+  const hub = GUIDE_PAGES.find(
+    (entry) => entry.kind === 'hub' && entry.locale === locale && entry.category === category,
+  )!;
+  const articles = GUIDE_PAGES.filter(
+    (entry) => entry.kind === 'article' && entry.locale === locale && entry.category === category,
+  );
+
+  test.describe(`база знаний ${path}`, () => {
+    test('язык, один h1, канонический адрес и альтернативы — только языки страницы', async ({
+      page,
+      request,
+    }) => {
+      expect((await request.get(path)).status(), `${path} не отдаётся`).toBe(200);
+      await page.goto(path);
+
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
+
+      const pairs = await page
+        .locator('link[rel="alternate"][hreflang]')
+        .evaluateAll((links) =>
+          links.map((link) => [link.getAttribute('hreflang'), link.getAttribute('href')] as const),
+        );
+      const versions = Object.fromEntries(own.map((code) => [code, `${SITE_ORIGIN}${pathIn(code, bare)}`]));
+      expect(Object.fromEntries(pairs)).toEqual({
+        ...versions,
+        'x-default': versions.uk ?? versions[own[0]],
+      });
+      for (const [, href] of pairs) {
+        const response = await request.get(toLocalPath(href!), { maxRedirects: 0 });
+        expect(response.status(), `языковая альтернатива ${href}`).toBe(200);
+      }
+
+      expect(await metaContent(page, 'meta[property="og:type"]')).toBe('website');
+      expect(await metaContent(page, 'meta[property="og:locale"]')).toBe(OG_LOCALE[locale]);
+      const alternates = await page
+        .locator('meta[property="og:locale:alternate"]')
+        .evaluateAll((tags) => tags.map((tag) => tag.getAttribute('content')));
+      expect(alternates.sort()).toEqual(ogAlternates(own, locale).sort());
+    });
+
+    test('один блок JSON-LD, FAQPage нет', async ({ page }) => {
+      await page.goto(path);
+      await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+      const nodes = await structuredData(page);
+      // ADR-020: вопрос в заголовке статьи не делает её FAQ.
+      expect(nodes.filter((node) => node['@type'] === 'FAQPage')).toEqual([]);
+    });
+
+    test('BreadcrumbList повторяет видимые крошки', async ({ page }) => {
+      await page.goto(path);
+      const nodes = await structuredData(page);
+      const breadcrumb = nodes.find((node) => node['@type'] === 'BreadcrumbList');
+      expect(breadcrumb, 'нет цепочки навигации').toBeDefined();
+      const items = asArray(breadcrumb!.itemListElement) as Record<string, unknown>[];
+
+      const chain = kind === 'article' ? [homeOf(locale), hub.path, path] : [homeOf(locale), path];
+      expect(items.map(crumbAddress)).toEqual(chain.map((step) => `${SITE_ORIGIN}${step}`));
+      expect(items.map((item) => Number(item.position))).toEqual(chain.map((_, index) => index + 1));
+
+      const crumbs = await visibleCrumbs(page);
+      expect(crumbs.map((crumb) => normalize(crumb.name))).toEqual(
+        items.map((item) => normalize(String(item.name))),
+      );
+      expect(crumbs.map((crumb) => crumb.href)).toEqual([...chain.slice(0, -1), null]);
+      expect(normalize(crumbs.at(-1)!.name)).toBe(normalize(await page.locator('h1').innerText()));
+    });
+
+    if (kind === 'article') {
+      test('Article: автор — основательница главной, издатель — организация, даты как на странице', async ({
+        page,
+        request,
+      }) => {
+        await page.goto(path);
+        const nodes = await structuredData(page);
+        const article = nodes.find((node) => node['@type'] === 'Article' && node['@id'] === `${canonical}#article`);
+        expect(article, 'нет узла Article').toBeDefined();
+
+        const ids = await homeIds(request, locale);
+        const author = article!.author as Record<string, unknown>;
+        const publisher = article!.publisher as Record<string, unknown>;
+        expect(author['@id']).toBe(ids.founder);
+        expect(author.name).toBe(ABOUT[locale].signatureName);
+        expect(publisher['@id']).toBe(ids.business);
+        expect(publisher.name).toBe('Lada N');
+        expect(publisher.url).toBe(`${SITE_ORIGIN}${homeOf(locale)}`);
+
+        expect(normalize(String(article!.headline))).toBe(normalize(await page.locator('h1').innerText()));
+        expect(article!.description).toBe(await metaContent(page, 'meta[name="description"]'));
+        expect(article!.url).toBe(canonical);
+        expect(article!.mainEntityOfPage).toBe(canonical);
+        expect(article!.inLanguage).toBe(locale);
+        expect(article!.image).toBe(await metaContent(page, 'meta[property="og:image"]'));
+
+        const published = String(article!.datePublished);
+        const modified = String(article!.dateModified);
+        expect(published).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(modified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(published <= modified, `datePublished ${published} позже dateModified ${modified}`).toBe(true);
+
+        const shown = await page
+          .locator('main time[datetime]')
+          .evaluateAll((times) => times.map((time) => time.getAttribute('datetime')));
+        expect(shown, 'видимые даты публикации и правки').toEqual([published, modified]);
+      });
+
+      test('текст статьи не короче 400 слов', async ({ page }) => {
+        await page.goto(path);
+        const copy = page.locator(GUIDE_COPY_SELECTOR);
+        await expect(copy).toHaveCount(1);
+        const words = countWords(await copy.innerText());
+        expect(words, `${path}: ${words} слов`).toBeGreaterThanOrEqual(400);
+      });
+    } else {
+      test('CollectionPage.hasPart — статьи списка хаба в его порядке', async ({ page }) => {
+        await page.goto(path);
+        const nodes = await structuredData(page);
+        const collection = nodes.find((node) => node['@type'] === 'CollectionPage');
+        expect(collection, 'нет узла CollectionPage').toBeDefined();
+        expect(collection!['@id']).toBe(`${canonical}#page`);
+        expect(normalize(String(collection!.name))).toBe(normalize(await page.locator('h1').innerText()));
+        expect(collection!.url).toBe(canonical);
+        expect(collection!.inLanguage).toBe(locale);
+
+        const parts = asArray(collection!.hasPart) as Record<string, unknown>[];
+        const articlePaths = new Set(articles.map((entry) => entry.path));
+        const listed = (
+          await page.locator('main a[href]').evaluateAll((links) => links.map((link) => link.getAttribute('href')!))
+        ).filter((href) => articlePaths.has(href));
+        expect(new Set(listed), 'список хаба против статей категории').toEqual(articlePaths);
+        expect(parts.map((part) => part.url)).toEqual(listed.map((href) => `${SITE_ORIGIN}${href}`));
+        expect(parts.map((part) => part['@id'])).toEqual(listed.map((href) => `${SITE_ORIGIN}${href}#article`));
+      });
+    }
+  });
+}
+
+/**
+ * Абзацы статей и хабов не повторяют ни друг друга, ни тексты услуг, ни обращение «Про нас»
+ * своего языка (specs/007-knowledge-base-pilot/contracts/content-files.md §Text rules).
+ */
+test.describe('тексты базы знаний', () => {
+  for (const locale of ['uk', 'ru'] as const) {
+    test(`абзацы базы знаний локали ${locale} не повторяют другие страницы`, async ({ page }) => {
+      const sources = [
+        ...GUIDE_PAGES.filter((entry) => entry.locale === locale).map((entry) => ({
+          path: entry.path,
+          selector: GUIDE_COPY_SELECTOR,
+        })),
+        ...servicePages
+          .filter((entry) => entry.locale === locale)
+          .map((entry) => ({ path: entry.path, selector: SERVICE_COPY_SELECTOR })),
+        { path: homeOf(locale), selector: ABOUT_COPY_SELECTOR },
+      ];
+
+      const owner = new Map<string, string>();
+      for (const { path, selector } of sources) {
+        await page.goto(path);
+        const copy = page.locator(selector);
+        await expect(copy, `${path}: контейнер ${selector}`).toHaveCount(1);
+        const paragraphs = (await copy.locator('p').allInnerTexts()).map(normalize).filter(Boolean);
+        expect(paragraphs.length, `${path}: текст без абзацев`).toBeGreaterThan(0);
         for (const paragraph of paragraphs) {
           expect(
             owner.get(paragraph),

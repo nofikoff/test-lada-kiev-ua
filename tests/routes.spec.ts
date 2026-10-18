@@ -84,6 +84,19 @@ test.describe('адреса подстраниц', () => {
   }
 });
 
+test.describe('адреса базы знаний', () => {
+  /**
+   * Корня раздела нет, английской версии раздела нет (specs/007-knowledge-base-pilot/contracts/routes.md).
+   * Preview не исполняет `.htaccess`, поэтому 404 на проде — проверка после выкладки в `publish.yml`;
+   * здесь — что сборка не выдала на этих адресах страницу.
+   */
+  for (const path of ['/guide/', '/ru/guide/', '/en/guide/depilation/vs-epilation/']) {
+    test(`${path} отвечает кодом 404`, async ({ request }) => {
+      expect((await request.get(path)).status()).toBe(404);
+    });
+  }
+});
+
 test.describe('несуществующий адрес', () => {
   /**
    * Действующий сайт отвечает на любой битый адрес кодом 200 с главной страницей — механика

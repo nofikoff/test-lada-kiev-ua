@@ -7,9 +7,12 @@ import {
   categoryPages,
   countWords,
   FORBIDDEN_NAME,
+  GUIDE_COPY_SELECTOR,
+  GUIDE_PAGES,
   HOME_FONT_FACES,
   homePages,
   htmlToText,
+  HUB_FORBIDDEN,
   normalize,
   queryOf,
   SERVICE_COPY_SELECTOR,
@@ -65,10 +68,41 @@ test.describe('карта запросов', () => {
         expect(description, `описание без ${fragment}`).toMatch(fragment);
       }
 
+      // У хаба запроса нет: `search(undefined)` искал бы строку «undefined» и прошёл бы вхолостую.
+      if (query.length === 0) return;
       const primary = description.search(query[0]);
       expect(primary, `основная формулировка во второй половине описания: ${description}`).toBeLessThan(
         description.length / 2,
       );
+    });
+  }
+
+  for (const page of GUIDE_PAGES.filter((entry) => entry.kind === 'article')) {
+    test(`${page.path}: первый абзац статьи называет запрос`, async ({ page: browser }) => {
+      await browser.goto(page.path);
+      const first = normalize(await browser.locator(`${GUIDE_COPY_SELECTOR} p`).first().innerText());
+      for (const fragment of queryOf(page)) {
+        expect(first, `первый абзац без ${fragment}`).toMatch(fragment);
+      }
+    });
+  }
+
+  /**
+   * Хаб называет раздел и категорию, а не запрос: формулировки категории и его статей отданы
+   * своим страницам (specs/007-knowledge-base-pilot/contracts/page-head-and-jsonld.md §Head).
+   */
+  for (const page of GUIDE_PAGES.filter((entry) => entry.kind === 'hub')) {
+    test(`${page.path}: заголовок хаба по формуле, запросов категории и статей нет`, async ({ request }) => {
+      const fields = head(await (await request.get(page.path)).text());
+
+      expect(fields.h1).toBe(page.heading);
+      expect(fields.title).toBe(`${page.heading} — Lada N`);
+
+      const forbidden = HUB_FORBIDDEN[page.locale][page.category] ?? [];
+      expect(forbidden.length, `${page.path}: нет списка запретов хаба`).toBeGreaterThan(0);
+      for (const [field, value] of Object.entries(fields)) {
+        for (const phrase of forbidden) expect(value, `${field}: ${value}`).not.toMatch(phrase);
+      }
     });
   }
 

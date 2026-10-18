@@ -1,0 +1,21 @@
+---
+/**
+ * База знаний: хаб `/guide/<категория>/` и статья `/guide/<категория>/<slug>/` — адрес и есть путь
+ * файла коллекции `guide` (specs/007-knowledge-base-pilot/contracts/routes.md). Маршрута под `en`
+ * нет, корня раздела нет: оба адреса отвечают 404.
+ */
+import type { InferGetStaticPropsType } from 'astro';
+import GuideArticle from '../../components/GuideArticle.astro';
+import GuideHub from '../../components/GuideHub.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { guideStaticPaths } from '../../data/guide';
+
+export const getStaticPaths = () => guideStaticPaths('uk');
+
+const locale = 'uk';
+const { page } = Astro.props as InferGetStaticPropsType<typeof getStaticPaths>;
+---
+
+<BaseLayout locale={locale} page={page}>
+  {page.article ? <GuideArticle locale={locale} page={page} /> : <GuideHub locale={locale} page={page} />}
+</BaseLayout>

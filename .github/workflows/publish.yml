@@ -198,6 +198,9 @@ jobs:
           curl -sf "$SITE_ORIGIN/robots.txt" | grep -q "^Sitemap: $SITE_ORIGIN/sitemap-index.xml"
           curl -sfI "$SITE_ORIGIN/sitemap-index.xml" | grep -qi '^content-type: application/xml'
           curl -s "$SITE_ORIGIN/en/nonexistent-check" | grep -q 'lang="en"'
+          test "$(curl -s -o /dev/null -w '%{http_code}' "$SITE_ORIGIN/guide/")" = 404
+          test "$(curl -s -o /dev/null -w '%{http_code}' "$SITE_ORIGIN/ru/guide/")" = 404
+          curl -s "$SITE_ORIGIN/ru/guide/" | grep -q 'lang="ru"'
 
       - id: push
         name: Push prices to main

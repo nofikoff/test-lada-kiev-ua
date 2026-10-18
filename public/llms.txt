@@ -4,7 +4,7 @@
 
 The studio belongs to Lada Novikova, its founder: a physical rehabilitation specialist by training (National University of Ukraine on Physical Education and Sport) who gives massage sessions herself. The rest of the team works under the studio's name.
 
-The site is static HTML in three languages: Ukrainian at the root, Russian under `/ru/`, English under `/en/`. Fifteen pages exist in all three languages, plus two service subpages in Ukrainian and Russian only; the address of a page is identical in every language it exists in, and every page carries its full price list in the served HTML — no script has to run to see a price.
+The site is static HTML in three languages: Ukrainian at the root, Russian under `/ru/`, English under `/en/`. The home page and the service category pages exist in all three languages; service subpages, the knowledge base and the expert page exist in Ukrainian and Russian only. The address of a page is identical in every language it exists in, and the home page and every service page carry their price list in the served HTML — no script has to run to see a price.
 
 ## Pages
 
@@ -22,6 +22,15 @@ Russian: [/ru/](https://www.lada.kiev.ua/ru/), [/ru/massage/](https://www.lada.k
 
 English: [/en/](https://www.lada.kiev.ua/en/), [/en/massage/](https://www.lada.kiev.ua/en/massage/), [/en/depilation/](https://www.lada.kiev.ua/en/depilation/), [/en/permanent/](https://www.lada.kiev.ua/en/permanent/), [/en/beauty/](https://www.lada.kiev.ua/en/beauty/)
 
+## Knowledge base
+
+Articles that answer one question each about the studio's services, in Ukrainian and Russian. There is no section root: `/guide/` answers 404.
+
+- [Hair removal: questions and answers](https://www.lada.kiev.ua/guide/depilation/): hair removal hub, lists its articles (Ukrainian)
+- [Depilation or epilation](https://www.lada.kiev.ua/guide/depilation/vs-epilation/): how depilation differs from epilation, which methods belong to each and how long results last (Ukrainian)
+- [Hair removal: questions and answers](https://www.lada.kiev.ua/ru/guide/depilation/): the same hub in Russian
+- [Depilation or epilation](https://www.lada.kiev.ua/ru/guide/depilation/vs-epilation/): the same article in Russian
+
 ## Services
 
 - **Massage**: relaxation, therapeutic, author's, sports and four-hands sessions; local work on the neck, back, face, head, feet and hands; exotic techniques — Gua Sha, coconut bowls, anti-cellulite, cupping with stone therapy, Yumeiho, Tibetan honey and chocolate, Abhyanga, Shirodhara, lymphatic drainage
@@ -29,7 +38,7 @@ English: [/en/](https://www.lada.kiev.ua/en/), [/en/massage/](https://www.lada.k
 - **Permanent makeup**: brows, lips, interlash and eyeliner; a correction 28–60 days after the procedure costs 50% of it; a refresh within 6 months costs 80%
 - **Brows, lashes and makeup**: brow shaping and tinting, lash extensions and lamination, makeup, hair styling
 
-Session prices are stated on every page in Ukrainian hryvnia. Duration-based services list a price per duration; a correction is priced as a share of the base procedure and has no fixed amount.
+Session prices are stated on the home page and on every service page in Ukrainian hryvnia; the knowledge base and the expert page carry no prices. Duration-based services list a price per duration; a correction is priced as a share of the base procedure and has no fixed amount.
 
 ## Contact
 
@@ -41,7 +50,7 @@ Session prices are stated on every page in Ukrainian hryvnia. Duration-based ser
 
 ## Machine-readable
 
-- [Sitemap](https://www.lada.kiev.ua/sitemap-index.xml): all nineteen pages with their language alternates
+- [Sitemap](https://www.lada.kiev.ua/sitemap-index.xml): all pages with their language alternates
 - [robots.txt](https://www.lada.kiev.ua/robots.txt)
 
-Every page carries JSON-LD: the home page describes the business (address, hours, phone, price range, founder), each category page and service subpage describes the service with its offers and a breadcrumb. Share-priced items are deliberately absent from the offer list — an offer without an amount would read as a free service.
+Every page carries JSON-LD: the home page describes the business (address, hours, phone, price range, founder), each category page and service subpage describes the service with its offers and a breadcrumb. A knowledge base article is an `Article` whose author is the founder, with a breadcrumb; a knowledge base hub is a `CollectionPage` with a breadcrumb; the expert page is a `ProfilePage` about the founder. Share-priced items are deliberately absent from the offer list — an offer without an amount would read as a free service.
