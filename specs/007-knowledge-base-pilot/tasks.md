@@ -349,14 +349,14 @@ gate_commands:
   type: "npm run check"
 -->
 
-- [ ] T058 [P] Написать `docs/adr/adr-029-knowledge-base-collection-links-from-seo-map.md` по `docs/adr/adr-template.md` (номер 029 выдан get-id 2026-10-18): под строкой `**Related:**` — `- **Affects:** src/content/guide/** · src/data/guide.ts · src/data/seo-map.ts · docs/seo/map.md`; решение из [plan.md](plan.md) §ADR decision и четыре `- **Rejected: …**` оттуда же — TS-реестр, корень `/guide/`, анкоры копией, флаг черновика; в Consequences — исключение из принципа II конституции «перевод обязателен на языки страницы; страница базы знаний может быть одноязычной» и строка `- Follow-up: через 8 недель после выкладки у статьи пилота больше нуля показов в Search Console на каждом языке (SC-003); ноль показов — повод пересмотреть решение`
-- [ ] T059 [P] Перенести в `docs/specs/routes.md` строки [contracts/routes.md](contracts/routes.md) и [contracts/links.md](contracts/links.md): маршруты раздела и эксперта со ссылкой на ADR-029, `/guide/` → 404 и причина 403, §Directories without index, правило вывода ссылок из карты и проверка рёбер пилота литералами, `llms.txt`; строка «В карте сайта только адреса, отвечающие 200: девятнадцать страниц…» переписывается без числа — все страницы, отвечающие 200, альтернативы по языкам страницы ([contracts/routes.md](contracts/routes.md) §llms.txt, последний абзац)
-- [ ] T060 [P] Обновить `docs/specs/page-head.md`: `hreflang` по существующим версиям страницы и правило `x-default`; строки запросов статьи и эксперта в §Целевые запросы; хаб без запроса ядра, его формула заголовка «`<Категорія>: відповіді на питання`» / «`<Категория>: ответы на вопросы`» и таблица его запретов; форма заголовка новых страниц
-- [ ] T061 [P] Обновить `docs/specs/structured-data.md`: разделы `Article`, `CollectionPage`, `ProfilePage` и `founderNode(locale)` как общий источник `founder` главной, автора статьи и предмета страницы эксперта
-- [ ] T062 [P] Добавить `docs/specs/content-model.md` §Knowledge base: раскладка файлов, frontmatter и даты (дата публикации пилота — день слияния), таблица остановок сборки, §Claim kinds, §Expert facts и место для §Sources / §Practice claims (таблицы переносятся при `/speckit-retire`); в §Инварианты к пункту «Перевод обязателен» — исключение: перевод обязателен на языки страницы, а страница базы знаний может быть одноязычной, со ссылкой на ADR-029 (конституция, принцип II, ссылается именно на §Инварианты)
-- [ ] T063 [P] Обновить `docs/specs/voice.md`: подпись статьи «Лада Новикова, засновниця студії» / «основательница студии», статьи и хаб — от «ми», Лада на `/lada/` — в третьем лице; в §Contract — Лада подписывает статьи базы знаний студии, и страница эксперта называет её роль подписывающей; пункт «Биография Лады» не меняется — стаж и сертификаты появляются, только когда их даст автор (вопросы 2–4 spec §Lada's Facts); в строку **Code** — `src/content/guide/`, `src/content/expert/`
-- [ ] T064 [P] Обновить `docs/runbook-deploy.md`: в списке проверок после выкладки — 404 на `/guide/` и `/ru/guide/` и `lang="ru"`; в таблице статусов — «ошибка, сайт не изменён» с `docs/seo/map.md` или `src/content/guide/` в журнале: карта разошлась с контентом, правку карты откатить или довести `/seo map` в ветке
-- [ ] T065 [P] Добавить в `CLAUDE.md` §Что открыть строку: `docs/seo/map.md`, `src/content/guide/` → [docs/specs/content-model.md](../../docs/specs/content-model.md) — сборка читает карту: переименование `page`, смена адреса или удаление ребра «хаб → статья» останавливает публикацию, в том числе галочку Лады, а правка анкора в `main` меняет текст ссылки на сайте со следующей публикацией
+- [x] T058 [P] Написать `docs/adr/adr-029-knowledge-base-collection-links-from-seo-map.md` по `docs/adr/adr-template.md` (номер 029 выдан get-id 2026-10-18): под строкой `**Related:**` — `- **Affects:** src/content/guide/** · src/data/guide.ts · src/data/seo-map.ts · docs/seo/map.md`; решение из [plan.md](plan.md) §ADR decision и четыре `- **Rejected: …**` оттуда же — TS-реестр, корень `/guide/`, анкоры копией, флаг черновика; в Consequences — исключение из принципа II конституции «перевод обязателен на языки страницы; страница базы знаний может быть одноязычной» и строка `- Follow-up: через 8 недель после выкладки у статьи пилота больше нуля показов в Search Console на каждом языке (SC-003); ноль показов — повод пересмотреть решение`
+- [x] T059 [P] Перенести в `docs/specs/routes.md` строки [contracts/routes.md](contracts/routes.md) и [contracts/links.md](contracts/links.md): маршруты раздела и эксперта со ссылкой на ADR-029, `/guide/` → 404 и причина 403, §Directories without index, правило вывода ссылок из карты и проверка рёбер пилота литералами, `llms.txt`; строка «В карте сайта только адреса, отвечающие 200: девятнадцать страниц…» переписывается без числа — все страницы, отвечающие 200, альтернативы по языкам страницы ([contracts/routes.md](contracts/routes.md) §llms.txt, последний абзац)
+- [x] T060 [P] Обновить `docs/specs/page-head.md`: `hreflang` по существующим версиям страницы и правило `x-default`; строки запросов статьи и эксперта в §Целевые запросы; хаб без запроса ядра, его формула заголовка «`<Категорія>: відповіді на питання`» / «`<Категория>: ответы на вопросы`» и таблица его запретов; форма заголовка новых страниц
+- [x] T061 [P] Обновить `docs/specs/structured-data.md`: разделы `Article`, `CollectionPage`, `ProfilePage` и `founderNode(locale)` как общий источник `founder` главной, автора статьи и предмета страницы эксперта
+- [x] T062 [P] Добавить `docs/specs/content-model.md` §Knowledge base: раскладка файлов, frontmatter и даты (дата публикации пилота — день слияния), таблица остановок сборки, §Claim kinds, §Expert facts и место для §Sources / §Practice claims (таблицы переносятся при `/speckit-retire`); в §Инварианты к пункту «Перевод обязателен» — исключение: перевод обязателен на языки страницы, а страница базы знаний может быть одноязычной, со ссылкой на ADR-029 (конституция, принцип II, ссылается именно на §Инварианты)
+- [x] T063 [P] Обновить `docs/specs/voice.md`: подпись статьи «Лада Новикова, засновниця студії» / «основательница студии», статьи и хаб — от «ми», Лада на `/lada/` — в третьем лице; в §Contract — Лада подписывает статьи базы знаний студии, и страница эксперта называет её роль подписывающей; пункт «Биография Лады» не меняется — стаж и сертификаты появляются, только когда их даст автор (вопросы 2–4 spec §Lada's Facts); в строку **Code** — `src/content/guide/`, `src/content/expert/`
+- [x] T064 [P] Обновить `docs/runbook-deploy.md`: в списке проверок после выкладки — 404 на `/guide/` и `/ru/guide/` и `lang="ru"`; в таблице статусов — «ошибка, сайт не изменён» с `docs/seo/map.md` или `src/content/guide/` в журнале: карта разошлась с контентом, правку карты откатить или довести `/seo map` в ветке
+- [x] T065 [P] Добавить в `CLAUDE.md` §Что открыть строку: `docs/seo/map.md`, `src/content/guide/` → [docs/specs/content-model.md](../../docs/specs/content-model.md) — сборка читает карту: переименование `page`, смена адреса или удаление ребра «хаб → статья» останавливает публикацию, в том числе галочку Лады, а правка анкора в `main` меняет текст ссылки на сайте со следующей публикацией
 
 ### Step 7.2: Manual acceptance
 
@@ -383,7 +383,7 @@ gate_commands:
   test_full: "npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze"
 -->
 
-- [ ] T068 Прогнать семь гейтов из `CLAUDE.md` §Гейты: `npm run check && npm run lint && npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze` — все зелёные (SC-005); `npm run analyze` подтверждает ноль байт нового клиентского JS
+- [x] T068 Прогнать семь гейтов из `CLAUDE.md` §Гейты: `npm run check && npm run lint && npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze` — все зелёные (SC-005); `npm run analyze` подтверждает ноль байт нового клиентского JS
 
 ### Step 7.4: Publication dates
 
@@ -591,3 +591,30 @@ decided:
 
 ### S2 — dispatch 4 (2026-10-18)
 `kind=spec-verify agent=verifier model=claude-sonnet-5-5 effort=high turns=24 minutes=2.1 input=48 cache_write=117170 cache_read=1608559 output=12688`
+
+### S3.step-7.1 — 2026-10-18
+**Completed steps:** 7.1
+**Commits:** 4116f37
+
+### S3.step-7.3 — 2026-10-18
+**Completed steps:** 7.3
+**Commits:** 53a5c69
+
+### S3 — observations (2026-10-18, dispatch 5)
+plan-wrong:
+- TaskCreate is not exposed in this harness; the bundle was tracked without it.
+- Carry-over 1 said data-model.md line ~68 held the old filter name. That line describes the toKind field of the returned PageLink, which is still correct; the MapLinks prop was never documented there, so a toKinds paragraph was added instead. T012 and T031 in tasks.md still say `toKind` (plan file read-only, not touched).
+- src/data/gallery.json strip alts still say Lada does sugaring (line 35), shapes and tints brows (22, 61), does makeup (101) and holds the Epilax sugaring master certificate (151). They conflict with FR-014 as the author stated it for the portrait; the author needs to decide, nothing was changed.
+- 21 files in src/, tests/, scripts/, public/, .github/ and docs/ cite specs/007-knowledge-base-pilot/ (contracts, research, plan). Those citations dangle once /speckit-retire dissolves the package; the retire step has to rewrite them.
+- T068 is a gate run with no file change of its own; the 7.3 commit holds the alt fix from carry-over 4, and the chain ran on exactly that tree.
+redone:
+- The FR-012 sentence in spec.md was first written as description and rewritten as a requirement (the page does not call the split accepted salon practice) before the commit; a runbook clause that rebuild-sheet is not needed was dropped as unsupported by the plan.
+decided:
+- CLAUDE.md's already-rejected paragraph also lists the ADR-029 rejections, in addition to the one map row T065 asks for; if wrong, delete one clause.
+- docs/specs/voice.md (outside 7.3's declared code paths) gained a line saying the alt of the portrait is now test-checked, committed with 7.3; if wrong, revert that hunk.
+- The portrait-alt regex also rejects `depilation` and `permanent` beyond the carry-over pattern (FR-014 names both services); if the author wants either word in the alt, loosen the constant NOT_DONE_BY_LADA in tests/voice.spec.ts.
+- routes.md says the 404 for the slashless forms /guide and /ru/guide is not measured on production (only research R5 reasoning backs it); the first deploy has to check it with curl.
+- page-head.md says the pilot article query was chosen by the author on 2026-10-18 without statistics, taken from the spec Input line; if the provenance is different, edit that sentence.
+
+### S3 — dispatch 5 (2026-10-18)
+`kind=bundle agent=implementer tier=standard model=claude-sonnet-5-5 effort=xhigh turns=72 minutes=12.6 input=144 cache_write=218924 cache_read=11392010 output=62745`
