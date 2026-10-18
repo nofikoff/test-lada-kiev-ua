@@ -481,3 +481,10 @@ Task: "T035 .github/workflows/publish.yml"
 - Verify tests fail before implementing
 - Commit after each task or logical group (`/commit`)
 - После выкладки, вне задач пакета: проверки [quickstart.md](quickstart.md) шаг 5 на проде, включая карту сайта (SC-001); `/seo map` сверяет карту с сайтом и переводит страницы пилота в `published`; через 8 недель — показы статьи в Search Console на каждом языке (SC-003, `Follow-up:` ADR-029)
+
+## Session Map
+<!-- packed-for: bundle 600K -->
+
+- [ ] S1 (~550K) Steps 2.1, 2.2, 2.3, 2.4, 3.1 — **current**
+- [ ] S2 (~500K) Steps 3.2, 4.1, 4.2, 5.1, 6.1
+- [ ] S3 (~190K) Steps 7.1, 7.3
