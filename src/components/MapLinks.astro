@@ -1,6 +1,6 @@
 ---
 /**
- * Ссылки страницы из `docs/seo/map.md` §Links (specs/007-knowledge-base-pilot/contracts/links.md):
+ * Ссылки страницы из `docs/seo/map.md` §Links (docs/specs/routes.md §Links from the map):
  * рёбра от этой страницы к собранным страницам её языка, адрес со слешем, текст — анкор карты.
  * Рёбер к собранным страницам нет — блока нет: категория, у которой ещё нет хаба, ничего
  * не выводит, и тексты категорий для этого не правятся.
@@ -18,7 +18,7 @@ interface Props {
   page: PageRef;
   /**
    * Только рёбра к страницам этих видов: хаб выводит здесь ребро к услуге, а статьи — своим списком;
-   * страница услуги — только рёбра в базу знаний (contracts/links.md §Placement).
+   * страница услуги — только рёбра в базу знаний (docs/specs/routes.md §Links from the map).
    */
   toKinds?: readonly MapPageKind[];
 }

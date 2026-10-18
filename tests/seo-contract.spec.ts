@@ -735,6 +735,32 @@ async function homeIds(request: APIRequestContext, locale: Locale): Promise<{ fo
   };
 }
 
+/**
+ * Порядок списков статей на хабе, в его `hasPart` и на `/lada/` (docs/specs/routes.md §Links from
+ * the map): дата публикации по убыванию, затем заголовок. Считается по самим страницам статей —
+ * `<time datetime>` и `<h1>`, а не выводом `articlesOf`, который строит и сами списки.
+ */
+async function articleOrder(
+  request: APIRequestContext,
+  locale: Locale,
+  paths: readonly string[],
+): Promise<string[]> {
+  const rows = await Promise.all(
+    paths.map(async (path) => {
+      const html = await (await request.get(path)).text();
+      return {
+        path,
+        published: /<time[^>]*\bdatetime="([^"]+)"/.exec(html)?.[1] ?? '',
+        heading: normalize(htmlToText(/<h1\b[^>]*>([\s\S]*?)<\/h1>/.exec(html)?.[1] ?? '')),
+      };
+    }),
+  );
+  for (const row of rows) expect(row.published, `${row.path}: нет даты публикации`).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  return rows
+    .sort((a, b) => b.published.localeCompare(a.published) || a.heading.localeCompare(b.heading, locale))
+    .map((row) => row.path);
+}
+
 /** Страница эксперта языка: на неё ведут подпись статьи и `url` автора. */
 function expertOf(locale: Locale): string {
   return EXPERT_PAGES.find((entry) => entry.locale === locale)!.path;
@@ -752,7 +778,7 @@ async function visibleCrumbs(page: Page): Promise<{ name: string; href: string |
 
 /**
  * Хаб и статья базы знаний: заголовочная часть и JSON-LD по
- * specs/007-knowledge-base-pilot/contracts/page-head-and-jsonld.md §Checks.
+ * docs/specs/page-head.md и docs/specs/structured-data.md §Knowledge base.
  */
 for (const guidePage of GUIDE_PAGES) {
   const { locale, path, kind, category } = guidePage;
@@ -875,7 +901,7 @@ for (const guidePage of GUIDE_PAGES) {
         expect(words, `${path}: ${words} слов`).toBeGreaterThanOrEqual(400);
       });
     } else {
-      test('CollectionPage.hasPart — статьи списка хаба в его порядке', async ({ page }) => {
+      test('CollectionPage.hasPart и список хаба — статьи категории, новые выше', async ({ page, request }) => {
         await page.goto(path);
         const nodes = await structuredData(page);
         const collection = nodes.find((node) => node['@type'] === 'CollectionPage');
@@ -891,8 +917,13 @@ for (const guidePage of GUIDE_PAGES) {
           await page.locator('main a[href]').evaluateAll((links) => links.map((link) => link.getAttribute('href')!))
         ).filter((href) => articlePaths.has(href));
         expect(new Set(listed), 'список хаба против статей категории').toEqual(articlePaths);
-        expect(parts.map((part) => part.url)).toEqual(listed.map((href) => `${SITE_ORIGIN}${href}`));
-        expect(parts.map((part) => part['@id'])).toEqual(listed.map((href) => `${SITE_ORIGIN}${href}#article`));
+
+        const expected = await articleOrder(request, locale, [...articlePaths]);
+        expect(listed, 'порядок списка хаба').toEqual(expected);
+        expect(parts.map((part) => part.url), 'порядок hasPart').toEqual(
+          expected.map((href) => `${SITE_ORIGIN}${href}`),
+        );
+        expect(parts.map((part) => part['@id'])).toEqual(expected.map((href) => `${SITE_ORIGIN}${href}#article`));
       });
     }
   });
@@ -900,7 +931,7 @@ for (const guidePage of GUIDE_PAGES) {
 
 /**
  * Страница эксперта: заголовочная часть, `ProfilePage` с тем же узлом основательницы, что на главной,
- * без крошек, и список статей своего языка (contracts/page-head-and-jsonld.md §Expert).
+ * без крошек, и список статей своего языка (docs/specs/structured-data.md §Knowledge base).
  */
 for (const expertPage of EXPERT_PAGES) {
   const { locale, path } = expertPage;
@@ -978,6 +1009,8 @@ for (const expertPage of EXPERT_PAGES) {
           links.map((link) => ({ href: link.getAttribute('href')!, text: link.textContent ?? '' })),
         );
       expect(listed.map((link) => link.href).sort()).toEqual(articles.map((entry) => entry.path).sort());
+      const expected = await articleOrder(request, locale, articles.map((entry) => entry.path));
+      expect(listed.map((link) => link.href), 'порядок списка: новые выше').toEqual(expected);
 
       // Текст пункта — заголовок статьи, как её собственный h1.
       for (const link of listed) {
@@ -1004,7 +1037,7 @@ for (const expertPage of EXPERT_PAGES) {
 
 /**
  * Абзацы статей и хабов не повторяют ни друг друга, ни тексты услуг, ни обращение «Про нас»
- * своего языка (specs/007-knowledge-base-pilot/contracts/content-files.md §Text rules).
+ * своего языка (docs/specs/content-model.md §Files).
  */
 test.describe('тексты базы знаний', () => {
   for (const locale of ['uk', 'ru'] as const) {

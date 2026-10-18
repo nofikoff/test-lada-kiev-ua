@@ -2,12 +2,12 @@
  * Разбор карты базы знаний `docs/seo/map.md` — §Pages и §Links по грамматике контракта `/seo`
  * (`~/.claude/skills/seo/references/contract.md` §Map file). Модуль чистый: файл читает
  * `src/data/guide.ts`, собранные адреса даёт `src/data/map-links.ts`, а здесь только текст на входе
- * (specs/007-knowledge-base-pilot/data-model.md §Seo map). Из `src/` — только типы: модуль
+ * (docs/specs/routes.md §Links from the map). Из `src/` — только типы: модуль
  * загружает и `node --experimental-strip-types` (scripts/seo-map.test.mjs).
  *
  * Колонки ищутся по имени заголовка, а не по позиции: `/seo map` вправе переставить или добавить
  * колонку. Колонка `status` и §Site не читаются — опубликованной страницу делает файл в контенте,
- * а не статус карты (research.md R3).
+ * а не статус карты.
  */
 import type { GuideLocale } from '../i18n/guide';
 
@@ -130,7 +130,7 @@ function sectionRows(lines: readonly string[], name: string, required: readonly 
 }
 
 /**
- * Остановка № 12 контракта (specs/007-knowledge-base-pilot/contracts/content-files.md §Build stops):
+ * Остановка № 12 (docs/specs/content-model.md §Build stops):
  * нет раздела, таблицы или колонки — исключение с именем файла карты. Строки языков, которых
  * в базе знаний нет, пропускаются: карта вправе планировать их, сайт их не публикует.
  */
@@ -162,7 +162,7 @@ export function parseSeoMap(text: string): SeoMap {
 
 /**
  * Рёбра карты от страницы `path` языка `locale`, ведущие на собранные адреса, в порядке строк
- * §Links (contracts/links.md §Rule).
+ * §Links (docs/specs/routes.md §Links from the map).
  */
 export function linksFrom(
   map: SeoMap,

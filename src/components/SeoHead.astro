@@ -12,6 +12,7 @@ import { portrait } from '../data/gallery';
 import { expertCopy } from '../data/expert';
 import { guideIndex } from '../data/guide';
 import { expertGraph, guideGraph } from '../data/guide-structured-data';
+import { jsonLd } from '../data/json-ld';
 import { pricesOfGroups } from '../data/price-list';
 import { servicePageOf } from '../data/subpages';
 import { guideLocaleOf } from '../i18n/guide';
@@ -287,14 +288,6 @@ const knowledgeGraph = guideRef
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 
-{business && <script type="application/ld+json" is:inline set:html={JSON.stringify(business)} />}
-{
-  serviceGraph && (
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(serviceGraph)} />
-  )
-}
-{
-  knowledgeGraph && (
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(knowledgeGraph)} />
-  )
-}
+{business && <script type="application/ld+json" is:inline set:html={jsonLd(business)} />}
+{serviceGraph && <script type="application/ld+json" is:inline set:html={jsonLd(serviceGraph)} />}
+{knowledgeGraph && <script type="application/ld+json" is:inline set:html={jsonLd(knowledgeGraph)} />}

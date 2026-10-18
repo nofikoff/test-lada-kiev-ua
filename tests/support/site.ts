@@ -145,7 +145,7 @@ export type GuideLocale = Extract<Locale, 'uk' | 'ru'>;
 
 /**
  * Страница базы знаний — хаб или статья. Языки страницы — те, на которых лежит её файл: по ним
- * считаются `hreflang` и альтернативы карты сайта (specs/007-knowledge-base-pilot/research.md R6).
+ * считаются `hreflang` и альтернативы карты сайта (docs/specs/page-head.md §Языковые альтернативы).
  */
 export interface GuidePageUnderTest extends PageUnderTest {
   readonly locale: GuideLocale;
@@ -154,7 +154,7 @@ export interface GuidePageUnderTest extends PageUnderTest {
   /** Slug статьи; у хаба его нет. */
   readonly slug?: string;
   readonly locales: readonly GuideLocale[];
-  /** `<h1>` хаба по формуле contracts/page-head-and-jsonld.md §Head; у статьи заголовок свой. */
+  /** `<h1>` хаба по формуле docs/specs/page-head.md §Целевые запросы; у статьи заголовок свой. */
   readonly heading?: string;
 }
 
@@ -207,8 +207,8 @@ export const EXPERT_PAGES: readonly ExpertPageUnderTest[] = [
 
 /**
  * Рёбра пилота, которые обязаны стать ссылками независимо от `docs/seo/map.md`: тест ссылок
- * читает карту, и ребро, удалённое из неё, убрало бы ссылку молча, а FR-006 и FR-007 требуют
- * ссылку статьи на хаб и услугу и хаба на услугу (contracts/links.md §Pilot edges).
+ * читает карту, и ребро, удалённое из неё, убрало бы ссылку молча, а пилот обязан держать
+ * ссылку статьи на хаб и услугу и хаба на услугу (docs/specs/routes.md §Links from the map).
  */
 export const PILOT_EDGES: readonly { readonly locale: GuideLocale; readonly from: string; readonly to: string }[] = [
   { locale: 'uk', from: '/guide/depilation/vs-epilation/', to: '/guide/depilation/' },
@@ -369,7 +369,7 @@ const QUERIES: Record<
 
 /**
  * Запросы статей базы знаний по `<category>/<slug>`. Кластер информационный, поэтому «Києва»
- * в запросе нет (specs/007-knowledge-base-pilot/contracts/page-head-and-jsonld.md §Head).
+ * в запросе нет (docs/specs/page-head.md §Целевые запросы).
  */
 const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
   uk: { 'depilation/vs-epilation': [/депіляція чи епіляція/i] },
@@ -382,7 +382,7 @@ const EXPERT_QUERY: readonly RegExp[] = [/Лада Новикова/];
 /**
  * Формулировки, которых нет в `<title>`, `<h1>` и описании хаба: запросы его категории
  * и его статей. Слово категории допустимо — запрещена формулировка. Новая статья хаба
- * добавляет сюда свой запрос (список мест FR-016).
+ * добавляет сюда свой запрос (список «Новая статья» в docs/specs/routes.md §Route map).
  */
 export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, readonly RegExp[]>>> = {
   uk: { depilation: [/депіляці\S* у Києві/i, /воскова депіляці/i, /депіляція чи епіляція/i] },

@@ -155,11 +155,21 @@ const about = defineCollection({
  * остановить сборку в проверке формы пути, а не молча выпасть из загрузки. Межфайловые правила —
  * там же, в `guide.ts`: схема видит одну запись.
  *
- * Схема строгая ради `slug`: загрузчик `glob` берёт его идентификатором записи
- * (`astro/dist/content/loaders/glob.js`), и без запрета файл молча получил бы чужой адрес.
+ * Идентификатор записи — путь файла как есть: `glob` по умолчанию прогоняет его через
+ * `github-slugger` и отрезает `/index`, и файлы `depilation.md` и `depilation/index.md` или
+ * `Vs-Epilation.md` и `vs-epilation.md` получали один id. Загрузчик оставлял одну из записей
+ * по порядку параллельной загрузки, и лишний файл не доходил до проверок `guide.ts` — остановка
+ * то срабатывала, то нет (`astro/dist/content/loaders/glob.js`, `astro/dist/content/utils.js`).
+ *
+ * Схема строгая: неизвестный ключ, в том числе `slug`, останавливает сборку на файле. Адрес
+ * от `slug` не зависит — со своим `generateId` загрузчик его не читает.
  */
 const guide = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/guide' }),
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content/guide',
+    generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+  }),
   schema: z
     .strictObject({
       page: z.string().min(1),

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-// С расширением: Node в ESM его не достраивает (specs/007-knowledge-base-pilot/tasks.md §Path Conventions).
+// С расширением: Node в ESM его не достраивает.
 import { linksFrom, parseSeoMap } from '../src/data/seo-map.ts';
 import { displayAnchor } from '../src/i18n/guide.ts';
 
@@ -68,7 +68,7 @@ function reshuffled(text, section) {
   return [...lines.slice(0, heading + 1), ...shuffled, ...lines.slice(end)].join('\n');
 }
 
-test('разбирает §Pages и §Links действующей карты в поля data-model.md', () => {
+test('разбирает §Pages и §Links действующей карты в поля `MapPage` и `MapLink`', () => {
   const map = parseSeoMap(MAP_TEXT);
 
   for (const page of map.pages) {
@@ -78,7 +78,7 @@ test('разбирает §Pages и §Links действующей карты в
     assert.deepEqual(Object.keys(link).sort(), ['anchor', 'from', 'lang', 'to']);
   }
 
-  // Страницы и рёбра пилота: contracts/routes.md и contracts/links.md §Pilot edges.
+  // Страницы и рёбра пилота: docs/specs/routes.md §Knowledge base и §Links from the map.
   const pilotPages = [
     { page: 'depilation-guide', kind: 'hub', lang: 'uk', url: '/guide/depilation/' },
     { page: 'depilation-guide', kind: 'hub', lang: 'ru', url: '/ru/guide/depilation/' },
@@ -94,17 +94,17 @@ test('разбирает §Pages и §Links действующей карты в
       `в §Pages нет ${JSON.stringify(page)}`,
     );
   }
+  // Анкор в сравнение не входит: `/seo map` вправе править его в main, а текст ссылки держит tests/links.spec.ts.
   const pilotLinks = [
-    { from: 'depilation-guide', to: 'depilation-vs-epilation', anchor: 'депіляція чи епіляція', lang: 'uk' },
-    { from: 'depilation-vs-epilation', to: 'depilation', anchor: 'депіляція київ', lang: 'uk' },
-    { from: 'depilation-guide', to: 'depilation-vs-epilation', anchor: 'депиляция и эпиляция', lang: 'ru' },
-    { from: 'depilation', to: 'depilation-guide', anchor: 'депиляция', lang: 'ru' },
+    { from: 'depilation-guide', to: 'depilation-vs-epilation', lang: 'uk' },
+    { from: 'depilation-vs-epilation', to: 'depilation', lang: 'uk' },
+    { from: 'depilation-guide', to: 'depilation-vs-epilation', lang: 'ru' },
+    { from: 'depilation', to: 'depilation-guide', lang: 'ru' },
   ];
-  for (const link of pilotLinks) {
-    assert.ok(
-      map.links.some((parsed) => JSON.stringify(parsed) === JSON.stringify(link)),
-      `в §Links нет ${JSON.stringify(link)}`,
-    );
+  for (const { from, to, lang } of pilotLinks) {
+    const parsed = map.links.find((link) => link.from === from && link.to === to && link.lang === lang);
+    assert.ok(parsed, `в §Links нет ребра ${from} → ${to} (${lang})`);
+    assert.ok(parsed.anchor.length > 0, `у ребра ${from} → ${to} (${lang}) пустой анкор`);
   }
 });
 

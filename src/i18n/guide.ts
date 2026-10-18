@@ -1,7 +1,6 @@
 /**
  * Подписи базы знаний и страницы эксперта. Отдельно от `ui.ts`: его ключи обязаны существовать
- * и в `en`, а английских страниц раздела нет, и строки `en` были бы мёртвыми данными
- * (specs/007-knowledge-base-pilot/research.md R8).
+ * и в `en`, а английских страниц раздела нет, и строки `en` были бы мёртвыми данными.
  *
  * Модуль загружает и `node --experimental-strip-types` (scripts/seo-map.test.mjs), поэтому из
  * `src/` он импортирует только типы: значение по пути без расширения Node в ESM не найдёт.
@@ -30,7 +29,7 @@ export function isoDay(date: Date): string {
 
 /**
  * Видимая дата. `timeZone: 'UTC'` обязателен: дата без времени — полночь UTC, и в поясе западнее
- * она показалась бы предыдущим днём (specs/007-knowledge-base-pilot/research.md R9).
+ * она показалась бы предыдущим днём.
  */
 export function displayDate(locale: GuideLocale, date: Date): string {
   return new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' }).format(date);

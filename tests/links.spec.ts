@@ -14,9 +14,9 @@ import {
 } from './support/site';
 
 /**
- * Ссылки между страницами (specs/007-knowledge-base-pilot/contracts/links.md). Источник рёбер —
+ * Ссылки между страницами (docs/specs/routes.md §Links from the map). Источник рёбер —
  * `docs/seo/map.md` §Links: карта — внешний контракт `/seo`, а не константа реализации, поэтому
- * тест читает её своим разбором и сверяет с собранным HTML (research.md R3). Рёбра пилота, которые
+ * тест читает её своим разбором и сверяет с собранным HTML. Рёбра пилота, которые
  * не должны пропасть вместе со строкой карты, проверяются ещё и литералами `PILOT_EDGES`.
  */
 
@@ -26,7 +26,7 @@ const MAP_FILE = 'docs/seo/map.md';
 const FROM_KINDS = new Set(['hub', 'entity', 'question', 'expert', 'service']);
 
 /**
- * Вход в раздел с категории (contracts/links.md §Pilot edges) — литералами, как `PILOT_EDGES`:
+ * Вход в раздел с категории (docs/specs/routes.md §Links from the map) — литералами, как `PILOT_EDGES`:
  * ребро, удалённое из карты, убрало бы ссылку молча.
  */
 const CATEGORY_HUB_EDGES = [
@@ -127,7 +127,7 @@ test.describe('рёбра карты на собранных страницах'
 });
 
 test.describe('рёбра пилота литералами', () => {
-  // FR-006, FR-007: ребро, удалённое из карты, не должно убрать ссылку молча (contracts/links.md §Pilot edges).
+  // Ребро, удалённое из карты, не должно убрать ссылку молча (docs/specs/routes.md §Links from the map).
   for (const { from, to } of PILOT_EDGES) {
     test(`${from} ссылается на ${to}`, async ({ request }) => {
       const links = await linksOf(request, from);
@@ -138,7 +138,7 @@ test.describe('рёбра пилота литералами', () => {
 
 test.describe('вход в базу знаний со страниц услуг', () => {
   for (const { from, to, text } of CATEGORY_HUB_EDGES) {
-    // FR-010: блок после текста категории, тексты категорий не правятся.
+    // Блок после текста категории, тексты категорий не правятся.
     test(`${from} ссылается на ${to} «${text}» после текста, вне его`, async ({ page }) => {
       await page.goto(from);
       const link = page.locator(`main a[href="${to}"]`);
@@ -156,7 +156,7 @@ test.describe('вход в базу знаний со страниц услуг'
     });
   }
 
-  // Хабов этих категорий нет: рёбра карты к ним ведут на несобранные страницы (contracts/links.md).
+  // Хабов этих категорий нет: рёбра карты к ним ведут на несобранные страницы.
   const withHub = new Set<string>(CATEGORY_HUB_EDGES.map((edge) => edge.from));
   for (const { path } of servicePages.filter((entry) => !withHub.has(entry.path))) {
     test(`${path}: ссылок в раздел базы знаний нет`, async ({ request }) => {

@@ -90,7 +90,7 @@ test.describe('карта запросов', () => {
 
   /**
    * Подпись статьи — та же, что под обращением «Про нас», и ведёт на страницу эксперта своего
-   * языка; стоит под заголовком, до текста (specs/007-knowledge-base-pilot/contracts/links.md §Placement).
+   * языка; стоит под заголовком, до текста (docs/specs/routes.md §Links from the map).
    */
   for (const page of GUIDE_PAGES.filter((entry) => entry.kind === 'article')) {
     const expert = EXPERT_PAGES.find((entry) => entry.locale === page.locale)!;
@@ -118,7 +118,7 @@ test.describe('карта запросов', () => {
 
   /**
    * Хаб называет раздел и категорию, а не запрос: формулировки категории и его статей отданы
-   * своим страницам (specs/007-knowledge-base-pilot/contracts/page-head-and-jsonld.md §Head).
+   * своим страницам (docs/specs/page-head.md §Целевые запросы).
    */
   for (const page of GUIDE_PAGES.filter((entry) => entry.kind === 'hub')) {
     test(`${page.path}: заголовок хаба по формуле, запросов категории и статей нет`, async ({ request }) => {

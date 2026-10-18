@@ -1,8 +1,9 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { guideLocales, isGuideLocale, type GuideLocale } from '../i18n/guide';
 import { pagePath, serviceCategories, type GuidePageRef, type ServiceCategory } from '../i18n/paths';
+import { memoizeByStamp } from './memo';
 import { parseSeoMap, type SeoMap } from './seo-map';
 
 export type GuideEntry = CollectionEntry<'guide'>;
@@ -51,10 +52,10 @@ function isServiceCategory(value: string): value is ServiceCategory {
 const byFile = (a: { file: string }, b: { file: string }) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0);
 
 /**
- * Язык, категория и slug — из пути файла, а не из `entry.id`: идентификатор прошёл через
- * `github-slugger`, и файл `Vs-Epilation.md` получил бы адрес, которого в имени файла нет.
+ * Язык, категория и slug — из пути файла, а не из `entry.id`: id — ключ хранилища (путь без `.md`,
+ * `generateId` в `src/content.config.ts`), а адрес страницы задаёт имя файла.
  * Проверки 3–5 идут каждая по всем файлам, чтобы первая сработавшая не зависела от порядка
- * загрузки (specs/007-knowledge-base-pilot/contracts/content-files.md §Build stops).
+ * загрузки (docs/specs/content-model.md §Build stops).
  */
 function locate(entries: readonly GuideEntry[]): Located[] {
   const files = entries
@@ -158,7 +159,7 @@ function checkMap(located: readonly Located[], pages: readonly GuidePage[], map:
     }
   }
 
-  // Без ребра «хаб → статья» хаб не смог бы перечислить статью анкором карты (contracts/links.md).
+  // Без ребра «хаб → статья» хаб не смог бы перечислить статью анкором карты (docs/specs/routes.md §Links from the map).
   for (const item of located.filter((candidate) => candidate.article)) {
     const hub = located.find(
       (candidate) => !candidate.article && candidate.locale === item.locale && candidate.category === item.category,
@@ -240,17 +241,22 @@ async function buildIndex(): Promise<GuideIndex> {
   };
 }
 
-let cached: Promise<GuideIndex> | undefined;
+/**
+ * Метка карты для кэша индекса. В dev карту читает `readFile`, а не vite: её правка не сбрасывает
+ * модуль, и индекс держал бы прежнюю карту или прежнюю ошибку. Сборка читает карту один раз.
+ */
+async function mapStamp(): Promise<number | undefined> {
+  if (!import.meta.env.DEV) return undefined;
+  return (await stat(join(process.cwd(), MAP_FILE)).catch(() => undefined))?.mtimeMs;
+}
 
 /**
  * Индекс базы знаний. Его зовут маршруты раздела, страница эксперта, блок ссылок карты и заголовочная
  * часть, поэтому любая сборка проходит через проверки; промис один на модуль, и коллекция с картой
- * читаются один раз.
+ * читаются один раз. Отклонённый промис не кэшируется (`memo.ts`): исправленную карту dev-сервер
+ * подхватывает без перезапуска.
  */
-export function guideIndex(): Promise<GuideIndex> {
-  cached ??= buildIndex();
-  return cached;
-}
+export const guideIndex: () => Promise<GuideIndex> = memoizeByStamp(buildIndex, mapStamp);
 
 /** Пути маршрута `[...slug]` языка: хаб — `<category>`, статья — `<category>/<article>`. */
 export async function guideStaticPaths(

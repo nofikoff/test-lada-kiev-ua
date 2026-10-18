@@ -26,8 +26,9 @@ const REGISTRY = 'src/data/subpage-registry.ts';
 const DATA_STORE = 'node_modules/.astro/data-store.json';
 const ABOUT_COPY = 'src/content/about/uk.md';
 
-// База знаний (specs/007-knowledge-base-pilot/contracts/content-files.md §Build stops).
+// База знаний (docs/specs/content-model.md §Build stops).
 const GUIDE = 'src/content/guide';
+const UK_HUB_INDEX = `${GUIDE}/uk/depilation/index.md`;
 const UK_ARTICLE = `${GUIDE}/uk/depilation/vs-epilation.md`;
 const RU_HUB = `${GUIDE}/ru/depilation.md`;
 const RU_ARTICLE = `${GUIDE}/ru/depilation/vs-epilation.md`;
@@ -64,12 +65,18 @@ function replaceOnce(path, original, pattern, replacement) {
   writeFileSync(path, edited);
 }
 
-/** Дата правки — днём раньше даты публикации, от даты в файле: даты пилота ставятся в день слияния. */
-function modifiedBeforePublished(path, original) {
+/** `published` файла базы знаний: даты пилота ставятся в день слияния, поэтому прогон читает их из файла. */
+function publishedOf(path, original) {
   const published = /^published: (\d{4}-\d{2}-\d{2})$/m.exec(original)?.[1];
   if (!published) throw new Error(`${path}: нет published`);
-  const dayBefore = new Date(Date.parse(`${published}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
-  replaceOnce(path, original, /^modified: .*$/m, `modified: ${dayBefore}`);
+  return published;
+}
+
+const dayBefore = (day) => new Date(Date.parse(`${day}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
+
+/** Дата правки — днём раньше даты публикации, от даты в файле. */
+function modifiedBeforePublished(path, original) {
+  replaceOnce(path, original, /^modified: .*$/m, `modified: ${dayBefore(publishedOf(path, original))}`);
 }
 
 const MISSING_PAGE = 'depilation-not-in-map';
@@ -105,7 +112,13 @@ function tail(text) {
   return plain(text).split('\n').slice(-25).join('\n');
 }
 
-function build() {
+/**
+ * `freshStore` — хранилище коллекций стёрто, как после `npm ci` в CI. Сохранённое хранилище меняет
+ * исход загрузки: запись, уже лежащая в нём, ловится проверкой дубля `glob`, а на пустом дубль
+ * решает порядок параллельной загрузки.
+ */
+function build({ freshStore = false } = {}) {
+  if (freshStore) rmSync(new URL(DATA_STORE, `file://${root}`), { force: true });
   const result = spawnSync('npm', ['run', 'build'], {
     cwd: root,
     encoding: 'utf8',
@@ -319,7 +332,7 @@ const cases = [
   },
 
   // Остановки базы знаний: по случаю на каждую, сообщение называет файл
-  // (specs/007-knowledge-base-pilot/contracts/content-files.md §Build stops, quickstart.md §3).
+  // (docs/specs/content-model.md §Build stops).
   {
     name: 'хаб без статьи своего языка (№ 9)',
     file: RU_ARTICLE,
@@ -358,8 +371,7 @@ const cases = [
   {
     name: 'slug во frontmatter (№ 2)',
     file: UK_ARTICLE,
-    // Загрузчик уже взял `slug` идентификатором записи («guide → other-address»), поэтому файл
-    // называет только строка места ошибки — её и требует FR-004.
+    // Ошибку схемы файлом называет строка места ошибки, а не запись («guide → <id>»).
     expect: [/Unrecognized key[^\n]*slug/, new RegExp(`${literal(UK_ARTICLE)}:\\d+:\\d+`)],
     corrupt: (path, original) => replaceOnce(path, original, /^(page: .*)$/m, '$1\nslug: other-address'),
   },
@@ -396,6 +408,18 @@ const cases = [
       `${literal(UK_ARTICLE)}: в ${literal(SEO_MAP)} §Links нет строки depilation-guide → depilation-vs-epilation \\(uk\\)`,
     ),
     corrupt: (path, original) => replaceOnce(path, original, HUB_TO_ARTICLE_UK, ''),
+  },
+  {
+    // `glob` сводил `uk/depilation/index.md` и хаб `uk/depilation.md` к одному id и оставлял один из
+    // них по порядку параллельной загрузки: сборка то проходила молча, то называла не тот файл.
+    // Случай идёт на пустом хранилище, как в CI, — на сохранённом дубль ловила проверка `glob`.
+    name: 'index.md рядом с хабом называет остановка, а не порядок загрузки (№ 10)',
+    freshStore: true,
+    edits: [{ add: UK_HUB_INDEX, content: guideFile('depilation-index', 'Індекс депіляції') }],
+    expect: new RegExp(
+      `${literal(UK_HUB_INDEX)}: page «depilation-index» \\(uk\\) в ${literal(SEO_MAP)} §Pages нет, ` +
+        'файл даёт /guide/depilation/index/',
+    ),
   },
   {
     name: 'отсутствующий файл страницы эксперта (№ 13)',
@@ -469,20 +493,63 @@ heading: Текст на языке, которого у подстраницы 
 ---
 `;
 
-/** Допустимая вторая статья хаба: `depilation-aftercare` uk есть в карте вместе с ребром от хаба. */
-const AFTERCARE_FILE = `${GUIDE}/uk/depilation/aftercare.md`;
-const AFTERCARE_PATH = '/guide/depilation/aftercare/';
-const AFTERCARE = `---
-page: depilation-aftercare
-title: "Що не можна робити після депіляції — Lada N"
-description: "Що не можна робити після депіляції: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що нова стаття виходить без правки шаблонів."
-heading: "Що не можна робити після депіляції"
-published: 2026-10-18
-modified: 2026-10-18
+/** Статья хаба с датой публикации `day`: страница и ребро от хаба уже есть в карте. */
+function guideArticle(page, heading, description, day) {
+  return `---
+page: ${page}
+title: "${heading} — Lada N"
+description: "${description}"
+heading: "${heading}"
+published: ${day}
+modified: ${day}
 ---
 
-Перевірочний текст другої статті хабу.
+Перевірочний текст статті хабу.
 `;
+}
+
+/**
+ * Допустимые вторая и третья статьи хаба: `depilation-aftercare` и `depilation-best-method` uk есть
+ * в карте вместе с рёбрами от хаба. Порядок списков — дата публикации по убыванию, затем заголовок
+ * (docs/specs/routes.md §Links from the map). Даты пилота читаются из его файла, они ставятся в день слияния:
+ * - `aftercare` — дата пилота и заголовок позже пилотного по алфавиту: тот же день решает заголовок,
+ *   а порядок файлов (`aftercare.md` раньше `vs-epilation.md`) дал бы обратный результат;
+ * - `best-method` — днём раньше и заголовок раньше пилотного по алфавиту: старая статья стоит ниже
+ *   вопреки заголовку, и ни убывание даты, ни её игнор не дают тот же порядок.
+ */
+const PILOT_DAY = publishedOf(UK_ARTICLE, readFileSync(new URL(UK_ARTICLE, `file://${root}`), 'utf8'));
+const AFTERCARE_FILE = `${GUIDE}/uk/depilation/aftercare.md`;
+const AFTERCARE_PATH = '/guide/depilation/aftercare/';
+const AFTERCARE = guideArticle(
+  'depilation-aftercare',
+  'Що не можна робити після депіляції',
+  'Що не можна робити після депіляції: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що нова стаття виходить без правки шаблонів.',
+  PILOT_DAY,
+);
+const BEST_METHOD_FILE = `${GUIDE}/uk/depilation/best-method.md`;
+const BEST_METHOD_PATH = '/guide/depilation/best-method/';
+const BEST_METHOD = guideArticle(
+  'depilation-best-method',
+  'Вибір методу депіляції: яка найкраща',
+  'Вибір методу депіляції: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що старіша стаття стоїть у списках нижче за новішу.',
+  dayBefore(PILOT_DAY),
+);
+const PILOT_PATH = '/guide/depilation/vs-epilation/';
+/** Порядок списків хаба и эксперта, посчитанный по построению дат и заголовков выше, а не выводом сборки. */
+const ARTICLE_ORDER = [PILOT_PATH, AFTERCARE_PATH, BEST_METHOD_PATH];
+
+/** Адреса статей хаба в порядке первой ссылки на странице хаба или эксперта. */
+const articleLinks = (html) => [
+  ...new Set([...html.matchAll(/href="(\/guide\/depilation\/[a-z0-9-]+\/)"/g)].map(([, href]) => href)),
+];
+
+/** Адреса `hasPart` узла `CollectionPage` хаба — из JSON-LD как данных. */
+function hasPartUrls(html) {
+  const collection = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
+    .flatMap(([, json]) => JSON.parse(json)['@graph'] ?? [])
+    .find((node) => node['@type'] === 'CollectionPage');
+  return (collection?.hasPart ?? []).map((part) => part.url);
+}
 
 /** Сумма в разметке прайса; та же сумма обязана стоять в предложении (docs/specs/structured-data.md). */
 const shownPrice = (amount) => `>${amount}</span>`;
@@ -547,9 +614,12 @@ const allowedEdits = [
     },
   },
   {
-    // US4: следующая статья — файлом, без правки шаблонов. Строка и рёбра в карте у неё уже есть.
-    name: 'вторая статья хаба только на uk появляется в хабе, у эксперта и в карте сайта',
-    edits: [{ add: AFTERCARE_FILE, content: AFTERCARE }],
+    // Следующая статья — файлом, без правки шаблонов. Строка и рёбра в карте у неё уже есть.
+    name: 'вторая и третья статьи хаба только на uk появляются в хабе, у эксперта и в карте сайта, по порядку',
+    edits: [
+      { add: AFTERCARE_FILE, content: AFTERCARE },
+      { add: BEST_METHOD_FILE, content: BEST_METHOD },
+    ],
     expect: () => {
       const link = `href="${AFTERCARE_PATH}"`;
       const sitemap = readFileSync(new URL('dist/sitemap-0.xml', `file://${root}`), 'utf8');
@@ -557,8 +627,10 @@ const allowedEdits = [
         .map(([, hreflang, href]) => `${hreflang} ${href}`)
         .sort();
       const own = `https://www.lada.kiev.ua${AFTERCARE_PATH}`;
+      const hub = builtPage('/guide/depilation/');
+      const order = (actual) => JSON.stringify(actual) === JSON.stringify(ARTICLE_ORDER);
       return [
-        [builtPage('/guide/depilation/').includes(link), `${AFTERCARE_PATH} в списке /guide/depilation/`],
+        [hub.includes(link), `${AFTERCARE_PATH} в списке /guide/depilation/`],
         [builtPage('/lada/').includes(link), `${AFTERCARE_PATH} в списке /lada/`],
         [sitemap.includes(`<loc>${own}</loc>`), `${AFTERCARE_PATH} в sitemap-0.xml`],
         [
@@ -567,6 +639,15 @@ const allowedEdits = [
         ],
         [!builtPage('/ru/guide/depilation/').includes('aftercare'), 'на /ru/guide/depilation/ её нет'],
         [!builtPage('/ru/lada/').includes('aftercare'), 'на /ru/lada/ её нет'],
+        [
+          order(articleLinks(hub)),
+          `порядок списка /guide/depilation/: дата, затем заголовок (${articleLinks(hub).join(', ')})`,
+        ],
+        [order(hasPartUrls(hub).map((url) => new URL(url).pathname)), 'порядок hasPart хаба тот же'],
+        [
+          order(articleLinks(builtPage('/lada/'))),
+          `порядок списка /lada/: дата, затем заголовок (${articleLinks(builtPage('/lada/')).join(', ')})`,
+        ],
       ];
     },
   },
@@ -577,7 +658,7 @@ let failed = 0;
 for (const testCase of cases) {
   // Случай без `edits` — одна порча `file` + `corrupt`, как у всех случаев до базы знаний.
   const edits = testCase.edits ?? [{ file: testCase.file, corrupt: testCase.corrupt }];
-  const { status, output } = withCorruptions(edits, build);
+  const { status, output } = withCorruptions(edits, () => build({ freshStore: testCase.freshStore }));
 
   // Несколько выражений — когда предъявляемое разнесено по строкам вывода: запись и её поле.
   const patterns = [testCase.expect].flat();

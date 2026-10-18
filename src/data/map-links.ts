@@ -5,7 +5,7 @@ import { linksFrom, type PageLink } from './seo-map';
 
 /**
  * Рёбра карты от страницы `path` к собранным страницам её языка: разделу базы знаний из индекса,
- * страницам услуг и странице эксперта (specs/007-knowledge-base-pilot/data-model.md §Seo map).
+ * страницам услуг и странице эксперта (docs/specs/routes.md §Links from the map).
  * Файл карты здесь не читается — его прочитал и сверил с контентом `guideIndex()`.
  */
 export async function pageLinks(locale: GuideLocale, path: string): Promise<readonly PageLink[]> {
