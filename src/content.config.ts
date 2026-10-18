@@ -3,6 +3,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { file, glob } from 'astro/loaders';
 import { locales } from './i18n/ui';
+import { guideLocales } from './i18n/guide';
 import { serviceCategories } from './i18n/paths';
 import { priceGroups } from './data/price-groups';
 import { serviceSubpages, subpageSlugs } from './data/subpage-registry';
@@ -149,6 +150,47 @@ const about = defineCollection({
 });
 
 /**
+ * Статьи и хабы базы знаний: путь файла и есть адрес, язык и категория (src/data/guide.ts). Шаблон
+ * берёт любой `.md` каталога, а не перечень языков и категорий: файл в неверном каталоге обязан
+ * остановить сборку в проверке формы пути, а не молча выпасть из загрузки. Межфайловые правила —
+ * там же, в `guide.ts`: схема видит одну запись.
+ *
+ * Схема строгая ради `slug`: загрузчик `glob` берёт его идентификатором записи
+ * (`astro/dist/content/loaders/glob.js`), и без запрета файл молча получил бы чужой адрес.
+ */
+const guide = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/guide' }),
+  schema: z
+    .strictObject({
+      page: z.string().min(1),
+      title: z.string().min(1),
+      // Границы описания — те же, что у категорий (схема `services` выше).
+      description: z.string().min(120).max(160),
+      heading: z.string().min(1),
+      published: z.coerce.date(),
+      modified: z.coerce.date(),
+    })
+    // Дата в будущем не проверяется: исход сборки зависел бы от дня запуска.
+    .refine((entry) => entry.modified >= entry.published, {
+      path: ['modified'],
+      message: 'дата правки modified раньше даты публикации published',
+    }),
+});
+
+/**
+ * Текст страницы эксперта, по файлу на язык базы знаний. Отсутствие файла ловит `expertCopy`,
+ * а не схема, — по той же причине, что у `services`.
+ */
+const expert = defineCollection({
+  loader: glob({ pattern: `+(${guideLocales.join('|')}).md`, base: './src/content/expert' }),
+  schema: z.strictObject({
+    title: z.string().min(1),
+    description: z.string().min(120).max(160),
+    heading: z.string().min(1),
+  }),
+});
+
+/**
  * Фото Лады: портрет первого экрана и карточки ленты. Коллекция, а не модуль с данными, ради
  * `localized` и `image()` — пропущенный перевод описания или файл фото роняет сборку, а не только
  * проверку типов. Связи между записями — один портрет,
@@ -174,4 +216,4 @@ const gallery = defineCollection({
     }),
 });
 
-export const collections = { prices, services, subpages, about, gallery };
+export const collections = { prices, services, subpages, about, gallery, guide, expert };

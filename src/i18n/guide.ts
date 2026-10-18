@@ -11,6 +11,10 @@ export const guideLocales = ['uk', 'ru'] as const;
 
 export type GuideLocale = (typeof guideLocales)[number];
 
+export function isGuideLocale(value: string): value is GuideLocale {
+  return (guideLocales as readonly string[]).includes(value);
+}
+
 export interface GuideDictionary {
   /** Блок ссылок карты после текста страницы: надзаголовок без заголовка не выводится (design-tokens.md, правило 7). */
   readonly links: { readonly eyebrow: string; readonly title: string };

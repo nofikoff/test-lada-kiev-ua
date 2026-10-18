@@ -17,13 +17,13 @@ import {
   canonicalUrl,
   languageAlternates,
   pageLocales,
-  type ServicePageRef,
+  type PageRef,
 } from '../i18n/paths';
 
 interface Props {
   locale: Locale;
   /** Нет у главной: её заголовок, описание и описание организации берутся из словаря. */
-  page?: ServicePageRef;
+  page?: PageRef;
 }
 
 /** Формат площадок предпросмотра — язык с территорией, в отличие от кода языка в разметке. */
@@ -77,7 +77,8 @@ const ogImage = absoluteUrl(preview.src);
  * страниц услуг — тот же дубль, только автоматический (docs/specs/page-head.md
  * §Заголовки и описания).
  */
-const servicePage = page ? await servicePageOf(locale, page) : null;
+const serviceRef = page && !page.kind ? page : null;
+const servicePage = serviceRef ? await servicePageOf(locale, serviceRef) : null;
 const copy = servicePage?.copy ?? null;
 
 const title = copy ? copy.data.title : t.meta.title;
@@ -235,8 +236,8 @@ const service = copy
 
 /** Подстраница стоит под своей категорией: путь главная → категория → подстраница. */
 const parentStep =
-  page && servicePage?.parentHeading
-    ? [{ name: servicePage.parentHeading, item: canonicalUrl(locale, { category: page.category }) }]
+  serviceRef && servicePage?.parentHeading
+    ? [{ name: servicePage.parentHeading, item: canonicalUrl(locale, { category: serviceRef.category }) }]
     : [];
 
 const breadcrumb = copy
