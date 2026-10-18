@@ -5,7 +5,7 @@ description: "Permanent makeup in central Kyiv: powder brows, watercolour and li
 heading: "Permanent makeup in Kyiv"
 ---
 
-Permanent makeup is about a morning where nothing has to be drawn on. The pigment goes into the surface layer of the skin, holds for months and fades gradually, which is why at our studio in central Kyiv the work is split in two: the main procedure, and a correction a few weeks later, once it is clear how the skin took the colour.
+Permanent makeup is about a morning where nothing has to be drawn on. The pigment goes into the surface layer of the skin, holds for a long time and fades gradually, which is why at our studio in central Kyiv the work is split in two: the main procedure, and a correction a few weeks later, once it is clear how the skin took the colour.
 
 ## Powder brows
 
