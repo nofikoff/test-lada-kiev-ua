@@ -14,3 +14,5 @@
 | 002 | visual-redesign | retired | b4c60b10d74de86545f22ef234be670d2644b371 | - | - |  |
 | 006 | service-subpages | dissolved | - | - | - |  |
 | 006 | service-subpages | retired | ae20b05257889680c2e0e7a189c753735f5abfc1 | - | - |  |
+| 007 | knowledge-base-pilot | dissolved | - | - | - |  |
+| 007 | knowledge-base-pilot | retired | b9c6595416ad9ba66dca79a34e2f13d29cf2024f | - | - |  |
