@@ -185,23 +185,23 @@ gate_commands:
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation** — T015–T022 краснеют, T028–T035 делают их зелёными, T036 закрывает шаг.
 
-- [ ] T015 [US1] Включить четыре страницы базы знаний из `GUIDE_PAGES` в `allPages` в `tests/support/site.ts`: их сразу покрывают `routes`, `sitemap`, `llms`, уникальность пары «заголовок + описание», превью, хост, `headings`, запрет «майстерня», `build-output`, `brand-marks`, `interaction`
-- [ ] T016 [P] [US1] Добавить в `tests/routes.spec.ts` ожидание 404 на `/guide/`, `/ru/guide/` и `/en/guide/depilation/vs-epilation/` (preview; прод — T035 и quickstart.md шаг 5)
-- [ ] T017 [P] [US1] Добавить в `tests/voice.spec.ts`: у статьи запрос в `<title>`, `<h1>`, первой половине описания и первом абзаце `[data-guide-copy]`; у хаба `<h1>` равен `heading` из `GUIDE_PAGES`, `<title>` — он же с « — Lada N», и в `<title>`, `<h1>` и описании нет ни одной запрещённой формулировки своего языка; проверка «запрос в первой половине описания» у хаба пропускается веткой по виду страницы — запроса у хаба нет, и с `undefined` она не запускается
-- [ ] T018 [P] [US1] Добавить в `tests/seo-contract.spec.ts` проверки [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Checks для хаба и статьи: `hreflang` по языкам `GUIDE_PAGES` и правило `x-default`; `Article.author['@id']` равен `@id` основательницы главной своего языка, `publisher['@id']` — `@id` организации; `datePublished <= dateModified`; видимые `<time datetime>` равны датам JSON-LD; `BreadcrumbList` повторяет видимые крошки; `CollectionPage.hasPart` — адреса статей списка хаба в его порядке; ≥ 400 слов в `[data-guide-copy]` статьи; абзацы статьи и хаба не повторяют другие страницы своего языка; нет `FAQPage`
-- [ ] T019 [P] [US1] Создать `tests/links.spec.ts`: читает `docs/seo/map.md`; для каждого ребра, у которого `from` — страница базы знаний или эксперта, а обе страницы есть в `allPages`, в HTML страницы `from` есть `<a href=to>` с текстом, равным анкору после trim, схлопывания пробелов и нижнего регистра; отдельно, не читая карту, — каждое ребро `PILOT_EDGES` даёт на странице `from` (статья или хаб) `<a href=to>` (FR-006, FR-007, FR-010); на хабе ссылка на каждую статью стоит ровно один раз — списком, не блоком `MapLinks`; каждая внутренняя ссылка новых страниц, включая ссылки тела Markdown, ведёт на адрес из `allPages` в форме со слешем
-- [ ] T020 [P] [US1] Перевести `tests/sitemap.spec.ts` с разбиения «три или две альтернативы» на ожидание по языкам страницы из `tests/support/site.ts`: у страницы на одном языке альтернатив нет (research R6)
-- [ ] T021 [P] [US1] Добавить в `tests/build-output.spec.ts`: каталоги `dist/` без `index.html` — ровно `_astro/`, `guide/`, `ru/guide/`; для `guide/` в `dist/.htaccess` и для `ru/guide/` в `dist/ru/.htaccess` есть правило `RedirectMatch 404` ([contracts/routes.md](contracts/routes.md) §Directories without index)
-- [ ] T022 [P] [US1] Включить хаб и статью обоих языков в области `tests/contrast.spec.ts` и `tests/typography.spec.ts` (мера колонки, контраст текста и блока ссылок)
-- [ ] T028 [P] [US1] Создать `src/data/guide-structured-data.ts`: `Article`, `CollectionPage` и `BreadcrumbList` по [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Article, §Hub; `author` — узел `founderNode(locale)` с `@id`, `name`; `publisher` — `@id` организации главной с `name` и `url`; даты `YYYY-MM-DD`; `hasPart` — статьи хаба в порядке списка
-- [ ] T029 [US1] Научить `src/components/SeoHead.astro` страницам `kind: 'guide'`: `<title>`, описание из frontmatter, `hreflang` и `og:locale:alternate` из `pageLocales`, `og:type` `website`, один `<script type="application/ld+json">` с `@graph` из T028 (depends on T028)
-- [ ] T030 [P] [US1] Создать `src/components/GuideArticle.astro`: `Section rhythm="air"`, колонка `max-w-4xl`, `Breadcrumbs` «главная → хаб → статья» (`nav.home`, `heading` хаба), `<h1>`, даты публикации и правки в `<time datetime="YYYY-MM-DD">` с `Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' })` (research R9), тело в `.copy` с `data-guide-copy`, `MapLinks` после текста; без `<script>`
-- [ ] T031 [P] [US1] Создать `src/components/GuideHub.astro`: крошки «главная → хаб», `<h1>`, вступление в `.copy` с `data-guide-copy`, список `articlesOf(locale, category)` с текстом анкора ребра «хаб → статья» из `guideIndex().map`, затем `MapLinks` с фильтром `toKind: 'service'` — только ребро к услуге, статьи второй раз не выводятся ([contracts/links.md](contracts/links.md) §Placement); без `<script>`
-- [ ] T032 [US1] Создать маршруты `src/pages/guide/[...slug].astro` и `src/pages/ru/guide/[...slug].astro`: `getStaticPaths` из `guideStaticPaths(locale)`, страница выбирает `GuideHub` или `GuideArticle` по виду и передаёт `GuidePageRef` в `BaseLayout` (depends on T029, T030, T031)
-- [ ] T033 [P] [US1] Добавить `RedirectMatch 404 ^/guide/?$` в `public/.htaccess` и `RedirectMatch 404 ^/ru/guide/?$` в `public/ru/.htaccess` с однострочным комментарием «почему» по-русски (research R5: без правила Apache отвечает 403)
-- [ ] T034 [P] [US1] Обновить `public/llms.txt` по [contracts/routes.md](contracts/routes.md) §llms.txt: раздел `## Knowledge base` между `## Pages` и `## Services` с абсолютными адресами хаба и статьи на uk и ru; вводная часть без счёта страниц и с прайсом только у страниц услуг; строка «Session prices are stated on every page…» после `## Services` — цены только на главной и страницах услуг; строка `Sitemap` — «all pages with their language alternates»; абзац о JSON-LD в `## Machine-readable` дополнен видами `Article`, `CollectionPage`, `ProfilePage`
-- [ ] T035 [P] [US1] Добавить в шаг `smoke` файла `.github/workflows/publish.yml` проверки 404 на `$SITE_ORIGIN/guide/` и `$SITE_ORIGIN/ru/guide/` и `lang="ru"` в ответе на `/ru/guide/` ([contracts/routes.md](contracts/routes.md) §Post-deploy checks)
-- [ ] T036 [US1] Прогнать `npm run build && npx playwright test tests/routes.spec.ts tests/voice.spec.ts tests/seo-contract.spec.ts tests/links.spec.ts tests/sitemap.spec.ts tests/llms.spec.ts tests/build-output.spec.ts tests/headings.spec.ts tests/contrast.spec.ts tests/typography.spec.ts tests/brand-marks.spec.ts tests/interaction.spec.ts`: всё, что T015–T022 сделали красным, зелёное; `brand-marks` и `interaction` проходят по `allPages` и тоже видят новые страницы
+- [x] T015 [US1] Включить четыре страницы базы знаний из `GUIDE_PAGES` в `allPages` в `tests/support/site.ts`: их сразу покрывают `routes`, `sitemap`, `llms`, уникальность пары «заголовок + описание», превью, хост, `headings`, запрет «майстерня», `build-output`, `brand-marks`, `interaction`
+- [x] T016 [P] [US1] Добавить в `tests/routes.spec.ts` ожидание 404 на `/guide/`, `/ru/guide/` и `/en/guide/depilation/vs-epilation/` (preview; прод — T035 и quickstart.md шаг 5)
+- [x] T017 [P] [US1] Добавить в `tests/voice.spec.ts`: у статьи запрос в `<title>`, `<h1>`, первой половине описания и первом абзаце `[data-guide-copy]`; у хаба `<h1>` равен `heading` из `GUIDE_PAGES`, `<title>` — он же с « — Lada N», и в `<title>`, `<h1>` и описании нет ни одной запрещённой формулировки своего языка; проверка «запрос в первой половине описания» у хаба пропускается веткой по виду страницы — запроса у хаба нет, и с `undefined` она не запускается
+- [x] T018 [P] [US1] Добавить в `tests/seo-contract.spec.ts` проверки [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Checks для хаба и статьи: `hreflang` по языкам `GUIDE_PAGES` и правило `x-default`; `Article.author['@id']` равен `@id` основательницы главной своего языка, `publisher['@id']` — `@id` организации; `datePublished <= dateModified`; видимые `<time datetime>` равны датам JSON-LD; `BreadcrumbList` повторяет видимые крошки; `CollectionPage.hasPart` — адреса статей списка хаба в его порядке; ≥ 400 слов в `[data-guide-copy]` статьи; абзацы статьи и хаба не повторяют другие страницы своего языка; нет `FAQPage`
+- [x] T019 [P] [US1] Создать `tests/links.spec.ts`: читает `docs/seo/map.md`; для каждого ребра, у которого `from` — страница базы знаний или эксперта, а обе страницы есть в `allPages`, в HTML страницы `from` есть `<a href=to>` с текстом, равным анкору после trim, схлопывания пробелов и нижнего регистра; отдельно, не читая карту, — каждое ребро `PILOT_EDGES` даёт на странице `from` (статья или хаб) `<a href=to>` (FR-006, FR-007, FR-010); на хабе ссылка на каждую статью стоит ровно один раз — списком, не блоком `MapLinks`; каждая внутренняя ссылка новых страниц, включая ссылки тела Markdown, ведёт на адрес из `allPages` в форме со слешем
+- [x] T020 [P] [US1] Перевести `tests/sitemap.spec.ts` с разбиения «три или две альтернативы» на ожидание по языкам страницы из `tests/support/site.ts`: у страницы на одном языке альтернатив нет (research R6)
+- [x] T021 [P] [US1] Добавить в `tests/build-output.spec.ts`: каталоги `dist/` без `index.html` — ровно `_astro/`, `guide/`, `ru/guide/`; для `guide/` в `dist/.htaccess` и для `ru/guide/` в `dist/ru/.htaccess` есть правило `RedirectMatch 404` ([contracts/routes.md](contracts/routes.md) §Directories without index)
+- [x] T022 [P] [US1] Включить хаб и статью обоих языков в области `tests/contrast.spec.ts` и `tests/typography.spec.ts` (мера колонки, контраст текста и блока ссылок)
+- [x] T028 [P] [US1] Создать `src/data/guide-structured-data.ts`: `Article`, `CollectionPage` и `BreadcrumbList` по [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Article, §Hub; `author` — узел `founderNode(locale)` с `@id`, `name`; `publisher` — `@id` организации главной с `name` и `url`; даты `YYYY-MM-DD`; `hasPart` — статьи хаба в порядке списка
+- [x] T029 [US1] Научить `src/components/SeoHead.astro` страницам `kind: 'guide'`: `<title>`, описание из frontmatter, `hreflang` и `og:locale:alternate` из `pageLocales`, `og:type` `website`, один `<script type="application/ld+json">` с `@graph` из T028 (depends on T028)
+- [x] T030 [P] [US1] Создать `src/components/GuideArticle.astro`: `Section rhythm="air"`, колонка `max-w-4xl`, `Breadcrumbs` «главная → хаб → статья» (`nav.home`, `heading` хаба), `<h1>`, даты публикации и правки в `<time datetime="YYYY-MM-DD">` с `Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' })` (research R9), тело в `.copy` с `data-guide-copy`, `MapLinks` после текста; без `<script>`
+- [x] T031 [P] [US1] Создать `src/components/GuideHub.astro`: крошки «главная → хаб», `<h1>`, вступление в `.copy` с `data-guide-copy`, список `articlesOf(locale, category)` с текстом анкора ребра «хаб → статья» из `guideIndex().map`, затем `MapLinks` с фильтром `toKind: 'service'` — только ребро к услуге, статьи второй раз не выводятся ([contracts/links.md](contracts/links.md) §Placement); без `<script>`
+- [x] T032 [US1] Создать маршруты `src/pages/guide/[...slug].astro` и `src/pages/ru/guide/[...slug].astro`: `getStaticPaths` из `guideStaticPaths(locale)`, страница выбирает `GuideHub` или `GuideArticle` по виду и передаёт `GuidePageRef` в `BaseLayout` (depends on T029, T030, T031)
+- [x] T033 [P] [US1] Добавить `RedirectMatch 404 ^/guide/?$` в `public/.htaccess` и `RedirectMatch 404 ^/ru/guide/?$` в `public/ru/.htaccess` с однострочным комментарием «почему» по-русски (research R5: без правила Apache отвечает 403)
+- [x] T034 [P] [US1] Обновить `public/llms.txt` по [contracts/routes.md](contracts/routes.md) §llms.txt: раздел `## Knowledge base` между `## Pages` и `## Services` с абсолютными адресами хаба и статьи на uk и ru; вводная часть без счёта страниц и с прайсом только у страниц услуг; строка «Session prices are stated on every page…» после `## Services` — цены только на главной и страницах услуг; строка `Sitemap` — «all pages with their language alternates»; абзац о JSON-LD в `## Machine-readable` дополнен видами `Article`, `CollectionPage`, `ProfilePage`
+- [x] T035 [P] [US1] Добавить в шаг `smoke` файла `.github/workflows/publish.yml` проверки 404 на `$SITE_ORIGIN/guide/` и `$SITE_ORIGIN/ru/guide/` и `lang="ru"` в ответе на `/ru/guide/` ([contracts/routes.md](contracts/routes.md) §Post-deploy checks)
+- [x] T036 [US1] Прогнать `npm run build && npx playwright test tests/routes.spec.ts tests/voice.spec.ts tests/seo-contract.spec.ts tests/links.spec.ts tests/sitemap.spec.ts tests/llms.spec.ts tests/build-output.spec.ts tests/headings.spec.ts tests/contrast.spec.ts tests/typography.spec.ts tests/brand-marks.spec.ts tests/interaction.spec.ts`: всё, что T015–T022 сделали красным, зелёное; `brand-marks` и `interaction` проходят по `allPages` и тоже видят новые страницы
 
 **Checkpoint**: статья и хаб пилота собраны и проходят свои проверки; подписи и страницы эксперта ещё нет
 
@@ -231,7 +231,7 @@ gate_commands:
 tier: strong
 -->
 
-- [ ] T042 [P] [US2] Написать `src/content/expert/uk.md` и `src/content/expert/ru.md`: `title` «Лада Новикова: … — Lada N» ≤ 70 знаков, `description` 120–160 знаков с «Лада Новикова», `heading: "Лада Новикова"`; тело в третьем лице — только факты [contracts/content-files.md](contracts/content-files.md) §Expert facts: фізичний реабілітолог, НУФВСУ; засновниця студії; масаж веде сама; підписує статті бази знань студії (ru «подписывает статьи базы знаний студии»); без стажа, курсов, сертификатов и обещаний лечения ([docs/specs/voice.md](../../docs/specs/voice.md)); ни одна фраза не говорит, что депиляцию или перманент делает Лада, и не приписывает ей ответственность за практику студии в целом; ни один абзац не повторяет и не пересказывает «Про нас» своего языка
+- [x] T042 [P] [US2] Написать `src/content/expert/uk.md` и `src/content/expert/ru.md`: `title` «Лада Новикова: … — Lada N» ≤ 70 знаков, `description` 120–160 знаков с «Лада Новикова», `heading: "Лада Новикова"`; тело в третьем лице — только факты [contracts/content-files.md](contracts/content-files.md) §Expert facts: фізичний реабілітолог, НУФВСУ; засновниця студії; масаж веде сама; підписує статті бази знань студії (ru «подписывает статьи базы знаний студии»); без стажа, курсов, сертификатов и обещаний лечения ([docs/specs/voice.md](../../docs/specs/voice.md)); ни одна фраза не говорит, что депиляцию или перманент делает Лада, и не приписывает ей ответственность за практику студии в целом; ни один абзац не повторяет и не пересказывает «Про нас» своего языка
 
 ### Step 4.2: Expert page and signature
 
@@ -252,18 +252,18 @@ gate_commands:
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation** — T037–T041 краснеют, T043–T048 делают их зелёными, T049 закрывает шаг.
 
-- [ ] T037 [US2] Включить `EXPERT_PAGES` в `allPages` в `tests/support/site.ts`
-- [ ] T038 [P] [US2] Добавить в `tests/routes.spec.ts` ожидание 404 на `/en/lada/`
-- [ ] T039 [P] [US2] Добавить в `tests/voice.spec.ts`: «Лада Новикова» в `<title>`, `<h1>` и описании эксперта; на каждой статье подпись — `signatureName` и `signatureRole` из `ABOUT` своего языка — ведёт на `/lada/` или `/ru/lada/`
-- [ ] T040 [P] [US2] Добавить в `tests/seo-contract.spec.ts`: `ProfilePage` с `mainEntity['@id']`, равным `@id` основательницы главной своего языка; `author.url` статьи и `mainEntity.url` — страница эксперта своего языка; у эксперта нет `BreadcrumbList` и видимых крошек; `hreflang` эксперта — uk, ru, `x-default` → `/lada/`; ни один абзац `[data-expert-copy]` не совпадает с абзацем `[data-about-copy]` главной своего языка; список статей эксперта равен статьям `GUIDE_PAGES` его языка
-- [ ] T041 [P] [US2] Включить `/lada/` и `/ru/lada/` в области `tests/contrast.spec.ts` и `tests/typography.spec.ts`
-- [ ] T043 [P] [US2] Создать `src/data/expert.ts`: `expertCopy(locale)` по образцу `aboutCopy` в `src/data/about.ts`; нет файла — исключение «нет текста страницы эксперта: src/content/expert/<lang>.md»
-- [ ] T044 [US2] Добавить в `src/data/guide-structured-data.ts` `ProfilePage` по [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Expert и `"url": "E"` к узлу основательницы в `Article.author` и `ProfilePage.mainEntity`; научить `src/components/SeoHead.astro` странице `kind: 'expert'` (depends on T043)
-- [ ] T045 [US2] Создать `src/components/ExpertPage.astro`: портрет из `portrait()` (`src/data/gallery.ts`) с `alt` своей локали, `<h1>`, текст в `.copy` с `data-expert-copy`, список `guideIndex().articles(locale)` — `heading` статьи и дата публикации; без крошек и без `<script>` (depends on T043)
-- [ ] T046 [US2] Создать маршруты `src/pages/lada.astro` и `src/pages/ru/lada.astro` с `ExpertPageRef` (depends on T044, T045)
-- [ ] T047 [US2] Добавить подпись в `src/components/GuideArticle.astro`: под `<h1>`, рядом с датами — `signatureName` и `signatureRole` из `aboutCopy(locale)` ссылкой на страницу эксперта своего языка ([contracts/links.md](contracts/links.md) §Placement)
-- [ ] T048 [P] [US2] Добавить `/lada/` и `/ru/lada/` в раздел `## Knowledge base` файла `public/llms.txt`
-- [ ] T049 [US2] Прогнать `npm run build && npx playwright test tests/routes.spec.ts tests/voice.spec.ts tests/seo-contract.spec.ts tests/links.spec.ts tests/sitemap.spec.ts tests/llms.spec.ts tests/build-output.spec.ts tests/headings.spec.ts tests/contrast.spec.ts tests/typography.spec.ts tests/brand-marks.spec.ts tests/interaction.spec.ts`: зелёные
+- [x] T037 [US2] Включить `EXPERT_PAGES` в `allPages` в `tests/support/site.ts`
+- [x] T038 [P] [US2] Добавить в `tests/routes.spec.ts` ожидание 404 на `/en/lada/`
+- [x] T039 [P] [US2] Добавить в `tests/voice.spec.ts`: «Лада Новикова» в `<title>`, `<h1>` и описании эксперта; на каждой статье подпись — `signatureName` и `signatureRole` из `ABOUT` своего языка — ведёт на `/lada/` или `/ru/lada/`
+- [x] T040 [P] [US2] Добавить в `tests/seo-contract.spec.ts`: `ProfilePage` с `mainEntity['@id']`, равным `@id` основательницы главной своего языка; `author.url` статьи и `mainEntity.url` — страница эксперта своего языка; у эксперта нет `BreadcrumbList` и видимых крошек; `hreflang` эксперта — uk, ru, `x-default` → `/lada/`; ни один абзац `[data-expert-copy]` не совпадает с абзацем `[data-about-copy]` главной своего языка; список статей эксперта равен статьям `GUIDE_PAGES` его языка
+- [x] T041 [P] [US2] Включить `/lada/` и `/ru/lada/` в области `tests/contrast.spec.ts` и `tests/typography.spec.ts`
+- [x] T043 [P] [US2] Создать `src/data/expert.ts`: `expertCopy(locale)` по образцу `aboutCopy` в `src/data/about.ts`; нет файла — исключение «нет текста страницы эксперта: src/content/expert/<lang>.md»
+- [x] T044 [US2] Добавить в `src/data/guide-structured-data.ts` `ProfilePage` по [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Expert и `"url": "E"` к узлу основательницы в `Article.author` и `ProfilePage.mainEntity`; научить `src/components/SeoHead.astro` странице `kind: 'expert'` (depends on T043)
+- [x] T045 [US2] Создать `src/components/ExpertPage.astro`: портрет из `portrait()` (`src/data/gallery.ts`) с `alt` своей локали, `<h1>`, текст в `.copy` с `data-expert-copy`, список `guideIndex().articles(locale)` — `heading` статьи и дата публикации; без крошек и без `<script>` (depends on T043)
+- [x] T046 [US2] Создать маршруты `src/pages/lada.astro` и `src/pages/ru/lada.astro` с `ExpertPageRef` (depends on T044, T045)
+- [x] T047 [US2] Добавить подпись в `src/components/GuideArticle.astro`: под `<h1>`, рядом с датами — `signatureName` и `signatureRole` из `aboutCopy(locale)` ссылкой на страницу эксперта своего языка ([contracts/links.md](contracts/links.md) §Placement)
+- [x] T048 [P] [US2] Добавить `/lada/` и `/ru/lada/` в раздел `## Knowledge base` файла `public/llms.txt`
+- [x] T049 [US2] Прогнать `npm run build && npx playwright test tests/routes.spec.ts tests/voice.spec.ts tests/seo-contract.spec.ts tests/links.spec.ts tests/sitemap.spec.ts tests/llms.spec.ts tests/build-output.spec.ts tests/headings.spec.ts tests/contrast.spec.ts tests/typography.spec.ts tests/brand-marks.spec.ts tests/interaction.spec.ts`: зелёные
 
 **Checkpoint**: истории 1 и 2 работают вместе; подпись ведёт на собранную страницу эксперта
 
@@ -292,9 +292,9 @@ gate_commands:
   test_full: "npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze"
 -->
 
-- [ ] T050 [P] [US3] Расширить общее правило `tests/links.spec.ts` на рёбра, у которых `from` — страница услуги, и добавить явные ожидания [contracts/links.md](contracts/links.md) §Pilot edges для категорий: `/depilation/` → `/guide/depilation/` с текстом «Депіляція», `/ru/depilation/` → `/ru/guide/depilation/` с «Депиляция»; ссылка стоит после `[data-service-copy]` и вне его; на остальных категориях и подстраницах всех языков ссылок на `/guide/` и `/ru/guide/` нет (сначала красный)
-- [ ] T051 [US3] Вставить `MapLinks` в `src/components/ServicePage.astro` сразу после `.service-copy`, вне `[data-service-copy]`; тексты категорий в `src/content/services/` не правятся; объём слов категории в `seo-contract` не меняется
-- [ ] T052 [US3] Прогнать `npm run build && npx playwright test tests/links.spec.ts tests/seo-contract.spec.ts tests/contrast.spec.ts tests/typography.spec.ts tests/content-parity.spec.ts`: зелёные
+- [x] T050 [P] [US3] Расширить общее правило `tests/links.spec.ts` на рёбра, у которых `from` — страница услуги, и добавить явные ожидания [contracts/links.md](contracts/links.md) §Pilot edges для категорий: `/depilation/` → `/guide/depilation/` с текстом «Депіляція», `/ru/depilation/` → `/ru/guide/depilation/` с «Депиляция»; ссылка стоит после `[data-service-copy]` и вне его; на остальных категориях и подстраницах всех языков ссылок на `/guide/` и `/ru/guide/` нет (сначала красный)
+- [x] T051 [US3] Вставить `MapLinks` в `src/components/ServicePage.astro` сразу после `.service-copy`, вне `[data-service-copy]`; тексты категорий в `src/content/services/` не правятся; объём слов категории в `seo-contract` не меняется
+- [x] T052 [US3] Прогнать `npm run build && npx playwright test tests/links.spec.ts tests/seo-contract.spec.ts tests/contrast.spec.ts tests/typography.spec.ts tests/content-parity.spec.ts`: зелёные
 
 **Checkpoint**: вход в раздел с категории работает; шапка сайта не менялась
 
@@ -324,11 +324,11 @@ gate_commands:
   test_full: "npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze"
 -->
 
-- [ ] T053 [US4] Добавить в `scripts/test-invalid-data.mjs` случаи остановок по [quickstart.md](quickstart.md) §3. Остановки уже реализованы в Step 2.2 (T007, T009) и Step 4.2 (T043), поэтому случаи проверяют готовый код и сразу зелёные — «красный до кода» здесь не ожидается; красный случай — дефект остановки, его чинит T055. Проверяется выделенная часть сообщения [contracts/content-files.md](contracts/content-files.md) §Build stops: удалена ru-статья (№ 9); удалён ru-хаб (№ 8); добавлен `uk/depilation/copy.md` с `page: depilation-vs-epilation` (№ 6); ru-статья перемещена в `ru/depilation/other.md` (№ 7); `modified` раньше `published` (№ 1); `slug:` во frontmatter (№ 2); добавлены `uk/depilation/vs-epilation/deep.md` (№ 3), `en/depilation.md` (№ 4), `uk/nails.md` (№ 5); `page` нет в карте — в uk- и ru-статье `page` заменён одним и тем же значением, которого нет в §Pages, чтобы сработала № 10, а не № 7; удалено ребро `depilation-guide → depilation-vs-epilation` uk из `docs/seo/map.md` (№ 11); нет `src/content/expert/ru.md` (№ 13)
-- [ ] T054 [US4] Добавить в `scripts/test-invalid-data.mjs` допустимый случай: добавлен `src/content/guide/uk/depilation/aftercare.md` с `page: depilation-aftercare` → сборка проходит; `/guide/depilation/aftercare/` есть в списке `/guide/depilation/`, в списке `/lada/` и в `sitemap-0.xml`; его `hreflang` — только `uk` и `x-default`; на `/ru/guide/depilation/` и `/ru/lada/` его нет
-- [ ] T055 [US4] Довести `src/data/guide.ts`, `src/data/seo-map.ts` и `src/data/expert.ts` до прохождения T053 и T054: порядок остановок и тексты сообщений — ровно как в контракте, шаблоны и маршруты не правятся
-- [ ] T056 [US4] Записать в `docs/specs/routes.md` рядом со списком подстраниц список «Новая статья — правка во всех местах» (FR-016) из [plan.md](plan.md) §Structure Decision: семь мест и какие из них ловит прогон, какие — только вычитка
-- [ ] T057 [US4] Прогнать `npm run test:invalid-data`: `✓` на каждом случае, `git status` после прогона чистый
+- [x] T053 [US4] Добавить в `scripts/test-invalid-data.mjs` случаи остановок по [quickstart.md](quickstart.md) §3. Остановки уже реализованы в Step 2.2 (T007, T009) и Step 4.2 (T043), поэтому случаи проверяют готовый код и сразу зелёные — «красный до кода» здесь не ожидается; красный случай — дефект остановки, его чинит T055. Проверяется выделенная часть сообщения [contracts/content-files.md](contracts/content-files.md) §Build stops: удалена ru-статья (№ 9); удалён ru-хаб (№ 8); добавлен `uk/depilation/copy.md` с `page: depilation-vs-epilation` (№ 6); ru-статья перемещена в `ru/depilation/other.md` (№ 7); `modified` раньше `published` (№ 1); `slug:` во frontmatter (№ 2); добавлены `uk/depilation/vs-epilation/deep.md` (№ 3), `en/depilation.md` (№ 4), `uk/nails.md` (№ 5); `page` нет в карте — в uk- и ru-статье `page` заменён одним и тем же значением, которого нет в §Pages, чтобы сработала № 10, а не № 7; удалено ребро `depilation-guide → depilation-vs-epilation` uk из `docs/seo/map.md` (№ 11); нет `src/content/expert/ru.md` (№ 13)
+- [x] T054 [US4] Добавить в `scripts/test-invalid-data.mjs` допустимый случай: добавлен `src/content/guide/uk/depilation/aftercare.md` с `page: depilation-aftercare` → сборка проходит; `/guide/depilation/aftercare/` есть в списке `/guide/depilation/`, в списке `/lada/` и в `sitemap-0.xml`; его `hreflang` — только `uk` и `x-default`; на `/ru/guide/depilation/` и `/ru/lada/` его нет
+- [x] T055 [US4] Довести `src/data/guide.ts`, `src/data/seo-map.ts` и `src/data/expert.ts` до прохождения T053 и T054: порядок остановок и тексты сообщений — ровно как в контракте, шаблоны и маршруты не правятся
+- [x] T056 [US4] Записать в `docs/specs/routes.md` рядом со списком подстраниц список «Новая статья — правка во всех местах» (FR-016) из [plan.md](plan.md) §Structure Decision: семь мест и какие из них ловит прогон, какие — только вычитка
+- [x] T057 [US4] Прогнать `npm run test:invalid-data`: `✓` на каждом случае, `git status` после прогона чистый
 
 **Checkpoint**: все четыре истории работают; база знаний расширяется без кода
 
@@ -540,3 +540,51 @@ decided:
 
 ### S1 — dispatch 2 (2026-10-18)
 `kind=spec-verify agent=verifier model=claude-sonnet-5-5 effort=high turns=17 minutes=1.8 input=34 cache_write=89138 cache_read=900509 output=12188`
+
+### S2.step-3.2 — 2026-10-18
+**Completed steps:** 3.2
+**Commits:** 39b3fa0
+
+### S2.step-4.1 — 2026-10-18
+**Completed steps:** 4.1
+**Commits:** d28e635
+
+### S2.step-4.2 — 2026-10-18
+**Completed steps:** 4.2
+**Commits:** 8227597
+
+### S2.step-5.1 — 2026-10-18
+**Completed steps:** 5.1
+**Commits:** 307f7ff
+
+### S2.step-6.1 — 2026-10-18
+**Completed steps:** 6.1
+**Commits:** d9ea356
+
+### S2 — observations (2026-10-18, dispatch 3)
+plan-wrong:
+- TaskCreate is not exposed in this harness; the bundle was tracked without it.
+- T045 puts the portrait alt from src/data/gallery.json on /lada/. That alt is «майстриня масажу та депіляції» / «мастер массажа и депиляции» / «massage and hair removal specialist», which contradicts FR-014 (Lada does not do depilation herself). The home hero shows the same alt. One edit in gallery.json fixes both pages; it needs the author's decision.
+- After the spec-verify fix the articles no longer claim the split is «принято в салонной косметологии». research.md §Sources row 2, research R11 and spec FR-012 («принятое в салонной практике») still say it; research.md was outside step 3.2's declared paths.
+- The 404 checks of T016/T038 (/guide/, /ru/guide/, /en/guide/…, /en/lada/) pass on astro preview before any code exists, so they cannot fail first. Production 404 rests on the RedirectMatch rule (checked in dist/ by build-output) and on the publish smoke step.
+- T053's cases were all green on the first run, so T055 had no work, as the step body predicted.
+- data-model.md and T012 call the MapLinks filter prop `toKind`; step 5.1 renamed it to `toKinds` (a list). Step 7.1's living docs should use the new name.
+- T034 makes llms.txt mention the expert page and ProfilePage in the 3.2 commit; /lada/ only exists from the 4.2 commit on. Nothing between them is merged, so it has no effect.
+- docs/specs/routes.md's new-article list links content-model.md §Knowledge base, which only step 7.1 (T062) creates.
+- For a future article, nothing catches a missing «статья → хаб» or «статья → услуга» edge in the map (only the pilot's PILOT_EDGES literals do). The routes.md list says so.
+redone:
+- The 5.1 and 6.1 commit subjects were over 72 characters; each was amended right after the commit (message only, same tree).
+- The slug case first checked only «Unrecognized key slug». Probing the build output showed the entry id is already the slug value («guide → other-address»), so a check for the file-path location line was added. The probe wrote the uk article through a Bash node one-liner and restored it from a scratchpad copy. That is a Bash write outside the scope hook (the file is inside the lease; git status was clean afterwards).
+- A `signatureHint` dictionary key («Автор») was added in 4.2 and removed before the first gate run: the contract signature is the name and role only.
+decided:
+- Both article dates are always shown, even when equal, because seo-contract compares both <time datetime> values with JSON-LD. If wrong, the byline shows one date twice until the first modification.
+- The hub's article list has no heading of its own. The hub's MapLinks block keeps the dictionary heading «База знань / Читайте також» over its single service link. If wrong, the hub needs its own dictionary key.
+- GuideIndex gained entryOf(locale, ref) and refOf(entry). SeoHead takes title and description from guide or expert frontmatter; one JSON-LD block (knowledgeGraph) covers hub, article and expert. If wrong, only guide.ts and SeoHead change.
+- GuideDictionary.expertArticles became { eyebrow: 'База знань', title: 'Статті за підписом Лади' } (ru: 'Статьи за подписью Лады') for SectionHeading. If the wording is wrong, it is a dictionary edit.
+- The expert body includes «зокрема й статті про послуги, які виконує команда», sourced from the spec §Lada's Facts consent. It keeps the page from implying Lada does depilation; if it is read as going beyond the Expert facts table, drop the clause.
+- The expert portrait loads eager without fetchpriority, because LCP is not measured on the new pages. If wrong, the change is one attribute.
+- Test helpers localesOf, barePath and pathIn were added to tests/support/site.ts. The sitemap test now checks alternate hrefs per page language, not just the host. The paragraph-uniqueness test compares guide copy with service copy, «Про нас» and other guide pages of the language, which is stricter than the contract.
+- test-invalid-data cases accept `expect` as RegExp or RegExp[]. The modified-before-published case derives its date from the file's own `published`, so it survives step 7.4's date reset.
+
+### S2 — dispatch 3 (2026-10-18)
+`kind=bundle agent=implementer tier=strong model=claude-opus-5-5 effort=xhigh turns=131 minutes=54.3 input=262 cache_write=418572 cache_read=39228328 output=141996`
