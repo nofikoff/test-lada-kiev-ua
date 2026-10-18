@@ -1,0 +1,16 @@
+---
+/**
+ * Страница эксперта (specs/007-knowledge-base-pilot/contracts/routes.md). Маршрута под `en` нет,
+ * как и у базы знаний: адрес отвечает 404.
+ */
+import ExpertPage from '../components/ExpertPage.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { ExpertPageRef } from '../i18n/paths';
+
+const locale = 'uk';
+const page: ExpertPageRef = { kind: 'expert' };
+---
+
+<BaseLayout locale={locale} page={page}>
+  <ExpertPage locale={locale} />
+</BaseLayout>

@@ -86,11 +86,12 @@ test.describe('адреса подстраниц', () => {
 
 test.describe('адреса базы знаний', () => {
   /**
-   * Корня раздела нет, английской версии раздела нет (specs/007-knowledge-base-pilot/contracts/routes.md).
+   * Корня раздела нет, английских версий раздела и страницы эксперта нет
+   * (specs/007-knowledge-base-pilot/contracts/routes.md).
    * Preview не исполняет `.htaccess`, поэтому 404 на проде — проверка после выкладки в `publish.yml`;
    * здесь — что сборка не выдала на этих адресах страницу.
    */
-  for (const path of ['/guide/', '/ru/guide/', '/en/guide/depilation/vs-epilation/']) {
+  for (const path of ['/guide/', '/ru/guide/', '/en/guide/depilation/vs-epilation/', '/en/lada/']) {
     test(`${path} отвечает кодом 404`, async ({ request }) => {
       expect((await request.get(path)).status()).toBe(404);
     });

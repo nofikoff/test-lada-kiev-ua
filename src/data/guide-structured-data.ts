@@ -1,14 +1,19 @@
 import { isoDay, type GuideLocale } from '../i18n/guide';
-import { canonicalUrl, type GuidePageRef } from '../i18n/paths';
+import { canonicalUrl, type ExpertPageRef, type GuidePageRef } from '../i18n/paths';
 import { ui } from '../i18n/ui';
+import { expertCopy } from './expert';
 import { founderNode } from './founder';
 import { guideIndex } from './guide';
 
 /**
- * JSON-LD хаба и статьи базы знаний по specs/007-knowledge-base-pilot/contracts/page-head-and-jsonld.md
- * §Article, §Hub. Узла организации здесь нет: автор и издатель — ссылки по `@id` на узлы главной
- * своего языка, поэтому «тот же человек» и «та же студия» проверяются равенством строк.
+ * JSON-LD хаба, статьи и страницы эксперта по specs/007-knowledge-base-pilot/contracts/page-head-and-jsonld.md
+ * §Article, §Hub, §Expert. Узла организации здесь нет: автор, издатель и предмет страницы эксперта —
+ * узлы главной своего языка по `@id`, поэтому «тот же человек» и «та же студия» проверяются
+ * равенством строк. К узлу основательницы добавлен `url` страницы эксперта: узлы с одним `@id`
+ * поисковик сливает, и главной это не противоречит (research.md R7).
  */
+
+const EXPERT: ExpertPageRef = { kind: 'expert' };
 
 interface ListItem {
   readonly name: string;
@@ -73,7 +78,12 @@ export async function guideGraph(locale: GuideLocale, page: GuidePageRef, image:
     datePublished: isoDay(entry.data.published),
     dateModified: isoDay(entry.data.modified),
     image,
-    author: { '@type': founder['@type'], '@id': founder['@id'], name: founder.name },
+    author: {
+      '@type': founder['@type'],
+      '@id': founder['@id'],
+      name: founder.name,
+      url: canonicalUrl(locale, EXPERT),
+    },
     publisher: {
       '@type': 'HealthAndBeautyBusiness',
       '@id': `${home}#business`,
@@ -90,6 +100,25 @@ export async function guideGraph(locale: GuideLocale, page: GuidePageRef, image:
         { name: index.entryOf(locale, hub.ref).data.heading, item: canonicalUrl(locale, hub.ref) },
         { name: entry.data.heading, item: canonical },
       ]),
+    ],
+  };
+}
+
+/** Граф страницы эксперта: `ProfilePage` об основательнице. Крошек у страницы нет. */
+export async function expertGraph(locale: GuideLocale) {
+  const entry = await expertCopy(locale);
+  const canonical = canonicalUrl(locale, EXPERT);
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'ProfilePage',
+        '@id': `${canonical}#page`,
+        name: entry.data.heading,
+        url: canonical,
+        inLanguage: locale,
+        mainEntity: { ...(await founderNode(locale)), url: canonical },
+      },
     ],
   };
 }

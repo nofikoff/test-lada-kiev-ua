@@ -41,8 +41,8 @@ export interface GuideDictionary {
   readonly links: { readonly eyebrow: string; readonly title: string };
   readonly published: string;
   readonly modified: string;
-  /** Заголовок списка статей на странице эксперта. */
-  readonly expertArticles: string;
+  /** Заголовок списка статей на странице эксперта — та же пара, что у блока ссылок (правило 7). */
+  readonly expertArticles: { readonly eyebrow: string; readonly title: string };
   /**
    * Имена собственные анкоров карты в своём регистре: `/seo map` пишет анкоры строчными, и без
    * словаря на странице стояло бы «депіляція київ». Новое имя в анкоре — новая строка здесь.
@@ -55,14 +55,14 @@ export const guide: Record<GuideLocale, GuideDictionary> = {
     links: { eyebrow: 'База знань', title: 'Читайте також' },
     published: 'Опубліковано',
     modified: 'Оновлено',
-    expertArticles: 'Статті бази знань',
+    expertArticles: { eyebrow: 'База знань', title: 'Статті за підписом Лади' },
     properNouns: ['Київ'],
   },
   ru: {
     links: { eyebrow: 'База знаний', title: 'Читайте также' },
     published: 'Опубликовано',
     modified: 'Обновлено',
-    expertArticles: 'Статьи базы знаний',
+    expertArticles: { eyebrow: 'База знаний', title: 'Статьи за подписью Лады' },
     properNouns: ['Киев'],
   },
 };

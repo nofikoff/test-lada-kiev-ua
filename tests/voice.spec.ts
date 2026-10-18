@@ -6,6 +6,7 @@ import {
   builtPages,
   categoryPages,
   countWords,
+  EXPERT_PAGES,
   FORBIDDEN_NAME,
   GUIDE_COPY_SELECTOR,
   GUIDE_PAGES,
@@ -84,6 +85,34 @@ test.describe('карта запросов', () => {
       for (const fragment of queryOf(page)) {
         expect(first, `первый абзац без ${fragment}`).toMatch(fragment);
       }
+    });
+  }
+
+  /**
+   * Подпись статьи — та же, что под обращением «Про нас», и ведёт на страницу эксперта своего
+   * языка; стоит под заголовком, до текста (specs/007-knowledge-base-pilot/contracts/links.md §Placement).
+   */
+  for (const page of GUIDE_PAGES.filter((entry) => entry.kind === 'article')) {
+    const expert = EXPERT_PAGES.find((entry) => entry.locale === page.locale)!;
+    const { signatureName, signatureRole } = ABOUT[page.locale];
+
+    test(`${page.path}: подпись «${signatureName}, ${signatureRole}» ведёт на ${expert.path}`, async ({
+      page: browser,
+    }) => {
+      await browser.goto(page.path);
+      const signature = browser.locator(`main a[href="${expert.path}"]`);
+      await expect(signature).toHaveCount(1);
+      expect(normalize(await signature.innerText())).toBe(`${signatureName}, ${signatureRole}`);
+
+      const placed = await signature.evaluate((link, copySelector) => {
+        const heading = document.querySelector('h1')!;
+        const copy = document.querySelector(copySelector)!;
+        return {
+          afterHeading: Boolean(heading.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING),
+          beforeCopy: Boolean(link.compareDocumentPosition(copy) & Node.DOCUMENT_POSITION_FOLLOWING),
+        };
+      }, GUIDE_COPY_SELECTOR);
+      expect(placed, 'подпись стоит между заголовком и текстом').toEqual({ afterHeading: true, beforeCopy: true });
     });
   }
 

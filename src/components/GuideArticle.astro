@@ -1,7 +1,8 @@
 ---
 /**
- * Статья базы знаний: крошки «главная → хаб → статья», заголовок, даты публикации и правки, текст
- * и ссылки карты после него (specs/007-knowledge-base-pilot/contracts/links.md §Placement).
+ * Статья базы знаний: крошки «главная → хаб → статья», заголовок, подпись Лады со ссылкой на
+ * страницу эксперта, даты публикации и правки, текст и ссылки карты после него
+ * (specs/007-knowledge-base-pilot/contracts/links.md §Placement).
  * Скрипта нет: всё собирается на сборке.
  */
 import { render } from 'astro:content';
@@ -9,6 +10,7 @@ import Breadcrumbs from './Breadcrumbs.astro';
 import MapLinks from './MapLinks.astro';
 import Monogram from './Monogram.astro';
 import Section from './Section.astro';
+import { aboutCopy } from '../data/about';
 import { guideIndex } from '../data/guide';
 import { displayDate, guide, isoDay, type GuideLocale } from '../i18n/guide';
 import { pagePath, type GuidePageRef } from '../i18n/paths';
@@ -26,6 +28,9 @@ const entry = index.entryOf(locale, page);
 // Хаб языка у статьи есть всегда: без него сборка остановлена (остановка № 8, src/data/guide.ts).
 const hub = index.hubOf(locale, page.category)!;
 const { Content } = await render(entry);
+
+/** Подпись — та же, что под обращением «Про нас»: имя и роль живут в одном файле на язык. */
+const { signatureName, signatureRole } = (await aboutCopy(locale)).data;
 
 /** Обе даты видны всегда: их же сверяет с `datePublished` и `dateModified` tests/seo-contract.spec.ts. */
 const dates = [
@@ -49,6 +54,9 @@ const dates = [
     <h1 class="section-title article__title">{entry.data.heading}</h1>
 
     <p class="article__byline">
+      <a href={pagePath(locale, { kind: 'expert' })} class="article__author">
+        {signatureName}, {signatureRole}
+      </a>
       {
         dates.map(({ label, date }) => (
           <span class="article__date">
@@ -79,6 +87,15 @@ const dates = [
     gap: 0.25rem 1.5rem;
     margin-bottom: var(--rhythm-tight);
     font-size: var(--step-caption);
+  }
+
+  .article__author {
+    @apply text-brass underline underline-offset-4;
+    transition: color 0.3s;
+  }
+
+  .article__author:hover {
+    @apply text-brass-lt;
   }
 
   /* Мера колонки — та же, что у текста страницы услуги: у `.copy` своей меры нет (src/index.css). */

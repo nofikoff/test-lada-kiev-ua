@@ -1,0 +1,12 @@
+---
+import ExpertPage from '../../components/ExpertPage.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { ExpertPageRef } from '../../i18n/paths';
+
+const locale = 'ru';
+const page: ExpertPageRef = { kind: 'expert' };
+---
+
+<BaseLayout locale={locale} page={page}>
+  <ExpertPage locale={locale} />
+</BaseLayout>

@@ -9,6 +9,8 @@ import {
   barePath,
   categoryPages,
   countWords,
+  EXPERT_COPY_SELECTOR,
+  EXPERT_PAGES,
   expectedPricedRows,
   FOUNDER_ROLE,
   GUIDE_COPY_SELECTOR,
@@ -733,6 +735,11 @@ async function homeIds(request: APIRequestContext, locale: Locale): Promise<{ fo
   };
 }
 
+/** Страница эксперта языка: на неё ведут подпись статьи и `url` автора. */
+function expertOf(locale: Locale): string {
+  return EXPERT_PAGES.find((entry) => entry.locale === locale)!.path;
+}
+
 /** Видимые крошки: имя и адрес каждого звена, текущая страница — без ссылки. */
 async function visibleCrumbs(page: Page): Promise<{ name: string; href: string | null }[]> {
   return page.locator('main nav ol > li:not([aria-hidden="true"])').evaluateAll((items) =>
@@ -836,6 +843,7 @@ for (const guidePage of GUIDE_PAGES) {
         const publisher = article!.publisher as Record<string, unknown>;
         expect(author['@id']).toBe(ids.founder);
         expect(author.name).toBe(ABOUT[locale].signatureName);
+        expect(author.url).toBe(`${SITE_ORIGIN}${expertOf(locale)}`);
         expect(publisher['@id']).toBe(ids.business);
         expect(publisher.name).toBe('Lada N');
         expect(publisher.url).toBe(`${SITE_ORIGIN}${homeOf(locale)}`);
@@ -887,6 +895,110 @@ for (const guidePage of GUIDE_PAGES) {
         expect(parts.map((part) => part['@id'])).toEqual(listed.map((href) => `${SITE_ORIGIN}${href}#article`));
       });
     }
+  });
+}
+
+/**
+ * Страница эксперта: заголовочная часть, `ProfilePage` с тем же узлом основательницы, что на главной,
+ * без крошек, и список статей своего языка (contracts/page-head-and-jsonld.md §Expert).
+ */
+for (const expertPage of EXPERT_PAGES) {
+  const { locale, path } = expertPage;
+  const canonical = `${SITE_ORIGIN}${path}`;
+  const own = localesOf(expertPage);
+  const articles = GUIDE_PAGES.filter((entry) => entry.kind === 'article' && entry.locale === locale);
+
+  test.describe(`страница эксперта ${path}`, () => {
+    test('язык, один h1, канонический адрес, альтернативы uk и ru, x-default — /lada/', async ({
+      page,
+      request,
+    }) => {
+      expect((await request.get(path)).status(), `${path} не отдаётся`).toBe(200);
+      await page.goto(path);
+
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
+
+      const pairs = await page
+        .locator('link[rel="alternate"][hreflang]')
+        .evaluateAll((links) =>
+          links.map((link) => [link.getAttribute('hreflang'), link.getAttribute('href')] as const),
+        );
+      expect(Object.fromEntries(pairs)).toEqual({
+        uk: `${SITE_ORIGIN}/lada/`,
+        ru: `${SITE_ORIGIN}/ru/lada/`,
+        'x-default': `${SITE_ORIGIN}/lada/`,
+      });
+
+      expect(await metaContent(page, 'meta[property="og:type"]')).toBe('website');
+      expect(await metaContent(page, 'meta[property="og:locale"]')).toBe(OG_LOCALE[locale]);
+      const alternates = await page
+        .locator('meta[property="og:locale:alternate"]')
+        .evaluateAll((tags) => tags.map((tag) => tag.getAttribute('content')));
+      expect(alternates.sort()).toEqual(ogAlternates(own, locale).sort());
+    });
+
+    test('ProfilePage: главный предмет — основательница главной своего языка', async ({ page, request }) => {
+      await page.goto(path);
+      await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+      const nodes = await structuredData(page);
+
+      const profile = nodes.find((node) => node['@type'] === 'ProfilePage');
+      expect(profile, 'нет узла ProfilePage').toBeDefined();
+      expect(profile!['@id']).toBe(`${canonical}#page`);
+      expect(normalize(String(profile!.name))).toBe(normalize(await page.locator('h1').innerText()));
+      expect(profile!.url).toBe(canonical);
+      expect(profile!.inLanguage).toBe(locale);
+
+      const subject = profile!.mainEntity as Record<string, unknown>;
+      expect(subject['@id']).toBe((await homeIds(request, locale)).founder);
+      expect(subject['@type']).toBe('Person');
+      expect(subject.name).toBe(ABOUT[locale].signatureName);
+      expect(subject.jobTitle).toBe(FOUNDER_ROLE[locale]);
+      expect(subject.url).toBe(canonical);
+      expect(subject.alumniOf).toEqual({ '@type': 'CollegeOrUniversity', name: ALUMNI.name, sameAs: ALUMNI.sameAs });
+      expect(nodes.filter((node) => node['@type'] === 'FAQPage')).toEqual([]);
+    });
+
+    test('крошек нет ни в разметке, ни на странице', async ({ page }) => {
+      await page.goto(path);
+      const nodes = await structuredData(page);
+      expect(nodes.filter((node) => node['@type'] === 'BreadcrumbList')).toEqual([]);
+      await expect(page.locator('main nav')).toHaveCount(0);
+    });
+
+    test('список статей — статьи базы знаний своего языка с их заголовками', async ({ page, request }) => {
+      expect(articles.length, `у языка ${locale} нет статей`).toBeGreaterThan(0);
+      await page.goto(path);
+
+      const listed = await page
+        .locator('main a[href*="/guide/"]')
+        .evaluateAll((links) =>
+          links.map((link) => ({ href: link.getAttribute('href')!, text: link.textContent ?? '' })),
+        );
+      expect(listed.map((link) => link.href).sort()).toEqual(articles.map((entry) => entry.path).sort());
+
+      // Текст пункта — заголовок статьи, как её собственный h1.
+      for (const link of listed) {
+        const html = await (await request.get(link.href)).text();
+        const heading = /<h1\b[^>]*>([\s\S]*?)<\/h1>/.exec(html)?.[1] ?? '';
+        expect(normalize(link.text), link.href).toBe(normalize(htmlToText(heading)));
+      }
+    });
+
+    test('ни один абзац текста не повторяет обращение «Про нас» своего языка', async ({ page }) => {
+      await page.goto(homeOf(locale));
+      const about = new Set((await page.locator(`${ABOUT_COPY_SELECTOR} p`).allInnerTexts()).map(normalize));
+      expect(about.size, `${homeOf(locale)}: обращение без абзацев`).toBeGreaterThan(0);
+
+      await page.goto(path);
+      const copy = page.locator(EXPERT_COPY_SELECTOR);
+      await expect(copy).toHaveCount(1);
+      const paragraphs = (await copy.locator('p').allInnerTexts()).map(normalize).filter(Boolean);
+      expect(paragraphs.length, `${path}: текст без абзацев`).toBeGreaterThan(0);
+      for (const paragraph of paragraphs) expect(about.has(paragraph), paragraph).toBe(false);
+    });
   });
 }
 

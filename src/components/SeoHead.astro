@@ -9,8 +9,9 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import logo from '../assets/logo.jpg';
 import { founderNode } from '../data/founder';
 import { portrait } from '../data/gallery';
+import { expertCopy } from '../data/expert';
 import { guideIndex } from '../data/guide';
-import { guideGraph } from '../data/guide-structured-data';
+import { expertGraph, guideGraph } from '../data/guide-structured-data';
 import { pricesOfGroups } from '../data/price-list';
 import { servicePageOf } from '../data/subpages';
 import { guideLocaleOf } from '../i18n/guide';
@@ -78,11 +79,12 @@ const serviceRef = page && !page.kind ? page : null;
 const servicePage = serviceRef ? await servicePageOf(locale, serviceRef) : null;
 const copy = servicePage?.copy ?? null;
 
-/** Хаб и статья базы знаний: заголовок и описание — тоже из frontmatter их файла. */
+/** Хаб, статья и страница эксперта: заголовок и описание — тоже из frontmatter их файла. */
 const guideRef = page?.kind === 'guide' ? page : null;
 const guideEntry = guideRef ? (await guideIndex()).entryOf(guideLocaleOf(locale), guideRef) : null;
+const expertEntry = page?.kind === 'expert' ? await expertCopy(guideLocaleOf(locale)) : null;
 
-const own = copy ?? guideEntry;
+const own = copy ?? guideEntry ?? expertEntry;
 const title = own ? own.data.title : t.meta.title;
 const description = own ? own.data.description : t.meta.description;
 
@@ -246,7 +248,12 @@ const breadcrumb = copy
 const serviceGraph =
   service && breadcrumb ? { '@context': 'https://schema.org', '@graph': [service, breadcrumb] } : null;
 
-const guideJsonLd = guideRef ? await guideGraph(guideLocaleOf(locale), guideRef, ogImage) : null;
+/** Базу знаний и эксперта описывает свой граф: узла организации на них нет, только ссылки по `@id`. */
+const knowledgeGraph = guideRef
+  ? await guideGraph(guideLocaleOf(locale), guideRef, ogImage)
+  : expertEntry
+    ? await expertGraph(guideLocaleOf(locale))
+    : null;
 ---
 
 <title>{title}</title>
@@ -286,4 +293,8 @@ const guideJsonLd = guideRef ? await guideGraph(guideLocaleOf(locale), guideRef,
     <script type="application/ld+json" is:inline set:html={JSON.stringify(serviceGraph)} />
   )
 }
-{guideJsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(guideJsonLd)} />}
+{
+  knowledgeGraph && (
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(knowledgeGraph)} />
+  )
+}

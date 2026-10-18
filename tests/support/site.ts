@@ -219,8 +219,13 @@ export const PILOT_EDGES: readonly { readonly locale: GuideLocale; readonly from
   { locale: 'ru', from: '/ru/guide/depilation/', to: '/ru/depilation/' },
 ];
 
-/** Страницы сайта: языковые версии главной, страницы услуг и база знаний. */
-export const allPages: readonly PageUnderTest[] = [...homePages, ...servicePages, ...GUIDE_PAGES];
+/** Страницы сайта: языковые версии главной, страницы услуг, база знаний и страница эксперта. */
+export const allPages: readonly PageUnderTest[] = [
+  ...homePages,
+  ...servicePages,
+  ...GUIDE_PAGES,
+  ...EXPERT_PAGES,
+];
 
 /**
  * Языки страницы: у главной и категорий — все три, у подстраницы — свои, у страниц базы знаний

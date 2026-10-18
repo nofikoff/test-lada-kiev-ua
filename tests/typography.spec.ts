@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
+  EXPERT_COPY_SELECTOR,
+  EXPERT_PAGES,
   GUIDE_COPY_SELECTOR,
   GUIDE_PAGES,
   homePages,
@@ -189,15 +191,18 @@ test.describe('длина строки протяжённого текста', (
       });
     }
 
-    // У хаба вступление в два абзаца, поэтому нижняя граница числа абзацев — одна на оба вида.
-    for (const { path } of GUIDE_PAGES) {
-      test(`текст базы знаний ${path} держит меру при ширине ${width}`, async ({ page }) => {
-        const selector = `${GUIDE_COPY_SELECTOR} p, ${GUIDE_COPY_SELECTOR} li`;
+    // У хаба и эксперта текст в два абзаца, поэтому нижняя граница числа абзацев — одна на все виды.
+    for (const { path, selector: copy } of [
+      ...GUIDE_PAGES.map((entry) => ({ path: entry.path, selector: GUIDE_COPY_SELECTOR })),
+      ...EXPERT_PAGES.map((entry) => ({ path: entry.path, selector: EXPERT_COPY_SELECTOR })),
+    ]) {
+      test(`текст страницы ${path} держит меру при ширине ${width}`, async ({ page }) => {
+        const selector = `${copy} p, ${copy} li`;
         await openWithSiteFonts(page, path, width, selector);
 
         const measured = await page.evaluate(measureInBrowser, { selector, minimum: MEANINGFUL_LENGTH });
 
-        expect(measured.length, `${path}: текст базы знаний не найден`).toBeGreaterThan(0);
+        expect(measured.length, `${path}: текст страницы не найден`).toBeGreaterThan(0);
         expect(
           incomplete(measured).length,
           `${path}: обход знаков потерял текст\n${lostText(measured)}`,
