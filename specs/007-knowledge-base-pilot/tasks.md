@@ -487,7 +487,7 @@ Task: "T035 .github/workflows/publish.yml"
 
 - [x] S1 (~550K) Steps 2.1, 2.2, 2.3, 2.4, 3.1 — done 2026-10-18 17:49–18:29 (0h39m)
 - [x] S2 (~500K) Steps 3.2, 4.1, 4.2, 5.1, 6.1 — done 2026-10-18 18:32–19:29 (0h56m)
-- [ ] S3 (~190K) Steps 7.1, 7.3
+- [x] S3 (~190K) Steps 7.1, 7.3 — done 2026-10-18 19:31–19:45 (0h13m)
 
 ## Progress Log
 
