@@ -16,17 +16,20 @@ interface Props {
   /** Язык без базы знаний (en) получает пустой блок, то есть никакого. */
   locale: Locale;
   page: PageRef;
-  /** Только рёбра к страницам этого вида: хаб выводит здесь ребро к услуге, а статьи — своим списком. */
-  toKind?: MapPageKind;
+  /**
+   * Только рёбра к страницам этих видов: хаб выводит здесь ребро к услуге, а статьи — своим списком;
+   * страница услуги — только рёбра в базу знаний (contracts/links.md §Placement).
+   */
+  toKinds?: readonly MapPageKind[];
 }
 
-const { locale, page, toKind } = Astro.props;
+const { locale, page, toKinds } = Astro.props;
 
 const block = isGuideLocale(locale)
   ? {
       labels: guide[locale].links,
       links: (await pageLinks(locale, pagePath(locale, page)))
-        .filter((link) => !toKind || link.toKind === toKind)
+        .filter((link) => !toKinds || toKinds.includes(link.toKind))
         .map((link) => ({ href: link.href, text: displayAnchor(locale, link.anchor) })),
     }
   : null;

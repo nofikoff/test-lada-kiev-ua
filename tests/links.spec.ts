@@ -5,7 +5,10 @@ import {
   EXPERT_PAGES,
   GUIDE_PAGES,
   htmlToText,
+  normalize,
   PILOT_EDGES,
+  SERVICE_COPY_SELECTOR,
+  servicePages,
   SITE_ORIGIN,
   toLocalPath,
 } from './support/site';
@@ -19,8 +22,17 @@ import {
 
 const MAP_FILE = 'docs/seo/map.md';
 
-/** Виды страниц карты, чьи рёбра обязаны стать ссылками: база знаний и эксперт. */
-const FROM_KINDS = new Set(['hub', 'entity', 'question', 'expert']);
+/** Виды страниц карты, чьи рёбра обязаны стать ссылками: база знаний, эксперт и страницы услуг. */
+const FROM_KINDS = new Set(['hub', 'entity', 'question', 'expert', 'service']);
+
+/**
+ * Вход в раздел с категории (contracts/links.md §Pilot edges) — литералами, как `PILOT_EDGES`:
+ * ребро, удалённое из карты, убрало бы ссылку молча.
+ */
+const CATEGORY_HUB_EDGES = [
+  { from: '/depilation/', to: '/guide/depilation/', text: 'Депіляція' },
+  { from: '/ru/depilation/', to: '/ru/guide/depilation/', text: 'Депиляция' },
+] as const;
 
 /** Строки таблицы раздела карты с ячейками по именам колонок из строки заголовка. */
 function mapTable(text: string, section: string): Record<string, string>[] {
@@ -120,6 +132,36 @@ test.describe('рёбра пилота литералами', () => {
     test(`${from} ссылается на ${to}`, async ({ request }) => {
       const links = await linksOf(request, from);
       expect(links.map((link) => link.href)).toContain(to);
+    });
+  }
+});
+
+test.describe('вход в базу знаний со страниц услуг', () => {
+  for (const { from, to, text } of CATEGORY_HUB_EDGES) {
+    // FR-010: блок после текста категории, тексты категорий не правятся.
+    test(`${from} ссылается на ${to} «${text}» после текста, вне его`, async ({ page }) => {
+      await page.goto(from);
+      const link = page.locator(`main a[href="${to}"]`);
+      await expect(link).toHaveCount(1);
+      expect(normalize(await link.innerText())).toBe(text);
+
+      const placed = await link.evaluate((element, copySelector) => {
+        const copy = document.querySelector(copySelector)!;
+        return {
+          inside: copy.contains(element),
+          after: Boolean(copy.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING),
+        };
+      }, SERVICE_COPY_SELECTOR);
+      expect(placed).toEqual({ inside: false, after: true });
+    });
+  }
+
+  // Хабов этих категорий нет: рёбра карты к ним ведут на несобранные страницы (contracts/links.md).
+  const withHub = new Set<string>(CATEGORY_HUB_EDGES.map((edge) => edge.from));
+  for (const { path } of servicePages.filter((entry) => !withHub.has(entry.path))) {
+    test(`${path}: ссылок в раздел базы знаний нет`, async ({ request }) => {
+      const intoGuide = (await linksOf(request, path)).filter((link) => /^\/(ru\/)?guide\//.test(link.href));
+      expect(intoGuide).toEqual([]);
     });
   }
 });

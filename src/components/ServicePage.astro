@@ -11,13 +11,18 @@
 import { render } from 'astro:content';
 import Breadcrumbs from './Breadcrumbs.astro';
 import Icon from './Icon.astro';
+import MapLinks from './MapLinks.astro';
 import Monogram from './Monogram.astro';
 import PriceGroup from './PriceGroup.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
+import type { MapPageKind } from '../data/seo-map';
 import { servicePageOf } from '../data/subpages';
 import { pagePath, type ServicePageRef } from '../i18n/paths';
 import { ui, type Locale } from '../i18n/ui';
+
+/** Виды страниц базы знаний в карте: со страницы услуги ведут только рёбра к ним. */
+const GUIDE_KINDS: readonly MapPageKind[] = ['hub', 'entity', 'question'];
 
 interface Props {
   locale: Locale;
@@ -82,6 +87,13 @@ const withNote = page.category === 'permanent';
         <a href="tel:+380995570045" class="insert__tel">(099) 557-00-45</a>
       </aside>
     </div>
+
+    {/*
+      Вход в базу знаний — рёбра карты к её страницам, вне `[data-service-copy]`: объём и
+      уникальность текста считаются без них, а тексты категорий для этого не правятся. Собранной
+      страницы на конце ребра нет — блока нет (FR-010).
+    */}
+    <MapLinks locale={locale} page={page} toKinds={GUIDE_KINDS} />
 
     <p class="copy__cta">
       <a href="tel:+380995570045" class="btn-primary">
