@@ -2,7 +2,7 @@
 
 - **Maintainer:** —
 - **Related ADRs:** [ADR-019](../adr/adr-019-masters-not-named-on-site.md)
-- **Code:** `src/i18n/ui.ts`, `src/content/about/`, `src/content/services/`, `public/llms.txt`; проверки — `tests/voice.spec.ts`
+- **Code:** `src/i18n/ui.ts`, `src/content/about/`, `src/content/services/`, `src/content/subpages/`, `public/llms.txt`; проверки — `tests/voice.spec.ts`
 
 ## Purpose
 
@@ -22,7 +22,7 @@
 Проверки держат название, объём и подпись обращения. Остальное держится только вычиткой:
 
 - тон и первое лицо обращения;
-- «ми» в текстах категорий и отсутствие Лады в первом лице вне «Про нас»;
+- «ми» в текстах категорий и подстраниц и отсутствие Лады в первом лице вне «Про нас»;
 - «ви» по всему сайту;
 - отсутствие обещаний лечения — список запрещённых слов поймал бы только перечисленные формулировки.
 

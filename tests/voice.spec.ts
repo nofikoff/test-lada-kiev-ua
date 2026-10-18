@@ -92,9 +92,9 @@ test.describe('карта запросов', () => {
   }
 
   /**
-   * Категория отдала запрос своей подстранице (spec FR-009, FR-010). У бровей запрещена
-   * формулировка, а не слово: «ламінування брів» — запрос категории beauty, и абзацы о бровях
-   * в тексте категории перманента остаются.
+   * Категория отдала запрос своей подстранице (docs/specs/page-head.md §Целевые запросы). У бровей
+   * запрещена формулировка, а не слово: «ламінування брів» — запрос категории beauty, и абзацы о
+   * бровях в тексте категории перманента остаются.
    */
   const handedOver: Record<ServiceSubpage, RegExp> = {
     sugaring: /шугаринг/i,
@@ -115,23 +115,30 @@ test.describe('карта запросов', () => {
       }
     });
 
-    // «Не ниже второго раздела»: до третьего h2 текста; место выше выбирает автор текста (FR-009, FR-010).
+    /**
+     * «Не ниже второго раздела»: номер раздела — число h2 текста перед ссылкой, вступление до
+     * первого h2 — раздел 0. Место выше выбирает автор текста.
+     */
     test(`${category.path}: одна ссылка на ${subpage.path} не ниже второго раздела`, async ({
       page: browser,
     }) => {
       await browser.goto(category.path);
-      const placement = await browser.locator(SERVICE_COPY_SELECTOR).evaluate((copy, href) => {
-        const third = copy.querySelectorAll('h2')[2] ?? null;
-        return [...copy.querySelectorAll(`a[href="${href}"]`)].map((link) => ({
-          beforeThirdSection:
-            !third || Boolean(link.compareDocumentPosition(third) & Node.DOCUMENT_POSITION_FOLLOWING),
-        }));
+      const sections = await browser.locator(SERVICE_COPY_SELECTOR).evaluate((copy, href) => {
+        const headings = [...copy.querySelectorAll('h2')];
+        return [...copy.querySelectorAll(`a[href="${href}"]`)].map(
+          (link) =>
+            headings.filter(
+              (heading) => heading.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING,
+            ).length,
+        );
       }, subpage.path);
-      expect(placement).toEqual([{ beforeThirdSection: true }]);
+      expect(sections, 'ссылок на подстраницу в тексте категории').toHaveLength(1);
+      expect(sections[0], 'номер раздела со ссылкой').toBeLessThanOrEqual(2);
     });
   }
 
-  // Третья формулировка кластера бровей держится текстом, а не заголовками (spec FR-007).
+  // Третья формулировка кластера бровей держится текстом, а не заголовками
+  // (docs/specs/page-head.md §Целевые запросы).
   const browTattoo: Record<'uk' | 'ru', RegExp> = { uk: /татуаж брів/i, ru: /татуаж бровей/i };
 
   for (const page of subpagePages.filter((entry) => entry.subpage === 'brows')) {

@@ -3,8 +3,9 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { file, glob } from 'astro/loaders';
 import { locales } from './i18n/ui';
-import { serviceCategories, serviceSubpages, subpageSlugs } from './i18n/paths';
+import { serviceCategories } from './i18n/paths';
 import { priceGroups } from './data/price-groups';
+import { serviceSubpages, subpageSlugs } from './data/subpage-registry';
 
 /**
  * Перевод обязателен во всех локалях. Отсутствие языка — ошибка сборки, а не пустая строка:
@@ -112,10 +113,11 @@ const services = defineCollection({
 });
 
 /**
- * Subpage copy: exactly the registry's «subpage × its language» files, one glob per pair. A file
- * outside the pairs (e.g. `ru/<slug>.md` of a uk-only subpage) is never loaded, so it can neither
- * fail the schema nor be published. A missing file is caught by `subpageCopy`, not the schema,
- * for the same reason as in `services`.
+ * Тексты подстраниц — ровно файлы пар «подстраница × её язык» из реестра, по шаблону на пару.
+ * Файл вне пар (например, `ru/<slug>.md` у подстраницы только с `uk`) загрузчик не читает:
+ * схему он не роняет и страницы не получает. Объединение языков и slug загрузило бы его, и сборка
+ * упала бы на его схеме. Недостающий файл ловит `subpageCopy`, а не схема, — по той же причине,
+ * что у `services`.
  */
 const subpages = defineCollection({
   loader: glob({

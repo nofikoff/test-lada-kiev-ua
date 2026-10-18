@@ -7,7 +7,7 @@
 `npm run check`, `npm run lint`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze` — все зелёные до слияния. Публикация гоняет вместо `test:e2e` только `test:publish` ([ADR-027](docs/adr/adr-027-full-e2e-outside-publish.md)): регрессия вёрстки, не прогнанная локально, уйдёт на сайт со следующей галочкой Лады; правила сверх них — [.specify/memory/constitution.md](.specify/memory/constitution.md).
 
 - e2e идёт против `astro preview` над `dist/` на `PREVIEW_PORT` (4329, `astro.config.mjs`), не против `astro dev` на 4321. Прогон без свежей `npm run build` проверяет прошлую сборку и выглядит необъяснимо зелёным.
-- `tests/support/site.ts` держит хост, телефон, состав ленты литералами, а не импортом из `src/`: проверка, читающая константу реализации, доказывает только непротиворечивость.
+- `tests/support/site.ts` держит хост, телефон, состав ленты, связь групп с категориями и реестр подстраниц `SERVICE_SUBPAGES` литералами, а не импортом из `src/`: проверка, читающая константу реализации, доказывает только непротиворечивость.
 
 ## Документация
 
@@ -24,7 +24,7 @@
 
 | Трогаешь | Открой | Потому что |
 |---|---|---|
-| `.htaccess`, адреса, `paths.ts`, карту сайта, `llms.txt` | [docs/specs/routes.md](docs/specs/routes.md) | адрес без слеша или без `www` указывает на перенаправление; `llms.txt` расходится с разметкой молча |
+| `.htaccess`, адреса, `paths.ts`, `subpage-registry.ts`, карту сайта, `llms.txt` | [docs/specs/routes.md](docs/specs/routes.md) | адрес без слеша или без `www` указывает на перенаправление; `llms.txt` расходится с разметкой молча; новая подстраница — правка во всех местах из списка там, иначе прогон краснеет по одному |
 | `SeoHead.astro`, `<title>`, описания, `hreflang` | [docs/specs/page-head.md](docs/specs/page-head.md) | уникальность пары «заголовок + описание» ломается между файлами, схема её не видит |
 | JSON-LD | [docs/specs/structured-data.md](docs/specs/structured-data.md) | долевая цена в `Offer` описывает бесплатную услугу |
 | `prices.json`, `content.config.ts`, тексты категорий, `ui.ts`, фикстуру контента | [docs/specs/content-model.md](docs/specs/content-model.md) | `getCollection('prices')` молча переставляет прайс; правка старой строки краснит `content-parity` |

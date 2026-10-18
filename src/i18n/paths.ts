@@ -1,5 +1,5 @@
 import { defaultLocale, locales, type Locale } from './ui';
-import { categoryOf, type PriceGroup } from '../data/price-groups';
+import { serviceSubpages, subpageRefs, subpageSlugs, type SubpageRef } from '../data/subpage-registry';
 
 export const serviceCategories = ['massage', 'depilation', 'permanent', 'beauty'] as const;
 
@@ -12,85 +12,6 @@ export type ServiceCategory = (typeof serviceCategories)[number];
 export function categoryStaticPaths(): { params: { category: ServiceCategory } }[] {
   return serviceCategories.map((category) => ({ params: { category } }));
 }
-
-/** Цена позиции, которую показывает страница: общая или пастой (data-model §Price item пакета 006). */
-export type PriceMethod = 'base' | 'sugar';
-
-interface SubpageDefinition {
-  readonly parent: ServiceCategory;
-  readonly locales: readonly Locale[];
-  readonly groups: readonly PriceGroup[];
-  readonly method: PriceMethod;
-}
-
-/**
- * Подстраницы услуг — единственное место, где подстраница существует: путь, языковые
- * альтернативы, маршруты и схема текстов выводятся отсюда (ADR-028). Языки — те, на которых
- * кластер есть в ядре, поэтому их набор у подстраницы свой, а не общий с категориями.
- */
-export const serviceSubpages = {
-  sugaring: {
-    parent: 'depilation',
-    locales: ['uk', 'ru'],
-    // Группы триммера и бритвы не читаются: пасты в них нет.
-    groups: ['womenDepilation', 'combos', 'menDepilation', 'menCombos'],
-    method: 'sugar',
-  },
-  brows: {
-    parent: 'permanent',
-    locales: ['uk', 'ru'],
-    groups: ['permanentBrows'],
-    method: 'base',
-  },
-} as const satisfies Record<string, SubpageDefinition>;
-
-export type ServiceSubpage = keyof typeof serviceSubpages;
-
-export const subpageSlugs = Object.keys(serviceSubpages) as [ServiceSubpage, ...ServiceSubpage[]];
-
-/**
- * Связи, которые тип не выражает, проверяются при загрузке модуля и роняют сборку: группа чужой
- * категории показала бы на подстранице прайс другой услуги, а подстраница без украинской версии
- * осталась бы без `x-default`.
- */
-for (const subpage of subpageSlugs) {
-  const definition: SubpageDefinition = serviceSubpages[subpage];
-  for (const group of definition.groups) {
-    if (categoryOf(group) !== definition.parent) {
-      throw new Error(
-        `подстраница «${subpage}»: группа прайса «${group}» принадлежит категории ` +
-          `«${categoryOf(group)}», а не «${definition.parent}»`,
-      );
-    }
-  }
-  if (!definition.locales.includes(defaultLocale)) {
-    throw new Error(
-      `подстраница «${subpage}»: нет языка «${defaultLocale}», а он — версия по умолчанию (x-default)`,
-    );
-  }
-}
-
-// Экспорт нужен `tests/types/subpage-refs.ts`: его негативные случаи компилируются против этого типа.
-export type SubpageRefOf = {
-  [S in ServiceSubpage]: {
-    readonly category: (typeof serviceSubpages)[S]['parent'];
-    readonly subpage: S;
-  };
-};
-
-/** Ссылка на подстраницу: категория в ней — всегда её родитель, другой тип не допускает. */
-export type SubpageRef = SubpageRefOf[ServiceSubpage];
-
-/**
- * The only place that creates `SubpageRef` values. TypeScript cannot correlate a registry key with
- * its parent inside a generic function (the pair widens to a union), so each ref is written out and
- * `satisfies` makes the compiler hold both halves: every registry entry needs a ref here, and a ref
- * pairing a slug with a foreign parent does not compile.
- */
-const subpageRefs = {
-  sugaring: { category: serviceSubpages.sugaring.parent, subpage: 'sugaring' },
-  brows: { category: serviceSubpages.brows.parent, subpage: 'brows' },
-} satisfies SubpageRefOf;
 
 /** Страница услуги — категория или подстраница; путь, альтернативы и состав страницы читают её. */
 export type ServicePageRef =

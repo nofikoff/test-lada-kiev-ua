@@ -1,7 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import priceFile from './prices.json';
 import type { PriceGroup } from './price-groups';
-import type { PriceMethod } from '../i18n/paths';
+import type { PriceMethod } from './subpage-registry';
 
 /**
  * Единственная точка чтения прайса из коллекции.

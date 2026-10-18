@@ -1,10 +1,13 @@
 /**
- * Негативные типовые проверки таблицы `subpageRefs` (src/i18n/paths.ts). Ограничение «у каждой
+ * Типовые проверки таблицы `subpageRefs` (src/data/subpage-registry.ts). Ограничение «у каждой
  * подстраницы есть ссылка, и родитель в ней — её собственный» держит компилятор, а не исполнение,
  * поэтому проверка — `npm run check`: `@ts-expect-error` без ошибки под ним сам есть ошибка
  * компиляции. Сборка файл не импортирует, в `dist/` он не попадает.
  */
-import type { SubpageRefOf } from '../../src/i18n/paths';
+import { subpageRefs, type SubpageRefOf } from '../../src/data/subpage-registry';
+
+// Сама таблица реестра, а не только тип: без `satisfies` у неё `subpage` расширяется до `string`.
+export const registryRefs: SubpageRefOf = subpageRefs;
 
 // Ошибка о чужом родителе стоит на самом свойстве, о недостающей записи — на строке `satisfies`.
 export const foreignParent = {

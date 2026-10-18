@@ -19,7 +19,7 @@ const GALLERY = 'src/data/gallery.json';
 const SERVICE_COPY = 'src/content/services/uk/massage.md';
 const SUBPAGE_COPY = 'src/content/subpages/uk/sugaring.md';
 const STRAY_SUBPAGE_COPY = 'src/content/subpages/ru/brows.md';
-const REGISTRY = 'src/i18n/paths.ts';
+const REGISTRY = 'src/data/subpage-registry.ts';
 // Хранилище коллекций, которое сборка пишет на диск: по нему видно, что загрузчик файл не читал.
 const DATA_STORE = 'node_modules/.astro/data-store.json';
 const ABOUT_COPY = 'src/content/about/uk.md';
@@ -206,15 +206,15 @@ const cases = [
   },
 ];
 
-// The id is historical: the item is «Ніс / Вуха / Брови / Шия», not the upper lip.
+// Идентификатор исторический: позиция — «Ніс / Вуха / Брови / Шия», а не верхняя губа.
 const SUGAR_FIXTURE_ID = 'women-depilation-upper-lip';
 
 /**
- * Allowed price edits: the build must pass, and `dist/` must show them where the model requires and
- * nowhere else (docs/specs/content-model.md §Инварианты). On 2026-10-18 the real price list has no
- * `sugar` field, so until it appears nothing but these cases exercises the «own sugar price» and
- * «not done with paste» branches. Name and base amount of the fixture item are read from the price
- * list at run time, because Lada edits the amounts.
+ * Допустимые правки прайса: сборка обязана пройти, а `dist/` — показать правку там, где требует
+ * модель, и нигде больше (docs/specs/content-model.md §Инварианты). Ветки «своя цена пастой» и
+ * «пастой не делается» проверяются сборкой на правленом прайсе: прайс, в котором нет ни одной
+ * позиции с `sugar`, через них не проходит. Название и общая сумма позиции читаются из прайса при
+ * прогоне, потому что суммы правит Лада.
  */
 function fixtureItem() {
   const item = JSON.parse(readFileSync(new URL(PRICES, `file://${root}`), 'utf8')).find(
@@ -270,12 +270,12 @@ heading: Текст на языке, которого у подстраницы 
 ---
 `;
 
-/** Price in the price-list markup and in the JSON-LD offer: both sides must agree (FR-004a). */
+/** Сумма в разметке прайса; та же сумма обязана стоять в предложении (docs/specs/structured-data.md). */
 const shownPrice = (amount) => `>${amount}</span>`;
 
 /**
- * Offers of a built page, read from its JSON-LD as data: the key order of the markup is not part
- * of the contract, so a substring match on it would fail on a harmless reordering.
+ * Предложения собранной страницы, прочитанные из JSON-LD как данные: порядок ключей разметки не
+ * часть контракта, и поиск подстроки упал бы на безвредной перестановке.
  */
 function offersOf(html) {
   return [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
@@ -316,9 +316,7 @@ const allowedEdits = [
     ],
   },
   {
-    // Правило из content-model.md: файл вне пар «подстраница × её язык» не загружается, поэтому
-    // не роняет схему и не публикуется. Пары задаёт `glob` в `content.config.ts`; пока он берёт
-    // объединение языков и slug, `ru/brows.md` загрузился бы и сборка упала бы на его схеме.
+    // Правило пар «подстраница × язык» — у коллекции `subpages` в `src/content.config.ts`.
     name: 'файл текста на языке, которого у подстраницы нет, не загружается',
     file: REGISTRY,
     corrupt: makeBrowsUkOnly,

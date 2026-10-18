@@ -118,7 +118,7 @@ test('applyAmounts refuses a key the price list does not have', () => {
 
 const names = (ru) => ({ uk: ru, ru, en: ru });
 
-// Sugar amounts (specs/006-service-subpages/data-model.md §Sheet row): a fixed sugar price on a
+// Sugar amounts (docs/specs/content-model.md §Инварианты): a fixed sugar price on a
 // fixed one, a variants sugar price on a fixed one, "not done with paste", and a second group.
 const sugarFixture = [
   {

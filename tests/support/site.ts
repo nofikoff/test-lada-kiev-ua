@@ -34,7 +34,7 @@ type PriceMethod = 'base' | 'sugar';
 
 /**
  * Подстраницы услуг (ADR-028): родитель, группы прайса, способ цены и языки. Литерал, а не импорт
- * реестра `src/i18n/paths.ts`, по тому же доводу, что и хост выше.
+ * реестра `src/data/subpage-registry.ts`, по тому же доводу, что и хост выше.
  */
 export const SERVICE_SUBPAGES = {
   sugaring: {
@@ -400,21 +400,31 @@ function amountsOf(price: PriceValue | null | undefined | false): number[] {
   return [];
 }
 
+/** Строка прайса с суммами: название позиции и её суммы в порядке вариантов. */
+export interface PricedRow {
+  readonly name: string;
+  readonly sums: readonly number[];
+}
+
 /**
- * Сколько предложений обязано быть в машиночитаемом описании страницы услуги: позиция
- * с фиксированной ценой даёт одно, позиция с вариантами — по одному на вариант, долевая и скрытая
- * способом страницы — ни одного (docs/specs/structured-data.md §Страница категории). Категория
+ * Строки с суммами, которые страница услуги обязана показать и описать предложениями, в порядке
+ * групп страницы, внутри группы — в порядке `prices.json`. Долевая позиция и скрытая способом
+ * страницы строки с суммой не дают (docs/specs/structured-data.md §Страница категории). Категория
  * читает свои группы по общей цене, подстраница — группы и способ своей записи в SERVICE_SUBPAGES.
  */
-export function expectedOfferCount(page: ServiceCategory | ServiceSubpage): number {
+export function expectedPricedRows(page: ServiceCategory | ServiceSubpage, locale: Locale): PricedRow[] {
   const subpage = (SUBPAGES as string[]).includes(page) ? SERVICE_SUBPAGES[page as ServiceSubpage] : null;
   const groups: readonly string[] = subpage
     ? subpage.groups
     : Object.keys(GROUP_CATEGORY).filter((group) => GROUP_CATEGORY[group] === page);
   const method: PriceMethod = subpage ? subpage.method : 'base';
-  return readPrices()
-    .filter((record) => groups.includes(record.group))
-    .reduce((sum, record) => sum + amountsOf(priceByMethod(record, method)).length, 0);
+  const prices = readPrices();
+  return groups.flatMap((group) =>
+    prices
+      .filter((record) => record.group === group)
+      .map((record) => ({ name: record.name[locale], sums: amountsOf(priceByMethod(record, method)) }))
+      .filter((row) => row.sums.length > 0),
+  );
 }
 
 /**

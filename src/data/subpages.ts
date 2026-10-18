@@ -1,15 +1,14 @@
 import { getEntry, type CollectionEntry } from 'astro:content';
-import { serviceSubpages, type PriceMethod, type ServicePageRef, type ServiceSubpage } from '../i18n/paths';
+import type { ServicePageRef } from '../i18n/paths';
 import type { Locale } from '../i18n/ui';
 import { groupsOfCategory, type PriceGroup } from './price-groups';
 import { serviceCopy } from './services';
+import { serviceSubpages, type PriceMethod, type ServiceSubpage } from './subpage-registry';
 
 /**
- * Subpage copy in the page's language. Errors stop the build here rather than in the schema, for
- * the reason `serviceCopy` (src/data/services.ts) gives: a schema only sees files that exist.
- * The collection holds exactly the registry's «subpage × its language» pairs
- * (src/content.config.ts), so the language guard below rejects a call with a foreign language;
- * it is not what catches a stray file.
+ * Текст подстраницы на языке страницы. Ошибка роняет сборку здесь, а не в схеме, по причине из
+ * `serviceCopy` (src/data/services.ts): схема видит только существующие файлы. Проверка языка
+ * отвергает вызов с чужим языком; лишний файл отсекает коллекция (src/content.config.ts).
  */
 export async function subpageCopy(
   locale: Locale,
@@ -36,14 +35,14 @@ export interface ServicePageData {
   readonly copy: CollectionEntry<'services'> | CollectionEntry<'subpages'>;
   readonly groups: readonly PriceGroup[];
   readonly method: PriceMethod;
-  /** Parent category heading for the middle breadcrumb step; a category itself has none. */
+  /** Заголовок родительской категории для среднего звена крошек; у самой категории его нет. */
   readonly parentHeading: string | null;
 }
 
 /**
- * Everything a service page derives from its ref, in one place: `ServicePage.astro` (visible price
- * list) and `SeoHead.astro` (`Offer` list) both read it, so the two cannot select different
- * copy, groups or price method for the same page (FR-004a).
+ * Всё, что страница услуги выводит из своей ссылки, в одном месте. Его читают и `ServicePage.astro`
+ * (видимый прайс), и `SeoHead.astro` (предложения), поэтому для одной страницы они не могут
+ * выбрать разные текст, группы или способ цены (docs/specs/structured-data.md §Service subpage).
  */
 export async function servicePageOf(locale: Locale, page: ServicePageRef): Promise<ServicePageData> {
   const subpage = page.subpage;
@@ -61,7 +60,7 @@ export async function servicePageOf(locale: Locale, page: ServicePageRef): Promi
     copy: await subpageCopy(locale, subpage),
     groups,
     method,
-    // The crumb names the category exactly as its own `<h1>` does.
+    // Крошка называет категорию так же, как её собственный `<h1>`.
     parentHeading: (await serviceCopy(locale, page.category)).data.heading,
   };
 }

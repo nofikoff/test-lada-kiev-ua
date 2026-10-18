@@ -2,7 +2,7 @@
  * Mapping between src/data/prices.json and the rows of the price sheet. Cell addresses are the
  * contract shared with publish.mjs, report.mjs, rebuild-sheet.mjs and apps-script/Code.js:
  * specs/005-sheet-price-publishing/contracts/sheet-layout.md. Rows of a sugar amount:
- * specs/006-service-subpages/data-model.md §Sheet row of a sugar amount.
+ * docs/specs/content-model.md §Инварианты.
  */
 
 export const SHEET_NAME = 'Цены';

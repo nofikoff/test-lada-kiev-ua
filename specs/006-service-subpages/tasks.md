@@ -522,3 +522,9 @@ decided:
 
 ### review — dispatch 8 (2026-10-18)
 `kind=review-fix agent=implementer tier=standard model=claude-sonnet-5-5 effort=xhigh turns=34 minutes=10.4 input=70 cache_write=122473 cache_read=3357272 output=40701`
+
+### review — leftovers closed (2026-10-18)
+- Medium/Low 1–8 of docs/_local/scratch/2026-10-18-review2-006-service-subpages.md, 4 doc drifts and 3 knowledge items closed in the main session, no dispatch.
+- decided: code comments stay Russian, one language per file (author, 2026-10-18); the English comments written by dispatch 7 were translated.
+- decided: the subpage registry moved to src/data/subpage-registry.ts; src/i18n/paths.ts no longer imports a value from src/data/price-groups.ts.
+- verified red→green: the price/Offer sum check fails when pricesOfGroups ignores method sugar while an item has sugar, and passes once the reader is restored; tests/types/subpage-refs.ts fails npm run check when satisfies is removed from subpageRefs.

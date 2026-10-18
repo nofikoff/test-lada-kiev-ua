@@ -7,7 +7,7 @@ import {
   APEX_ORIGIN,
   categoryPages,
   countWords,
-  expectedOfferCount,
+  expectedPricedRows,
   FOUNDER_ROLE,
   homePages,
   htmlToText,
@@ -24,6 +24,7 @@ import {
   subpagePages,
   toLocalPath,
   type Locale,
+  type PricedRow,
 } from './support/site';
 
 /**
@@ -94,6 +95,48 @@ function homeOf(locale: Locale): string {
 /** Адрес цепочки навигации: строкой или узлом с `@id`. */
 function crumbAddress(item: Record<string, unknown>): unknown {
   return typeof item.item === 'string' ? item.item : (item.item as Record<string, unknown>)?.['@id'];
+}
+
+/**
+ * Строки видимого прайса с суммами. Долевая цена печатается подписью без валюты и строки
+ * с суммой не даёт; описание позиции — вложенный элемент, поэтому название собирается из
+ * текстовых узлов.
+ */
+async function shownPricedRows(page: Page): Promise<PricedRow[]> {
+  return page.locator('#services .item').evaluateAll((rows) =>
+    rows
+      .filter((row) => row.querySelector('.tier__cur'))
+      .map((row) => ({
+        name: [...row.querySelector('.item__name')!.childNodes]
+          .filter((node) => node.nodeType === Node.TEXT_NODE)
+          .map((node) => node.textContent)
+          .join('')
+          .trim(),
+        sums: [...row.querySelectorAll('.tier__sum')].map((sum) => Number(sum.textContent)),
+      })),
+  );
+}
+
+/**
+ * Предложения, сведённые к строкам прайса: вариант называется «позиция — длительность» и несёт
+ * `eligibleQuantity`, а позиция с вариантами в прайсе — одна строка с колонкой сумм.
+ */
+function offeredRows(offers: Record<string, unknown>[]): PricedRow[] {
+  const rows: { name: string; sums: number[] }[] = [];
+  let variantOf: string | null = null;
+  for (const offer of offers) {
+    const name = String(offer.name);
+    if (!offer.eligibleQuantity) {
+      rows.push({ name, sums: [Number(offer.price)] });
+      variantOf = null;
+      continue;
+    }
+    const position = name.slice(0, name.lastIndexOf(' — '));
+    if (position !== variantOf) rows.push({ name: position, sums: [] });
+    rows[rows.length - 1].sums.push(Number(offer.price));
+    variantOf = position;
+  }
+  return rows;
 }
 
 for (const { locale, path } of homePages) {
@@ -345,16 +388,16 @@ for (const { locale, category, path } of categoryPages) {
       expect(JSON.stringify(service!.areaServed ?? '')).not.toBe('""');
 
       /**
-       * Число предложений равно числу отображаемых позиций за вычетом долевых
+       * Предложения — позиции прайса с их суммами за вычетом долевых
        * (docs/specs/structured-data.md §Страница категории): предложение с нулевой ценой описывает
        * бесплатную услугу, поэтому «коррекция 50%» в перечень не попадает.
        */
       const offers = nodes.filter((node) => node['@type'] === 'Offer');
-      expect(offers.length, `предложений на ${path}`).toBe(expectedOfferCount(category));
       for (const offer of offers) {
         expect(Number(offer.price), `нулевая цена в ${JSON.stringify(offer)}`).toBeGreaterThan(0);
         expect(offer.priceCurrency).toBe('UAH');
       }
+      expect(offeredRows(offers), `предложения на ${path}`).toEqual(expectedPricedRows(category, locale));
     });
 
     test('цепочка навигации ведёт с главной на страницу категории', async ({ page, request }) => {
@@ -428,9 +471,6 @@ for (const { locale, category, subpage, path } of subpagePages) {
         ...Object.fromEntries(siblings.map((entry) => [entry.locale, `${SITE_ORIGIN}${entry.path}`])),
         'x-default': `${SITE_ORIGIN}${ukPath}`,
       });
-      expect(siblings.map((entry) => entry.locale).sort()).toEqual(
-        [...SERVICE_SUBPAGES[subpage].locales].sort(),
-      );
 
       for (const [, href] of pairs) {
         const response = await request.get(toLocalPath(href!), { maxRedirects: 0 });
@@ -464,7 +504,6 @@ for (const { locale, category, subpage, path } of subpagePages) {
       );
 
       const offers = nodes.filter((node) => node['@type'] === 'Offer');
-      expect(offers.length, `предложений на ${path}`).toBe(expectedOfferCount(subpage));
       for (const offer of offers) {
         expect(Number(offer.price), `нулевая цена в ${JSON.stringify(offer)}`).toBeGreaterThan(0);
         expect(offer.priceCurrency).toBe('UAH');
@@ -522,44 +561,20 @@ for (const { locale, category, subpage, path } of subpagePages) {
     });
 
     /**
-     * Посетитель и поисковик видят одни и те же позиции в одном порядке (spec FR-004a). Сравнивается
-     * список, а не множество: «Пахви» стоит и в женской, и в мужской группе. Долевая цена
-     * печатается подписью без валюты и предложения не даёт, поэтому из списка прайса исключена.
+     * Посетитель и поисковик видят одни и те же позиции в одном порядке и по одной сумме — цене
+     * способа страницы из `prices.json` (docs/specs/structured-data.md §Service subpage). Ожидание
+     * считается от прайса, а не от второй стороны: иначе страница шугаринга, читающая общую цену
+     * вместо цены пастой, совпала бы сама с собой. Список, а не множество: «Пахви» стоит и в
+     * женской, и в мужской группе.
      */
-    test('прайс и предложения перечисляют одни и те же позиции в одном порядке', async ({
-      page,
-    }) => {
+    test('прайс и предложения перечисляют позиции и суммы цены способа страницы', async ({ page }) => {
       await page.goto(path);
 
-      const shown = await page.locator('#services .item').evaluateAll((rows) =>
-        rows
-          .filter((row) => row.querySelector('.tier__cur'))
-          .map((row) =>
-            [...row.querySelector('.item__name')!.childNodes]
-              .filter((node) => node.nodeType === Node.TEXT_NODE)
-              .map((node) => node.textContent)
-              .join('')
-              .trim(),
-          ),
-      );
-
-      const offered: string[] = [];
-      let variantOf: string | null = null;
-      for (const offer of (await structuredData(page)).filter((node) => node['@type'] === 'Offer')) {
-        const name = String(offer.name);
-        if (!offer.eligibleQuantity) {
-          offered.push(name);
-          variantOf = null;
-          continue;
-        }
-        // Вариант называется «позиция — длительность»; позиция с вариантами в прайсе — одна строка.
-        const position = name.slice(0, name.lastIndexOf(' — '));
-        if (position !== variantOf) offered.push(position);
-        variantOf = position;
-      }
-
-      expect(shown.length, `${path}: прайс пуст`).toBeGreaterThan(0);
-      expect(offered).toEqual(shown);
+      const expected = expectedPricedRows(subpage, locale);
+      expect(expected.length, `${path}: в группах страницы нет позиций с суммой`).toBeGreaterThan(0);
+      expect(await shownPricedRows(page), 'видимый прайс').toEqual(expected);
+      const offers = (await structuredData(page)).filter((node) => node['@type'] === 'Offer');
+      expect(offeredRows(offers), 'предложения').toEqual(expected);
     });
   });
 }
@@ -601,10 +616,10 @@ test.describe('прайс страницы шугаринга', () => {
 });
 
 /**
- * Коррекция бровей — доля от процедуры (spec FR-005): подписью из прайса, без валюты. Подпись
- * берётся из `prices.json`, а не литералом: доли и суммы правит Лада. Что предложения на долю нет,
- * держит сверка прайса с `Offer` выше. Текст страницы долю обновления не называет и опирается на
- * сноску под прайсом, поэтому сноска проверяется здесь же.
+ * Коррекция бровей — доля от процедуры (docs/specs/content-model.md §Инварианты): подписью из
+ * прайса, без валюты. Подпись берётся из `prices.json`, а не литералом: доли и суммы правит Лада.
+ * Что предложения на долю нет, держит сверка прайса с `Offer` выше. Текст страницы долю обновления
+ * не называет и опирается на сноску под прайсом, поэтому сноска проверяется здесь же.
  */
 test.describe('прайс страницы бровей', () => {
   const browGroups: readonly string[] = SERVICE_SUBPAGES.brows.groups;
@@ -648,7 +663,7 @@ test.describe('прайс страницы бровей', () => {
  * рабочее определение «содержательного текста»: четыреста слов нельзя набрать шаблоном
  * с подставленным названием. Считается только контейнер текста страницы — прайс и подвал
  * набрали бы норму сами. Категории и подстраницы сверяются вместе: абзац, перенесённый из категории
- * в подстраницу без удаления, повторяется внутри языка (spec FR-006).
+ * в подстраницу без удаления, повторяется внутри языка.
  */
 test.describe('тексты страниц услуг', () => {
   for (const locale of LOCALES) {
@@ -678,7 +693,7 @@ test.describe('тексты страниц услуг', () => {
         paragraphsByPage.set(entry.path, paragraphs);
       }
 
-      // Two pages sharing a path would collapse into one entry and silently leave the check below.
+      // Две страницы с одним адресом слились бы в одну запись и молча выпали бы из сверки ниже.
       expect(paragraphsByPage.size, `страниц услуг локали ${locale} в сверке`).toBe(
         servicePages.filter((candidate) => candidate.locale === locale).length,
       );
