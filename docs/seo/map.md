@@ -21,7 +21,7 @@
 | massage-benefits | question | massage-guide | masazh-koryst | uk | /guide/massage/benefits/ | planned |
 | depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | uk | /guide/depilation/vs-sugaring/ | planned |
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | uk | /guide/depilation/best-method/ | planned |
-| sugaring | question | depilation-guide | shuharynh-shcho-tse | uk | /guide/depilation/sugaring/ | planned |
+| sugaring-what-is | question | depilation-guide | shuharynh-shcho-tse | uk | /guide/depilation/what-is-sugaring/ | planned |
 | sugaring-preparation | question | depilation-guide | shuharynh-pidhotovka | uk | /guide/depilation/sugaring-preparation/ | planned |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | uk | /guide/permanent/contraindications/ | planned |
 | permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | uk | /guide/permanent/vs-tattoo/ | planned |
@@ -33,6 +33,8 @@
 | depilation | service |  | depiliatsiia | uk | /depilation/ | published |
 | permanent | service |  | permanentnyi-makiiazh | uk | /permanent/ | published |
 | beauty | service |  | laminuvannia-vii | uk | /beauty/ | published |
+| depilation-sugaring | service |  | shuharynh | uk | /depilation/sugaring/ | published |
+| permanent-brows | service |  | permanentnyi-makiiazh-briv | uk | /permanent/brows/ | published |
 | lada | expert |  |  | uk | /lada/ | planned |
 | massage-guide | hub |  |  | ru | /ru/guide/massage/ | planned |
 | depilation-guide | hub |  |  | ru | /ru/guide/depilation/ | planned |
@@ -51,6 +53,8 @@
 | depilation | service |  | depiliatsiia | ru | /ru/depilation/ | published |
 | permanent | service |  | permanentnyi-makiiazh | ru | /ru/permanent/ | published |
 | beauty | service |  | laminuvannia-vii | ru | /ru/beauty/ | published |
+| depilation-sugaring | service |  | shuharynh | ru | /ru/depilation/sugaring/ | published |
+| permanent-brows | service |  | permanentnyi-makiiazh-briv | ru | /ru/permanent/brows/ | published |
 | lada | expert |  |  | ru | /ru/lada/ | planned |
 
 ## Links
@@ -76,21 +80,24 @@
 | depilation-guide | depilation-vs-sugaring | що краще депіляція чи шугаринг | uk | вниз к странице вопроса |
 | depilation-vs-sugaring | depilation-guide | депіляція | uk | вверх к обзорной |
 | depilation-vs-sugaring | depilation | депіляція київ | uk | ответ ведёт к услуге |
+| depilation-vs-sugaring | depilation-sugaring | шугаринг | uk | сравнение ведёт и к услуге шугаринга |
 | depilation-guide | depilation-best-method | яка депіляція найкраща | uk | вниз к странице вопроса |
 | depilation-best-method | depilation-guide | депіляція | uk | вверх к обзорной |
 | depilation-best-method | depilation | депіляція київ | uk | ответ ведёт к услуге |
 | depilation-guide | depilation-aftercare | що не можна робити після депіляції | uk | вниз к странице вопроса |
 | depilation-aftercare | depilation-guide | депіляція | uk | вверх к обзорной |
 | depilation-aftercare | depilation | депіляція київ | uk | ответ ведёт к услуге |
-| depilation-guide | sugaring | що таке процедура шугаринг | uk | вниз к странице вопроса |
-| sugaring | depilation-guide | депіляція | uk | вверх к обзорной |
-| sugaring | depilation | депіляція київ | uk | ответ ведёт к услуге |
+| depilation-guide | sugaring-what-is | що таке процедура шугаринг | uk | вниз к странице вопроса |
+| sugaring-what-is | depilation-guide | депіляція | uk | вверх к обзорной |
+| sugaring-what-is | depilation-sugaring | шугаринг | uk | ответ ведёт к услуге шугаринга |
+| depilation-sugaring | sugaring-what-is | що таке процедура шугаринг | uk | услуга отдаёт вес вопросу |
 | depilation-guide | sugaring-preparation | скільки не голитися перед шугарингом | uk | вниз к странице вопроса |
 | sugaring-preparation | depilation-guide | депіляція | uk | вверх к обзорной |
-| sugaring-preparation | depilation | депіляція київ | uk | ответ ведёт к услуге |
+| sugaring-preparation | depilation-sugaring | шугаринг | uk | ответ ведёт к услуге шугаринга |
 | permanent-guide | permanent-aftercare | перманентний макіяж брів догляд | uk | вниз к странице сущности |
 | permanent-aftercare | permanent-guide | перманентний макіяж | uk | вверх к обзорной |
-| permanent-aftercare | permanent | перманентний макіяж київ | uk | ответ ведёт к услуге |
+| permanent-aftercare | permanent-brows | перманентний макіяж брів | uk | уход за бровями ведёт к услуге бровей |
+| permanent-brows | permanent-aftercare | перманентний макіяж брів догляд | uk | услуга отдаёт вес сущности |
 | permanent-guide | permanent-how-long | скільки тримається перманентний макіяж | uk | вниз к странице вопроса |
 | permanent-how-long | permanent-guide | перманентний макіяж | uk | вверх к обзорной |
 | permanent-how-long | permanent | перманентний макіяж київ | uk | ответ ведёт к услуге |
@@ -102,7 +109,7 @@
 | permanent-vs-tattoo | permanent | перманентний макіяж київ | uk | ответ ведёт к услуге |
 | permanent-guide | permanent-harm | чи шкідливий перманентний макіяж брів | uk | вниз к странице вопроса |
 | permanent-harm | permanent-guide | перманентний макіяж | uk | вверх к обзорной |
-| permanent-harm | permanent | перманентний макіяж київ | uk | ответ ведёт к услуге |
+| permanent-harm | permanent-brows | перманентний макіяж брів | uk | вопрос о бровях ведёт к услуге бровей |
 | permanent-guide | permanent-lips-healing | як довго заживають губи після перманентного макіяжу | uk | вниз к странице вопроса |
 | permanent-lips-healing | permanent-guide | перманентний макіяж | uk | вверх к обзорной |
 | permanent-lips-healing | permanent | перманентний макіяж київ | uk | ответ ведёт к услуге |
@@ -129,6 +136,8 @@
 | depilation-guide | depilation-vs-sugaring | чем депиляция отличается от шугаринга | ru | вниз к странице вопроса |
 | depilation-vs-sugaring | depilation-guide | депиляция | ru | вверх к обзорной |
 | depilation-vs-sugaring | depilation | депиляция воском киев | ru | ответ ведёт к услуге |
+| depilation-vs-sugaring | depilation-sugaring | шугаринг | ru | сравнение ведёт и к услуге шугаринга |
+| depilation-sugaring | depilation-vs-sugaring | чем депиляция отличается от шугаринга | ru | услуга отдаёт вес вопросу |
 | depilation-guide | depilation-best-method | какой самый лучший способ удаления волос | ru | вниз к странице вопроса |
 | depilation-best-method | depilation-guide | депиляция | ru | вверх к обзорной |
 | depilation-best-method | depilation | депиляция воском киев | ru | ответ ведёт к услуге |
