@@ -10,10 +10,10 @@
 | page | kind | parent | cluster | lang | url | status |
 |---|---|---|---|---|---|---|
 | massage-guide | hub |  |  | uk | /guide/massage/ | planned |
-| depilation-guide | hub |  |  | uk | /guide/depilation/ | planned |
+| depilation-guide | hub |  |  | uk | /guide/depilation/ | published |
 | permanent-guide | hub |  |  | uk | /guide/permanent/ | planned |
 | beauty-guide | hub |  |  | uk | /guide/beauty/ | planned |
-| depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | uk | /guide/depilation/vs-epilation/ | planned |
+| depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | uk | /guide/depilation/vs-epilation/ | published |
 | massage-sessions | question | massage-guide | masazh-seansy | uk | /guide/massage/sessions/ | planned |
 | depilation-aftercare | question | depilation-guide | depiliatsiia-pislia | uk | /guide/depilation/aftercare/ | planned |
 | permanent-aftercare | entity | permanent-guide | permanentnyi-makiiazh-dohliad | uk | /guide/permanent/aftercare/ | planned |
@@ -35,12 +35,12 @@
 | beauty | service |  | laminuvannia-vii | uk | /beauty/ | published |
 | depilation-sugaring | service |  | shuharynh | uk | /depilation/sugaring/ | published |
 | permanent-brows | service |  | permanentnyi-makiiazh-briv | uk | /permanent/brows/ | published |
-| lada | expert |  |  | uk | /lada/ | planned |
+| lada | expert |  |  | uk | /lada/ | published |
 | massage-guide | hub |  |  | ru | /ru/guide/massage/ | planned |
-| depilation-guide | hub |  |  | ru | /ru/guide/depilation/ | planned |
+| depilation-guide | hub |  |  | ru | /ru/guide/depilation/ | published |
 | permanent-guide | hub |  |  | ru | /ru/guide/permanent/ | planned |
 | beauty-guide | hub |  |  | ru | /ru/guide/beauty/ | planned |
-| depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | ru | /ru/guide/depilation/vs-epilation/ | planned |
+| depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | ru | /ru/guide/depilation/vs-epilation/ | published |
 | back-massage-frequency | question | massage-guide | masazh-spyny-yak-chasto | ru | /ru/guide/massage/back-frequency/ | planned |
 | depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | ru | /ru/guide/depilation/vs-sugaring/ | planned |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | ru | /ru/guide/permanent/contraindications/ | planned |
@@ -55,7 +55,7 @@
 | beauty | service |  | laminuvannia-vii | ru | /ru/beauty/ | published |
 | depilation-sugaring | service |  | shuharynh | ru | /ru/depilation/sugaring/ | published |
 | permanent-brows | service |  | permanentnyi-makiiazh-briv | ru | /ru/permanent/brows/ | published |
-| lada | expert |  |  | ru | /ru/lada/ | planned |
+| lada | expert |  |  | ru | /ru/lada/ | published |
 
 ## Links
 | from | to | anchor | lang | reason |
