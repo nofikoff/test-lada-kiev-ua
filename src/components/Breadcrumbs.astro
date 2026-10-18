@@ -1,0 +1,58 @@
+---
+/**
+ * Видимая цепочка навигации: главная, промежуточные звенья, текущая страница. Звенья называются
+ * теми же строками, что и `BreadcrumbList` в JSON-LD страницы, — их сверяет `tests/seo-contract.spec.ts`.
+ */
+import { pagePath } from '../i18n/paths';
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  /** Звенья между главной и текущей страницей. */
+  parents?: readonly { readonly name: string; readonly href: string }[];
+  current: string;
+}
+
+const { locale, parents = [], current } = Astro.props;
+const t = ui[locale];
+---
+
+<nav aria-label={t.nav.breadcrumb} class="crumbs">
+  <ol class="flex flex-wrap items-center gap-2">
+    <li><a href={pagePath(locale)} class="crumbs__link">{t.nav.home}</a></li>
+    <li aria-hidden="true">/</li>
+    {
+      parents.map((parent) => (
+        <>
+          <li>
+            <a href={parent.href} class="crumbs__link">
+              {parent.name}
+            </a>
+          </li>
+          <li aria-hidden="true">/</li>
+        </>
+      ))
+    }
+    <li aria-current="page" class="crumbs__here">{current}</li>
+  </ol>
+</nav>
+
+<style>
+  .crumbs {
+    @apply text-muted;
+    font-size: var(--step-caption);
+    margin-bottom: 2rem;
+  }
+
+  .crumbs__link {
+    transition: color 0.3s;
+  }
+
+  .crumbs__link:hover {
+    @apply text-brass;
+  }
+
+  .crumbs__here {
+    @apply text-silk-dim;
+  }
+</style>

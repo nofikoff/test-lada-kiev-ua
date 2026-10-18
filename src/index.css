@@ -238,6 +238,87 @@
     background: rgb(var(--raised) / 0.62);
   }
 
+  /**
+   * Текст из Markdown — страницы услуг и базы знаний. Утилит на его элементы не навесить:
+   * разметку пишет Markdown, плагина типографики в проекте нет, поэтому оформление задаётся
+   * классом контейнера. Сетка и порядок абзацев — забота страницы, а не текста.
+   */
+  .copy {
+    counter-reset: copy-section;
+  }
+
+  .copy p {
+    @apply mb-6 text-silk-dim;
+    font-size: var(--step-body);
+    line-height: 1.7;
+  }
+
+  /* Вводный абзац крупнее остальных: он объявляет тему страницы, а не продолжает её. */
+  .copy > p:first-of-type {
+    @apply text-silk;
+    font-size: var(--step-lede);
+    line-height: 1.6;
+  }
+
+  /**
+   * Буквица там, где свойство поддержано (docs/specs/motion.md §Поддержка). Без поддержки
+   * абзац начинается обычной буквой — дыры не остаётся, поэтому запасного пути здесь нет
+   * и не нужно.
+   */
+  @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+    .copy > p:first-of-type::first-letter {
+      @apply font-serif text-brass;
+      -webkit-initial-letter: 3;
+      initial-letter: 3;
+      font-weight: 300;
+      margin-right: 0.6rem;
+    }
+  }
+
+  /**
+   * Надзаголовок раздела — его номер, а не слово: страница набрана на нескольких языках, а новое
+   * слово потребовало бы строки словаря на каждый раздел каждого текста. Счётчик даёт ту же
+   * ступень шкалы и ту же роль — отбить раздел от предыдущего текста — и не зависит от языка.
+   * Запрет нумерации карточек услуг (`ServicesOverview.astro`) сюда не переносится: карточки
+   * последовательности не образуют, а разделы текста читаются подряд.
+   */
+  .copy h2 {
+    @apply font-serif text-silk;
+    counter-increment: copy-section;
+    font-size: var(--step-subtitle);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-block: var(--rhythm-tight) 1.25rem;
+  }
+
+  .copy h2::before {
+    @apply block font-sans text-brass;
+    content: counter(copy-section, decimal-leading-zero);
+    font-size: var(--step-eyebrow);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    margin-bottom: 0.9rem;
+  }
+
+  .copy h3 {
+    @apply mb-4 mt-8 font-serif text-silk;
+    font-size: 1.375rem;
+    font-weight: 400;
+  }
+
+  .copy ul {
+    @apply mb-6 list-disc space-y-2 pl-6 text-silk-dim;
+    font-size: var(--step-body);
+  }
+
+  .copy strong {
+    @apply font-medium text-silk;
+  }
+
+  .copy a {
+    @apply text-brass underline underline-offset-4;
+  }
+
   /* Волосок-разделитель: по нему периодически проходит блик. */
   .rule {
     position: relative;

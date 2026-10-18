@@ -1,13 +1,13 @@
 ---
 /**
  * Заголовочная часть страницы по docs/specs/page-head.md и машиночитаемое описание
- * по docs/specs/structured-data.md. Компонент принимает локаль и страницу услуги — всё остальное
+ * по docs/specs/structured-data.md. Компонент принимает локаль и ссылку на страницу — всё остальное
  * вычисляется: метаданные страницы нигде не хранятся.
  */
 import { getImage } from 'astro:assets';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import logo from '../assets/logo.jpg';
-import { aboutCopy } from '../data/about';
+import { founderNode } from '../data/founder';
 import { portrait } from '../data/gallery';
 import { pricesOfGroups } from '../data/price-list';
 import { servicePageOf } from '../data/subpages';
@@ -32,12 +32,6 @@ const OG_LOCALE: Record<Locale, string> = { uk: 'uk_UA', ru: 'ru_RU', en: 'en_US
 const PHONE = '+380995570045';
 const INSTAGRAM = 'https://www.instagram.com/lada_n_kyiv/';
 
-/** Вуз Лады — имя собственное, одно на все локали; источник адреса — docs/specs/structured-data.md. */
-const ALMA_MATER = {
-  '@type': 'CollegeOrUniversity',
-  name: 'Національний університет фізичного виховання і спорту України',
-  sameAs: 'https://uni-sport.edu.ua/',
-};
 const WEEK = [
   'Monday',
   'Tuesday',
@@ -136,17 +130,7 @@ function postalAddress(source: string) {
 
 const { addressLocality, streetAddress } = postalAddress(t.footer.address);
 
-/** Имя основательницы — из подписи её обращения: подпись и разметка не могут разойтись. */
-const founder = page
-  ? null
-  : {
-      '@type': 'Person',
-      '@id': `${canonical}#founder`,
-      name: (await aboutCopy(locale)).data.signatureName,
-      jobTitle: t.meta.founderRole,
-      image: absoluteUrl(face.photo.src),
-      alumniOf: ALMA_MATER,
-    };
+const founder = page ? null : await founderNode(locale);
 
 const business = page
   ? null

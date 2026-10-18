@@ -1,0 +1,73 @@
+---
+/**
+ * Ссылки страницы из `docs/seo/map.md` §Links (specs/007-knowledge-base-pilot/contracts/links.md):
+ * рёбра от этой страницы к собранным страницам её языка, адрес со слешем, текст — анкор карты.
+ * Рёбер к собранным страницам нет — блока нет: категория, у которой ещё нет хаба, ничего
+ * не выводит, и тексты категорий для этого не правятся.
+ */
+import SectionHeading from './SectionHeading.astro';
+import { pageLinks } from '../data/map-links';
+import type { MapPageKind } from '../data/seo-map';
+import { displayAnchor, guide, isGuideLocale } from '../i18n/guide';
+import { pagePath, type PageRef } from '../i18n/paths';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  /** Язык без базы знаний (en) получает пустой блок, то есть никакого. */
+  locale: Locale;
+  page: PageRef;
+  /** Только рёбра к страницам этого вида: хаб выводит здесь ребро к услуге, а статьи — своим списком. */
+  toKind?: MapPageKind;
+}
+
+const { locale, page, toKind } = Astro.props;
+
+const block = isGuideLocale(locale)
+  ? {
+      labels: guide[locale].links,
+      links: (await pageLinks(locale, pagePath(locale, page)))
+        .filter((link) => !toKind || link.toKind === toKind)
+        .map((link) => ({ href: link.href, text: displayAnchor(locale, link.anchor) })),
+    }
+  : null;
+---
+
+{
+  block && block.links.length > 0 && (
+    <aside class="map-links">
+      <SectionHeading eyebrow={block.labels.eyebrow} title={block.labels.title} />
+      <ul class="map-links__list">
+        {block.links.map((link) => (
+          <li>
+            <a href={link.href} class="map-links__link">
+              {link.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )
+}
+
+<style>
+  .map-links {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: var(--rhythm-tight);
+  }
+
+  .map-links__list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .map-links__link {
+    @apply text-brass underline underline-offset-4;
+    font-size: var(--step-body);
+    transition: color 0.3s;
+  }
+
+  .map-links__link:hover {
+    @apply text-brass-lt;
+  }
+</style>
