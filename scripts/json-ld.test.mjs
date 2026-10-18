@@ -1,6 +1,5 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 // С расширением: Node в ESM его не достраивает.
 import { jsonLd } from '../src/data/json-ld.ts';
 
@@ -24,13 +23,4 @@ test('`</script>` в строке не закрывает блок, а данн�
 test('обычная разметка проходит без изменений', () => {
   const graph = { '@context': 'https://schema.org', '@graph': [{ '@type': 'Article', headline: 'Депіляція чи епіляція' }] };
   assert.equal(jsonLd(graph), JSON.stringify(graph));
-});
-
-test('все блоки ld+json в SeoHead выводятся через `jsonLd`, а не напрямую `JSON.stringify`', () => {
-  const source = readFileSync(new URL('../src/components/SeoHead.astro', import.meta.url), 'utf8');
-  const blocks = [...source.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>/g)].map(([tag]) => tag);
-
-  // Контроль: без него «все блоки» было бы верно и для файла, в котором блоков не нашли.
-  assert.ok(blocks.length >= 3, `блоков ld+json в SeoHead: ${blocks.length}`);
-  for (const tag of blocks) assert.match(tag, /set:html=\{jsonLd\(/, tag);
 });

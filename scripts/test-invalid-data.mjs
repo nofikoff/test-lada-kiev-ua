@@ -528,9 +528,14 @@ const AFTERCARE = guideArticle(
 );
 const BEST_METHOD_FILE = `${GUIDE}/uk/depilation/best-method.md`;
 const BEST_METHOD_PATH = '/guide/depilation/best-method/';
+/**
+ * `</script>` в заголовке: строка frontmatter доходит до JSON-LD статьи, и без экранирования в `jsonLd()`
+ * блок закрылся бы на ней. Заголовок по-прежнему раньше пилотного по алфавиту.
+ */
+const BEST_METHOD_HEADING = 'Вибір методу депіляції: яка найкраща </script>';
 const BEST_METHOD = guideArticle(
   'depilation-best-method',
-  'Вибір методу депіляції: яка найкраща',
+  BEST_METHOD_HEADING,
   'Вибір методу депіляції: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що старіша стаття стоїть у списках нижче за новішу.',
   dayBefore(PILOT_DAY),
 );
@@ -543,12 +548,31 @@ const articleLinks = (html) => [
   ...new Set([...html.matchAll(/href="(\/guide\/depilation\/[a-z0-9-]+\/)"/g)].map(([, href]) => href)),
 ];
 
+/**
+ * Блок JSON-LD цел: в теле нет сырого `<` и оно разбирается как JSON. Сырой `</script>` оборвал бы
+ * совпадение раньше конца блока, и разбор упал бы.
+ */
+function headlineIntact(html, headline) {
+  const blocks = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(([, body]) => body);
+  try {
+    const nodes = blocks.flatMap((body) => JSON.parse(body)['@graph'] ?? []);
+    return blocks.length > 0 && blocks.every((body) => !body.includes('<')) && nodes.some((node) => node.headline === headline);
+  } catch {
+    return false;
+  }
+}
+
 /** Адреса `hasPart` узла `CollectionPage` хаба — из JSON-LD как данных. */
 function hasPartUrls(html) {
-  const collection = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
-    .flatMap(([, json]) => JSON.parse(json)['@graph'] ?? [])
-    .find((node) => node['@type'] === 'CollectionPage');
-  return (collection?.hasPart ?? []).map((part) => part.url);
+  try {
+    const collection = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
+      .flatMap(([, json]) => JSON.parse(json)['@graph'] ?? [])
+      .find((node) => node['@type'] === 'CollectionPage');
+    return (collection?.hasPart ?? []).map((part) => part.url);
+  } catch {
+    // Оборванный блок — провал проверки порядка с её подписью, а не падение всего прогона.
+    return [];
+  }
 }
 
 /** Сумма в разметке прайса; та же сумма обязана стоять в предложении (docs/specs/structured-data.md). */
@@ -644,6 +668,10 @@ const allowedEdits = [
           `порядок списка /guide/depilation/: дата, затем заголовок (${articleLinks(hub).join(', ')})`,
         ],
         [order(hasPartUrls(hub).map((url) => new URL(url).pathname)), 'порядок hasPart хаба тот же'],
+        [
+          headlineIntact(builtPage(BEST_METHOD_PATH), BEST_METHOD_HEADING),
+          `${BEST_METHOD_PATH}: </script> в заголовке не обрывает JSON-LD, headline читается целиком`,
+        ],
         [
           order(articleLinks(builtPage('/lada/'))),
           `порядок списка /lada/: дата, затем заголовок (${articleLinks(builtPage('/lada/')).join(', ')})`,

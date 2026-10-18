@@ -67,6 +67,33 @@ test.describe('выдача без комментариев кода', () => {
 });
 
 /**
+ * Строка frontmatter попадает в JSON-LD как есть; сырой `<` закрыл бы блок на `</script>`, а U+2028 и
+ * U+2029 ломают его как скрипт. Проверяется вывод сборки, а не исходник `SeoHead.astro`: блок, выведенный
+ * в обход `jsonLd()` из любого компонента, краснит проверку так же.
+ */
+const UNSAFE_IN_JSON_LD = ['<', String.fromCharCode(0x2028), String.fromCharCode(0x2029)];
+
+test.describe('машиночитаемое описание', () => {
+  test(`в блоках ld+json нет сырых < и разделителей строк ${BUILD_TAG}`, () => {
+    const found: { file: string; comment: string }[] = [];
+    let blocks = 0;
+
+    for (const page of filesOf(DIST, ['.html'])) {
+      const html = readFileSync(page, 'utf8');
+      for (const [, body] of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/g)) {
+        blocks += 1;
+        const unsafe = UNSAFE_IN_JSON_LD.filter((character) => body.includes(character));
+        if (unsafe.length > 0) found.push({ file: relative(DIST, page), comment: unsafe.map((c) => `U+${c.charCodeAt(0).toString(16).padStart(4, '0')}`).join(' ') });
+      }
+    }
+
+    // Контроль: без него «ни в одном блоке» было бы верно и для сборки, в которой блоков нет.
+    expect(blocks, 'блоков ld+json в dist/ нет — сначала нужна сборка').toBeGreaterThan(0);
+    expect(found, `блоков с небезопасными символами: ${found.length}\n${report(found)}`).toEqual([]);
+  });
+});
+
+/**
  * Каталог без `index.html` Apache отдаёт кодом 403, а не 404 (docs/specs/routes.md
  * §Directories without index). Таких каталогов в выдаче ровно три, и у корня раздела базы знаний есть
  * правило 404 в `.htaccess` своего языка. Новый каталог без индекса — например, маршрут `x/y.astro`
