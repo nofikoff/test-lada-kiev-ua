@@ -281,3 +281,28 @@ test.describe('обращение Лады в «Про нас»', () => {
     });
   }
 });
+
+/**
+ * Лада сама ведёт массаж, а депиляцию и перманент лично не делает (docs/specs/voice.md §Contract).
+ * Портрет с её именем стоит на главной и на странице эксперта, и его alt — единственное место,
+ * где сайт описывает Ладу одной строкой вне текстов страниц.
+ */
+const NOT_DONE_BY_LADA = /депіляц|депиляц|hair removal|depilation|перманент|permanent/i;
+
+test.describe('подпись портрета Лады', () => {
+  for (const { path } of [...homePages, ...EXPERT_PAGES]) {
+    test(`${path}: alt портрета не называет услуги, которых Лада лично не делает`, async ({ page }) => {
+      await page.goto(path);
+
+      const alts = await page
+        .locator('img[src*="lada-novikova-portrait"]')
+        .evaluateAll((images) => images.map((image) => image.getAttribute('alt') ?? ''));
+
+      expect(alts.length, 'портрет на странице не найден').toBeGreaterThan(0);
+      for (const alt of alts) {
+        expect(alt.trim(), 'пустой alt портрета').not.toBe('');
+        expect(alt, `alt портрета: ${alt}`).not.toMatch(NOT_DONE_BY_LADA);
+      }
+    });
+  }
+});
