@@ -29,6 +29,7 @@
 | JSON-LD | [docs/specs/structured-data.md](docs/specs/structured-data.md) | долевая цена в `Offer` описывает бесплатную услугу |
 | `prices.json`, `content.config.ts`, тексты категорий, `ui.ts`, фикстуру контента | [docs/specs/content-model.md](docs/specs/content-model.md) | `getCollection('prices')` молча переставляет прайс; правка старой строки краснит `content-parity` |
 | любой текст сайта, название студии, «Про нас» | [docs/specs/voice.md](docs/specs/voice.md) | «майстерня» запрещена во всей сборке и в `llms.txt`; обращение Лады — без биографии сверх образования и без обещаний лечения |
+| утверждения о практике студии в текстах: материал, сроки, длительность, кому не делают | [docs/specs/studio-practice.md](docs/specs/studio-practice.md) | на сайт идёт только сказанное Ладой; чего там нет — нет и на странице |
 | цвета, кегли, отступы, `tailwind.config.js` | [docs/specs/design-tokens.md](docs/specs/design-tokens.md) | hex в переменной выключает модификаторы прозрачности без ошибки; `--muted` на `--raised` проваливает контраст |
 | анимации, `ambience.css`, `cssMinify` | [docs/specs/motion.md](docs/specs/motion.md) | `opacity: 0` вне `@supports` даёт пустую страницу там, где таймлайна нет; lightningcss выбрасывает правила с таймлайном |
 | фокус, контраст, клавиатура, поведение без скриптов | [docs/specs/accessibility.md](docs/specs/accessibility.md) | часть требований прогон не меряет — там же список |

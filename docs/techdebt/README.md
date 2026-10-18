@@ -22,6 +22,7 @@ and then it is `git mv`, so history stays.
 ## Per-item
 
 <!-- - [<debt title>](YYYY-MM-DD-<slug>.md) -->
+- [Language switcher marks the home link as the current page](2026-10-18-language-switcher-aria-current.md)
 
 ## Per-context logs
 
