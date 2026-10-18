@@ -1,0 +1,61 @@
+---
+/**
+ * Подпись страницы базы знаний: та же, что под обращением «Про нас» (имя и роль живут в одном файле
+ * на язык), и ссылка на страницу эксперта своего языка. Контракт /seo подразумевает её у каждой
+ * страницы базы знаний, поэтому её выводят и статья, и хаб; даты — только у статьи
+ * (docs/specs/routes.md §Links from the map).
+ */
+import { aboutCopy } from '../data/about';
+import { displayDate, guide, isoDay, type GuideLocale } from '../i18n/guide';
+import { pagePath } from '../i18n/paths';
+
+interface Props {
+  locale: GuideLocale;
+  dates?: { published: Date; modified: Date };
+}
+
+const { locale, dates } = Astro.props;
+const t = guide[locale];
+const { signatureName, signatureRole } = (await aboutCopy(locale)).data;
+
+/** Обе даты видны всегда: их же сверяет с `datePublished` и `dateModified` tests/seo-contract.spec.ts. */
+const shown = dates
+  ? [
+      { label: t.published, date: dates.published },
+      { label: t.modified, date: dates.modified },
+    ]
+  : [];
+---
+
+<p class="byline">
+  <a href={pagePath(locale, { kind: 'expert' })} class="byline__author">
+    {signatureName}, {signatureRole}
+  </a>
+  {
+    shown.map(({ label, date }) => (
+      <span class="byline__date">
+        {label} <time datetime={isoDay(date)}>{displayDate(locale, date)}</time>
+      </span>
+    ))
+  }
+</p>
+
+<style>
+  .byline {
+    @apply text-silk-dim;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin-bottom: var(--rhythm-tight);
+    font-size: var(--step-caption);
+  }
+
+  .byline__author {
+    @apply text-brass underline underline-offset-4;
+    transition: color 0.3s;
+  }
+
+  .byline__author:hover {
+    @apply text-brass-lt;
+  }
+</style>

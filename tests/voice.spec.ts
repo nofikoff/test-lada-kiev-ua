@@ -89,10 +89,10 @@ test.describe('карта запросов', () => {
   }
 
   /**
-   * Подпись статьи — та же, что под обращением «Про нас», и ведёт на страницу эксперта своего
-   * языка; стоит под заголовком, до текста (docs/specs/routes.md §Links from the map).
+   * Подпись статьи и хаба — та же, что под обращением «Про нас», и ведёт на страницу эксперта
+   * своего языка; стоит под заголовком, до текста (docs/specs/routes.md §Links from the map).
    */
-  for (const page of GUIDE_PAGES.filter((entry) => entry.kind === 'article')) {
+  for (const page of GUIDE_PAGES) {
     const expert = EXPERT_PAGES.find((entry) => entry.locale === page.locale)!;
     const { signatureName, signatureRole } = ABOUT[page.locale];
 
