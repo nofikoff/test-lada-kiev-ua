@@ -11,7 +11,7 @@ Permanent makeup is about a morning where nothing has to be drawn on. The pigmen
 
 We work in the powder technique — a soft, blended fill that reads like the trace of an eyeshadow rather than drawn-on hairs. It looks natural on any brow shape and has none of the hard outline that eventually becomes the main complaint about older work.
 
-Covering old permanent makeup is a separate item: refreshing and correcting what was done before. It is harder work than makeup on clean skin, because the remaining pigment and its undertone have to be taken into account, so this kind of job is always discussed before booking.
+Covering old permanent makeup is a separate item: refreshing and correcting what was done before. It is harder work than makeup on clean skin, because the artist works with the remaining pigment and its undertone, so we discuss this kind of job before booking.
 
 ## Lips
 
@@ -25,7 +25,7 @@ The finest of the three areas. Pigment fills the gaps between the lashes and the
 
 ## Correction and refreshing
 
-The correction a few weeks after the main procedure is not a redo and not a fix for a mistake — it is the second half of the same work: this is where the colour evens out and density is added wherever the skin took the pigment unevenly. Later the work can be refreshed rather than redone. The terms for correction and refreshing are in the list below; they are counted from the price of the main procedure, so they carry no full price of their own.
+The correction a few weeks after the main procedure is the second half of the same work: this is where the colour evens out and density is added wherever the skin took the pigment unevenly. Later the work can be refreshed rather than redone. The terms for correction and refreshing are in the list below; they are counted from the price of the main procedure, so they carry no full price of their own.
 
 ## The first days after the procedure
 

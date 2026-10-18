@@ -31,4 +31,4 @@ Yumeiho therapy is Japanese alignment of the pelvis and spine, after which the w
 
 ## How to book
 
-We are at 10 Mala Zhytomyrska St., a few minutes on foot from Maidan Nezalezhnosti, easy to reach from anywhere in the city. The studio is open daily from 10:00 to 21:00, and visits are agreed in advance by phone: in massage the therapist's day is planned ahead, and a free slot is better taken early. If you are not sure which session you need, describe what bothers you on the phone and we will choose together.
+We are at 10 Mala Zhytomyrska St., a few minutes on foot from Maidan Nezalezhnosti, easy to reach from anywhere in the city. The studio is open daily from 10:00 to 21:00; book your session by phone. If you are not sure which session you need, describe what bothers you on the phone and we will choose together.

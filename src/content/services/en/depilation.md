@@ -11,7 +11,7 @@ Hair removal at Lada N in central Kyiv is done two ways — waxing, and sugaring
 
 The list of areas covers the whole body. The most frequent requests are the deep and classic bikini and the underarms; these are areas where accuracy and a pace you are comfortable with matter more than speed. Legs are taken to the knee or in full, arms to the elbow or in full, and the buttocks, stomach and back are listed separately.
 
-The face is a separate item: upper lip, brows and nose need a different approach from large areas and are worked in small sections. If you are coming for the first time, it makes sense to start with one small area — that way you learn your own tolerance before booking a full programme.
+The face is a separate item: upper lip, brows and nose need a different approach from large areas and are worked in small sections. If you are coming for the first time, it makes sense to start with one small area — that way you find out how comfortable it feels before booking a full programme.
 
 ## Combinations
 
@@ -25,8 +25,8 @@ Arms and legs are taken to the bend or in full, and there is the neck along with
 
 ## What to know before the visit
 
-The hair needs a few millimetres of growth — paste and wax simply cannot grip hair that is too short, and the session would have to be moved. Regularity matters more here than any single visit: when areas are treated on a schedule, the hair comes back finer and sparser, and the procedure becomes easier every time.
+The hair needs a few millimetres of growth — then paste and wax grip it properly. Regularity matters more here than any single visit: when areas are treated on a schedule, the hair comes back finer and sparser, and the procedure becomes easier every time.
 
 Do not plan hair removal for a day when you are going straight to the beach, a pool or a sauna afterwards: the skin needs time. On the day of the procedure it is better to skip the scrub.
 
-We are at 10 Mala Zhytomyrska St., next to Maidan Nezalezhnosti, open daily from 10:00 to 21:00. Booking by phone is required — time for hair removal is reserved against a specific list of areas, and without arranging it beforehand there may be no free slot. If you do not know what the area you need is called, describe it in your own words; that is enough.
+We are at 10 Mala Zhytomyrska St., next to Maidan Nezalezhnosti, open daily from 10:00 to 21:00. Booking is by phone: we reserve the time for your list of areas. If you do not know what the area you need is called, describe it in your own words; that is enough.

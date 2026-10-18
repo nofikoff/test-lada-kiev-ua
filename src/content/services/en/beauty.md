@@ -29,4 +29,4 @@ For events outside the studio the artist can travel to you — this is arranged 
 
 Before an important date it makes sense to do a trial makeup in advance rather than on the day itself: you see the result in daylight and in photographs, and there is still time to change something. Lamination is also better planned a few days ahead rather than the night before — it looks its best once it has settled.
 
-We are at 10 Mala Zhytomyrska St., next to Maidan Nezalezhnosti, open daily from 10:00 to 21:00. Booking is by phone: the morning hours before events go first, so a Saturday morning is worth reserving early. If you are going to a wedding or a shoot, say so right away — a visit like that needs a different amount of time.
+We are at 10 Mala Zhytomyrska St., next to Maidan Nezalezhnosti, open daily from 10:00 to 21:00. Booking is by phone. If you are going to a wedding or a shoot, say so right away — a visit like that needs a different amount of time.
