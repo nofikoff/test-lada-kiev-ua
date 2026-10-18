@@ -17,8 +17,8 @@
 | `description` | frontmatter | 120–160 знаков |
 | `heading` | frontmatter | непустая; `<h1>`, имя страницы в крошках и списках |
 | `published` | frontmatter | дата |
-| `modified` | frontmatter | дата, `>= published` (схема, `path: ['modified']`) |
-| тело | Markdown | статья — ≥ 400 слов в `[data-guide-copy]`; хаб — вступление |
+| `modified` | frontmatter | дата, `>= published` (схема, `path: ['modified']`); равенство допустимо, дата в будущем не проверяется |
+| тело | Markdown | статья — ≥ 400 слов в `[data-guide-copy]`; хаб — вступление в `[data-guide-copy]` без нижней границы; абзацы обоих не повторяют другие страницы своего языка |
 
 Неизвестный ключ frontmatter, включая `slug`, останавливает сборку (`.strict()`, R1).
 
@@ -44,7 +44,7 @@ guideIndex(): Promise<{
 Связи:
 
 - статья → хаб: та же `category` и тот же `locale`; у статьи обязан быть хаб её языка, у хаба — хотя бы одна статья его языка;
-- `page` одинаков у версий одной страницы на разных языках, но в пределах одного языка уникален;
+- `page` одинаков у версий одной страницы на разных языках, но в пределах одного языка уникален; версии одного `page` лежат по одному пути `<category>/<article>`, иначе сборка останавливается ([contracts/content-files.md](contracts/content-files.md) §Build stops, № 7);
 - страница ↔ строка §Pages карты: `page`, `lang` и `url` совпадают с выведенными из пути.
 
 ## Expert entry
