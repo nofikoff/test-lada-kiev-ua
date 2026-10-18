@@ -16,6 +16,8 @@ import Monogram from './Monogram.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { aboutCopy } from '../data/about';
+import { isGuideLocale } from '../i18n/guide';
+import { pagePath } from '../i18n/paths';
 import { ui, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -27,6 +29,9 @@ const t = ui[locale];
 const copy = await aboutCopy(locale);
 const { Content } = await render(copy);
 const { heading, signatureName, signatureRole } = copy.data;
+
+/** Подпись ведёт на страницу эксперта, как в статьях; у `/en/` её нет, там подпись остаётся текстом. */
+const expertHref = isGuideLocale(locale) ? pagePath(locale, { kind: 'expert' }) : undefined;
 ---
 
 <Section rhythm="air" id="about">
@@ -50,7 +55,17 @@ const { heading, signatureName, signatureRole } = copy.data;
              стоит на месте — то есть остаётся ровно тем, чем был. */}
         <div class="rule rule--draw about__rule"></div>
 
-        <p class="about__close">{signatureName}, {signatureRole}</p>
+        <p class="about__close">
+          {
+            expertHref ? (
+              <a href={expertHref} class="about__author">
+                {signatureName}, {signatureRole}
+              </a>
+            ) : (
+              `${signatureName}, ${signatureRole}`
+            )
+          }
+        </p>
       </div>
     </div>
   </div>
@@ -92,5 +107,14 @@ const { heading, signatureName, signatureRole } = copy.data;
     font-style: italic;
     font-weight: 300;
     line-height: 1.4;
+  }
+
+  .about__author {
+    @apply underline decoration-1 underline-offset-[0.2em];
+    transition: color 0.3s;
+  }
+
+  .about__author:hover {
+    @apply text-brass-lt;
   }
 </style>

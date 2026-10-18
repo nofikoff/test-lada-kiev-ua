@@ -279,5 +279,21 @@ test.describe('обращение Лады в «Про нас»', () => {
       expect(normalize(await about.innerText())).toContain(signature);
       expect(normalize(await copy.innerText())).not.toContain(signature);
     });
+
+    /** Подпись ведёт на страницу эксперта своего языка; у en её нет, и ссылки быть не должно. */
+    test(`${path}: подпись обращения и страница эксперта`, async ({ page }) => {
+      await page.goto(path);
+      const about = page.locator('#about');
+      const expert = EXPERT_PAGES.find((entry) => entry.locale === locale);
+      const { signatureName, signatureRole } = ABOUT[locale];
+
+      if (expert) {
+        const link = about.locator(`a[href="${expert.path}"]`);
+        await expect(link).toHaveCount(1);
+        expect(normalize(await link.innerText())).toBe(`${signatureName}, ${signatureRole}`);
+      } else {
+        await expect(about.locator('a[href$="/lada/"]')).toHaveCount(0);
+      }
+    });
   }
 });
