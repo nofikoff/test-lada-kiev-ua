@@ -7,7 +7,7 @@
 `npm run check`, `npm run lint`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:invalid-data`, `npm run analyze` — все зелёные до слияния. Публикация гоняет вместо `test:e2e` только `test:publish` ([ADR-027](docs/adr/adr-027-full-e2e-outside-publish.md)): регрессия вёрстки, не прогнанная локально, уйдёт на сайт со следующей галочкой Лады; правила сверх них — [.specify/memory/constitution.md](.specify/memory/constitution.md).
 
 - e2e идёт против `astro preview` над `dist/` на `PREVIEW_PORT` (4329, `astro.config.mjs`), не против `astro dev` на 4321. Прогон без свежей `npm run build` проверяет прошлую сборку и выглядит необъяснимо зелёным.
-- `tests/support/site.ts` держит хост, телефон, состав ленты, связь групп с категориями и реестр подстраниц `SERVICE_SUBPAGES` литералами, а не импортом из `src/`: проверка, читающая константу реализации, доказывает только непротиворечивость.
+- `tests/support/site.ts` держит хост, телефон, состав ленты, связь групп с категориями, реестр подстраниц `SERVICE_SUBPAGES`, страницы базы знаний и эксперта (`GUIDE_PAGES`, `EXPERT_PAGES`), рёбра пилота `PILOT_EDGES`, запросы статей и запреты хабов литералами, а не импортом из `src/`: проверка, читающая константу реализации, доказывает только непротиворечивость.
 
 ## Документация
 
