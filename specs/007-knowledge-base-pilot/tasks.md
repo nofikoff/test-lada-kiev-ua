@@ -391,7 +391,7 @@ gate_commands:
 skip: true  # автор в день слияния: дата публикации — день слияния (contracts/content-files.md §Frontmatter), прогон этого дня не знает
 -->
 
-- [ ] T066 В день слияния поставить `published` и `modified` — день слияния ветки в `main` — в `src/content/guide/uk/depilation.md`, `src/content/guide/ru/depilation.md`, `src/content/guide/uk/depilation/vs-epilation.md`, `src/content/guide/ru/depilation/vs-epilation.md` последним коммитом перед слиянием; публикация идёт в тот же день, по словам автора ([contracts/content-files.md](contracts/content-files.md) §Frontmatter); после правки — `npm run build && npx playwright test tests/seo-contract.spec.ts`
+- [x] T066 В день слияния поставить `published` и `modified` — день слияния ветки в `main` — в `src/content/guide/uk/depilation.md`, `src/content/guide/ru/depilation.md`, `src/content/guide/uk/depilation/vs-epilation.md`, `src/content/guide/ru/depilation/vs-epilation.md` последним коммитом перед слиянием; публикация идёт в тот же день, по словам автора ([contracts/content-files.md](contracts/content-files.md) §Frontmatter); после правки — `npm run build && npx playwright test tests/seo-contract.spec.ts`
 
 ---
 
