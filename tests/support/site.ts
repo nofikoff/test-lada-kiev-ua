@@ -140,6 +140,85 @@ export const subpagePages: readonly SubpagePageUnderTest[] = SUBPAGES.flatMap((s
 /** Страницы услуг: категории на всех языках и подстраницы. */
 export const servicePages: readonly ServicePageUnderTest[] = [...categoryPages, ...subpagePages];
 
+/** Языки базы знаний и страницы эксперта: ядро и карта есть только на них (ADR-023). */
+export type GuideLocale = Extract<Locale, 'uk' | 'ru'>;
+
+/**
+ * Страница базы знаний — хаб или статья. Языки страницы — те, на которых лежит её файл: по ним
+ * считаются `hreflang` и альтернативы карты сайта (specs/007-knowledge-base-pilot/research.md R6).
+ */
+export interface GuidePageUnderTest extends PageUnderTest {
+  readonly locale: GuideLocale;
+  readonly kind: 'hub' | 'article';
+  readonly category: ServiceCategory;
+  /** Slug статьи; у хаба его нет. */
+  readonly slug?: string;
+  readonly locales: readonly GuideLocale[];
+  /** `<h1>` хаба по формуле contracts/page-head-and-jsonld.md §Head; у статьи заголовок свой. */
+  readonly heading?: string;
+}
+
+export interface ExpertPageUnderTest extends PageUnderTest {
+  readonly locale: GuideLocale;
+  readonly kind: 'expert';
+  readonly locales: readonly GuideLocale[];
+}
+
+/** Пилот базы знаний: хаб депиляции и статья «депіляція чи епіляція» на обоих языках. */
+export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
+  {
+    locale: 'uk',
+    path: '/guide/depilation/',
+    kind: 'hub',
+    category: 'depilation',
+    locales: ['uk', 'ru'],
+    heading: 'Депіляція: відповіді на питання',
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/depilation/',
+    kind: 'hub',
+    category: 'depilation',
+    locales: ['uk', 'ru'],
+    heading: 'Депиляция: ответы на вопросы',
+  },
+  {
+    locale: 'uk',
+    path: '/guide/depilation/vs-epilation/',
+    kind: 'article',
+    category: 'depilation',
+    slug: 'vs-epilation',
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/depilation/vs-epilation/',
+    kind: 'article',
+    category: 'depilation',
+    slug: 'vs-epilation',
+    locales: ['uk', 'ru'],
+  },
+];
+
+export const EXPERT_PAGES: readonly ExpertPageUnderTest[] = [
+  { locale: 'uk', path: '/lada/', kind: 'expert', locales: ['uk', 'ru'] },
+  { locale: 'ru', path: '/ru/lada/', kind: 'expert', locales: ['uk', 'ru'] },
+];
+
+/**
+ * Рёбра пилота, которые обязаны стать ссылками независимо от `docs/seo/map.md`: тест ссылок
+ * читает карту, и ребро, удалённое из неё, убрало бы ссылку молча, а FR-006 и FR-007 требуют
+ * ссылку статьи на хаб и услугу и хаба на услугу (contracts/links.md §Pilot edges).
+ */
+export const PILOT_EDGES: readonly { readonly locale: GuideLocale; readonly from: string; readonly to: string }[] = [
+  { locale: 'uk', from: '/guide/depilation/vs-epilation/', to: '/guide/depilation/' },
+  { locale: 'uk', from: '/guide/depilation/vs-epilation/', to: '/depilation/' },
+  { locale: 'uk', from: '/guide/depilation/', to: '/depilation/' },
+  { locale: 'ru', from: '/ru/guide/depilation/vs-epilation/', to: '/ru/guide/depilation/' },
+  { locale: 'ru', from: '/ru/guide/depilation/vs-epilation/', to: '/ru/depilation/' },
+  { locale: 'ru', from: '/ru/guide/depilation/', to: '/ru/depilation/' },
+];
+
 /** Страницы сайта: языковые версии главной и страницы услуг. */
 export const allPages: readonly PageUnderTest[] = [...homePages, ...servicePages];
 
@@ -176,6 +255,12 @@ export const SERVICE_COPY_SELECTOR = '[data-service-copy]';
 
 /** Контейнер тела обращения Лады в «Про нас»: подпись и заголовок секции вне его. */
 export const ABOUT_COPY_SELECTOR = '[data-about-copy]';
+
+/** Текст статьи или вступление хаба: объём и уникальность абзацев считаются по нему. */
+export const GUIDE_COPY_SELECTOR = '[data-guide-copy]';
+
+/** Текст страницы эксперта: список статей и портрет вне его. */
+export const EXPERT_COPY_SELECTOR = '[data-expert-copy]';
 
 /**
  * Название заведения, которого на сайте быть не должно (docs/specs/voice.md). «Майстер»,
@@ -255,9 +340,48 @@ const QUERIES: Record<
   },
 };
 
+/**
+ * Запросы статей базы знаний по `<category>/<slug>`. Кластер информационный, поэтому «Києва»
+ * в запросе нет (specs/007-knowledge-base-pilot/contracts/page-head-and-jsonld.md §Head).
+ */
+const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
+  uk: { 'depilation/vs-epilation': [/депіляція чи епіляція/i] },
+  ru: { 'depilation/vs-epilation': [/депиляция и эпиляция/i] },
+};
+
+/** Страница эксперта держит имя, а не запрос ядра. */
+const EXPERT_QUERY: readonly RegExp[] = [/Лада Новикова/];
+
+/**
+ * Формулировки, которых нет в `<title>`, `<h1>` и описании хаба: запросы его категории
+ * и его статей. Слово категории допустимо — запрещена формулировка. Новая статья хаба
+ * добавляет сюда свой запрос (список мест FR-016).
+ */
+export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, readonly RegExp[]>>> = {
+  uk: { depilation: [/депіляці\S* у Києві/i, /воскова депіляці/i, /депіляція чи епіляція/i] },
+  ru: { depilation: [/депиляци\S* в Киеве/i, /депиляци\S* воском/i, /депиляция и эпиляция/i] },
+};
+
+/**
+ * Запрос страницы по её виду. У хаба запроса нет — пустой список; у статьи и эксперта «Києва»
+ * в запросе нет; у главной и страниц услуг — прежний запрос с городом.
+ */
 export function queryOf(
-  page: PageUnderTest & { category?: ServiceCategory; subpage?: ServiceSubpage },
+  page: PageUnderTest & {
+    category?: ServiceCategory;
+    subpage?: ServiceSubpage;
+    kind?: GuidePageUnderTest['kind'] | ExpertPageUnderTest['kind'];
+    slug?: string;
+  },
 ): RegExp[] {
+  if (page.kind === 'hub') return [];
+  if (page.kind === 'expert') return [...EXPERT_QUERY];
+  if (page.kind === 'article') {
+    const query = GUIDE_QUERIES[page.locale as GuideLocale]?.[`${page.category}/${page.slug}`];
+    if (!query) throw new Error(`${page.path}: нет запроса в карте GUIDE_QUERIES`);
+    return [...query];
+  }
+
   const key = page.subpage ? (`${page.category}/${page.subpage}` as SubpageQuery) : (page.category ?? 'home');
   const query = QUERIES[page.locale][key];
   if (!query) throw new Error(`${page.path}: нет запроса в карте QUERIES`);

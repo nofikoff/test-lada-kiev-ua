@@ -9,7 +9,8 @@
  * схемы никто её не повторит, и требование останется утверждением без подтверждения.
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -73,11 +74,67 @@ function withCorruption(relativePath, corrupt, check) {
   }
 }
 
+/**
+ * Каталог, который создаётся ради файла, удаляется вместе с ним: иначе пустой каталог остался бы
+ * в дереве после прогона. Возвращает верхний из созданных каталогов или `null`.
+ */
+function ensureDirectory(path) {
+  let missing = null;
+  for (let directory = dirname(path); !existsSync(directory); directory = dirname(directory)) missing = directory;
+  if (missing) mkdirSync(dirname(path), { recursive: true });
+  return missing;
+}
+
+/**
+ * Файл, которого в дереве не было: `withCorruption` читает исходник и такой случай не умеет.
+ * Добавленный файл удаляется при любом исходе, включая исключение.
+ */
+function withAddedFile(relativePath, content, check) {
+  const path = fileURLToPath(new URL(relativePath, `file://${root}`));
+  // Файл на этом месте уже есть — случай проверял бы не добавление, а молча испортил бы его.
+  if (existsSync(path)) throw new Error(`${relativePath}: файл уже есть, добавить его нельзя`);
+  const created = ensureDirectory(path);
+  try {
+    writeFileSync(path, content);
+    return check();
+  } finally {
+    rmSync(path, { force: true });
+    if (created) rmSync(created, { recursive: true, force: true });
+  }
+}
+
+/** Файл перемещается на время проверки и возвращается на место в `finally`. */
+function withMovedFile(fromPath, toPath, check) {
+  const from = fileURLToPath(new URL(fromPath, `file://${root}`));
+  const to = fileURLToPath(new URL(toPath, `file://${root}`));
+  if (existsSync(to)) throw new Error(`${toPath}: файл уже есть, переместить на его место нельзя`);
+  const created = ensureDirectory(to);
+  let moved = false;
+  try {
+    renameSync(from, to);
+    moved = true;
+    return check();
+  } finally {
+    if (moved) renameSync(to, from);
+    if (created) rmSync(created, { recursive: true, force: true });
+  }
+}
+
+/**
+ * Одна правка дерева: порча существующего файла (`file` + `corrupt`), новый файл (`add` +
+ * `content`) или перемещение (`move` + `to`).
+ */
+function withEdit(edit, check) {
+  if (edit.add) return withAddedFile(edit.add, edit.content, check);
+  if (edit.move) return withMovedFile(edit.move, edit.to, check);
+  return withCorruption(edit.file, edit.corrupt, check);
+}
+
 /** Несколько файлов портятся разом: правки вкладываются, и откат идёт в обратном порядке. */
 function withCorruptions(edits, check) {
   const [first, ...rest] = edits;
   if (!first) return check();
-  return withCorruption(first.file, first.corrupt, () => withCorruptions(rest, check));
+  return withEdit(first, () => withCorruptions(rest, check));
 }
 
 function editJson(original, edit) {
@@ -337,7 +394,9 @@ const allowedEdits = [
 let failed = 0;
 
 for (const testCase of cases) {
-  const { status, output } = withCorruption(testCase.file, testCase.corrupt, build);
+  // Случай без `edits` — одна порча `file` + `corrupt`, как у всех случаев до базы знаний.
+  const edits = testCase.edits ?? [{ file: testCase.file, corrupt: testCase.corrupt }];
+  const { status, output } = withCorruptions(edits, build);
 
   const stopped = status !== 0;
   const named = testCase.expect.test(plain(output));
@@ -363,7 +422,7 @@ for (const testCase of cases) {
 for (const edit of allowedEdits) {
   // Проверка `dist/` идёт внутри правки: после отката сборка ещё не пересобрана, но читать
   // приходится именно сборку на правленых данных.
-  const edits = [{ file: edit.file, corrupt: edit.corrupt }, ...(edit.alsoCorrupt ?? [])];
+  const edits = edit.edits ?? [{ file: edit.file, corrupt: edit.corrupt }, ...(edit.alsoCorrupt ?? [])];
   const outcome = withCorruptions(edits, () => {
     const result = build();
     return { ...result, checks: result.status === 0 ? edit.expect() : [] };
