@@ -62,10 +62,10 @@ guideIndex(): Promise<{
 interface MapPage { page: string; kind: 'hub'|'entity'|'question'|'service'|'expert'; lang: 'uk'|'ru'; url: string }
 interface MapLink { from: string; to: string; anchor: string; lang: 'uk'|'ru' }
 interface SeoMap { readonly pages: readonly MapPage[]; readonly links: readonly MapLink[] }
+interface PageLink { href: string; anchor: string; toKind: MapPage['kind'] }   // ребро на странице `from`
 
 parseSeoMap(text: string): SeoMap;                       // остановка № 12
-linksFrom(map: SeoMap, locale: GuideLocale, path: string, builtPaths: ReadonlySet<string>):
-  readonly { href: string; anchor: string; toKind: MapPage['kind'] }[];
+linksFrom(map: SeoMap, locale: GuideLocale, path: string, builtPaths: ReadonlySet<string>): readonly PageLink[];
 ```
 
 `linksFrom` берёт рёбра языка `locale`, у которых `url` страницы `from` равен `path`, а `url` страницы `to` есть в `builtPaths`. Порядок — порядок строк §Links. Колонка `status` и §Site не читаются.
@@ -73,6 +73,8 @@ linksFrom(map: SeoMap, locale: GuideLocale, path: string, builtPaths: ReadonlySe
 `src/data/guide.ts` один раз читает `docs/seo/map.md` от `process.cwd()` после проверок 3–9 коллекции, разбирает его `parseSeoMap` (порча таблиц — остановка № 12, первая из остановок карты), проверяет остановки 10–11 и кладёт карту в индекс (`guideIndex().map`). Карту файл читает только здесь.
 
 `src/data/map-links.ts` — тонкая обёртка `pageLinks(locale, path)`. Она берёт из `guideIndex()` карту и `pathsOf(locale)`, добавляет адреса страниц услуг языка из `src/i18n/paths.ts` и страницы эксперта и вызывает `linksFrom`. Её вызывают `MapLinks.astro` и список хаба.
+
+`MapLinks.astro` принимает `locale`, `page` и необязательный `toKinds: readonly MapPageKind[]` — список видов страницы `to`. В блок попадают рёбра, у которых `toKind` входит в список; без `toKinds` выводятся все. Страница услуги просит `hub`, `entity`, `question`, хаб — только `service`: статьи выводит его список.
 
 ## Page reference
 

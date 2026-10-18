@@ -17,7 +17,27 @@
 | `knowsLanguage` | `uk`, `ru`, `en` — не `availableLanguage`, [ADR-022](../adr/adr-022-business-languages-knowslanguage.md) |
 | `founder` | `Person` `#founder`: `name` — подпись обращения своей локали (`src/content/about/<locale>.md`), `jobTitle` — `meta.founderRole` словаря, `image` — тот же портрет, что второй элемент `image`, `alumniOf` — `CollegeOrUniversity` «Національний університет фізичного виховання і спорту України», `sameAs` `https://uni-sport.edu.ua/` (сайт университета и реестр ЕДЕБО, проверено 2026-09-27). Роль — только подтверждённое автором ([voice.md](voice.md)). Принято в пакете 004 |
 
-Разметки `FAQPage` нет — [ADR-020](../adr/adr-020-no-faqpage-markup.md).
+Узел `founder` строит `founderNode(locale)` — см. §Founder node.
+
+Разметки `FAQPage` нет — [ADR-020](../adr/adr-020-no-faqpage-markup.md), в том числе у статьи в форме вопроса.
+
+## Founder node
+
+`founderNode(locale)` в `src/data/founder.ts` — единственный построитель узла `Person` `#founder`: главная выводит его как `founder`, страница эксперта — как предмет страницы, статья ссылается на него как на автора. «Тот же человек» держится равенством `@id` (`<главная языка>#founder`), поэтому второй построитель разошёлся бы в имени или роли. Поля и источники — строка `founder` в §Главная; JSON-LD главной вынос не изменил.
+
+## Knowledge base
+
+Страницы раздела выводят один блок `<script type="application/ld+json">` с `@graph`. Узла организации в нём нет: на него и на основательницу ссылаются по `@id` главной своего языка, поэтому «та же студия» и «тот же человек» проверяются равенством строк. Приёмка — `validator.schema.org`, 0 ошибок на хабе, статье и эксперте на обоих языках. Реализация — `src/data/guide-structured-data.ts`, проверка — `tests/seo-contract.spec.ts`.
+
+| Страница | Узлы | Что держится |
+|---|---|---|
+| статья | `Article`, `BreadcrumbList` | `author` — `@id` основательницы главной, `name` и `url` страницы эксперта; `publisher` — `@id` организации главной; `datePublished <= dateModified`; даты равны `<time datetime>` подписи; `image` — адрес превью, тот же, что в `og:image`. Крошки: главная → хаб → статья, звенья названы теми же строками, что видимые |
+| хаб | `CollectionPage`, `BreadcrumbList` | `hasPart` — статьи списка хаба в его порядке, `Article` с адресом, заголовком и `@id`; крошки: главная → хаб |
+| эксперт | `ProfilePage` | `mainEntity` — полный `founderNode(locale)` с `url` страницы эксперта; крошек нет ни в разметке, ни на странице |
+
+- Обе даты статьи показываются всегда, даже равные: `seo-contract` сравнивает оба `<time datetime>` с JSON-LD.
+- `lastmod` карты сайта не пишется — [routes.md](routes.md).
+- Пара «заголовок + описание» уникальна по всем страницам `allPages`, новыми включительно.
 
 ## Страница категории
 
