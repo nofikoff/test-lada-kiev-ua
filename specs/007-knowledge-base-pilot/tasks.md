@@ -628,3 +628,6 @@ decided:
 ### S3 — dispatch 7 (2026-10-18)
 `kind=review-fix agent=implementer tier=standard model=claude-sonnet-5-5 effort=xhigh turns=6 minutes=0.6 input=12 cache_write=39099 cache_read=241383 output=2864`
 Fix of the 7.1 deviation (1): bc6a5b4.
+
+### converge — dispatch 8 (2026-10-18)
+`kind=converge agent=verifier model=claude-sonnet-5-5 effort=high turns=17 minutes=5.5 input=34 cache_write=102854 cache_read=991939 output=7767`
