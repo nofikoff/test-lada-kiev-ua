@@ -13,7 +13,7 @@
     "test:e2e": "playwright test",
     "test:invalid-data": "node scripts/test-invalid-data.mjs",
     "test:publish": "playwright test --project=build && playwright test tests/seo-contract.spec.ts --project=desktop",
-    "test:unit": "node --experimental-strip-types --disable-warning=ExperimentalWarning --test scripts/prices/*.test.mjs scripts/purge-cache.test.mjs",
+    "test:unit": "node --experimental-strip-types --disable-warning=ExperimentalWarning --test scripts/prices/*.test.mjs scripts/purge-cache.test.mjs scripts/seo-map.test.mjs",
     "analyze": "node scripts/analyze-bundle.mjs"
   },
   "dependencies": {
