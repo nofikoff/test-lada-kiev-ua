@@ -60,10 +60,10 @@ gate_commands:
   test_full: "npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze"
 -->
 
-- [ ] T004 Написать `scripts/seo-map.test.mjs` (красный): импорт `../src/data/seo-map.ts` и `../src/i18n/guide.ts` с расширением; `parseSeoMap` на тексте `docs/seo/map.md` возвращает строки §Pages и §Links с полями data-model.md §Seo map; столбцы находятся по имени заголовка — перестановка и лишний столбец разбор не меняют; нет §Pages, нет §Links, нет нужного столбца — исключение с текстом `docs/seo/map.md: <что не найдено>`; `linksFrom(map, locale, path, builtPaths)` отдаёт рёбра языка в порядке строк §Links только к адресам из `builtPaths`; `displayAnchor('uk', 'депіляція київ')` → `Депіляція Київ`, `displayAnchor('ru', 'депиляция воском киев')` → `Депиляция воском Киев`
-- [ ] T005 Реализовать чистый `src/data/seo-map.ts` по data-model.md §Seo map: `parseSeoMap(text)`, `linksFrom(map, locale, path, builtPaths)`, типы `MapPage`, `MapLink`, `SeoMap`; без импортов Astro, без чтения файлов, из `src/` — только `import type`; колонка `status` и §Site не читаются (research R3)
-- [ ] T006 [P] Создать `src/i18n/guide.ts`: `guideLocales = ['uk', 'ru'] as const` и тип `GuideLocale`; `Record<GuideLocale, GuideDictionary>` — подписи блока ссылок (`eyebrow` + `title` уровня `h2`, правило 7 `docs/specs/design-tokens.md`), «Опубліковано» / «Оновлено» и ru-пары, заголовок списка статей эксперта, словарь регистра имён собственных (`Київ`, `Киев`) и `displayAnchor(locale, anchor)` из research R3; из `src/` — только `import type`; T004 зеленеет после T005 и T006
-- [ ] T003 Добавить `scripts/seo-map.test.mjs` в скрипт `test:unit` файла `package.json` рядом с `scripts/prices/*.test.mjs scripts/purge-cache.test.mjs` — после T004, когда файл уже есть: раньше `npm run test:unit` падал бы на отсутствующем файле
+- [x] T004 Написать `scripts/seo-map.test.mjs` (красный): импорт `../src/data/seo-map.ts` и `../src/i18n/guide.ts` с расширением; `parseSeoMap` на тексте `docs/seo/map.md` возвращает строки §Pages и §Links с полями data-model.md §Seo map; столбцы находятся по имени заголовка — перестановка и лишний столбец разбор не меняют; нет §Pages, нет §Links, нет нужного столбца — исключение с текстом `docs/seo/map.md: <что не найдено>`; `linksFrom(map, locale, path, builtPaths)` отдаёт рёбра языка в порядке строк §Links только к адресам из `builtPaths`; `displayAnchor('uk', 'депіляція київ')` → `Депіляція Київ`, `displayAnchor('ru', 'депиляция воском киев')` → `Депиляция воском Киев`
+- [x] T005 Реализовать чистый `src/data/seo-map.ts` по data-model.md §Seo map: `parseSeoMap(text)`, `linksFrom(map, locale, path, builtPaths)`, типы `MapPage`, `MapLink`, `SeoMap`; без импортов Astro, без чтения файлов, из `src/` — только `import type`; колонка `status` и §Site не читаются (research R3)
+- [x] T006 [P] Создать `src/i18n/guide.ts`: `guideLocales = ['uk', 'ru'] as const` и тип `GuideLocale`; `Record<GuideLocale, GuideDictionary>` — подписи блока ссылок (`eyebrow` + `title` уровня `h2`, правило 7 `docs/specs/design-tokens.md`), «Опубліковано» / «Оновлено» и ru-пары, заголовок списка статей эксперта, словарь регистра имён собственных (`Київ`, `Киев`) и `displayAnchor(locale, anchor)` из research R3; из `src/` — только `import type`; T004 зеленеет после T005 и T006
+- [x] T003 Добавить `scripts/seo-map.test.mjs` в скрипт `test:unit` файла `package.json` рядом с `scripts/prices/*.test.mjs scripts/purge-cache.test.mjs` — после T004, когда файл уже есть: раньше `npm run test:unit` падал бы на отсутствующем файле
 
 ### Step 2.2: Collections, page reference and knowledge-base index
 
@@ -83,9 +83,9 @@ gate_commands:
 tier: strong
 -->
 
-- [ ] T007 [P] Добавить в `src/content.config.ts` коллекции по research R1 и data-model.md: `guide` — `glob({ pattern: '**/*.md', base: './src/content/guide' })`, схема `.strict()` с полями `page`, `title`, `description` («120–160 знаков»), `heading`, `published`, `modified` (`z.coerce.date()`, «`>= published` (схема, `path: ['modified']`)», равенство допустимо); `expert` — `glob({ pattern: '+(uk|ru).md', base: './src/content/expert' })`, поля `title`, `description` (120–160), `heading`; ключ `slug` и любой неизвестный ключ останавливают сборку
-- [ ] T008 Обобщить ссылку на страницу в `src/i18n/paths.ts` по research R4 и data-model.md §Page reference: `PageRef = ServicePageRef | GuidePageRef | ExpertPageRef`, `ServicePageRef` получает `kind?: undefined`; `pagePath` (guide — `${prefix}/guide/${category}/${article ? article + '/' : ''}`, expert — `${prefix}/lada/`), `pageLocales` (guide — `ref.locales`, expert — `guideLocales`), `languageAlternates` (`x-default` — uk, если она среди языков страницы, иначе единственная версия); тип `page` в `src/layouts/BaseLayout.astro` и `src/components/SeoHead.astro` → `PageRef`; `tests/types/subpage-refs.ts` компилируется без правки (depends on T006: `GuideLocale` и `guideLocales` объявлены там)
-- [ ] T009 Реализовать `src/data/guide.ts`: `guideIndex()` с кэшем промиса на модуль; чтение `docs/seo/map.md` от `process.cwd()` один раз вместе с коллекцией и разбор `parseSeoMap`; производные поля data-model.md §Guide entry (`locale` из первого сегмента `entry.id`, «`uk` или `ru`»; `category` — «одна из `serviceCategories`»; `article` — «`^[a-z0-9]+(-[a-z0-9]+)*$`; глубже третьего сегмента — ошибка»), поле индекса `map` и методы `hubOf`, `articlesOf` (`published` по убыванию, затем `heading`), `articles`, `pathsOf`, `guideStaticPaths(locale)`; остановки 3–11 [contracts/content-files.md](contracts/content-files.md) §Build stops в указанном порядке с указанными сообщениями; карта читается после проверок 3–9 и до № 10, поэтому порча её таблиц (№ 12 из `parseSeoMap`) срабатывает первой из остановок карты; `guide.ts` импортирует `seo-map.ts`, обратного импорта нет (depends on T005, T007, T008)
+- [x] T007 [P] Добавить в `src/content.config.ts` коллекции по research R1 и data-model.md: `guide` — `glob({ pattern: '**/*.md', base: './src/content/guide' })`, схема `.strict()` с полями `page`, `title`, `description` («120–160 знаков»), `heading`, `published`, `modified` (`z.coerce.date()`, «`>= published` (схема, `path: ['modified']`)», равенство допустимо); `expert` — `glob({ pattern: '+(uk|ru).md', base: './src/content/expert' })`, поля `title`, `description` (120–160), `heading`; ключ `slug` и любой неизвестный ключ останавливают сборку
+- [x] T008 Обобщить ссылку на страницу в `src/i18n/paths.ts` по research R4 и data-model.md §Page reference: `PageRef = ServicePageRef | GuidePageRef | ExpertPageRef`, `ServicePageRef` получает `kind?: undefined`; `pagePath` (guide — `${prefix}/guide/${category}/${article ? article + '/' : ''}`, expert — `${prefix}/lada/`), `pageLocales` (guide — `ref.locales`, expert — `guideLocales`), `languageAlternates` (`x-default` — uk, если она среди языков страницы, иначе единственная версия); тип `page` в `src/layouts/BaseLayout.astro` и `src/components/SeoHead.astro` → `PageRef`; `tests/types/subpage-refs.ts` компилируется без правки (depends on T006: `GuideLocale` и `guideLocales` объявлены там)
+- [x] T009 Реализовать `src/data/guide.ts`: `guideIndex()` с кэшем промиса на модуль; чтение `docs/seo/map.md` от `process.cwd()` один раз вместе с коллекцией и разбор `parseSeoMap`; производные поля data-model.md §Guide entry (`locale` из первого сегмента `entry.id`, «`uk` или `ru`»; `category` — «одна из `serviceCategories`»; `article` — «`^[a-z0-9]+(-[a-z0-9]+)*$`; глубже третьего сегмента — ошибка»), поле индекса `map` и методы `hubOf`, `articlesOf` (`published` по убыванию, затем `heading`), `articles`, `pathsOf`, `guideStaticPaths(locale)`; остановки 3–11 [contracts/content-files.md](contracts/content-files.md) §Build stops в указанном порядке с указанными сообщениями; карта читается после проверок 3–9 и до № 10, поэтому порча её таблиц (№ 12 из `parseSeoMap`) срабатывает первой из остановок карты; `guide.ts` импортирует `seo-map.ts`, обратного импорта нет (depends on T005, T007, T008)
 
 ### Step 2.3: Founder node, shared presentation and map links
 
@@ -104,10 +104,10 @@ gate_commands:
   test_full: "npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze"
 -->
 
-- [ ] T010 Вынести узел основательницы в `src/data/founder.ts` — `founderNode(locale)` по research R7 и [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Founder node; `founder` главной в `src/components/SeoHead.astro` строится им, JSON-LD главных трёх языков не меняется ни на байт (depends on T008: тот же файл)
-- [ ] T011 [P] Вынести крошки в `src/components/Breadcrumbs.astro` вместе со стилями `.crumbs*`, типографику текста из Markdown — в класс `.copy` в `@layer components` файла `src/index.css` (research R8); `src/components/ServicePage.astro` использует оба, разметка и классы страниц услуг не меняются; правила `order` и `.insert` остаются в `ServicePage.astro`
-- [ ] T069 Создать обёртку `src/data/map-links.ts` по data-model.md §Seo map: `pageLinks(locale, path)` берёт из `guideIndex()` карту и `pathsOf(locale)`, добавляет адреса страниц услуг языка из `src/i18n/paths.ts` и страницы эксперта и вызывает `linksFrom`; файл карты сама не читает (depends on T009)
-- [ ] T012 Создать `src/components/MapLinks.astro`: `<aside>` с `SectionHeading` из словаря `src/i18n/guide.ts` и списком ссылок `pageLinks(locale, path)`; необязательный проп — фильтр по виду страницы `to` (`toKind`), без него выводятся все рёбра; рёбер к собранным страницам после фильтра нет — компонент ничего не выводит; адрес со слешем, текст — `displayAnchor` (depends on T006, T069)
+- [x] T010 Вынести узел основательницы в `src/data/founder.ts` — `founderNode(locale)` по research R7 и [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Founder node; `founder` главной в `src/components/SeoHead.astro` строится им, JSON-LD главных трёх языков не меняется ни на байт (depends on T008: тот же файл)
+- [x] T011 [P] Вынести крошки в `src/components/Breadcrumbs.astro` вместе со стилями `.crumbs*`, типографику текста из Markdown — в класс `.copy` в `@layer components` файла `src/index.css` (research R8); `src/components/ServicePage.astro` использует оба, разметка и классы страниц услуг не меняются; правила `order` и `.insert` остаются в `ServicePage.astro`
+- [x] T069 Создать обёртку `src/data/map-links.ts` по data-model.md §Seo map: `pageLinks(locale, path)` берёт из `guideIndex()` карту и `pathsOf(locale)`, добавляет адреса страниц услуг языка из `src/i18n/paths.ts` и страницы эксперта и вызывает `linksFrom`; файл карты сама не читает (depends on T009)
+- [x] T012 Создать `src/components/MapLinks.astro`: `<aside>` с `SectionHeading` из словаря `src/i18n/guide.ts` и списком ссылок `pageLinks(locale, path)`; необязательный проп — фильтр по виду страницы `to` (`toKind`), без него выводятся все рёбра; рёбер к собранным страницам после фильтра нет — компонент ничего не выводит; адрес со слешем, текст — `displayAnchor` (depends on T006, T069)
 
 ### Step 2.4: Test literals and invalid-data helpers
 
@@ -126,8 +126,8 @@ gate_commands:
   test_full: "npm run test:unit && npm run build && npm run test:e2e && npm run test:invalid-data && npm run analyze"
 -->
 
-- [ ] T013 [P] Добавить литералы в `tests/support/site.ts` по research R10, не включая их пока в `allPages`: `GUIDE_PAGES` (путь, язык, вид, категория, slug, языки страницы; у хабов — `heading` по формуле [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Head: «Депіляція: відповіді на питання», «Депиляция: ответы на вопросы») для четырёх адресов пилота, `EXPERT_PAGES` для `/lada/` и `/ru/lada/`, запросы статьи («депіляція чи епіляція», «депиляция и эпиляция»), запреты хаба из того же §Head, `PILOT_EDGES` — рёбра «статья → хаб», «статья → услуга» и «хаб → услуга» на uk и ru ([contracts/links.md](contracts/links.md) §Pilot edges: `/guide/depilation/vs-epilation/` → `/guide/depilation/` и `/depilation/`, `/ru/guide/depilation/vs-epilation/` → `/ru/guide/depilation/` и `/ru/depilation/`, `/guide/depilation/` → `/depilation/`, `/ru/guide/depilation/` → `/ru/depilation/`), `GUIDE_COPY_SELECTOR = '[data-guide-copy]'`, `EXPERT_COPY_SELECTOR = '[data-expert-copy]'`; `queryOf` проверяет запрос по виду страницы, у хаба запроса нет, а для действующих страниц `queryOf` возвращает прежнее
-- [ ] T014 [P] Добавить в `scripts/test-invalid-data.mjs` помощники для добавленного и перемещённого файла: добавленный удаляется, перемещённый возвращается в `finally`; действующие случаи не меняются
+- [x] T013 [P] Добавить литералы в `tests/support/site.ts` по research R10, не включая их пока в `allPages`: `GUIDE_PAGES` (путь, язык, вид, категория, slug, языки страницы; у хабов — `heading` по формуле [contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Head: «Депіляція: відповіді на питання», «Депиляция: ответы на вопросы») для четырёх адресов пилота, `EXPERT_PAGES` для `/lada/` и `/ru/lada/`, запросы статьи («депіляція чи епіляція», «депиляция и эпиляция»), запреты хаба из того же §Head, `PILOT_EDGES` — рёбра «статья → хаб», «статья → услуга» и «хаб → услуга» на uk и ru ([contracts/links.md](contracts/links.md) §Pilot edges: `/guide/depilation/vs-epilation/` → `/guide/depilation/` и `/depilation/`, `/ru/guide/depilation/vs-epilation/` → `/ru/guide/depilation/` и `/ru/depilation/`, `/guide/depilation/` → `/depilation/`, `/ru/guide/depilation/` → `/ru/depilation/`), `GUIDE_COPY_SELECTOR = '[data-guide-copy]'`, `EXPERT_COPY_SELECTOR = '[data-expert-copy]'`; `queryOf` проверяет запрос по виду страницы, у хаба запроса нет, а для действующих страниц `queryOf` возвращает прежнее
+- [x] T014 [P] Добавить в `scripts/test-invalid-data.mjs` помощники для добавленного и перемещённого файла: добавленный удаляется, перемещённый возвращается в `finally`; действующие случаи не меняются
 
 **Checkpoint**: `npm run check`, `npm run lint`, `npm run test:unit`, `npm run build`, `npm run test:e2e` зелёные; сайт собирается теми же 22 файлами, новых адресов ещё нет
 
@@ -160,11 +160,11 @@ tier: strong
 
 Файлы контента лежат в коллекции, но маршрутов раздела ещё нет: сборка проверяет их схемой и выходит теми же 22 страницами.
 
-- [ ] T023 [P] [US1] Проверить источники в `specs/007-knowledge-base-pilot/research.md` §Sources по правилам R11: открыть каждую страницу (`curl -sL` — у implementer нет браузера), вписать дословную цитату и дату; FDA «Removing Hair Safely» открыть в первоисточнике на fda.gov, Healthline — по адресу статьи; найти второй источник для списка методов депиляции; строка без открытого источника остаётся `кандидат`, и её утверждение в текст не идёт — шаг из-за этого не останавливается
-- [ ] T024 [US1] Написать статью `src/content/guide/uk/depilation/vs-epilation.md` (depends on T023): frontmatter по [contracts/content-files.md](contracts/content-files.md) §Frontmatter (`page: depilation-vs-epilation`, `title` в форме `<текст> — Lada N` ≤ 70 знаков, `description` 120–160 знаков с запросом в первой половине, `heading`, временные даты — день написания); первый абзац отвечает формулировкой FR-012 и содержит «депіляція чи епіляція»; эпиляция в статье — методы, разрушающие фолликул (лазерна, електро-, фотоепіляція), воск и паста — депиляция; следом — оговорка о терминах, которая называет это определение и говорит, что часть справочников относит воск и пасту к эпиляции; методы обоих способов, срок результата и ощущения; что делает студия — только строки research.md §Practice claims; эпиляции в студии нет ни одним из трёх методов; не меньше 400 слов; «ми» студии, Лада только в третьем лице, личный опыт Лады — нейтральной формой; ни одного утверждения без строки §Sources или §Practice claims; ссылки тела — в форме со слешем
-- [ ] T025 [US1] Написать `src/content/guide/ru/depilation/vs-epilation.md` — перевод T024 с запросом «депиляция и эпиляция» в тех же четырёх местах, то же определение эпиляции и та же оговорка, тот же `page`, те же даты
-- [ ] T026 [P] [US1] Написать хаб `src/content/guide/uk/depilation.md`: `page: depilation-guide`, `heading: "Депіляція: відповіді на питання"`, `title: "Депіляція: відповіді на питання — Lada N"` ([contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Head); ни `title`, ни `heading`, ни `description` не содержат «депіляція у Києві», «воскова депіляція», «депіляція чи епіляція»; вступление — от «ми», абзацы не повторяют страницу `/depilation/`; даты как у T024
-- [ ] T027 [P] [US1] Написать хаб `src/content/guide/ru/depilation.md` — перевод T026: `heading: "Депиляция: ответы на вопросы"`, `title: "Депиляция: ответы на вопросы — Lada N"`, без «депиляция в Киеве», «депиляция воском», «депиляция и эпиляция»
+- [x] T023 [P] [US1] Проверить источники в `specs/007-knowledge-base-pilot/research.md` §Sources по правилам R11: открыть каждую страницу (`curl -sL` — у implementer нет браузера), вписать дословную цитату и дату; FDA «Removing Hair Safely» открыть в первоисточнике на fda.gov, Healthline — по адресу статьи; найти второй источник для списка методов депиляции; строка без открытого источника остаётся `кандидат`, и её утверждение в текст не идёт — шаг из-за этого не останавливается
+- [x] T024 [US1] Написать статью `src/content/guide/uk/depilation/vs-epilation.md` (depends on T023): frontmatter по [contracts/content-files.md](contracts/content-files.md) §Frontmatter (`page: depilation-vs-epilation`, `title` в форме `<текст> — Lada N` ≤ 70 знаков, `description` 120–160 знаков с запросом в первой половине, `heading`, временные даты — день написания); первый абзац отвечает формулировкой FR-012 и содержит «депіляція чи епіляція»; эпиляция в статье — методы, разрушающие фолликул (лазерна, електро-, фотоепіляція), воск и паста — депиляция; следом — оговорка о терминах, которая называет это определение и говорит, что часть справочников относит воск и пасту к эпиляции; методы обоих способов, срок результата и ощущения; что делает студия — только строки research.md §Practice claims; эпиляции в студии нет ни одним из трёх методов; не меньше 400 слов; «ми» студии, Лада только в третьем лице, личный опыт Лады — нейтральной формой; ни одного утверждения без строки §Sources или §Practice claims; ссылки тела — в форме со слешем
+- [x] T025 [US1] Написать `src/content/guide/ru/depilation/vs-epilation.md` — перевод T024 с запросом «депиляция и эпиляция» в тех же четырёх местах, то же определение эпиляции и та же оговорка, тот же `page`, те же даты
+- [x] T026 [P] [US1] Написать хаб `src/content/guide/uk/depilation.md`: `page: depilation-guide`, `heading: "Депіляція: відповіді на питання"`, `title: "Депіляція: відповіді на питання — Lada N"` ([contracts/page-head-and-jsonld.md](contracts/page-head-and-jsonld.md) §Head); ни `title`, ни `heading`, ни `description` не содержат «депіляція у Києві», «воскова депіляція», «депіляція чи епіляція»; вступление — от «ми», абзацы не повторяют страницу `/depilation/`; даты как у T024
+- [x] T027 [P] [US1] Написать хаб `src/content/guide/ru/depilation.md` — перевод T026: `heading: "Депиляция: ответы на вопросы"`, `title: "Депиляция: ответы на вопросы — Lada N"`, без «депиляция в Киеве», «депиляция воском», «депиляция и эпиляция»
 
 ### Step 3.2: Hub and article pages
 
@@ -485,6 +485,55 @@ Task: "T035 .github/workflows/publish.yml"
 ## Session Map
 <!-- packed-for: bundle 600K -->
 
-- [ ] S1 (~550K) Steps 2.1, 2.2, 2.3, 2.4, 3.1 — **current**
-- [ ] S2 (~500K) Steps 3.2, 4.1, 4.2, 5.1, 6.1
+- [x] S1 (~550K) Steps 2.1, 2.2, 2.3, 2.4, 3.1 — done 2026-10-18 17:49–18:29 (0h39m)
+- [ ] S2 (~500K) Steps 3.2, 4.1, 4.2, 5.1, 6.1 — **current**
 - [ ] S3 (~190K) Steps 7.1, 7.3
+
+## Progress Log
+
+### S1.step-2.1 — 2026-10-18
+**Completed steps:** 2.1
+**Commits:** 215e310
+
+### S1.step-2.2 — 2026-10-18
+**Completed steps:** 2.2
+**Commits:** 13c4379
+
+### S1.step-2.3 — 2026-10-18
+**Completed steps:** 2.3
+**Commits:** e808108
+
+### S1.step-2.4 — 2026-10-18
+**Completed steps:** 2.4
+**Commits:** e1f37e0
+
+### S1.step-3.1 — 2026-10-18
+**Completed steps:** 3.1
+**Commits:** 9cda7fc
+
+### S1 — observations (2026-10-18, dispatch 1)
+plan-wrong:
+- TaskCreate is not exposed in this harness; the bundle was tracked without it.
+- T023: FDA 'Removing Hair Safely' is gone from fda.gov (404 on 2026-10-18; only a web.archive.org copy remains, dated by FDA 2010-06-30). 'Open on fda.gov' cannot be satisfied: the row stays a candidate and the claims rest on aad.org.
+- T023: the planned Healthline URL /health/how-long-does-waxing-last returns 404; the article lives at /health/beauty-skin-care/how-long-does-waxing-last.
+- R8/T011 assumed the move to a global .copy class was neutral for service pages. The scoped '.service-copy a' had outranked '.insert__tel { text-decoration: none }', so the phone link in the insert lost an accidental underline (computed-style diff in Chromium and WebKit; every other element identical).
+- R8: counter-reset on a display: contents element is ignored in Chromium and WebKit (measured 2026-10-18), so .copy on .copy__flow cannot reset the section counter; .service-copy keeps its own reset.
+- The glob loader warns 'base directory does not exist' for src/content/expert until step 4.1 writes its files.
+- guideIndex() has no caller until step 3.2. Stops 3–12 and MapLinks were verified only with temporary probe pages; nothing in the committed suite exercises guide.ts yet.
+- A case-only rename of a guide file on macOS is not caught: Astro's content cache reuses the entry with its old filePath when digest and id are unchanged.
+redone:
+- seo-map.test.mjs: two assertions proved nothing (a regex alternation that always matched, and a 'київщина' case satisfied by the first-letter rule). Replaced before the first green run with exact-substring controls and a mid-string word-boundary case.
+- uk article draft measured 408 words against the 400 floor; added two sourced sentences (AAD on threading and on electrolysis working on light hair).
+- After a green full run, a re-read found the laser clause inverted the physics (the beam 'absorbs' the pigment) and 'shortest result' overstated the sources. Fixed in uk, ru and the §Sources row, then the full gates were re-run.
+- The caveat source was first taken from DermNet's techniques table; quote verification showed it lists waxing beside epilation, not under it. Replaced with DermNet's epilation page.
+decided:
+- parseSeoMap also throws on a repeated section, a wrong row length, an unknown kind and a repeated page+lang, and skips rows of non-uk/ru languages; if wrong, a hand-edited map stops Lada's price publication instead of losing a link silently.
+- guide.ts takes language, category and slug from entry.filePath, not entry.id; if wrong, nothing user-visible changes, only file-name case is enforced.
+- MapLinks props are { locale: Locale, page: PageRef, toKind? } and render nothing for en; if step 5.1 wants a path prop, the call site adapts.
+- isGuideLocale was added to src/i18n/guide.ts. GuideDictionary.expertArticles is a single string; step 4.2 needs eyebrow+title if it uses SectionHeading.
+- .copy carries no max-width; GuideArticle (step 3.2) must set the measure, or the typography check on guide pages fails.
+- test-invalid-data cases and allowed edits accept edits: [{file,corrupt}|{add,content}|{move,to}] for steps 6.1/T054; existing cases are untouched.
+- HUB_FORBIDDEN holds regexes that allow inflection ('депіляці\S* у Києві'); if the contract means literal strings, T017 is stricter than the contract.
+
+### S1 — dispatch 1 (2026-10-18)
+`kind=bundle agent=implementer tier=strong model=claude-opus-5-5 effort=xhigh turns=133 minutes=39.4 input=266 cache_write=468480 cache_read=41653607 output=196492`
