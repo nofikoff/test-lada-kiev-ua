@@ -1,8 +1,9 @@
 /**
  * Приёмка модели данных (docs/specs/content-model.md §Инварианты): порча данных обязана ронять
  * сборку, а не проходить молча, а допустимая правка — проходить и менять ровно то, что должна.
- * Порча и правка прайса, текстов, обращения, фото Лады и реестра подстраниц вносятся в сам файл
- * и откатываются в `finally`, поэтому прогон не оставляет за собой изменений в дереве.
+ * Порча и правка прайса, текстов, обращения, фото Лады, реестра подстраниц, базы знаний и её карты
+ * вносятся в сам файл (или добавляют, перемещают файл) и откатываются в `finally`, поэтому прогон
+ * не оставляет за собой изменений в дереве.
  *
  * Проверка сделана автоматической намеренно. Ручная процедура «сломать, посмотреть, откатить»
  * подтверждает схему один раз в жизни — в день, когда её написали; после первого расширения
@@ -24,6 +25,61 @@ const REGISTRY = 'src/data/subpage-registry.ts';
 // Хранилище коллекций, которое сборка пишет на диск: по нему видно, что загрузчик файл не читал.
 const DATA_STORE = 'node_modules/.astro/data-store.json';
 const ABOUT_COPY = 'src/content/about/uk.md';
+
+// База знаний (specs/007-knowledge-base-pilot/contracts/content-files.md §Build stops).
+const GUIDE = 'src/content/guide';
+const UK_ARTICLE = `${GUIDE}/uk/depilation/vs-epilation.md`;
+const RU_HUB = `${GUIDE}/ru/depilation.md`;
+const RU_ARTICLE = `${GUIDE}/ru/depilation/vs-epilation.md`;
+const EXPERT_RU = 'src/content/expert/ru.md';
+const SEO_MAP = 'docs/seo/map.md';
+
+/** Имя файла в выражении: точки и косые черты пути — буквально. */
+function literal(text) {
+  return text.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+}
+
+/**
+ * Файл базы знаний, который проходит схему: случай обязан упасть на своей межфайловой остановке,
+ * а не на схеме одной записи.
+ */
+function guideFile(page, heading) {
+  return `---
+page: ${page}
+title: "${heading} — Lada N"
+description: "Проверочная страница базы знаний: файл кладёт прогон test:invalid-data, чтобы убедиться, что сборка поступает с ним по контракту."
+heading: "${heading}"
+published: 2026-10-18
+modified: 2026-10-18
+---
+
+Проверочный текст.
+`;
+}
+
+/** Правка, которая не нашла своё место, проверяла бы не порчу, а исходный файл. */
+function replaceOnce(path, original, pattern, replacement) {
+  const edited = original.replace(pattern, replacement);
+  if (edited === original) throw new Error(`${path}: не нашлось ${pattern}`);
+  writeFileSync(path, edited);
+}
+
+/** Дата правки — днём раньше даты публикации, от даты в файле: даты пилота ставятся в день слияния. */
+function modifiedBeforePublished(path, original) {
+  const published = /^published: (\d{4}-\d{2}-\d{2})$/m.exec(original)?.[1];
+  if (!published) throw new Error(`${path}: нет published`);
+  const dayBefore = new Date(Date.parse(`${published}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
+  replaceOnce(path, original, /^modified: .*$/m, `modified: ${dayBefore}`);
+}
+
+const MISSING_PAGE = 'depilation-not-in-map';
+
+/** Один и тот же `page`, которого нет в карте, — в обеих версиях статьи: иначе сработала бы № 7. */
+const pageNotInMap = (path, original) =>
+  replaceOnce(path, original, /^page: depilation-vs-epilation$/m, `page: ${MISSING_PAGE}`);
+
+/** Ребро «хаб → статья» uk из §Links: строка таблицы с этими `from`, `to` и `lang`. */
+const HUB_TO_ARTICLE_UK = /^\|\s*depilation-guide\s*\|\s*depilation-vs-epilation\s*\|[^\n]*\|\s*uk\s*\|[^\n]*\n/m;
 
 /** Поле `sugar` целиком, а не подстрока: «sugaring» стоит в адресах страниц сборки. */
 const SUGAR_FIELD = /\bsugar\b/;
@@ -261,6 +317,92 @@ const cases = [
     expect: /нет текста подстраницы: src\/content\/subpages\/uk\/sugaring\.md/,
     corrupt: (path) => rmSync(path),
   },
+
+  // Остановки базы знаний: по случаю на каждую, сообщение называет файл
+  // (specs/007-knowledge-base-pilot/contracts/content-files.md §Build stops, quickstart.md §3).
+  {
+    name: 'хаб без статьи своего языка (№ 9)',
+    file: RU_ARTICLE,
+    expect: new RegExp(`${literal(RU_HUB)}: у хаба нет ни одной статьи языка ru`),
+    corrupt: (path) => rmSync(path),
+  },
+  {
+    name: 'статья без хаба своего языка (№ 8)',
+    file: RU_HUB,
+    expect: new RegExp(`${literal(RU_ARTICLE)}: нет хаба ${literal(RU_HUB)}`),
+    corrupt: (path) => rmSync(path),
+  },
+  {
+    name: 'повтор page в языке (№ 6)',
+    edits: [{ add: `${GUIDE}/uk/depilation/copy.md`, content: guideFile('depilation-vs-epilation', 'Копія статті') }],
+    expect: new RegExp(
+      `${literal(`${GUIDE}/uk/depilation/`)}(copy|vs-epilation)\\.md и ${literal(`${GUIDE}/uk/depilation/`)}` +
+        '(copy|vs-epilation)\\.md: page «depilation-vs-epilation» повторяется в языке uk',
+    ),
+  },
+  {
+    name: 'версии одного page по разным адресам (№ 7)',
+    edits: [{ move: RU_ARTICLE, to: `${GUIDE}/ru/depilation/other.md` }],
+    expect: new RegExp(
+      `${literal(UK_ARTICLE)} и ${literal(`${GUIDE}/ru/depilation/other.md`)}: ` +
+        'версии страницы «depilation-vs-epilation» лежат по разным адресам',
+    ),
+  },
+  {
+    name: 'дата правки раньше даты публикации (№ 1)',
+    file: UK_ARTICLE,
+    // Запись и поле — в разных строках сообщения Astro, поэтому два выражения.
+    expect: [/guide → uk\/depilation\/vs-epilation/, /modified\W+дата правки modified раньше даты публикации/],
+    corrupt: modifiedBeforePublished,
+  },
+  {
+    name: 'slug во frontmatter (№ 2)',
+    file: UK_ARTICLE,
+    // Загрузчик уже взял `slug` идентификатором записи («guide → other-address»), поэтому файл
+    // называет только строка места ошибки — её и требует FR-004.
+    expect: [/Unrecognized key[^\n]*slug/, new RegExp(`${literal(UK_ARTICLE)}:\\d+:\\d+`)],
+    corrupt: (path, original) => replaceOnce(path, original, /^(page: .*)$/m, '$1\nslug: other-address'),
+  },
+  {
+    name: 'путь не хаба и не статьи (№ 3)',
+    edits: [{ add: `${GUIDE}/uk/depilation/vs-epilation/deep.md`, content: guideFile('depilation-deep', 'Глибше статті') }],
+    expect: new RegExp(`${literal(`${GUIDE}/uk/depilation/vs-epilation/deep.md`)}: путь не хаба и не статьи базы знаний`),
+  },
+  {
+    name: 'язык, которого в базе знаний нет (№ 4)',
+    edits: [{ add: `${GUIDE}/en/depilation.md`, content: guideFile('depilation-guide', 'Hair removal') }],
+    expect: new RegExp(`${literal(`${GUIDE}/en/depilation.md`)}: язык «en» в базе знаний не публикуется`),
+  },
+  {
+    name: 'категория, которой нет (№ 5)',
+    edits: [{ add: `${GUIDE}/uk/nails.md`, content: guideFile('nails-guide', 'Нігті') }],
+    expect: new RegExp(`${literal(`${GUIDE}/uk/nails.md`)}: категории «nails» нет`),
+  },
+  {
+    name: 'page нет в карте (№ 10)',
+    edits: [
+      { file: UK_ARTICLE, corrupt: pageNotInMap },
+      { file: RU_ARTICLE, corrupt: pageNotInMap },
+    ],
+    expect: new RegExp(
+      `${literal(UK_ARTICLE)}: page «${MISSING_PAGE}» \\(uk\\) в ${literal(SEO_MAP)} §Pages нет, ` +
+        'файл даёт /guide/depilation/vs-epilation/',
+    ),
+  },
+  {
+    name: 'в карте нет ребра «хаб → статья» (№ 11)',
+    file: SEO_MAP,
+    expect: new RegExp(
+      `${literal(UK_ARTICLE)}: в ${literal(SEO_MAP)} §Links нет строки depilation-guide → depilation-vs-epilation \\(uk\\)`,
+    ),
+    corrupt: (path, original) => replaceOnce(path, original, HUB_TO_ARTICLE_UK, ''),
+  },
+  {
+    name: 'отсутствующий файл страницы эксперта (№ 13)',
+    file: EXPERT_RU,
+    expect: /нет текста страницы эксперта: src\/content\/expert\/ru\.md/,
+    corrupt: (path) => rmSync(path),
+  },
 ];
 
 // Идентификатор исторический: позиция — «Ніс / Вуха / Брови / Шия», а не верхняя губа.
@@ -327,6 +469,21 @@ heading: Текст на языке, которого у подстраницы 
 ---
 `;
 
+/** Допустимая вторая статья хаба: `depilation-aftercare` uk есть в карте вместе с ребром от хаба. */
+const AFTERCARE_FILE = `${GUIDE}/uk/depilation/aftercare.md`;
+const AFTERCARE_PATH = '/guide/depilation/aftercare/';
+const AFTERCARE = `---
+page: depilation-aftercare
+title: "Що не можна робити після депіляції — Lada N"
+description: "Що не можна робити після депіляції: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що нова стаття виходить без правки шаблонів."
+heading: "Що не можна робити після депіляції"
+published: 2026-10-18
+modified: 2026-10-18
+---
+
+Перевірочний текст другої статті хабу.
+`;
+
 /** Сумма в разметке прайса; та же сумма обязана стоять в предложении (docs/specs/structured-data.md). */
 const shownPrice = (amount) => `>${amount}</span>`;
 
@@ -389,6 +546,30 @@ const allowedEdits = [
       ];
     },
   },
+  {
+    // US4: следующая статья — файлом, без правки шаблонов. Строка и рёбра в карте у неё уже есть.
+    name: 'вторая статья хаба только на uk появляется в хабе, у эксперта и в карте сайта',
+    edits: [{ add: AFTERCARE_FILE, content: AFTERCARE }],
+    expect: () => {
+      const link = `href="${AFTERCARE_PATH}"`;
+      const sitemap = readFileSync(new URL('dist/sitemap-0.xml', `file://${root}`), 'utf8');
+      const alternates = [...builtPage(AFTERCARE_PATH).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)]
+        .map(([, hreflang, href]) => `${hreflang} ${href}`)
+        .sort();
+      const own = `https://www.lada.kiev.ua${AFTERCARE_PATH}`;
+      return [
+        [builtPage('/guide/depilation/').includes(link), `${AFTERCARE_PATH} в списке /guide/depilation/`],
+        [builtPage('/lada/').includes(link), `${AFTERCARE_PATH} в списке /lada/`],
+        [sitemap.includes(`<loc>${own}</loc>`), `${AFTERCARE_PATH} в sitemap-0.xml`],
+        [
+          JSON.stringify(alternates) === JSON.stringify([`uk ${own}`, `x-default ${own}`]),
+          `hreflang ${AFTERCARE_PATH} — только uk и x-default (${alternates.join(', ')})`,
+        ],
+        [!builtPage('/ru/guide/depilation/').includes('aftercare'), 'на /ru/guide/depilation/ её нет'],
+        [!builtPage('/ru/lada/').includes('aftercare'), 'на /ru/lada/ её нет'],
+      ];
+    },
+  },
 ];
 
 let failed = 0;
@@ -398,24 +579,28 @@ for (const testCase of cases) {
   const edits = testCase.edits ?? [{ file: testCase.file, corrupt: testCase.corrupt }];
   const { status, output } = withCorruptions(edits, build);
 
+  // Несколько выражений — когда предъявляемое разнесено по строкам вывода: запись и её поле.
+  const patterns = [testCase.expect].flat();
   const stopped = status !== 0;
-  const named = testCase.expect.test(plain(output));
+  const named = patterns.every((pattern) => pattern.test(plain(output)));
 
   if (stopped && named) {
     // Сообщение и есть предъявляемое доказательство: код возврата говорит лишь о том, что сборка
     // упала, а требование — чтобы она назвала поле, на котором это произошло.
-    const line = plain(output)
-      .split('\n')
-      .find((row) => testCase.expect.test(row));
     console.log(`✓ ${testCase.name}: код возврата ${status}`);
-    console.log(`  ${line?.trim() ?? ''}`);
+    for (const pattern of patterns) {
+      const line = plain(output)
+        .split('\n')
+        .find((row) => pattern.test(row));
+      console.log(`  ${line?.trim() ?? ''}`);
+    }
     continue;
   }
 
   failed += 1;
   console.error(`✗ ${testCase.name}`);
   if (!stopped) console.error('  сборка завершилась успешно на испорченных данных');
-  if (!named) console.error(`  в выводе нет указания на поле (ожидалось ${testCase.expect})`);
+  if (!named) console.error(`  в выводе нет указания на поле (ожидалось ${patterns.join(', ')})`);
   console.error(tail(output));
 }
 
