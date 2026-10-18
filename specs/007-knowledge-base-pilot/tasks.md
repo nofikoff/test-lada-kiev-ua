@@ -618,3 +618,9 @@ decided:
 
 ### S3 — dispatch 5 (2026-10-18)
 `kind=bundle agent=implementer tier=standard model=claude-sonnet-5-5 effort=xhigh turns=72 minutes=12.6 input=144 cache_write=218924 cache_read=11392010 output=62745`
+
+### S3 — dispatch 6 (2026-10-18)
+`kind=spec-verify agent=verifier model=claude-sonnet-5-5 effort=high turns=16 minutes=1.4 input=32 cache_write=72560 cache_read=634812 output=9725`
+
+### S3 — spec-verify outcome (2026-10-18)
+7.1 DEVIATES, two reasons. (1) `docs/specs/page-head.md` §Целевые запросы says the pilot query was chosen «без статистики»; `docs/seo/core.csv` rows 21 and 58 carry it from Keyword Planner (Київ, 2025-09..2026-08, 2026-10-11) — false provenance, fixed by a one-sentence dispatch before converge. (2) edits to `spec.md`, `research.md`, `data-model.md` outside 7.1's declared paths — requested by the orchestrator as S2 carry-over; accepted. 7.3 IMPLEMENTS. Not stopped on SPEC_MISMATCH: the author asked for the run without stops, and the fix is one sentence.
