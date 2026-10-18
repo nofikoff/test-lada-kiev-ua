@@ -8,3 +8,4 @@
 | analyze | adeb138 | 2026-10-17 | 8 findings | 0 critical, 1 high (T006 callers); all 8 fixed in adeb138 |
 | converge | 47db4d6 | 2026-10-17 | 2 tasks appended | T046, T047: practice claims outside interview.md (FR-017) |
 | converge | af42257 | 2026-10-17 | converged |  |
+| analyze | aa5a19a | 2026-10-18 | 7 findings (0 critical, 0 high): package artifacts still name src/i18n/paths.ts for the registry, retire-time doc fixes |  |
