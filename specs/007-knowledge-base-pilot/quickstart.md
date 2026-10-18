@@ -64,7 +64,7 @@ npm run check && npm run lint && npm run test:unit && npm run build \
 - добавлен `src/content/guide/uk/depilation/vs-epilation/deep.md` → путь не хаба и не статьи;
 - добавлен `src/content/guide/en/depilation.md` → язык «en» в базе знаний не публикуется;
 - добавлен `src/content/guide/uk/nails.md` → категории «nails» нет;
-- `page` нет в карте → называет файл и `docs/seo/map.md`;
+- `page` нет в карте: в uk- и ru-статье `page` заменён одним и тем же значением, которого нет в §Pages, → называет файл и `docs/seo/map.md` (№ 10). Правка только одного языка дала бы № 7 — разные `page` по одному пути;
 - из `docs/seo/map.md` §Links удалена строка `depilation-guide → depilation-vs-epilation` (uk) → называет uk-статью и недостающее ребро;
 - допустимая правка: добавлен `src/content/guide/uk/depilation/aftercare.md` с `page: depilation-aftercare` → сборка проходит. Новый адрес `/guide/depilation/aftercare/` есть в списке `/guide/depilation/`, в списке `/lada/` и в `sitemap-0.xml`; его `hreflang` — только `uk` и `x-default`; на `/ru/guide/depilation/` и `/ru/lada/` его нет. Шаблоны при этом не правились.
 

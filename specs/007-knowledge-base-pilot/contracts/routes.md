@@ -12,7 +12,7 @@
 | хаб или статья без файла на этом языке | 404 | маршрут не собирает адрес |
 | форма без слеша любого адреса выше | 301 на форму со слешем (Apache `DirectorySlash`); `/guide` и `/ru/guide` — сразу 404 | `astro preview` отвечает 200 — прогон проверяет `canonical` со слешем |
 
-Пилот собирает ровно шесть новых адресов: `/guide/depilation/`, `/ru/guide/depilation/`, `/guide/depilation/vs-epilation/`, `/ru/guide/depilation/vs-epilation/`, `/lada/`, `/ru/lada/`. Всего страниц 25.
+Пилот собирает ровно шесть новых адресов: `/guide/depilation/`, `/ru/guide/depilation/`, `/guide/depilation/vs-epilation/`, `/ru/guide/depilation/vs-epilation/`, `/lada/`, `/ru/lada/`.
 
 ## Directories without index
 
@@ -39,6 +39,10 @@ Apache отвечает 403, а не 404, на каталог без `index.html
 - «Fifteen pages exist in all three languages, plus two service subpages…» → языки по видам страниц без чисел: главная и категории — на трёх языках; подстраницы услуг, база знаний и страница эксперта — на uk и ru.
 - «every page carries its full price list» → «every service page carries…»: у хаба, статьи и эксперта прайса нет.
 - Строка `Sitemap` — «all pages with their language alternates» вместо «all nineteen pages».
+- «Session prices are stated on every page in Ukrainian hryvnia» (абзац после `## Services`) → цены названы на страницах услуг и на главной: у хаба, статьи и эксперта прайса нет.
+- Абзац о JSON-LD в `## Machine-readable` перечисляет и новые виды: статья — `Article` с автором-основательницей и крошками, хаб — `CollectionPage` с крошками, страница эксперта — `ProfilePage`.
+
+`docs/specs/routes.md` тоже перестаёт считать страницы: строка «В карте сайта только адреса, отвечающие 200: девятнадцать страниц» становится «все страницы, отвечающие 200», а число альтернатив — числом языков страницы.
 
 Число в тексте менялось бы с каждой статьёй, а `tests/llms.spec.ts` проверяет адреса, а не прозу, поэтому устаревшее число прошло бы молча.
 

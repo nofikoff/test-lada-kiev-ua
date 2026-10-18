@@ -70,7 +70,7 @@ linksFrom(map: SeoMap, locale: GuideLocale, path: string, builtPaths: ReadonlySe
 
 `linksFrom` берёт рёбра языка `locale`, у которых `url` страницы `from` равен `path`, а `url` страницы `to` есть в `builtPaths`. Порядок — порядок строк §Links. Колонка `status` и §Site не читаются.
 
-`src/data/guide.ts` один раз читает `docs/seo/map.md` от `process.cwd()` вместе с коллекцией, разбирает его `parseSeoMap`, проверяет остановки 10–11 и кладёт карту в индекс (`guideIndex().map`). Карту файл читает только здесь.
+`src/data/guide.ts` один раз читает `docs/seo/map.md` от `process.cwd()` после проверок 3–9 коллекции, разбирает его `parseSeoMap` (порча таблиц — остановка № 12, первая из остановок карты), проверяет остановки 10–11 и кладёт карту в индекс (`guideIndex().map`). Карту файл читает только здесь.
 
 `src/data/map-links.ts` — тонкая обёртка `pageLinks(locale, path)`. Она берёт из `guideIndex()` карту и `pathsOf(locale)`, добавляет адреса страниц услуг языка из `src/i18n/paths.ts` и страницы эксперта и вызывает `linksFrom`. Её вызывают `MapLinks.astro` и список хаба.
 
