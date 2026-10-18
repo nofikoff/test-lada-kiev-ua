@@ -364,7 +364,7 @@ gate_commands:
 skip: true  # оркеструющая сессия после прогона: нужны браузер для validator.schema.org и Skill /seo audit, у implementer их нет
 -->
 
-- [ ] T067 Ручная приёмка по [quickstart.md](quickstart.md) §4 над `dist/`: `validator.schema.org` на шести страницах — 0 ошибок (SC-002); `/seo audit` по собранному сайту — нет `internal-links.5` по новым анкорам, конфликт разводит `/seo map` правкой карты; вычитка текстов по §Text rules, §Claim kinds, §Expert facts — в `research.md` §Sources ни одного кандидата при утверждении в тексте; эпиляция в статье — по определению FR-012
+- [x] T067 Ручная приёмка по [quickstart.md](quickstart.md) §4 над `dist/`: `validator.schema.org` на шести страницах — 0 ошибок (SC-002); `/seo audit` по собранному сайту — нет `internal-links.5` по новым анкорам, конфликт разводит `/seo map` правкой карты; вычитка текстов по §Text rules, §Claim kinds, §Expert facts — в `research.md` §Sources ни одного кандидата при утверждении в тексте; эпиляция в статье — по определению FR-012
 
 ### Step 7.3: Seven gates
 
@@ -646,3 +646,13 @@ Attempt 1: 7 findings (Medium 2, Low 5) of the /review2 report since main → 8e
 - decided: row 4 does both fixes (drop rejected promise, dev-only mtime key on docs/seo/map.md), extracted into src/data/memo.ts so node:test can cover it; package.json test:unit gained memo.test.mjs and json-ld.test.mjs. If the mtime key is unwanted, only mapStamp() in guide.ts goes.
 - decided: seo-contract computes the expected article order from each article page (<time datetime> + <h1>) instead of site.ts literals, because pilot dates are reset at merge; with one article per hub it is trivially satisfied, the invalid-data case with three articles is the effective guard (3 mutations of newestFirst each failed it).
 - decided: docs/specs/content-model.md slug bullet rewritten and an id-by-file-path bullet added, although no finding names it, because generateId made the old text false. If wrong, revert those two lines only.
+
+### review — attempt 2 (2026-10-18)
+Re-review since main with prev: Critical 0 · High 0 · Medium 0 · Low 1. All six fix hypotheses of 8e988b6 CLEAN; candidate «invalid data step exceeds 5 min» refuted by measurement (runner 16 and 39 s on main, runs 39021623924 and 39121078757; branch locally 39 s). Loop stops: no Critical/High. Leftover Low: scripts/json-ld.test.mjs:29 reads SeoHead source by regex.
+
+### Step 7.2 — orchestrating session (2026-10-18)
+T067 by the orchestrating session over `dist/` at 8e988b6:
+- validator.schema.org (POST /validate) on /guide/depilation/, /ru/guide/depilation/, both articles, /lada/, /ru/lada/: totalNumErrors 0, totalNumWarnings 0 on all six (SC-002).
+- `/seo audit internal-links` over `astro preview` on :4329 (site_crawl.py, 25 pages, 465 link rows; scratch root outside the repo, so no snapshot or audit file in `docs/`): 0 findings, internal-links.6 skipped (no Search Console snapshot). Page keys are paths, so the localhost host does not change the result.
+- Text read-through: facts of /lada/ and the article checked by the S2/S3 spec-verify and review hypothesis H10 (CLEAN); §Sources verified in S1.
+- Production checks (quickstart.md step 5, `/guide` without slash) stay for the first deploy.
