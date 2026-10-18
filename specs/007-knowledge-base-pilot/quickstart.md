@@ -32,6 +32,8 @@ npm run check && npm run lint && npm run test:unit && npm run build \
 | Сценарий | Где видно |
 |---|---|
 | US1: статья отвечает 200, запрос в 4 местах, ссылка на `/depilation/` своего языка | `routes`, `voice`, `links` |
+| FR-006, FR-010: рёбра пилота «статья → хаб» и «статья → услуга» на uk и ru — литералами `PILOT_EDGES`, без чтения карты | `links` |
+| FR-005: заголовок хаба — формула раздела и категории; проверка запроса в описании у хаба пропущена | `voice` |
 | US1-2: `hreflang` статьи — uk, ru, `x-default` → uk | `seo-contract` |
 | US1-3, FR-012–FR-014: правдивость, оговорка о терминах, переводы, голос | вычитка, шаг 4 |
 | US2: подпись ведёт на `/lada/` своего языка; `author['@id']` = `#founder` главной; `ProfilePage.mainEntity` — тот же узел | `voice`, `seo-contract` |
@@ -70,11 +72,15 @@ npm run check && npm run lint && npm run test:unit && npm run build \
 
 ## 4. Manual before merge
 
+Выполняет оркеструющая сессия после прогона реализации: у implementer нет браузера и Skill `/seo`.
+
 - `validator.schema.org` на шести страницах из `dist/` (вставкой HTML): 0 ошибок (SC-002).
 - `/seo audit` по собранному сайту: нет `internal-links.5` по новым анкорам (research R3, Risk).
 - Вычитка текстов по [contracts/content-files.md](contracts/content-files.md) §Text rules, §Claim kinds, §Expert facts: тон, «ми» студии и третье лицо Лады, ни одного утверждения о практике вне research.md §Practice claims, каждое общее утверждение — строка research.md §Sources со статусом `проверен`, цитатой и датой; оговорка о терминах стоит в статье; uk и ru говорят одно и то же; даты обеих версий — день слияния и не в будущем.
 
 ## 5. After deploy
+
+SC-001 на проде: шесть адресов отвечают 200 и перечислены в карте сайта, корень раздела и английские адреса отвечают 404.
 
 ```bash
 for p in /guide/depilation/ /ru/guide/depilation/ /guide/depilation/vs-epilation/ \
@@ -83,6 +89,8 @@ for p in /guide/depilation/ /ru/guide/depilation/ /guide/depilation/vs-epilation
 for p in /guide/ /ru/guide/ /guide /ru/guide /en/guide/depilation/vs-epilation/ /en/lada/; do
   curl -s -o /dev/null -w "%{http_code} $p\n" "https://www.lada.kiev.ua$p"; done      # 404 ×6, не 403 и не 301
 curl -s https://www.lada.kiev.ua/ru/guide/ | grep -o '<html lang="[a-z]*"'           # lang="ru"
+curl -s https://www.lada.kiev.ua/sitemap-0.xml \
+  | grep -cE '<loc>https://www.lada.kiev.ua/(ru/)?(guide/depilation/(vs-epilation/)?|lada/)</loc>'  # 6
 ```
 
-Через 8 недель — показы статьи в Search Console на каждом языке больше нуля (SC-003). Затем `/seo map` переводит страницы карты в `published`.
+Затем `/seo map` переводит страницы карты в `published`. Через 8 недель — показы статьи в Search Console на каждом языке больше нуля (SC-003); срок записан строкой `Follow-up:` в ADR-029.

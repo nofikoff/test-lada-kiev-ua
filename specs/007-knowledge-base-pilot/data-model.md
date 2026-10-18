@@ -8,7 +8,7 @@
 
 | Поле | Откуда | Правило |
 |---|---|---|
-| `locale` | первый сегмент `entry.id` | `uk` или `ru` (`guideLocales`) |
+| `locale` | первый сегмент `entry.id` | `uk` или `ru` (`guideLocales` и тип `GuideLocale` объявлены в `src/i18n/guide.ts`) |
 | `category` | второй сегмент | одна из `serviceCategories` |
 | `article` | третий сегмент; нет у хаба | `^[a-z0-9]+(-[a-z0-9]+)*$`; глубже третьего сегмента — ошибка |
 | `kind` | число сегментов | 2 — `hub`, 3 — `article` |
@@ -34,6 +34,7 @@ interface GuidePage {
 
 guideIndex(): Promise<{
   readonly pages: readonly GuidePage[];
+  readonly map: SeoMap;                                              // разобранная карта, прошедшая остановки 10–12
   hubOf(locale, category): GuidePage | undefined;
   articlesOf(locale, category): readonly CollectionEntry<'guide'>[]; // published ↓, затем heading
   articles(locale): readonly CollectionEntry<'guide'>[];             // для страницы эксперта
@@ -53,16 +54,25 @@ guideIndex(): Promise<{
 
 ## Seo map
 
-`parseSeoMap(text)` в `src/data/seo-map.ts` — чистая функция без импортов Astro.
+Три модуля, импорт идёт в одну сторону: `seo-map.ts` ← `guide.ts` ← `map-links.ts` ← `MapLinks.astro`. Обратного импорта нет ни в одном.
+
+`src/data/seo-map.ts` — чистый модуль: без импортов Astro, без чтения файлов, только `import type` из других модулей `src/`. Его проверяет `scripts/seo-map.test.mjs` под `node --experimental-strip-types`. Node в ESM не достраивает расширение, а `src/` импортирует без `.ts` (`src/i18n/paths.ts:1`), поэтому value-import без расширения уронил бы модульный тест на загрузке. То же правило действует для `src/i18n/guide.ts`, где лежит `displayAnchor`.
 
 ```ts
 interface MapPage { page: string; kind: 'hub'|'entity'|'question'|'service'|'expert'; lang: 'uk'|'ru'; url: string }
 interface MapLink { from: string; to: string; anchor: string; lang: 'uk'|'ru' }
+interface SeoMap { readonly pages: readonly MapPage[]; readonly links: readonly MapLink[] }
 
-linksFrom(locale, path): readonly { href: string; anchor: string; toKind: MapPage['kind'] }[];
+parseSeoMap(text: string): SeoMap;                       // остановка № 12
+linksFrom(map: SeoMap, locale: GuideLocale, path: string, builtPaths: ReadonlySet<string>):
+  readonly { href: string; anchor: string; toKind: MapPage['kind'] }[];
 ```
 
-`linksFrom` берёт рёбра, у которых `url` страницы `from` равен `path`, а `url` страницы `to` есть среди собранных адресов: страницы услуг, `guideIndex().pathsOf(locale)`, страница эксперта. Порядок — порядок строк §Links. Колонка `status` и §Site не читаются.
+`linksFrom` берёт рёбра языка `locale`, у которых `url` страницы `from` равен `path`, а `url` страницы `to` есть в `builtPaths`. Порядок — порядок строк §Links. Колонка `status` и §Site не читаются.
+
+`src/data/guide.ts` один раз читает `docs/seo/map.md` от `process.cwd()` вместе с коллекцией, разбирает его `parseSeoMap`, проверяет остановки 10–11 и кладёт карту в индекс (`guideIndex().map`). Карту файл читает только здесь.
+
+`src/data/map-links.ts` — тонкая обёртка `pageLinks(locale, path)`. Она берёт из `guideIndex()` карту и `pathsOf(locale)`, добавляет адреса страниц услуг языка из `src/i18n/paths.ts` и страницы эксперта и вызывает `linksFrom`. Её вызывают `MapLinks.astro` и список хаба.
 
 ## Page reference
 
