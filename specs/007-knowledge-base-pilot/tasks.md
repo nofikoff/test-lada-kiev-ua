@@ -631,3 +631,18 @@ Fix of the 7.1 deviation (1): bc6a5b4.
 
 ### converge — dispatch 8 (2026-10-18)
 `kind=converge agent=verifier model=claude-sonnet-5-5 effort=high turns=17 minutes=5.5 input=34 cache_write=102854 cache_read=991939 output=7767`
+
+### review — dispatch 9 (2026-10-18)
+`kind=review-fix agent=implementer tier=standard model=claude-sonnet-5-5 effort=xhigh turns=90 minutes=22.2 input=180 cache_write=262056 cache_read=16774660 output=90129`
+Attempt 1: 7 findings (Medium 2, Low 5) of the /review2 report since main → 8e988b6.
+
+### review — observations (2026-10-18, dispatch 9)
+- plan-wrong: TaskCreate is not exposed in this harness; the contract assumed it. Work was tracked in plain text.
+- plan-wrong: row 6 File cell cites tests/links.spec.ts:30; the anchor comparison lives in scripts/seo-map.test.mjs:72 (orchestrator note confirmed). Row 7 line numbers 289/293 are 290/293/298 in the file. Row 3 Fix says clear node_modules/.astro; only data-store.json is cleared (see decided).
+- plan-wrong: docs/specs/routes.md:42 still says 'FR-016 пакета 007' and docs/specs/content-model.md §Sources and practice claims points at specs/007-knowledge-base-pilot/research.md. Living docs pointing into the package; no finding names them, left for /speckit-retire.
+- redone: src/data/json-ld.ts and scripts/json-ld.test.mjs were written twice. The Write tool turned single-backslash unicode escapes (U+2028/U+2029/U+003C) into literal characters, which showed up as an eslint 'Unterminated regular expression literal' and one failing unit test; rewritten with String.fromCharCode and double-backslash replacements.
+- decided: row 3 regression case clears only node_modules/.astro/data-store.json (loader state), not the whole .astro dir; pre-fix it still failed 3 of 3 runs on stop #8 naming a hub that exists, so the narrower clear is enough. If wrong, a loader cache outside data-store.json would hide the race, which the pre-fix failure rules out.
+- decided: 'index' stays a valid article slug, so uk/depilation/index.md becomes page /guide/depilation/index/ and stops on #10; forbidding the slug would change the contract and nobody asked for it.
+- decided: row 4 does both fixes (drop rejected promise, dev-only mtime key on docs/seo/map.md), extracted into src/data/memo.ts so node:test can cover it; package.json test:unit gained memo.test.mjs and json-ld.test.mjs. If the mtime key is unwanted, only mapStamp() in guide.ts goes.
+- decided: seo-contract computes the expected article order from each article page (<time datetime> + <h1>) instead of site.ts literals, because pilot dates are reset at merge; with one article per hub it is trivially satisfied, the invalid-data case with three articles is the effective guard (3 mutations of newestFirst each failed it).
+- decided: docs/specs/content-model.md slug bullet rewritten and an id-by-file-path bullet added, although no finding names it, because generateId made the old text false. If wrong, revert those two lines only.
