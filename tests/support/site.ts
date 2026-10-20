@@ -164,7 +164,7 @@ export interface ExpertPageUnderTest extends PageUnderTest {
   readonly locales: readonly GuideLocale[];
 }
 
-/** Пилот базы знаний: хаб депиляции и статья «депіляція чи епіляція» на обоих языках. */
+/** Хабы и статьи базы знаний; новая статья — строка здесь (docs/specs/routes.md, список «Новая статья»). */
 export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
   {
     locale: 'uk',
@@ -197,6 +197,22 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     category: 'depilation',
     slug: 'vs-epilation',
     locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'uk',
+    path: '/guide/permanent/',
+    kind: 'hub',
+    category: 'permanent',
+    locales: ['uk'],
+    heading: 'Перманентний макіяж: відповіді на питання',
+  },
+  {
+    locale: 'uk',
+    path: '/guide/permanent/how-long/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'how-long',
+    locales: ['uk'],
   },
 ];
 
@@ -372,7 +388,10 @@ const QUERIES: Record<
  * в запросе нет (docs/specs/page-head.md §Целевые запросы).
  */
 const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
-  uk: { 'depilation/vs-epilation': [/депіляція чи епіляція/i] },
+  uk: {
+    'depilation/vs-epilation': [/депіляція чи епіляція/i],
+    'permanent/how-long': [/скільки тримається перманентний макіяж/i],
+  },
   ru: { 'depilation/vs-epilation': [/депиляция и эпиляция/i] },
 };
 
@@ -385,7 +404,15 @@ const EXPERT_QUERY: readonly RegExp[] = [/Лада Новикова/];
  * добавляет сюда свой запрос (список «Новая статья» в docs/specs/routes.md §Route map).
  */
 export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, readonly RegExp[]>>> = {
-  uk: { depilation: [/депіляці\S* у Києві/i, /воскова депіляці/i, /депіляція чи епіляція/i] },
+  uk: {
+    depilation: [/депіляці\S* у Києві/i, /воскова депіляці/i, /депіляція чи епіляція/i],
+    permanent: [
+      /перманентн\S* макіяж\S* у Києві/i,
+      /перманентн\S* макіяж\S* брів/i,
+      /пудрові брови/i,
+      /скільки тримається перманентний макіяж/i,
+    ],
+  },
   ru: { depilation: [/депиляци\S* в Киеве/i, /депиляци\S* воском/i, /депиляция и эпиляция/i] },
 };
 

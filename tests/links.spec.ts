@@ -26,12 +26,13 @@ const MAP_FILE = 'docs/seo/map.md';
 const FROM_KINDS = new Set(['hub', 'entity', 'question', 'expert', 'service']);
 
 /**
- * Вход в раздел с категории (docs/specs/routes.md §Links from the map) — литералами, как `PILOT_EDGES`:
- * ребро, удалённое из карты, убрало бы ссылку молча.
+ * Вход в раздел со страниц услуг — категорий и подстраниц (docs/specs/routes.md §Links from the map) —
+ * литералами, как `PILOT_EDGES`: ребро, удалённое из карты, убрало бы ссылку молча.
  */
-const CATEGORY_HUB_EDGES = [
+const SERVICE_GUIDE_EDGES = [
   { from: '/depilation/', to: '/guide/depilation/', text: 'Депіляція' },
   { from: '/ru/depilation/', to: '/ru/guide/depilation/', text: 'Депиляция' },
+  { from: '/permanent/', to: '/guide/permanent/', text: 'Перманентний макіяж' },
 ] as const;
 
 /** Строки таблицы раздела карты с ячейками по именам колонок из строки заголовка. */
@@ -137,8 +138,8 @@ test.describe('рёбра пилота литералами', () => {
 });
 
 test.describe('вход в базу знаний со страниц услуг', () => {
-  for (const { from, to, text } of CATEGORY_HUB_EDGES) {
-    // Блок после текста категории, тексты категорий не правятся.
+  for (const { from, to, text } of SERVICE_GUIDE_EDGES) {
+    // Блок после текста страницы услуги, тексты услуг не правятся.
     test(`${from} ссылается на ${to} «${text}» после текста, вне его`, async ({ page }) => {
       await page.goto(from);
       const link = page.locator(`main a[href="${to}"]`);
@@ -156,9 +157,9 @@ test.describe('вход в базу знаний со страниц услуг'
     });
   }
 
-  // Хабов этих категорий нет: рёбра карты к ним ведут на несобранные страницы.
-  const withHub = new Set<string>(CATEGORY_HUB_EDGES.map((edge) => edge.from));
-  for (const { path } of servicePages.filter((entry) => !withHub.has(entry.path))) {
+  // Рёбра карты с этих страниц ведут только на несобранные страницы базы знаний.
+  const withGuideLinks = new Set<string>(SERVICE_GUIDE_EDGES.map((edge) => edge.from));
+  for (const { path } of servicePages.filter((entry) => !withGuideLinks.has(entry.path))) {
     test(`${path}: ссылок в раздел базы знаний нет`, async ({ request }) => {
       const intoGuide = (await linksOf(request, path)).filter((link) => /^\/(ru\/)?guide\//.test(link.href));
       expect(intoGuide).toEqual([]);

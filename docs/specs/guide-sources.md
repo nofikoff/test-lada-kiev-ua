@@ -53,3 +53,39 @@
 | повторный визит на пасту — через 3–4 недели | `studio-practice.md` §Sugaring, 4 |
 
 Срока повторного визита на воск Лада не называла, поэтому о воске статья говорит только общим утверждением со строкой §Sources — «зазвичай», без слов «у нас».
+
+## permanent-how-long
+
+Сроки для бровей в источниках — о мікроблейдинге; о пудровых бровях нашёлся только обзор Marwah 2021 (держатся дольше) и страница клиники, которая в текст не идёт. Поэтому статья называет технику у каждой цифры, а срок пудровых бровей берёт у Лады.
+
+### Sources
+
+| Утверждение | Источник | Цитата | Проверено | Статус |
+|---|---|---|---|---|
+| перманентный макияж — разновидность татуировки: игла вводит пигмент в кожу | [fda.gov — Tattoos, Temporary Tattoos & Permanent Makeup](https://www.fda.gov/cosmetics/cosmetic-products/tattoos-temporary-tattoos-permanent-makeup) | «Permanent makeup is a type of tattoo. A needle inserts colored ink into your skin to look like eyeliner, lip liner, eyebrows, or other makeup.» | 2026-10-21 | проверен |
+| пигмент не смывается, но с годами светлеет, потому что клетки кожи обновляются; работу освежают | [my.clevelandclinic.org — Micropigmentation](https://my.clevelandclinic.org/health/treatments/11004-micropigmentation) | «Although the ink never washes off, it fades over time because skin cells are constantly replaced.»; «As the pigment fades over the years, you also may have to undergo additional treatments to maintain the look.» | 2026-10-21 | проверен |
+| цвет перманента открыт солнцу, со временем часто бледнеет и требует подновления | [EADV — Tattoo and permanent make-up](https://eadv.org/wp-content/uploads/2026/05/EADV-Leaflet-TF-Tattoo-Permanent-Make-Up.pdf) | «PMU colors are exposed to sunlight and often fade with time. So, this will need touching up.» | 2026-10-21 | проверен |
+| у мікроблейдинга выцветание зависит от качества пигмента, солнца, типа кожи, средств ухода и лекарств | [en.wikipedia.org/wiki/Microblading](https://en.wikipedia.org/wiki/Microblading) | «Like all tattoos, microblading can fade, depending on multiple factors, including the quality of pigment used, UV exposure, skin type, elements found in skincare products, and/or medications.» | 2026-10-21 | проверен |
+| жирной и комбинированной коже коррекции нужны чаще (мікроблейдинг) | [healthline.com — How Long Does Microblading Last?](https://www.healthline.com/health/how-long-does-microblading-last) | «This means that oily or combination skin types may need touch-ups more frequently than normal or dry skin types.» | 2026-10-21 | проверен |
+| шлифующие лазеры и IPL осветляют пигмент, даже если их делают на расстоянии от него | [PMC7982014 — Marwah 2021, Microblading and the Science Behind It](https://pmc.ncbi.nlm.nih.gov/articles/PMC7982014/) | «Resurfacing lasers and IPLs will also fade the pigment even if done at a distance from the pigment.» | 2026-10-21 | проверен |
+| мікроблейдинг держится от шести месяцев до года (AAD) | [aad.org — Alopecia areata: treatment](https://www.aad.org/public/diseases/hair-loss/types/alopecia/treatment) | «Microblading lasts about 6 months to a year, so it’s not permanent like a tattoo.» | 2026-10-21 | проверен |
+| мікроблейдинг — 12–18 месяцев; пудровые брови держатся дольше, потому что их делают аппаратом, а не вручную | PMC7982014, там же | «The results are semi-permanent and last only 12-18 months.»; «Ombre brows or micro-shading: When micropigmentation is used to create fine dots that give the appearance of powdered eyebrows and not hair strokes. This pigment lasts longer compared to microblading as it is motorized and not manual.» | 2026-10-21 | проверен |
+| мікроблейдинг — 18–30 месяцев в зависимости от кожи, образа жизни и коррекций | healthline.com — How Long Does Microblading Last?, там же | «Generally, results can last from 18 to 30 months depending on your skin type, lifestyle, and how often you get touch-ups.» | 2026-10-21 | проверен |
+| пигмент, введённый слишком глубоко, может уйти за контур, и линия расплывается | [fda.gov — Tattoos & Permanent Makeup: Fact Sheet](https://www.fda.gov/cosmetics/cosmetic-products/tattoos-permanent-makeup-fact-sheet) | «if the tattooist injects the pigments too deeply into the skin, the pigments may migrate beyond the original sites, resulting in a blurred appearance.» | 2026-10-21 | проверен |
+| перманент губ держится около двух лет, у каждого по-своему; солнце и курение ускоряют выцветание | [health.clevelandclinic.org — Lip Blushing](https://health.clevelandclinic.org/lip-blushing) | «Some estimates say lip blushing can last about two years, but results can vary from person to person. Sun exposure and smoking can speed up how quickly your color fades.» | 2026-10-21 | проверен |
+| перманент губ — полуперманентная процедура, её повторяют раз в несколько лет; частое отшелушивание губ ускоряет выцветание | [healthline.com — Lip Blushing](https://www.healthline.com/health/lip-blushing) | «Lip blushing is considered a semipermanent procedure. This means you’ll need to repeat the process every few years to maintain your results.»; «Frequent lip exfoliation, sun exposure, and smoking can all make the pigment fade quicker.» | 2026-10-21 | проверен |
+| после полного заживления мікроблейдинга — солнцезащитный крем и широкие очки, чтобы пигмент не бледнел слишком быстро | [healthline.com — Microblading](https://www.healthline.com/health/microblading); healthline.com — How Long Does Microblading Last?, там же | «After your skin is fully healed, you’ll want to protect your microblading investment by taking care of your skin. Applying a sunscreen to the microbladed area may help prevent fading.»; «Ilyas advises people to use wide sunglasses and sunscreens to keep the pigment from fading too quickly.» | 2026-10-21 | проверен |
+| средства с ретинолом и кислотами при мікроблейдинге убирают из ухода | healthline.com — Microblading, там же | «If you choose to microblade your eyebrows, you may want to stop using the following in your skin care routine:», в списке — «retinol», «acids» | 2026-10-21 | проверен |
+
+### Practice claims
+
+| Утверждение статьи | Источник в репозитории |
+|---|---|
+| брови студия делает только в пудровой технике | `studio-practice.md` §Brow permanent makeup, 1 |
+| поверхностная работа держится 2–3 года, более глубокая, как татуаж, — дольше; на жирной коже мастер работает глубже, потому что пигмент уходит быстрее; глубину выбирают вместе с мастером | `studio-practice.md` §Brow permanent makeup, 5, перевод — §From answer to page text |
+| губы — акварельная и помадная техника, держатся одинаково, разница в результате | текст категории `src/content/services/uk/permanent.md` §Губи; прайс, группа `permanentLips` |
+| коррекция через 28–60 дней на бровях, губах и межресничке | прайс: `permanent-brows-touch-up`, `permanent-lips-touch-up`, `permanent-eyeliner-touch-up` («Корекція (28-60 днів)») |
+| настоящий оттенок виден примерно через месяц, поэтому коррекцию раньше не назначают | текст категории §Перші дні після процедури |
+| на коррекции бровей мастер смотрит заживление, выравнивает цвет и форму, заполняет пробелы, проверяет симметрию | `studio-practice.md` §Brow permanent makeup, 4 |
+| позже работу можно обновлять, не делая заново; обновление в первые 6 месяцев — отдельная позиция прайса | текст категории §Корекція та оновлення; `permanentNote` в `src/i18n/ui.ts` |
+| светлый или выгоревший старый перманент перекрывают; тёмный, синий или глубокий сначала удаляют лазером | `studio-practice.md` §Brow permanent makeup, 6 |
