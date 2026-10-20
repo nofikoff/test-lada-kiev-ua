@@ -16,7 +16,7 @@
 | depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | uk | /guide/depilation/vs-epilation/ | published |
 | massage-sessions | question | massage-guide | masazh-seansy | uk | /guide/massage/sessions/ | planned |
 | depilation-aftercare | question | depilation-guide | depiliatsiia-pislia | uk | /guide/depilation/aftercare/ | planned |
-| permanent-aftercare | entity | permanent-guide | permanentnyi-makiiazh-dohliad | uk | /guide/permanent/aftercare/ | planned |
+| permanent-aftercare | entity | permanent-guide | permanentnyi-makiiazh-dohliad | uk | /guide/permanent/aftercare/ | published |
 | permanent-how-long | question | permanent-guide | permanentnyi-makiiazh-skilky-trymaietsia | uk | /guide/permanent/how-long/ | published |
 | massage-benefits | question | massage-guide | masazh-koryst | uk | /guide/massage/benefits/ | planned |
 | depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | uk | /guide/depilation/vs-sugaring/ | planned |

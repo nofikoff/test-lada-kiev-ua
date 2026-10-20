@@ -214,6 +214,14 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     slug: 'how-long',
     locales: ['uk'],
   },
+  {
+    locale: 'uk',
+    path: '/guide/permanent/aftercare/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'aftercare',
+    locales: ['uk'],
+  },
 ];
 
 export const EXPERT_PAGES: readonly ExpertPageUnderTest[] = [
@@ -391,6 +399,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
   uk: {
     'depilation/vs-epilation': [/депіляція чи епіляція/i],
     'permanent/how-long': [/скільки тримається перманентний макіяж/i],
+    'permanent/aftercare': [/перманентний макіяж брів/i, /догляд/i],
   },
   ru: { 'depilation/vs-epilation': [/депиляция и эпиляция/i] },
 };

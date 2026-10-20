@@ -33,6 +33,7 @@ const SERVICE_GUIDE_EDGES = [
   { from: '/depilation/', to: '/guide/depilation/', text: 'Депіляція' },
   { from: '/ru/depilation/', to: '/ru/guide/depilation/', text: 'Депиляция' },
   { from: '/permanent/', to: '/guide/permanent/', text: 'Перманентний макіяж' },
+  { from: '/permanent/brows/', to: '/guide/permanent/aftercare/', text: 'Перманентний макіяж брів догляд' },
 ] as const;
 
 /** Строки таблицы раздела карты с ячейками по именам колонок из строки заголовка. */
