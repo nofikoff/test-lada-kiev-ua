@@ -24,7 +24,7 @@
 | sugaring-what-is | question | depilation-guide | shuharynh-shcho-tse | uk | /guide/depilation/what-is-sugaring/ | planned |
 | sugaring-preparation | question | depilation-guide | shuharynh-pidhotovka | uk | /guide/depilation/sugaring-preparation/ | planned |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | uk | /guide/permanent/contraindications/ | published |
-| permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | uk | /guide/permanent/vs-tattoo/ | planned |
+| permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | uk | /guide/permanent/vs-tattoo/ | published |
 | permanent-harm | question | permanent-guide | permanentnyi-makiiazh-shkoda | uk | /guide/permanent/harm/ | planned |
 | permanent-lips-healing | question | permanent-guide | permanentnyi-makiiazh-hub-zahoiennia | uk | /guide/permanent/lips-healing/ | planned |
 | lash-lamination-how-long | question | beauty-guide | laminuvannia-vii-skilky-trymaietsia | uk | /guide/beauty/lash-lamination-how-long/ | planned |
@@ -47,7 +47,7 @@
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | ru | /ru/guide/depilation/best-method/ | planned |
 | bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | ru | /ru/guide/depilation/bikini/ | planned |
 | permanent-what-is | question | permanent-guide | permanentnyi-makiiazh-shcho-tse | ru | /ru/guide/permanent/what-is/ | planned |
-| permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | ru | /ru/guide/permanent/vs-tattoo/ | planned |
+| permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | ru | /ru/guide/permanent/vs-tattoo/ | published |
 | makeup-hair-order | question | beauty-guide | makiiazh-i-zachiska-poriadok | ru | /ru/guide/beauty/makeup-hair-order/ | planned |
 | massage | service |  | masazh | ru | /ru/massage/ | published |
 | depilation | service |  | depiliatsiia | ru | /ru/depilation/ | published |

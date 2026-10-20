@@ -246,6 +246,22 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     slug: 'contraindications',
     locales: ['uk', 'ru'],
   },
+  {
+    locale: 'uk',
+    path: '/guide/permanent/vs-tattoo/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'vs-tattoo',
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/permanent/vs-tattoo/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'vs-tattoo',
+    locales: ['uk', 'ru'],
+  },
 ];
 
 export const EXPERT_PAGES: readonly ExpertPageUnderTest[] = [
@@ -425,10 +441,12 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'permanent/how-long': [/скільки тримається перманентний макіяж/i],
     'permanent/aftercare': [/перманентний макіяж брів/i, /догляд/i],
     'permanent/contraindications': [/кому не можна робити перманентний макіяж/i],
+    'permanent/vs-tattoo': [/яка різниця між татуажем та перманентним макіяжем/i],
   },
   ru: {
     'depilation/vs-epilation': [/депиляция и эпиляция/i],
     'permanent/contraindications': [/кому нельзя делать перманентный макияж/i],
+    'permanent/vs-tattoo': [/в чём разница перманентного макияжа и татуажа/i],
   },
 };
 
@@ -449,6 +467,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /пудрові брови/i,
       /скільки тримається перманентний макіяж/i,
       /кому не можна робити перманентний макіяж/i,
+      /різниця між татуажем/i,
     ],
   },
   ru: {
@@ -458,6 +477,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /перманентн\S* макияж\S* бровей/i,
       /пудровые брови/i,
       /кому нельзя делать перманентный макияж/i,
+      /разница перманентного макияжа и татуажа/i,
     ],
   },
 };
