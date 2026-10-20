@@ -45,7 +45,7 @@
   3. `tests/support/site.ts`: запись в `GUIDE_PAGES`, запрос статьи в `GUIDE_QUERIES` и этот же запрос в `HUB_FORBIDDEN` хаба её языка. Без первых двух краснеют `sitemap.spec.ts` и `voice.spec.ts`; пропуск запрета ничто не ловит.
   4. Строка запроса в [page-head.md](page-head.md) §Целевые запросы — только вычитка.
   5. Строка раздела `## Knowledge base` в `public/llms.txt` — краснеет `llms.spec.ts`.
-  6. Строки §Sources и §Practice claims в [content-model.md](content-model.md) §Knowledge base — только вычитка.
+  6. Раздел страницы в [guide-sources.md](guide-sources.md): строки `Sources` и `Practice claims` — только вычитка.
   7. Имя собственное в новом анкоре карты, кроме «Київ» / «Киев», — в `properNouns` словаря `src/i18n/guide.ts`. Ловит только вычитка: `tests/links.spec.ts` сравнивает текст ссылки с анкором без регистра.
 
 ## Knowledge base
