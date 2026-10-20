@@ -23,7 +23,7 @@
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | uk | /guide/depilation/best-method/ | planned |
 | sugaring-what-is | question | depilation-guide | shuharynh-shcho-tse | uk | /guide/depilation/what-is-sugaring/ | planned |
 | sugaring-preparation | question | depilation-guide | shuharynh-pidhotovka | uk | /guide/depilation/sugaring-preparation/ | planned |
-| permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | uk | /guide/permanent/contraindications/ | planned |
+| permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | uk | /guide/permanent/contraindications/ | published |
 | permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | uk | /guide/permanent/vs-tattoo/ | planned |
 | permanent-harm | question | permanent-guide | permanentnyi-makiiazh-shkoda | uk | /guide/permanent/harm/ | planned |
 | permanent-lips-healing | question | permanent-guide | permanentnyi-makiiazh-hub-zahoiennia | uk | /guide/permanent/lips-healing/ | planned |
@@ -38,12 +38,12 @@
 | lada | expert |  |  | uk | /lada/ | published |
 | massage-guide | hub |  |  | ru | /ru/guide/massage/ | planned |
 | depilation-guide | hub |  |  | ru | /ru/guide/depilation/ | published |
-| permanent-guide | hub |  |  | ru | /ru/guide/permanent/ | planned |
+| permanent-guide | hub |  |  | ru | /ru/guide/permanent/ | published |
 | beauty-guide | hub |  |  | ru | /ru/guide/beauty/ | planned |
 | depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | ru | /ru/guide/depilation/vs-epilation/ | published |
 | back-massage-frequency | question | massage-guide | masazh-spyny-yak-chasto | ru | /ru/guide/massage/back-frequency/ | planned |
 | depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | ru | /ru/guide/depilation/vs-sugaring/ | planned |
-| permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | ru | /ru/guide/permanent/contraindications/ | planned |
+| permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | ru | /ru/guide/permanent/contraindications/ | published |
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | ru | /ru/guide/depilation/best-method/ | planned |
 | bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | ru | /ru/guide/depilation/bikini/ | planned |
 | permanent-what-is | question | permanent-guide | permanentnyi-makiiazh-shcho-tse | ru | /ru/guide/permanent/what-is/ | planned |

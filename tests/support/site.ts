@@ -203,8 +203,16 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     path: '/guide/permanent/',
     kind: 'hub',
     category: 'permanent',
-    locales: ['uk'],
+    locales: ['uk', 'ru'],
     heading: 'Перманентний макіяж: відповіді на питання',
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/permanent/',
+    kind: 'hub',
+    category: 'permanent',
+    locales: ['uk', 'ru'],
+    heading: 'Перманентный макияж: ответы на вопросы',
   },
   {
     locale: 'uk',
@@ -221,6 +229,22 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     category: 'permanent',
     slug: 'aftercare',
     locales: ['uk'],
+  },
+  {
+    locale: 'uk',
+    path: '/guide/permanent/contraindications/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'contraindications',
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/permanent/contraindications/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'contraindications',
+    locales: ['uk', 'ru'],
   },
 ];
 
@@ -400,8 +424,12 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'depilation/vs-epilation': [/депіляція чи епіляція/i],
     'permanent/how-long': [/скільки тримається перманентний макіяж/i],
     'permanent/aftercare': [/перманентний макіяж брів/i, /догляд/i],
+    'permanent/contraindications': [/кому не можна робити перманентний макіяж/i],
   },
-  ru: { 'depilation/vs-epilation': [/депиляция и эпиляция/i] },
+  ru: {
+    'depilation/vs-epilation': [/депиляция и эпиляция/i],
+    'permanent/contraindications': [/кому нельзя делать перманентный макияж/i],
+  },
 };
 
 /** Страница эксперта держит имя, а не запрос ядра. */
@@ -420,9 +448,18 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /перманентн\S* макіяж\S* брів/i,
       /пудрові брови/i,
       /скільки тримається перманентний макіяж/i,
+      /кому не можна робити перманентний макіяж/i,
     ],
   },
-  ru: { depilation: [/депиляци\S* в Киеве/i, /депиляци\S* воском/i, /депиляция и эпиляция/i] },
+  ru: {
+    depilation: [/депиляци\S* в Киеве/i, /депиляци\S* воском/i, /депиляция и эпиляция/i],
+    permanent: [
+      /перманентн\S* макияж\S* в Киеве/i,
+      /перманентн\S* макияж\S* бровей/i,
+      /пудровые брови/i,
+      /кому нельзя делать перманентный макияж/i,
+    ],
+  },
 };
 
 /**
