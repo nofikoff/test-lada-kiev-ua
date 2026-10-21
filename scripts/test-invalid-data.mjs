@@ -509,44 +509,71 @@ modified: ${day}
 }
 
 /**
- * Допустимые вторая и третья статьи хаба: `depilation-aftercare` и `depilation-best-method` uk есть
- * в карте вместе с рёбрами от хаба. Порядок списков — дата публикации по убыванию, затем заголовок
- * (docs/specs/routes.md §Links from the map). Даты пилота читаются из его файла, они ставятся в день слияния:
- * - `aftercare` — дата пилота и заголовок позже пилотного по алфавиту: тот же день решает заголовок,
- *   а порядок файлов (`aftercare.md` раньше `vs-epilation.md`) дал бы обратный результат;
- * - `best-method` — днём раньше и заголовок раньше пилотного по алфавиту: старая статья стоит ниже
+ * Допустимые новые статьи хаба — страницы-фикстуры, которые прогон на время вписывает в карту вместе
+ * с рёбрами от хаба: страницы карты со статусом `planned` публикуются одна за другой, и случай,
+ * опирающийся на них, ломался бы с каждой новой статьёй. Порядок списков — дата публикации
+ * по убыванию, затем заголовок (docs/specs/routes.md §Links from the map). Даты пилота читаются
+ * из его файла, они ставятся в день слияния:
+ * - `same-day` — дата пилота и заголовок позже пилотного по алфавиту: тот же день решает заголовок,
+ *   а порядок файлов (`check-same-day.md` раньше `vs-epilation.md`) дал бы обратный результат;
+ * - `day-before` — днём раньше и заголовок раньше пилотного по алфавиту: старая статья стоит ниже
  *   вопреки заголовку, и ни убывание даты, ни её игнор не дают тот же порядок.
+ * Настоящие статьи хаба стоят в тех же списках; порядок сверяется по подпоследовательности
+ * пилота и фикстур, поэтому их даты исход не меняют.
  */
 const PILOT_DAY = publishedOf(UK_ARTICLE, readFileSync(new URL(UK_ARTICLE, `file://${root}`), 'utf8'));
-const AFTERCARE_FILE = `${GUIDE}/uk/depilation/aftercare.md`;
-const AFTERCARE_PATH = '/guide/depilation/aftercare/';
-const AFTERCARE = guideArticle(
-  'depilation-aftercare',
-  'Що не можна робити після депіляції',
-  'Що не можна робити після депіляції: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що нова стаття виходить без правки шаблонів.',
+const SAME_DAY_PAGE = 'depilation-check-same-day';
+const SAME_DAY_FILE = `${GUIDE}/uk/depilation/check-same-day.md`;
+const SAME_DAY_PATH = '/guide/depilation/check-same-day/';
+const SAME_DAY = guideArticle(
+  SAME_DAY_PAGE,
+  'Перевірка порядку: та сама дата',
+  'Перевірка порядку: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що нова стаття виходить без правки шаблонів.',
   PILOT_DAY,
 );
-const BEST_METHOD_FILE = `${GUIDE}/uk/depilation/best-method.md`;
-const BEST_METHOD_PATH = '/guide/depilation/best-method/';
+const DAY_BEFORE_PAGE = 'depilation-check-day-before';
+const DAY_BEFORE_FILE = `${GUIDE}/uk/depilation/check-day-before.md`;
+const DAY_BEFORE_PATH = '/guide/depilation/check-day-before/';
 /**
  * `</script>` в заголовке: строка frontmatter доходит до JSON-LD статьи, и без экранирования в `jsonLd()`
  * блок закрылся бы на ней. Заголовок по-прежнему раньше пилотного по алфавиту.
  */
-const BEST_METHOD_HEADING = 'Вибір методу депіляції: яка найкраща </script>';
-const BEST_METHOD = guideArticle(
-  'depilation-best-method',
-  BEST_METHOD_HEADING,
+const DAY_BEFORE_HEADING = 'Вибір методу депіляції: перевірка </script>';
+const DAY_BEFORE = guideArticle(
+  DAY_BEFORE_PAGE,
+  DAY_BEFORE_HEADING,
   'Вибір методу депіляції: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що старіша стаття стоїть у списках нижче за новішу.',
   dayBefore(PILOT_DAY),
 );
 const PILOT_PATH = '/guide/depilation/vs-epilation/';
-/** Порядок списків хаба и эксперта, посчитанный по построению дат и заголовков выше, а не выводом сборки. */
-const ARTICLE_ORDER = [PILOT_PATH, AFTERCARE_PATH, BEST_METHOD_PATH];
+/** Порядок списков хаба и эксперта, посчитанный по построению дат и заголовков выше, а не выводом сборки. */
+const ARTICLE_ORDER = [PILOT_PATH, SAME_DAY_PATH, DAY_BEFORE_PATH];
 
-/** Адреса статей хаба в порядке первой ссылки на странице хаба или эксперта. */
+/** Адреса пилота и фикстур в порядке первой ссылки на странице хаба или эксперта. */
 const articleLinks = (html) => [
-  ...new Set([...html.matchAll(/href="(\/guide\/depilation\/[a-z0-9-]+\/)"/g)].map(([, href]) => href)),
+  ...new Set(
+    [...html.matchAll(/href="(\/guide\/depilation\/[a-z0-9-]+\/)"/g)]
+      .map(([, href]) => href)
+      .filter((href) => ARTICLE_ORDER.includes(href)),
+  ),
 ];
+
+/** Строки фикстур в §Pages и рёбра «хаб → фикстура» в §Links — сразу за строками пилота. */
+function mapWithFixtures(path, original) {
+  const pageRow = (page, url) => `| ${page} | question | depilation-guide | ${page} | uk | ${url} | planned |\n`;
+  const linkRow = (page, anchor) => `| depilation-guide | ${page} | ${anchor} | uk | вниз к странице вопроса |\n`;
+  const withPages = original.replace(
+    /^\|\s*depilation-vs-epilation\s*\|\s*entity\s*\|[^\n]*\|\s*uk\s*\|[^\n]*\n/m,
+    (row) => row + pageRow(SAME_DAY_PAGE, SAME_DAY_PATH) + pageRow(DAY_BEFORE_PAGE, DAY_BEFORE_PATH),
+  );
+  if (withPages === original) throw new Error(`${path}: не нашлось строки пилота uk в §Pages`);
+  replaceOnce(
+    path,
+    withPages,
+    HUB_TO_ARTICLE_UK,
+    (row) => row + linkRow(SAME_DAY_PAGE, 'перевірка порядку') + linkRow(DAY_BEFORE_PAGE, 'вибір методу депіляції'),
+  );
+}
 
 /**
  * Блок JSON-LD цел: в теле нет сырого `<` и оно разбирается как JSON. Сырой `</script>` оборвал бы
@@ -638,39 +665,43 @@ const allowedEdits = [
     },
   },
   {
-    // Следующая статья — файлом, без правки шаблонов. Строка и рёбра в карте у неё уже есть.
-    name: 'вторая и третья статьи хаба только на uk появляются в хабе, у эксперта и в карте сайта, по порядку',
+    // Следующая статья — файлом и строками карты, без правки шаблонов.
+    name: 'две новые статьи хаба только на uk появляются в хабе, у эксперта и в карте сайта, по порядку',
     edits: [
-      { add: AFTERCARE_FILE, content: AFTERCARE },
-      { add: BEST_METHOD_FILE, content: BEST_METHOD },
+      { file: SEO_MAP, corrupt: mapWithFixtures },
+      { add: SAME_DAY_FILE, content: SAME_DAY },
+      { add: DAY_BEFORE_FILE, content: DAY_BEFORE },
     ],
     expect: () => {
-      const link = `href="${AFTERCARE_PATH}"`;
+      const link = `href="${SAME_DAY_PATH}"`;
       const sitemap = readFileSync(new URL('dist/sitemap-0.xml', `file://${root}`), 'utf8');
-      const alternates = [...builtPage(AFTERCARE_PATH).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)]
+      const alternates = [...builtPage(SAME_DAY_PATH).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)]
         .map(([, hreflang, href]) => `${hreflang} ${href}`)
         .sort();
-      const own = `https://www.lada.kiev.ua${AFTERCARE_PATH}`;
+      const own = `https://www.lada.kiev.ua${SAME_DAY_PATH}`;
       const hub = builtPage('/guide/depilation/');
       const order = (actual) => JSON.stringify(actual) === JSON.stringify(ARTICLE_ORDER);
       return [
-        [hub.includes(link), `${AFTERCARE_PATH} в списке /guide/depilation/`],
-        [builtPage('/lada/').includes(link), `${AFTERCARE_PATH} в списке /lada/`],
-        [sitemap.includes(`<loc>${own}</loc>`), `${AFTERCARE_PATH} в sitemap-0.xml`],
+        [hub.includes(link), `${SAME_DAY_PATH} в списке /guide/depilation/`],
+        [builtPage('/lada/').includes(link), `${SAME_DAY_PATH} в списке /lada/`],
+        [sitemap.includes(`<loc>${own}</loc>`), `${SAME_DAY_PATH} в sitemap-0.xml`],
         [
           JSON.stringify(alternates) === JSON.stringify([`uk ${own}`, `x-default ${own}`]),
-          `hreflang ${AFTERCARE_PATH} — только uk и x-default (${alternates.join(', ')})`,
+          `hreflang ${SAME_DAY_PATH} — только uk и x-default (${alternates.join(', ')})`,
         ],
-        [!builtPage('/ru/guide/depilation/').includes('aftercare'), 'на /ru/guide/depilation/ её нет'],
-        [!builtPage('/ru/lada/').includes('aftercare'), 'на /ru/lada/ её нет'],
+        [!builtPage('/ru/guide/depilation/').includes('check-same-day'), 'на /ru/guide/depilation/ её нет'],
+        [!builtPage('/ru/lada/').includes('check-same-day'), 'на /ru/lada/ её нет'],
         [
           order(articleLinks(hub)),
           `порядок списка /guide/depilation/: дата, затем заголовок (${articleLinks(hub).join(', ')})`,
         ],
-        [order(hasPartUrls(hub).map((url) => new URL(url).pathname)), 'порядок hasPart хаба тот же'],
         [
-          headlineIntact(builtPage(BEST_METHOD_PATH), BEST_METHOD_HEADING),
-          `${BEST_METHOD_PATH}: </script> в заголовке не обрывает JSON-LD, headline читается целиком`,
+          order(hasPartUrls(hub).map((url) => new URL(url).pathname).filter((path) => ARTICLE_ORDER.includes(path))),
+          'порядок hasPart хаба тот же',
+        ],
+        [
+          headlineIntact(builtPage(DAY_BEFORE_PATH), DAY_BEFORE_HEADING),
+          `${DAY_BEFORE_PATH}: </script> в заголовке не обрывает JSON-LD, headline читается целиком`,
         ],
         [
           order(articleLinks(builtPage('/lada/'))),
