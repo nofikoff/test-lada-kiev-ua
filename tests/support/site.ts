@@ -200,6 +200,14 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
   },
   {
     locale: 'uk',
+    path: '/guide/depilation/aftercare/',
+    kind: 'article',
+    category: 'depilation',
+    slug: 'aftercare',
+    locales: ['uk'],
+  },
+  {
+    locale: 'uk',
     path: '/guide/permanent/',
     kind: 'hub',
     category: 'permanent',
@@ -462,6 +470,7 @@ const QUERIES: Record<
 const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
   uk: {
     'depilation/vs-epilation': [/депіляція чи епіляція/i],
+    'depilation/aftercare': [/що не можна робити після депіляції/i],
     'permanent/how-long': [/скільки тримається перманентний макіяж/i],
     'permanent/aftercare': [/перманентний макіяж брів/i, /догляд/i],
     'permanent/contraindications': [/кому не можна робити перманентний макіяж/i],
@@ -487,7 +496,12 @@ const EXPERT_QUERY: readonly RegExp[] = [/Лада Новикова/];
  */
 export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, readonly RegExp[]>>> = {
   uk: {
-    depilation: [/депіляці\S* у Києві/i, /воскова депіляці/i, /депіляція чи епіляція/i],
+    depilation: [
+      /депіляці\S* у Києві/i,
+      /воскова депіляці/i,
+      /депіляція чи епіляція/i,
+      /що не можна робити після депіляції/i,
+    ],
     permanent: [
       /перманентн\S* макіяж\S* у Києві/i,
       /перманентн\S* макіяж\S* брів/i,
