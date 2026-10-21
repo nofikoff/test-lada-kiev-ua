@@ -32,6 +32,7 @@ const FROM_KINDS = new Set(['hub', 'entity', 'question', 'expert', 'service']);
 const SERVICE_GUIDE_EDGES = [
   { from: '/depilation/', to: '/guide/depilation/', text: 'Депіляція' },
   { from: '/ru/depilation/', to: '/ru/guide/depilation/', text: 'Депиляция' },
+  { from: '/depilation/sugaring/', to: '/guide/depilation/what-is-sugaring/', text: 'Що таке процедура шугаринг' },
   {
     from: '/ru/depilation/sugaring/',
     to: '/ru/guide/depilation/vs-sugaring/',
