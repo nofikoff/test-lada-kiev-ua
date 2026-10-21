@@ -45,7 +45,7 @@
 | depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | ru | /ru/guide/depilation/vs-sugaring/ | published |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | ru | /ru/guide/permanent/contraindications/ | published |
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | ru | /ru/guide/depilation/best-method/ | planned |
-| bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | ru | /ru/guide/depilation/bikini/ | planned |
+| bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | ru | /ru/guide/depilation/bikini/ | published |
 | permanent-what-is | question | permanent-guide | permanentnyi-makiiazh-shcho-tse | ru | /ru/guide/permanent/what-is/ | published |
 | permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | ru | /ru/guide/permanent/vs-tattoo/ | published |
 | makeup-hair-order | question | beauty-guide | makiiazh-i-zachiska-poriadok | ru | /ru/guide/beauty/makeup-hair-order/ | planned |

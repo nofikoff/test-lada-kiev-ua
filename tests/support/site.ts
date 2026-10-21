@@ -239,6 +239,14 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     locales: ['uk'],
   },
   {
+    locale: 'ru',
+    path: '/ru/guide/depilation/bikini/',
+    kind: 'article',
+    category: 'depilation',
+    slug: 'bikini',
+    locales: ['ru'],
+  },
+  {
     locale: 'uk',
     path: '/guide/permanent/',
     kind: 'hub',
@@ -516,6 +524,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
   ru: {
     'depilation/vs-epilation': [/депиляция и эпиляция/i],
     'depilation/vs-sugaring': [/чем депиляция отличается от шугаринга/i],
+    'depilation/bikini': [/как удаляют волосы в зоне глубокого бикини/i],
     'permanent/contraindications': [/кому нельзя делать перманентный макияж/i],
     'permanent/vs-tattoo': [/в чём разница перманентного макияжа и татуажа/i],
     'permanent/what-is': [/что такое перманентный макияж/i, /простыми словами/i],
@@ -557,6 +566,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /депиляци\S* воском/i,
       /депиляция и эпиляция/i,
       /чем депиляция отличается от шугаринга/i,
+      /волосы в зоне глубокого бикини/i,
     ],
     permanent: [
       /перманентн\S* макияж\S* в Киеве/i,
