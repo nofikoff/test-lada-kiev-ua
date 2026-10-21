@@ -278,6 +278,14 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     slug: 'harm',
     locales: ['uk'],
   },
+  {
+    locale: 'ru',
+    path: '/ru/guide/permanent/what-is/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'what-is',
+    locales: ['ru'],
+  },
 ];
 
 export const EXPERT_PAGES: readonly ExpertPageUnderTest[] = [
@@ -465,6 +473,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'depilation/vs-epilation': [/депиляция и эпиляция/i],
     'permanent/contraindications': [/кому нельзя делать перманентный макияж/i],
     'permanent/vs-tattoo': [/в чём разница перманентного макияжа и татуажа/i],
+    'permanent/what-is': [/что такое перманентный макияж/i, /простыми словами/i],
   },
 };
 
@@ -497,6 +506,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /пудровые брови/i,
       /кому нельзя делать перманентный макияж/i,
       /разница перманентного макияжа и татуажа/i,
+      /что такое перманентный макияж/i,
     ],
   },
 };

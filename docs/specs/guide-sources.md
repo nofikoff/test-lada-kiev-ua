@@ -213,3 +213,28 @@
 | Утверждение статьи | Источник в репозитории |
 |---|---|
 | процедура бровей начинается с эскиза, форму и цвет согласовываем до пигмента | `studio-practice.md` §Brow permanent makeup, 2; текст подстраницы `src/content/subpages/uk/brows.md` §Як проходить процедура |
+
+## permanent-what-is
+
+### Sources
+
+| Утверждение | Источник | Цитата | Проверено | Статус |
+|---|---|---|---|---|
+| другие названия — татуаж, микропигментация, дермопигментация; пигмент в верхних слоях дермы | [ru.wikipedia.org/wiki/Перманентный_макияж](https://ru.wikipedia.org/wiki/Перманентный_макияж) | «Пермане́нтный макия́ж (от лат. permanens «постоянный»), также татуаж, контурный макияж, микропигментация, дермопигментация — внедрение специального пигмента в верхние слои дермы с помощью иглы» | 2026-10-21 | проверен |
+| перманент — разновидность татуировки, игла вводит пигмент в кожу | [fda.gov — Tattoos, Temporary Tattoos & Permanent Makeup](https://www.fda.gov/cosmetics/cosmetic-products/tattoos-temporary-tattoos-permanent-makeup) | «Permanent makeup is a type of tattoo. A needle inserts colored ink into your skin to look like eyeliner, lip liner, eyebrows, or other makeup.» | 2026-10-21 | проверен |
+| зоны — брови, ресницы, веки вместо стрелок, губы; перед процедурой спрашивают о болезнях, операциях, лекарствах, аллергиях; немного крови, отёк и корочки — обычная реакция; пигмент не смывается, но бледнеет; удалить сложно, относиться как к постоянному | [my.clevelandclinic.org — Micropigmentation](https://my.clevelandclinic.org/health/treatments/11004-micropigmentation) | «Micropigmentation is most often used on your face – to enhance eyebrows, eyelashes, eyelids (as eyeliner) and lips.»; «Your cosmetic specialist or plastic surgeon will ask about your medical conditions, past surgeries, medications you are taking and history of allergies.»; «Ordinary reactions to be expected following micropigmentation include a little bleeding, swelling and some crusting.»; «Although the ink never washes off, it fades over time because skin cells are constantly replaced. However, you should think about micropigmentation as being permanent because it can be very difficult to remove.» | 2026-10-21 | проверен |
+| самые популярные — стрелки, брови, контур губ; цвет бледнеет на солнце; при гигиене инфекция крайне редка, аллергия редка | [EADV — Tattoo and permanent make-up](https://eadv.org/wp-content/uploads/2026/05/EADV-Leaflet-TF-Tattoo-Permanent-Make-Up.pdf) | «The most popular examples are eyeliner, eyebrows and lipliner.»; «PMU colors are exposed to sunlight and often fade with time.»; «When done in hygienic conditions, infection is extremely rare.»; «Allergy to pigments can occur but it is rare.» | 2026-10-21 | проверен |
+| перманент губ держится около двух лет | [health.clevelandclinic.org — Lip Blushing](https://health.clevelandclinic.org/lip-blushing) | «Some estimates say lip blushing can last about two years, but results can vary from person to person.» | 2026-10-21 | проверен |
+
+### Practice claims
+
+| Утверждение статьи | Источник в репозитории |
+|---|---|
+| брови — пудровая техника, её описание; губы — акварельная и помадная, их описание; межресничка заполняет промежутки, ресницы выглядят гуще | текст категории `src/content/services/ru/permanent.md` §Брови, §Губы, §Межресничное пространство |
+| перед первой процедурой обсуждаем форму и цвет; приходите с представлением о результате или фотографией | текст категории §Как записаться |
+| брови начинаются с эскиза, форму согласовываем до пигмента; с эскизом — два часа | `studio-practice.md` §Brow permanent makeup, 2; текст подстраницы `src/content/subpages/ru/brows.md` |
+| межресничка — 60 минут, губы — три часа | `studio-practice.md` §Brow permanent makeup, 2; §From answer to page text |
+| сразу после работы цвет ярче и темнее; настоящий оттенок примерно через месяц | текст категории §Первые дни после процедуры |
+| брови заживают около месяца: корочки, шелушение, посветление | `studio-practice.md` §Brow permanent makeup, 3 |
+| коррекция через 28–60 дней: выравнивают цвет и добавляют плотность; на бровях — заживление, форма, пробелы, симметрия | прайс `permanent-*-touch-up`; текст категории §Коррекция и обновление; `studio-practice.md` §Brow permanent makeup, 4 |
+| брови при поверхностной работе — 2–3 года, глубже — дольше; позже работу можно обновлять, не делая заново | `studio-practice.md` §Brow permanent makeup, 5; текст категории §Коррекция и обновление |
