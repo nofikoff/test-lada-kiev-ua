@@ -25,7 +25,7 @@
 | sugaring-preparation | question | depilation-guide | shuharynh-pidhotovka | uk | /guide/depilation/sugaring-preparation/ | planned |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | uk | /guide/permanent/contraindications/ | published |
 | permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | uk | /guide/permanent/vs-tattoo/ | published |
-| permanent-harm | question | permanent-guide | permanentnyi-makiiazh-shkoda | uk | /guide/permanent/harm/ | planned |
+| permanent-harm | question | permanent-guide | permanentnyi-makiiazh-shkoda | uk | /guide/permanent/harm/ | published |
 | permanent-lips-healing | question | permanent-guide | permanentnyi-makiiazh-hub-zahoiennia | uk | /guide/permanent/lips-healing/ | published |
 | lash-lamination-how-long | question | beauty-guide | laminuvannia-vii-skilky-trymaietsia | uk | /guide/beauty/lash-lamination-how-long/ | planned |
 | makeup-how-long | question | beauty-guide | makiiazh-skilky-trymaietsia | uk | /guide/beauty/makeup-how-long/ | planned |

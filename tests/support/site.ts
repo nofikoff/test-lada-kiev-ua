@@ -270,6 +270,14 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     slug: 'lips-healing',
     locales: ['uk'],
   },
+  {
+    locale: 'uk',
+    path: '/guide/permanent/harm/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'harm',
+    locales: ['uk'],
+  },
 ];
 
 export const EXPERT_PAGES: readonly ExpertPageUnderTest[] = [
@@ -451,6 +459,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'permanent/contraindications': [/кому не можна робити перманентний макіяж/i],
     'permanent/vs-tattoo': [/яка різниця між татуажем та перманентним макіяжем/i],
     'permanent/lips-healing': [/як довго заживають губи/i, /перманентн\S* макіяж/i],
+    'permanent/harm': [/чи шкідливий перманентний макіяж брів/i],
   },
   ru: {
     'depilation/vs-epilation': [/депиляция и эпиляция/i],
