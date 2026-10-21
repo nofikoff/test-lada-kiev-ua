@@ -19,7 +19,7 @@
 | permanent-aftercare | entity | permanent-guide | permanentnyi-makiiazh-dohliad | uk | /guide/permanent/aftercare/ | published |
 | permanent-how-long | question | permanent-guide | permanentnyi-makiiazh-skilky-trymaietsia | uk | /guide/permanent/how-long/ | published |
 | massage-benefits | question | massage-guide | masazh-koryst | uk | /guide/massage/benefits/ | planned |
-| depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | uk | /guide/depilation/vs-sugaring/ | planned |
+| depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | uk | /guide/depilation/vs-sugaring/ | published |
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | uk | /guide/depilation/best-method/ | planned |
 | sugaring-what-is | question | depilation-guide | shuharynh-shcho-tse | uk | /guide/depilation/what-is-sugaring/ | planned |
 | sugaring-preparation | question | depilation-guide | shuharynh-pidhotovka | uk | /guide/depilation/sugaring-preparation/ | planned |
@@ -42,7 +42,7 @@
 | beauty-guide | hub |  |  | ru | /ru/guide/beauty/ | planned |
 | depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | ru | /ru/guide/depilation/vs-epilation/ | published |
 | back-massage-frequency | question | massage-guide | masazh-spyny-yak-chasto | ru | /ru/guide/massage/back-frequency/ | planned |
-| depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | ru | /ru/guide/depilation/vs-sugaring/ | planned |
+| depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | ru | /ru/guide/depilation/vs-sugaring/ | published |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | ru | /ru/guide/permanent/contraindications/ | published |
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | ru | /ru/guide/depilation/best-method/ | planned |
 | bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | ru | /ru/guide/depilation/bikini/ | planned |

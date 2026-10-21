@@ -83,6 +83,31 @@
 | паста снимает волос по направлению роста, поэтому вросших волос меньше | `studio-practice.md` §Sugaring, 7 |
 | повторно на пасту — через 3–4 недели | `studio-practice.md` §Sugaring, 4 |
 
+## depilation-vs-sugaring
+
+«Шугаринг — тоже депиляция» держится разграничения статьи `depilation-vs-epilation` (раздел выше). Цены воска и пасты статья не сравнивает: сумма принадлежит таблице цен, а поле `sugar` может их развести.
+
+### Sources
+
+| Утверждение | Источник | Цитата | Проверено | Статус |
+|---|---|---|---|---|
+| воск и паста удаляют волос с корнем, бритьё — только у поверхности; паста цепляется за волоски и отмершие клетки, воск прилипает к верхнему слою кожи; воск чаще ломает волос — больше вросших; пастой можно пройти участок несколько раз, воском один-два раза, иначе ломает короткие волоски; направление нанесения и снятия; подготовка одинакова, волосы около 6 мм; первый сеанс самый ощутимый; уход первые сутки и отшелушивание через 48 часов | [healthline.com — Sugaring vs. Waxing](https://www.healthline.com/health/beauty-skin-care/sugaring-vs-waxing) | «both hair removal techniques that lift hair from the root, as opposed to shaving, which only removes hair from the surface layer of the skin.»; «With sugaring, the paste doesn’t stick to the top layer of skin. Instead, it adheres to hair and dead skin cells so there’s less risk of hair breakage and skin irritation.»; «On the other hand, waxing adheres completely to the top layer of the skin.»; «With waxing, there’s more potential for ingrown hairs because the wax mixture can lead to hair breakage.»; «Because the sugar only exfoliates the surface of skin, it can be reapplied multiple times to the same area of skin.»; «some waxes can be harsh on skin and break shorter hairs instead of removing them from the root. To help prevent this, wax should only be applied to the same area once or twice.»; «With sugaring, the sugar is applied in the opposite direction of hair growth and then removed the same direction as hair growth.»; «Skin prep for sugaring and waxing is essentially the same.»; «Grow your hair out to ¼-inch long.»; «With both sugaring and waxing, the first appointment usually hurts the most.»; «For 24 hours after sugaring or waxing, keep in mind that your skin might be more sensitive.»; «You can return to exfoliating about 48 hours after your appointment.» | 2026-10-21 | проверен |
+| результат воска до 6 недель, новые волосы через 3–4 недели; паста — столько же, а поскольку реже ломает волос, может держаться чуть дольше | [healthline.com — How Long Does Waxing Actually Last?](https://www.healthline.com/health/beauty-skin-care/how-long-does-waxing-last) | «Sugaring will likely last the same length as waxing — up to 6 weeks, with new hair growth around 3 to 4 weeks.»; «However, sugaring is less prone to hair breakage than waxing, so there’s a chance that sugaring could last slightly longer when done correctly.» | 2026-10-21 | проверен |
+| паста — до температуры тела; воск наносят по росту, снимают против; воск прилипает к коже и при снятии раздражает; остатки пасты смываются водой; «менее больно» — у каждого по-своему; у каждого метода плюсы и минусы, выбор — человек, зона, кожа, бюджет; при экземе, очень чувствительной или темнеющей от раздражения коже от шугаринга, возможно, стоит отказаться | [health.clevelandclinic.org — What Is Sugaring?](https://health.clevelandclinic.org/what-is-sugaring) | «It’s warmed up to your body’s temperature before being applied.»; «With waxing, you apply the wax in the same direction as hair growth and remove the wax in the opposite direction.»; «Wax does stick to your skin, so when it’s pulled off, it can cause irritation.»; «It’ll easily wash out of clothes, and if any residue is left over on your skin, you can use water to remove it.»; «Some say that sugaring is less painful than waxing, but it’s all based on the individual and their pain tolerance.»; «“Every method of hair removal has its pros and cons and depends on the person, the area, the skin type and the budget,”»; «“If you have eczema or super sensitive skin or skin that darkens with irritation, then you may want to avoid this as well.”» | 2026-10-21 | проверен |
+| воск бывает горячим или холодным | [aad.org — How to remove unwanted hair](https://www.aad.org/public/everyday-care/skin-care-basics/hair/remove-unwanted-hair) | «You apply wax (hot or cold) to your skin and then quickly remove it, which pulls out the hairs.» | 2026-10-21 | проверен |
+| сахарная паста — самая деликатная разновидность воска, подходит для лица и паховой зоны | [youngwomenshealth.org — Hair Removal (Boston Children’s Hospital)](https://youngwomenshealth.org/guides/hair-removal/) | «Sugar wax is the oldest form of waxing and it’s created with water, sugar, and lemons. It is known as the most sensitive form of wax, making it great for sensitive areas like the face and groin.» | 2026-10-21 | проверен |
+
+### Practice claims
+
+| Утверждение статьи | Источник в репозитории |
+|---|---|
+| воск и паста у нас для женщин и мужчин; у мужчин есть зоны триммером или бритвой | прайс, группы `womenDepilation`, `menDepilation`, `menTrimmer` и комплексы; текст категории `src/content/services/<lang>/depilation.md` |
+| что подойдёт, мастер скажет на месте, посмотрев на зону и тип волос | текст категории, абзац 1 |
+| паста Epilax разной плотности | `studio-practice.md` §Sugaring, 1 |
+| паста увлажняет, работает как скраб, сохраняет эпидермис; снимает по росту — вросших меньше; некоторые клиенты переносят легче | `studio-practice.md` §Sugaring, 7, нейтральная форма — §From answer to page text |
+| повторно на пасту — через 3–4 недели | `studio-practice.md` §Sugaring, 4 |
+| пастой женщинам — любая зона прайса, включая нос, уши, брови, шею; мужчинам — все зоны | `studio-practice.md` §Sugaring, 8 и 9 |
+
 ## permanent-how-long
 
 Сроки для бровей в источниках — о микроблейдинге; о пудровых бровях нашёлся только обзор Marwah 2021 (держатся дольше) и страница клиники, которая в текст не идёт. Поэтому статья называет технику у каждой цифры, а срок пудровых бровей берёт у Лады.

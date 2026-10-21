@@ -32,6 +32,11 @@ const FROM_KINDS = new Set(['hub', 'entity', 'question', 'expert', 'service']);
 const SERVICE_GUIDE_EDGES = [
   { from: '/depilation/', to: '/guide/depilation/', text: 'Депіляція' },
   { from: '/ru/depilation/', to: '/ru/guide/depilation/', text: 'Депиляция' },
+  {
+    from: '/ru/depilation/sugaring/',
+    to: '/ru/guide/depilation/vs-sugaring/',
+    text: 'Чем депиляция отличается от шугаринга',
+  },
   { from: '/permanent/', to: '/guide/permanent/', text: 'Перманентний макіяж' },
   { from: '/ru/permanent/', to: '/ru/guide/permanent/', text: 'Перманентный макияж' },
   { from: '/permanent/brows/', to: '/guide/permanent/aftercare/', text: 'Перманентний макіяж брів догляд' },

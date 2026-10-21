@@ -208,6 +208,22 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
   },
   {
     locale: 'uk',
+    path: '/guide/depilation/vs-sugaring/',
+    kind: 'article',
+    category: 'depilation',
+    slug: 'vs-sugaring',
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/depilation/vs-sugaring/',
+    kind: 'article',
+    category: 'depilation',
+    slug: 'vs-sugaring',
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'uk',
     path: '/guide/permanent/',
     kind: 'hub',
     category: 'permanent',
@@ -471,6 +487,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
   uk: {
     'depilation/vs-epilation': [/депіляція чи епіляція/i],
     'depilation/aftercare': [/що не можна робити після депіляції/i],
+    'depilation/vs-sugaring': [/що краще/i, /депіляція чи шугаринг/i],
     'permanent/how-long': [/скільки тримається перманентний макіяж/i],
     'permanent/aftercare': [/перманентний макіяж брів/i, /догляд/i],
     'permanent/contraindications': [/кому не можна робити перманентний макіяж/i],
@@ -480,6 +497,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
   },
   ru: {
     'depilation/vs-epilation': [/депиляция и эпиляция/i],
+    'depilation/vs-sugaring': [/чем депиляция отличается от шугаринга/i],
     'permanent/contraindications': [/кому нельзя делать перманентный макияж/i],
     'permanent/vs-tattoo': [/в чём разница перманентного макияжа и татуажа/i],
     'permanent/what-is': [/что такое перманентный макияж/i, /простыми словами/i],
@@ -501,6 +519,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /воскова депіляці/i,
       /депіляція чи епіляція/i,
       /що не можна робити після депіляції/i,
+      /депіляція чи шугаринг/i,
     ],
     permanent: [
       /перманентн\S* макіяж\S* у Києві/i,
@@ -513,7 +532,12 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
     ],
   },
   ru: {
-    depilation: [/депиляци\S* в Киеве/i, /депиляци\S* воском/i, /депиляция и эпиляция/i],
+    depilation: [
+      /депиляци\S* в Киеве/i,
+      /депиляци\S* воском/i,
+      /депиляция и эпиляция/i,
+      /чем депиляция отличается от шугаринга/i,
+    ],
     permanent: [
       /перманентн\S* макияж\S* в Киеве/i,
       /перманентн\S* макияж\S* бровей/i,
