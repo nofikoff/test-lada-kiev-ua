@@ -6,6 +6,7 @@ import {
   GUIDE_PAGES,
   htmlToText,
   normalize,
+  pathIn,
   PILOT_EDGES,
   SERVICE_COPY_SELECTOR,
   servicePages,
@@ -141,6 +142,32 @@ test.describe('рёбра пилота литералами', () => {
     test(`${from} ссылается на ${to}`, async ({ request }) => {
       const links = await linksOf(request, from);
       expect(links.map((link) => link.href)).toContain(to);
+    });
+  }
+});
+
+/**
+ * Рёбра «статья → хаб» и «статья → услуга» сборка не требует (docs/specs/content-model.md §Build stops),
+ * а общее правило выше берёт их из карты: ребро, пропавшее при перегенерации `/seo map`, исчезло бы
+ * из ожидания вместе со ссылкой. Хаб и категорию статьи даёт литерал `GUIDE_PAGES`. Ищется блок
+ * ссылок карты, а не вся страница: крошки тоже ведут на хаб и прошли бы проверку вхолостую.
+ */
+test.describe('статья ведёт на свой хаб и на услугу своей категории', () => {
+  for (const article of GUIDE_PAGES.filter((page) => page.kind === 'article')) {
+    const hub = GUIDE_PAGES.find(
+      (page) => page.kind === 'hub' && page.locale === article.locale && page.category === article.category,
+    )!;
+    const service = pathIn(article.locale, `/${article.category}/`);
+    test(`${article.path} → ${hub.path} и ${service}…`, async ({ page }) => {
+      await page.goto(article.path);
+      const hrefs = await page.locator('aside.map-links a').evaluateAll((links) =>
+        links.map((link) => link.getAttribute('href') ?? ''),
+      );
+      expect(hrefs, 'ссылка на хаб').toContain(hub.path);
+      expect(
+        hrefs.filter((href) => href.startsWith(service)),
+        'ссылка на категорию или её подстраницу',
+      ).not.toEqual([]);
     });
   }
 });
