@@ -32,6 +32,9 @@ const UK_HUB_INDEX = `${GUIDE}/uk/depilation/index.md`;
 const UK_ARTICLE = `${GUIDE}/uk/depilation/vs-epilation.md`;
 const RU_HUB = `${GUIDE}/ru/depilation.md`;
 const RU_ARTICLE = `${GUIDE}/ru/depilation/vs-epilation.md`;
+const RU_ARTICLES = `${GUIDE}/ru/depilation`;
+// Вне `src/content/guide/`: каталог, перенесённый внутрь коллекции, загрузился бы снова.
+const RU_ARTICLES_AWAY = 'node_modules/.invalid-data/ru-depilation';
 const EXPERT_RU = 'src/content/expert/ru.md';
 const SEO_MAP = 'docs/seo/map.md';
 
@@ -334,15 +337,16 @@ const cases = [
   // Остановки базы знаний: по случаю на каждую, сообщение называет файл
   // (docs/specs/content-model.md §Build stops).
   {
+    // Уносится весь каталог статей: у хаба их больше одной, и удаление пилота хаб не опустошило бы.
     name: 'хаб без статьи своего языка (№ 9)',
-    file: RU_ARTICLE,
+    edits: [{ move: RU_ARTICLES, to: RU_ARTICLES_AWAY }],
     expect: new RegExp(`${literal(RU_HUB)}: у хаба нет ни одной статьи языка ru`),
-    corrupt: (path) => rmSync(path),
   },
   {
+    // Сборка называет первую статью без хаба, и при нескольких статьях это не обязательно пилот.
     name: 'статья без хаба своего языка (№ 8)',
     file: RU_HUB,
-    expect: new RegExp(`${literal(RU_ARTICLE)}: нет хаба ${literal(RU_HUB)}`),
+    expect: new RegExp(`${literal(`${RU_ARTICLES}/`)}[a-z0-9-]+\\.md: нет хаба ${literal(RU_HUB)}`),
     corrupt: (path) => rmSync(path),
   },
   {
