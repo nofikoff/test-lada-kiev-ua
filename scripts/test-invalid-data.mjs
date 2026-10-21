@@ -497,7 +497,7 @@ heading: Текст на языке, которого у подстраницы 
 ---
 `;
 
-/** Статья хаба с датой публикации `day`: страница и ребро от хаба уже есть в карте. */
+/** Статья хаба с датой публикации `day`; её строку §Pages и ребро от хаба вписывает `mapWithFixtures`. */
 function guideArticle(page, heading, description, day) {
   return `---
 page: ${page}
