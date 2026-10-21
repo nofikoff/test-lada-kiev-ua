@@ -22,7 +22,7 @@
 | depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | uk | /guide/depilation/vs-sugaring/ | published |
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | uk | /guide/depilation/best-method/ | planned |
 | sugaring-what-is | question | depilation-guide | shuharynh-shcho-tse | uk | /guide/depilation/what-is-sugaring/ | published |
-| sugaring-preparation | question | depilation-guide | shuharynh-pidhotovka | uk | /guide/depilation/sugaring-preparation/ | planned |
+| sugaring-preparation | question | depilation-guide | shuharynh-pidhotovka | uk | /guide/depilation/sugaring-preparation/ | published |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | uk | /guide/permanent/contraindications/ | published |
 | permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | uk | /guide/permanent/vs-tattoo/ | published |
 | permanent-harm | question | permanent-guide | permanentnyi-makiiazh-shkoda | uk | /guide/permanent/harm/ | published |

@@ -130,6 +130,31 @@
 | женщинам — любая зона прайса, от глубокого бикини до носа, ушей, бровей, шеи; мужчинам — все зоны | `studio-practice.md` §Sugaring, 8 и 9; прайс `womenDepilation` |
 | не делаем при проблемной коже и инфекционных заболеваниях кожи, в состоянии опьянения; несовершеннолетним — с родителями | `studio-practice.md` §Sugaring, 6, перевод — §From answer to page text |
 
+## sugaring-preparation
+
+### Sources
+
+| Утверждение | Источник | Цитата | Проверено | Статус |
+|---|---|---|---|---|
+| волос должен быть достаточно длинным, обычно хотя бы несколько миллиметров; после изотретиноина — не раньше чем через полгода; раздражающие средства вроде третиноина прекращают хотя бы за несколько дней; избегать солнца до и после, не делать на обгоревшей, раздражённой или инфицированной коже | [health.clevelandclinic.org — What Is Sugaring?](https://health.clevelandclinic.org/what-is-sugaring) | «Before your appointment, you want to make sure your hair is long enough for the product to stick to it — usually at least a few millimeters.»; «Also, anyone who takes isotretinoin (a medication used to treat severe cystic acne) shouldn’t undergo sugaring for at least six months after finishing the medication.»; «any irritating topicals like tretinoin (a medication used to treat acne and other skin conditions) should be stopped at least a few days before treatment»; «“Avoid sun exposure both before and after treatment, and don’t get treated if you’re sunburned or the skin is irritated or infected,”» | 2026-10-21 | проверен; назначенные врачом средства статья отменять не советует (`studio-practice.md` §From answer to page text) |
+| отрастить до ¼ дюйма — обычно 10–14 дней; длиннее ½ дюйма, возможно, подстричь; за несколько дней легко отшелушить; накануне без отшелушивания, загара и горячей ванны — кожа сохнет и чувствительнее; в день процедуры чистая сухая кожа, без лосьонов и кремов; во время менструации кожа у лобка чувствительнее — лучше перенести | [healthline.com — Sugaring vs. Waxing](https://www.healthline.com/health/beauty-skin-care/sugaring-vs-waxing) | «Grow your hair out to ¼-inch long. This process usually takes about 10 to 14 days. If it’s longer than ½ inch, you might have to trim it before the appointment.»; «A few days before your appointment, lightly exfoliate the area to remove dead skin cells and prevent ingrown hairs.»; «The day before your appointment, avoid exfoliation, tanning, or hot baths, as these might make your skin dry or sensitive.»; «The day of your appointment, come with clean, dry skin. Avoid wearing lotions or creams.»; «When you’re menstruating, the skin around your pubic bone becomes more sensitive and prone to cramping. Both sugaring and waxing can aggravate the area, so it’s best to reschedule if you can.» | 2026-10-21 | проверен |
+| для воска: слишком короткий волос ломается — вросшие волосы и раздражение; перед первым воском отрастить волосы около двух недель | [healthline.com — How Long Does Hair Have to Be to Wax?](https://www.healthline.com/health/beauty-skin-care/how-long-does-hair-have-to-be-to-wax) | «Some hair might break, which can cause ingrown hairs or irritation.»; «If this is your first time waxing, try to grow out hair from your most previous hair removal for around 2 weeks.» | 2026-10-21 | проверен |
+| для воска: между процедурами не брить и не выщипывать | [healthline.com — How Long Does Waxing Actually Last?](https://www.healthline.com/health/beauty-skin-care/how-long-does-waxing-last) | «Resist the urge to shave, pluck, or poke at hairs until your waxing appointment to ensure smooth, even results.» | 2026-10-21 | проверен |
+| перед бразильской депиляцией отшелушить за один-два дня | [health.clevelandclinic.org — What Is a Brazilian Wax?](https://health.clevelandclinic.org/what-is-a-brazilian-wax) | «Exfoliating is a good idea, too — this can prevent ingrown hairs. You should do this one to two days before your appointment.» | 2026-10-21 | проверен |
+| дерматолог предостерегает от отшелушивания перед процедурой: кожа чувствительна и легко травмируется | [healthline.com — Bikini Wax vs. Brazilian Wax](https://www.healthline.com/health/beauty-skin-care/bikini-wax-vs-brazilian-wax) | «However, she cautions against exfoliating before your appointment, as that can leave your skin sensitive and prone to tears» | 2026-10-21 | проверен; противоречит двум строкам выше, статья даёт обе позиции |
+
+### Practice claims
+
+| Утверждение статьи | Источник в репозитории |
+|---|---|
+| волосы минимум 5 мм, не брить неделю-две | `studio-practice.md` §Sugaring, 2 |
+| короче паста не захватит | текст подстраницы `src/content/subpages/uk/sugaring.md` §Довжина волосся і підготовка (описание техники) |
+| повторно — через 3–4 недели | `studio-practice.md` §Sugaring, 4 |
+| до и после — без пота, спорта, сауны, солнца, секса, скраба, бассейна | `studio-practice.md` §Sugaring, 5 |
+| не делаем при проблемной коже и инфекциях кожи, в опьянении; несовершеннолетним — с родителями | `studio-practice.md` §Sugaring, 6 |
+| глубокое бикини 45–60 минут, ноги полностью 60, подмышки 7–10 | `studio-practice.md` §Sugaring, 3 |
+| при записи назовите зоны — под них резервируем время | текст подстраницы §Запис |
+
 ## permanent-how-long
 
 Сроки для бровей в источниках — о микроблейдинге; о пудровых бровях нашёлся только обзор Marwah 2021 (держатся дольше) и страница клиники, которая в текст не идёт. Поэтому статья называет технику у каждой цифры, а срок пудровых бровей берёт у Лады.
