@@ -73,9 +73,12 @@ const subset = locale === 'en' ? 'latin' : 'cyrillic';
     <Font cssVariable="--font-cormorant" preload={[{ subset, style: 'normal' }]} />
 
     {/* Google Analytics. Переносится без изменений: отложенная загрузка потеряла бы визиты
-         и сделала статистику до и после миграции несопоставимой (ADR-011). */}
+         и сделала статистику до и после миграции несопоставимой (ADR-011). Вне боевого хоста
+         счётчик выключен флагом gtag (docs/specs/page-head.md §Analytics). */}
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WZT8TJLSDP"></script>
     <script is:inline>
+      // Google requires the opt-out flag to be set before the first gtag() call.
+      if (!/(^|\.)lada\.kiev\.ua$/.test(location.hostname)) window['ga-disable-G-WZT8TJLSDP'] = true;
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         window.dataLayer.push(arguments);
