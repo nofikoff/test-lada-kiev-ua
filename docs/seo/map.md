@@ -52,6 +52,7 @@
 | permanent-lips-healing | question | permanent-guide | permanentnyi-makiiazh-hub-zahoiennia | ru | /ru/guide/permanent/lips-healing/ | published |
 | permanent-harm | question | permanent-guide | permanentnyi-makiiazh-shkoda | ru | /ru/guide/permanent/harm/ | published |
 | permanent-how-long | question | permanent-guide | permanentnyi-makiiazh-skilky-trymaietsia | ru | /ru/guide/permanent/how-long/ | published |
+| permanent-aftercare | entity | permanent-guide | permanentnyi-makiiazh-dohliad | ru | /ru/guide/permanent/aftercare/ | published |
 | permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | ru | /ru/guide/permanent/vs-tattoo/ | published |
 | makeup-hair-order | question | beauty-guide | makiiazh-i-zachiska-poriadok | ru | /ru/guide/beauty/makeup-hair-order/ | planned |
 | massage | service |  | masazh | ru | /ru/massage/ | published |
@@ -168,6 +169,10 @@
 | permanent-guide | permanent-how-long | сколько держится перманентный макияж | ru | вниз к странице вопроса |
 | permanent-how-long | permanent-guide | перманентный макияж | ru | вверх к обзорной |
 | permanent-how-long | permanent | перманентный макияж киев | ru | ответ ведёт к услуге |
+| permanent-guide | permanent-aftercare | перманентный макияж бровей уход | ru | вниз к странице сущности |
+| permanent-aftercare | permanent-guide | перманентный макияж | ru | вверх к обзорной |
+| permanent-aftercare | permanent-brows | перманентный макияж бровей | ru | уход за бровями ведёт к услуге бровей |
+| permanent-brows | permanent-aftercare | перманентный макияж бровей уход | ru | услуга отдаёт вес сущности |
 | permanent-guide | permanent-contraindications | кому нельзя делать перманентный макияж | ru | вниз к странице вопроса |
 | permanent-contraindications | permanent-guide | перманентный макияж | ru | вверх к обзорной |
 | permanent-contraindications | permanent | перманентный макияж киев | ru | ответ ведёт к услуге |

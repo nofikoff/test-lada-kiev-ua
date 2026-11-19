@@ -42,6 +42,7 @@ const SERVICE_GUIDE_EDGES = [
   { from: '/permanent/', to: '/guide/permanent/', text: 'Перманентний макіяж' },
   { from: '/ru/permanent/', to: '/ru/guide/permanent/', text: 'Перманентный макияж' },
   { from: '/permanent/brows/', to: '/guide/permanent/aftercare/', text: 'Перманентний макіяж брів догляд' },
+  { from: '/ru/permanent/brows/', to: '/ru/guide/permanent/aftercare/', text: 'Перманентный макияж бровей уход' },
   { from: '/massage/', to: '/guide/massage/', text: 'Масаж' },
 ] as const;
 

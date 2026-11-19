@@ -308,7 +308,15 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     kind: 'article',
     category: 'permanent',
     slug: 'aftercare',
-    locales: ['uk'],
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/permanent/aftercare/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'aftercare',
+    locales: ['uk', 'ru'],
   },
   {
     locale: 'uk',
@@ -608,6 +616,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'permanent/lips-healing': [/как долго заживают губы/i, /перманентн\S* макияж/i],
     'permanent/harm': [/вреден ли перманентный макияж бровей/i],
     'permanent/how-long': [/сколько держится перманентный макияж/i],
+    'permanent/aftercare': [/перманентный макияж бровей/i, /уход/i],
   },
 };
 
