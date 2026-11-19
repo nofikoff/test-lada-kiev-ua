@@ -414,6 +414,13 @@ const cases = [
     corrupt: (path, original) => replaceOnce(path, original, HUB_TO_ARTICLE_UK, ''),
   },
   {
+    // The map keeps its ru row: stop 10 checks files against the map, not the map against files.
+    name: 'страница без версии второго языка (№ 14)',
+    file: RU_ARTICLE,
+    expect: new RegExp(`${literal(UK_ARTICLE)}: у страницы «depilation-vs-epilation» нет версии ru \\(ADR-030\\)`),
+    corrupt: (path) => rmSync(path),
+  },
+  {
     // `glob` сводил `uk/depilation/index.md` и хаб `uk/depilation.md` к одному id и оставлял один из
     // них по порядку параллельной загрузки: сборка то проходила молча, то называла не тот файл.
     // Случай идёт на пустом хранилище, как в CI, — на сохранённом дубль ловила проверка `glob`.
@@ -549,6 +556,21 @@ const DAY_BEFORE = guideArticle(
   'Вибір методу депіляції: перевірочна стаття, яку додає прогон test:invalid-data, щоб довести, що старіша стаття стоїть у списках нижче за новішу.',
   dayBefore(PILOT_DAY),
 );
+/** Russian versions of both fixtures: stop 14 (ADR-030) stops a guide page without its second language. */
+const RU_SAME_DAY_FILE = `${GUIDE}/ru/depilation/check-same-day.md`;
+const RU_SAME_DAY = guideArticle(
+  SAME_DAY_PAGE,
+  'Проверка порядка: та же дата',
+  'Проверка порядка: проверочная статья, которую добавляет прогон test:invalid-data, чтобы доказать, что новая статья выходит без правки шаблонов.',
+  PILOT_DAY,
+);
+const RU_DAY_BEFORE_FILE = `${GUIDE}/ru/depilation/check-day-before.md`;
+const RU_DAY_BEFORE = guideArticle(
+  DAY_BEFORE_PAGE,
+  'Выбор метода депиляции: проверка',
+  'Выбор метода депиляции: проверочная статья, которую добавляет прогон test:invalid-data, чтобы доказать, что старая статья стоит в списках ниже новой.',
+  dayBefore(PILOT_DAY),
+);
 const PILOT_PATH = '/guide/depilation/vs-epilation/';
 /** Порядок списков хаба и эксперта, посчитанный по построению дат и заголовков выше, а не выводом сборки. */
 const ARTICLE_ORDER = [PILOT_PATH, SAME_DAY_PATH, DAY_BEFORE_PATH];
@@ -562,21 +584,32 @@ const articleLinks = (html) => [
   ),
 ];
 
-/** Строки фикстур в §Pages и рёбра «хаб → фикстура» в §Links — сразу за строками пилота. */
+/** Строки фикстур в §Pages и рёбра «хаб → фикстура» в §Links — сразу за строками пилота, на uk и ru. */
 function mapWithFixtures(path, original) {
-  const pageRow = (page, url) => `| ${page} | question | depilation-guide | ${page} | uk | ${url} | planned |\n`;
-  const linkRow = (page, anchor) => `| depilation-guide | ${page} | ${anchor} | uk | вниз к странице вопроса |\n`;
-  const withPages = original.replace(
-    /^\|\s*depilation-vs-epilation\s*\|\s*entity\s*\|[^\n]*\|\s*uk\s*\|[^\n]*\n/m,
-    (row) => row + pageRow(SAME_DAY_PAGE, SAME_DAY_PATH) + pageRow(DAY_BEFORE_PAGE, DAY_BEFORE_PATH),
-  );
-  if (withPages === original) throw new Error(`${path}: не нашлось строки пилота uk в §Pages`);
-  replaceOnce(
-    path,
-    withPages,
-    HUB_TO_ARTICLE_UK,
-    (row) => row + linkRow(SAME_DAY_PAGE, 'перевірка порядку') + linkRow(DAY_BEFORE_PAGE, 'вибір методу депіляції'),
-  );
+  const anchors = {
+    uk: ['перевірка порядку', 'вибір методу депіляції'],
+    ru: ['проверка порядка', 'выбор метода депиляции'],
+  };
+  let text = original;
+  for (const lang of ['uk', 'ru']) {
+    const prefix = lang === 'uk' ? '' : '/ru';
+    const pageRow = (page, url) => `| ${page} | question | depilation-guide | ${page} | ${lang} | ${prefix}${url} | planned |\n`;
+    const linkRow = (page, anchor) => `| depilation-guide | ${page} | ${anchor} | ${lang} | вниз к странице вопроса |\n`;
+    const pilotRow = new RegExp(`^\\|\\s*depilation-vs-epilation\\s*\\|\\s*entity\\s*\\|[^\\n]*\\|\\s*${lang}\\s*\\|[^\\n]*\\n`, 'm');
+    const hubEdge = new RegExp(`^\\|\\s*depilation-guide\\s*\\|\\s*depilation-vs-epilation\\s*\\|[^\\n]*\\|\\s*${lang}\\s*\\|[^\\n]*\\n`, 'm');
+    const withPages = text.replace(
+      pilotRow,
+      (row) => row + pageRow(SAME_DAY_PAGE, SAME_DAY_PATH) + pageRow(DAY_BEFORE_PAGE, DAY_BEFORE_PATH),
+    );
+    if (withPages === text) throw new Error(`${path}: не нашлось строки пилота ${lang} в §Pages`);
+    const withLinks = withPages.replace(
+      hubEdge,
+      (row) => row + linkRow(SAME_DAY_PAGE, anchors[lang][0]) + linkRow(DAY_BEFORE_PAGE, anchors[lang][1]),
+    );
+    if (withLinks === withPages) throw new Error(`${path}: не нашлось ребра хаба ${lang} в §Links`);
+    text = withLinks;
+  }
+  writeFileSync(path, text);
 }
 
 /**
@@ -670,11 +703,13 @@ const allowedEdits = [
   },
   {
     // Следующая статья — файлом и строками карты, без правки шаблонов.
-    name: 'две новые статьи хаба только на uk появляются в хабе, у эксперта и в карте сайта, по порядку',
+    name: 'две новые статьи хаба на uk и ru появляются в хабе, у эксперта и в карте сайта, по порядку',
     edits: [
       { file: SEO_MAP, corrupt: mapWithFixtures },
       { add: SAME_DAY_FILE, content: SAME_DAY },
       { add: DAY_BEFORE_FILE, content: DAY_BEFORE },
+      { add: RU_SAME_DAY_FILE, content: RU_SAME_DAY },
+      { add: RU_DAY_BEFORE_FILE, content: RU_DAY_BEFORE },
     ],
     expect: () => {
       const link = `href="${SAME_DAY_PATH}"`;
@@ -683,6 +718,7 @@ const allowedEdits = [
         .map(([, hreflang, href]) => `${hreflang} ${href}`)
         .sort();
       const own = `https://www.lada.kiev.ua${SAME_DAY_PATH}`;
+      const ownRu = `https://www.lada.kiev.ua/ru${SAME_DAY_PATH}`;
       const hub = builtPage('/guide/depilation/');
       const order = (actual) => JSON.stringify(actual) === JSON.stringify(ARTICLE_ORDER);
       return [
@@ -690,11 +726,11 @@ const allowedEdits = [
         [builtPage('/lada/').includes(link), `${SAME_DAY_PATH} в списке /lada/`],
         [sitemap.includes(`<loc>${own}</loc>`), `${SAME_DAY_PATH} в sitemap-0.xml`],
         [
-          JSON.stringify(alternates) === JSON.stringify([`uk ${own}`, `x-default ${own}`]),
-          `hreflang ${SAME_DAY_PATH} — только uk и x-default (${alternates.join(', ')})`,
+          JSON.stringify(alternates) === JSON.stringify([`ru ${ownRu}`, `uk ${own}`, `x-default ${own}`]),
+          `hreflang ${SAME_DAY_PATH} — uk, ru и x-default (${alternates.join(', ')})`,
         ],
-        [!builtPage('/ru/guide/depilation/').includes('check-same-day'), 'на /ru/guide/depilation/ её нет'],
-        [!builtPage('/ru/lada/').includes('check-same-day'), 'на /ru/lada/ её нет'],
+        [builtPage('/ru/guide/depilation/').includes(`href="/ru${SAME_DAY_PATH}"`), `/ru${SAME_DAY_PATH} в списке /ru/guide/depilation/`],
+        [builtPage('/ru/lada/').includes(`href="/ru${SAME_DAY_PATH}"`), `/ru${SAME_DAY_PATH} в списке /ru/lada/`],
         [
           order(articleLinks(hub)),
           `порядок списка /guide/depilation/: дата, затем заголовок (${articleLinks(hub).join(', ')})`,

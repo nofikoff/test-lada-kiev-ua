@@ -171,6 +171,19 @@ function checkMap(located: readonly Located[], pages: readonly GuidePage[], map:
   }
 }
 
+/** Stop 14 (ADR-030); runs after the map checks so a one-language file missing from the map is reported by stop 10. */
+function checkLocales(pages: readonly GuidePage[]): void {
+  for (const page of pages) {
+    const missing = guideLocales.filter((locale) => !page.entries[locale]);
+    if (missing.length === 0) continue;
+    const present = guideLocales.find((locale) => page.entries[locale])!;
+    const entry = page.entries[present]!;
+    throw new Error(
+      `${entry.filePath ?? `${BASE}${entry.id}.md`}: у страницы «${entry.data.page}» нет версии ${missing.join(', ')} (ADR-030)`,
+    );
+  }
+}
+
 function groupPages(located: readonly Located[]): GuidePage[] {
   const keys = [...new Set(located.map((item) => item.key))].sort();
   return keys.map((key) => {
@@ -199,6 +212,7 @@ function newestFirst(locale: GuideLocale) {
 /**
  * Проверки идут в порядке контракта: форма пути, язык и категория, повтор `page`, общий адрес
  * версий, пары хаб/статья, разбор карты (№ 12 — первая из остановок карты), соответствие карте.
+ * Stop 14 (every guide locale present) comes last.
  * Сверять файлы с картой, которую не удалось разобрать, нечего.
  */
 async function buildIndex(): Promise<GuideIndex> {
@@ -207,6 +221,7 @@ async function buildIndex(): Promise<GuideIndex> {
   const map = await readMap();
   const pages = groupPages(located);
   checkMap(located, pages, map);
+  checkLocales(pages);
 
   const articleEntries = (locale: GuideLocale, category?: ServiceCategory) =>
     located
