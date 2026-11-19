@@ -9,6 +9,7 @@ query,lang,geo,cluster,intent,volume,volume_source,volume_date,target_url
 скільки коштує година масажу в києві?,uk,kyiv,masazh,commercial,unknown,,,/massage/
 що дає масаж тіла?,uk,kyiv,masazh-koryst,informational,unknown,,,
 скільки сеансів масажу потрібно?,uk,kyiv,masazh-seansy,informational,10,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,
+сколько сеансов массажа нужно?,ru,kyiv,masazh-seansy,informational,unknown,,,
 депіляція,uk,kyiv,depiliatsiia,commercial,480,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/depilation/
 депіляція київ,uk,kyiv,depiliatsiia,commercial,110,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/depilation/
 депіляція воском київ,uk,kyiv,depiliatsiia,commercial,20,manual keyword-planner kyiv 2025-09..2026-08,2026-10-11,/depilation/

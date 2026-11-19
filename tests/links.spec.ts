@@ -49,6 +49,7 @@ const SERVICE_GUIDE_EDGES = [
   { from: '/permanent/brows/', to: '/guide/permanent/aftercare/', text: 'Перманентний макіяж брів догляд' },
   { from: '/ru/permanent/brows/', to: '/ru/guide/permanent/aftercare/', text: 'Перманентный макияж бровей уход' },
   { from: '/massage/', to: '/guide/massage/', text: 'Масаж' },
+  { from: '/ru/massage/', to: '/ru/guide/massage/', text: 'Массаж' },
 ] as const;
 
 /** Строки таблицы раздела карты с ячейками по именам колонок из строки заголовка. */

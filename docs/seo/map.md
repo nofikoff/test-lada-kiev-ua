@@ -38,7 +38,8 @@
 | depilation-sugaring | service |  | shuharynh | uk | /depilation/sugaring/ | published |
 | permanent-brows | service |  | permanentnyi-makiiazh-briv | uk | /permanent/brows/ | published |
 | lada | expert |  |  | uk | /lada/ | published |
-| massage-guide | hub |  |  | ru | /ru/guide/massage/ | planned |
+| massage-guide | hub |  |  | ru | /ru/guide/massage/ | published |
+| massage-sessions | question | massage-guide | masazh-seansy | ru | /ru/guide/massage/sessions/ | published |
 | depilation-guide | hub |  |  | ru | /ru/guide/depilation/ | published |
 | permanent-guide | hub |  |  | ru | /ru/guide/permanent/ | published |
 | beauty-guide | hub |  |  | ru | /ru/guide/beauty/ | planned |
@@ -145,6 +146,9 @@
 | massage-guide | back-massage-frequency | как часто нужно делать массаж спины | ru | вниз к странице вопроса |
 | back-massage-frequency | massage-guide | массаж | ru | вверх к обзорной |
 | back-massage-frequency | massage | массаж киев | ru | ответ ведёт к услуге |
+| massage-guide | massage-sessions | сколько сеансов массажа нужно | ru | вниз к странице вопроса |
+| massage-sessions | massage-guide | массаж | ru | вверх к обзорной |
+| massage-sessions | massage | массаж киев | ru | ответ ведёт к услуге |
 | depilation-guide | depilation-vs-epilation | депиляция и эпиляция | ru | вниз к странице сущности |
 | depilation-vs-epilation | depilation-guide | депиляция | ru | вверх к обзорной |
 | depilation-vs-epilation | depilation | депиляция воском киев | ru | ответ ведёт к услуге |

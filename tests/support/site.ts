@@ -419,8 +419,16 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     path: '/guide/massage/',
     kind: 'hub',
     category: 'massage',
-    locales: ['uk'],
+    locales: ['uk', 'ru'],
     heading: 'Масаж: відповіді на питання',
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/massage/',
+    kind: 'hub',
+    category: 'massage',
+    locales: ['uk', 'ru'],
+    heading: 'Массаж: ответы на вопросы',
   },
   {
     locale: 'uk',
@@ -428,7 +436,15 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     kind: 'article',
     category: 'massage',
     slug: 'sessions',
-    locales: ['uk'],
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/massage/sessions/',
+    kind: 'article',
+    category: 'massage',
+    slug: 'sessions',
+    locales: ['uk', 'ru'],
   },
 ];
 
@@ -626,6 +642,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'depilation/vs-sugaring': [/чем депиляция отличается от шугаринга/i],
     'depilation/what-is-sugaring': [/что такое шугаринг/i, /процедур/i],
     'depilation/aftercare': [/что нельзя делать после депиляции/i],
+    'massage/sessions': [/сколько сеансов массажа нужно/i],
     'depilation/bikini': [/как удаляют волосы в зоне глубокого бикини/i],
     'depilation/best-method': [/самый лучший способ удаления волос/i],
     'permanent/contraindications': [/кому нельзя делать перманентный макияж/i],
@@ -693,6 +710,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /вреден ли перманентный макияж/i,
       /сколько держится перманентный макияж/i,
     ],
+    massage: [/массаж\S* в Киеве/i, /сколько сеансов массажа/i],
   },
 };
 
