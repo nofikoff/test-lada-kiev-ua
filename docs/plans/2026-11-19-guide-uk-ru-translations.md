@@ -10,7 +10,7 @@ By Search Console impressions of the existing version, 2026-08-19 … 2026-11-16
 |---|---|---|---|---|---|
 | 1 | bikini-depilation | ru | uk | 293 | `9b52c1a` |
 | 2 | permanent-what-is | ru | uk | 157 | `05c1267` |
-| 3 | permanent-lips-healing | uk | ru | 76 | |
+| 3 | permanent-lips-healing | uk | ru | 76 | `985ed65` |
 | 4 | permanent-harm | uk | ru | 30 | |
 | 5 | permanent-how-long | uk | ru | 19 | |
 | 6 | permanent-aftercare | uk | ru | 19 | |
@@ -35,3 +35,5 @@ Planned pages (`massage-benefits`, `back-massage-frequency`, `lash-lamination-ho
 - 2026-11-19 — step 1, `9b52c1a`: uk `/guide/depilation/bikini/`. Gates green, full `test:e2e` 3209 passed; snapshots 375 and 1280 read. The shared `guide-sources.md` section needed no change. Not yet published: `main` reaches the site with the next `publish` run.
 - 2026-11-19 — publish run 44588862820 for step 1 failed before the build: `npx playwright install --with-deps chromium` hit the 4-minute step timeout in CI. Rerun of the failed job.
 - 2026-11-19 — step 2, `05c1267`: uk `/guide/permanent/what-is/`, plus the uk contraindications → what-is edge mirroring the ru one. Gates green, full `test:e2e` 3269 passed; snapshots 375 and 1280 read.
+- 2026-11-19 — steps 1 and 2 published (runs 44588862820 attempt 2, 44592623479); both pairs answer 200 and carry `hreflang` uk, ru, x-default.
+- 2026-11-19 — step 3, `985ed65`: ru `/ru/guide/permanent/lips-healing/`. The first description was 163 characters and `npm run check` stopped it (limit 160). Gates green, full `test:e2e` 3329 passed; snapshots 375 and 1280 read.
