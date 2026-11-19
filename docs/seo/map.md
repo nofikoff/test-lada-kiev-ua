@@ -150,6 +150,7 @@
 | permanent-guide | permanent-contraindications | кому нельзя делать перманентный макияж | ru | вниз к странице вопроса |
 | permanent-contraindications | permanent-guide | перманентный макияж | ru | вверх к обзорной |
 | permanent-contraindications | permanent | перманентный макияж киев | ru | ответ ведёт к услуге |
+| permanent-contraindications | permanent-what-is | что такое перманентный макияж простыми словами | ru | соседний вопрос отдаёт вес определению: аудит 2026-11-19, позиция 14,9 |
 | permanent-guide | permanent-vs-tattoo | в чем разница перманентного макияжа и татуажа | ru | вниз к странице вопроса |
 | permanent-vs-tattoo | permanent-guide | перманентный макияж | ru | вверх к обзорной |
 | permanent-vs-tattoo | permanent | перманентный макияж киев | ru | ответ ведёт к услуге |
