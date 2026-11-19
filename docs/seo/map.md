@@ -27,6 +27,7 @@
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | uk | /guide/permanent/contraindications/ | published |
 | permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | uk | /guide/permanent/vs-tattoo/ | published |
 | permanent-harm | question | permanent-guide | permanentnyi-makiiazh-shkoda | uk | /guide/permanent/harm/ | published |
+| permanent-what-is | question | permanent-guide | permanentnyi-makiiazh-shcho-tse | uk | /guide/permanent/what-is/ | published |
 | permanent-lips-healing | question | permanent-guide | permanentnyi-makiiazh-hub-zahoiennia | uk | /guide/permanent/lips-healing/ | published |
 | lash-lamination-how-long | question | beauty-guide | laminuvannia-vii-skilky-trymaietsia | uk | /guide/beauty/lash-lamination-how-long/ | planned |
 | makeup-how-long | question | beauty-guide | makiiazh-skilky-trymaietsia | uk | /guide/beauty/makeup-how-long/ | planned |
@@ -108,6 +109,10 @@
 | permanent-guide | permanent-contraindications | кому не можна робити перманентний макіяж | uk | вниз к странице вопроса |
 | permanent-contraindications | permanent-guide | перманентний макіяж | uk | вверх к обзорной |
 | permanent-contraindications | permanent | перманентний макіяж київ | uk | ответ ведёт к услуге |
+| permanent-contraindications | permanent-what-is | що таке перманентний макіяж простими словами | uk | соседний вопрос отдаёт вес определению, как у ru |
+| permanent-guide | permanent-what-is | що таке перманентний макіяж простими словами | uk | вниз к странице вопроса |
+| permanent-what-is | permanent-guide | перманентний макіяж | uk | вверх к обзорной |
+| permanent-what-is | permanent | перманентний макіяж київ | uk | ответ ведёт к услуге |
 | permanent-guide | permanent-vs-tattoo | яка різниця між татуажем та перманентним макіяжем | uk | вниз к странице вопроса |
 | permanent-vs-tattoo | permanent-guide | перманентний макіяж | uk | вверх к обзорной |
 | permanent-vs-tattoo | permanent | перманентний макіяж київ | uk | ответ ведёт к услуге |
