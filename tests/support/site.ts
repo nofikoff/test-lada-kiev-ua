@@ -228,7 +228,15 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     kind: 'article',
     category: 'depilation',
     slug: 'what-is-sugaring',
-    locales: ['uk'],
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/depilation/what-is-sugaring/',
+    kind: 'article',
+    category: 'depilation',
+    slug: 'what-is-sugaring',
+    locales: ['uk', 'ru'],
   },
   {
     locale: 'uk',
@@ -608,6 +616,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
   ru: {
     'depilation/vs-epilation': [/депиляция и эпиляция/i],
     'depilation/vs-sugaring': [/чем депиляция отличается от шугаринга/i],
+    'depilation/what-is-sugaring': [/что такое шугаринг/i, /процедур/i],
     'depilation/bikini': [/как удаляют волосы в зоне глубокого бикини/i],
     'depilation/best-method': [/самый лучший способ удаления волос/i],
     'permanent/contraindications': [/кому нельзя делать перманентный макияж/i],
@@ -661,6 +670,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /чем депиляция отличается от шугаринга/i,
       /волосы в зоне глубокого бикини/i,
       /лучший способ удаления волос/i,
+      /что такое шугаринг/i,
     ],
     permanent: [
       /перманентн\S* макияж\S* в Киеве/i,

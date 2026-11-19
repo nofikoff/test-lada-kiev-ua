@@ -63,7 +63,7 @@
 | beauty | ламінування брів і вій, макіяж у Києві | ламинирование бровей и ресниц, макияж в Киеве | brow and lash lamination, makeup in Kyiv |
 | guide/depilation/vs-epilation (статья) | депіляція чи епіляція | депиляция и эпиляция | — |
 | guide/depilation/aftercare (статья) | що не можна робити після депіляції | — | — |
-| guide/depilation/what-is-sugaring (статья) | що таке шугаринг; процедура | — | — |
+| guide/depilation/what-is-sugaring (статья) | що таке шугаринг; процедура | что такое шугаринг; процедура | — |
 | guide/depilation/sugaring-preparation (статья) | скільки не голитися перед шугарингом | — | — |
 | guide/depilation/bikini (статья) | як видаляють волосся в зоні глибокого бікіні | как удаляют волосы в зоне глубокого бикини | — |
 | guide/depilation/best-method (статья) | яка депіляція найкраща | какой самый лучший способ удаления волос | — |

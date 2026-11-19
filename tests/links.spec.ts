@@ -39,6 +39,11 @@ const SERVICE_GUIDE_EDGES = [
     to: '/ru/guide/depilation/vs-sugaring/',
     text: 'Чем депиляция отличается от шугаринга',
   },
+  {
+    from: '/ru/depilation/sugaring/',
+    to: '/ru/guide/depilation/what-is-sugaring/',
+    text: 'Что такое процедура шугаринг',
+  },
   { from: '/permanent/', to: '/guide/permanent/', text: 'Перманентний макіяж' },
   { from: '/ru/permanent/', to: '/ru/guide/permanent/', text: 'Перманентный макияж' },
   { from: '/permanent/brows/', to: '/guide/permanent/aftercare/', text: 'Перманентний макіяж брів догляд' },
