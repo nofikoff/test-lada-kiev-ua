@@ -15,7 +15,7 @@ By Search Console impressions of the existing version, 2026-08-19 … 2026-11-16
 | 5 | permanent-how-long | uk | ru | 19 | `163c34c` |
 | 6 | permanent-aftercare | uk | ru, plus the ru harm → aftercare in-text link step 4 left out | 19 | `09a578c` |
 | 7 | sugaring-what-is | uk | ru | 13 | `8506461` |
-| 8 | depilation-aftercare | uk | ru | 9 | |
+| 8 | depilation-aftercare | uk | ru | 9 | `aae9a74` |
 | 9 | massage-sessions | uk | ru, with the ru hub massage-guide | 0 | |
 | 10 | sugaring-preparation | uk | ru | 0 | |
 | 11 | build stop: a guide article without its second language fails the build, plus its `test:invalid-data` case | — | — | — | |
@@ -45,3 +45,5 @@ Planned pages (`massage-benefits`, `back-massage-frequency`, `lash-lamination-ho
 - 2026-11-19 — step 6, `09a578c`: ru `/ru/guide/permanent/aftercare/`, the ru harm → aftercare link restored, `SERVICE_GUIDE_EDGES` gets the ru brows edge. Full `test:e2e` failed twice on timing, not on content: `tests/analytics.spec.ts:50` fulfils a `route.fetch` after its test ends (first run; "1 error was not a part of any test"), and on the second run, slowed to 11 min by snapshots taken from the same preview, `seo-contract.spec.ts:1158` hit its 30 s timeout. Both spec files alone: 836 passed; third full run on an idle machine: 3512 passed. The analytics race is a test defect, not fixed here.
 - 2026-11-19 — step 6 published (run 44608126079); the pair answers 200 with `hreflang` uk, ru, x-default, and `/ru/permanent/brows/` links the ru aftercare page.
 - 2026-11-19 — step 7, `8506461`: ru `/ru/guide/depilation/what-is-sugaring/`, `SERVICE_GUIDE_EDGES` gets the ru sugaring edge. Snapshots taken before `test:e2e`, not during it; full `test:e2e` 3575 passed.
+- 2026-11-19 — step 7 published (run 44610062162); the pair answers 200 with `hreflang` uk, ru, x-default, and `/ru/depilation/sugaring/` links the ru page.
+- 2026-11-19 — step 8, `aae9a74`: ru `/ru/guide/depilation/aftercare/`. Gates green, full `test:e2e` 3635 passed; snapshots 375 and 1280 read.
