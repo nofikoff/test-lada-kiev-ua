@@ -9,12 +9,12 @@
 ## Pages
 | page | kind | parent | cluster | lang | url | status |
 |---|---|---|---|---|---|---|
-| massage-guide | hub |  |  | uk | /guide/massage/ | planned |
+| massage-guide | hub |  |  | uk | /guide/massage/ | published |
 | depilation-guide | hub |  |  | uk | /guide/depilation/ | published |
 | permanent-guide | hub |  |  | uk | /guide/permanent/ | published |
 | beauty-guide | hub |  |  | uk | /guide/beauty/ | planned |
 | depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | uk | /guide/depilation/vs-epilation/ | published |
-| massage-sessions | question | massage-guide | masazh-seansy | uk | /guide/massage/sessions/ | draft |
+| massage-sessions | question | massage-guide | masazh-seansy | uk | /guide/massage/sessions/ | published |
 | depilation-aftercare | question | depilation-guide | depiliatsiia-pislia | uk | /guide/depilation/aftercare/ | published |
 | permanent-aftercare | entity | permanent-guide | permanentnyi-makiiazh-dohliad | uk | /guide/permanent/aftercare/ | published |
 | permanent-how-long | question | permanent-guide | permanentnyi-makiiazh-skilky-trymaietsia | uk | /guide/permanent/how-long/ | published |
