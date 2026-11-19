@@ -46,6 +46,7 @@
 | back-massage-frequency | question | massage-guide | masazh-spyny-yak-chasto | ru | /ru/guide/massage/back-frequency/ | planned |
 | depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | ru | /ru/guide/depilation/vs-sugaring/ | published |
 | sugaring-what-is | question | depilation-guide | shuharynh-shcho-tse | ru | /ru/guide/depilation/what-is-sugaring/ | published |
+| depilation-aftercare | question | depilation-guide | depiliatsiia-pislia | ru | /ru/guide/depilation/aftercare/ | published |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | ru | /ru/guide/permanent/contraindications/ | published |
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | ru | /ru/guide/depilation/best-method/ | published |
 | bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | ru | /ru/guide/depilation/bikini/ | published |
@@ -156,6 +157,9 @@
 | sugaring-what-is | depilation-guide | депиляция | ru | вверх к обзорной |
 | sugaring-what-is | depilation-sugaring | шугаринг | ru | ответ ведёт к услуге шугаринга |
 | depilation-sugaring | sugaring-what-is | что такое процедура шугаринг | ru | услуга отдаёт вес вопросу |
+| depilation-guide | depilation-aftercare | что нельзя делать после депиляции | ru | вниз к странице вопроса |
+| depilation-aftercare | depilation-guide | депиляция | ru | вверх к обзорной |
+| depilation-aftercare | depilation | депиляция воском киев | ru | ответ ведёт к услуге |
 | depilation-guide | depilation-best-method | какой самый лучший способ удаления волос | ru | вниз к странице вопроса |
 | depilation-best-method | depilation-guide | депиляция | ru | вверх к обзорной |
 | depilation-best-method | depilation | депиляция воском киев | ru | ответ ведёт к услуге |
