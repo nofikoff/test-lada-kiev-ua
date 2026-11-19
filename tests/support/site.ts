@@ -292,7 +292,15 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     kind: 'article',
     category: 'permanent',
     slug: 'how-long',
-    locales: ['uk'],
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/permanent/how-long/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'how-long',
+    locales: ['uk', 'ru'],
   },
   {
     locale: 'uk',
@@ -599,6 +607,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'permanent/what-is': [/что такое перманентный макияж/i, /простыми словами/i],
     'permanent/lips-healing': [/как долго заживают губы/i, /перманентн\S* макияж/i],
     'permanent/harm': [/вреден ли перманентный макияж бровей/i],
+    'permanent/how-long': [/сколько держится перманентный макияж/i],
   },
 };
 
@@ -653,6 +662,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /что такое перманентный макияж/i,
       /заживают губы/i,
       /вреден ли перманентный макияж/i,
+      /сколько держится перманентный макияж/i,
     ],
   },
 };
