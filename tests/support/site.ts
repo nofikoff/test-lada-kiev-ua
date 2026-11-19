@@ -340,7 +340,15 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     kind: 'article',
     category: 'permanent',
     slug: 'lips-healing',
-    locales: ['uk'],
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/permanent/lips-healing/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'lips-healing',
+    locales: ['uk', 'ru'],
   },
   {
     locale: 'uk',
@@ -581,6 +589,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'permanent/contraindications': [/кому нельзя делать перманентный макияж/i],
     'permanent/vs-tattoo': [/в чём разница перманентного макияжа и татуажа/i],
     'permanent/what-is': [/что такое перманентный макияж/i, /простыми словами/i],
+    'permanent/lips-healing': [/как долго заживают губы/i, /перманентн\S* макияж/i],
   },
 };
 
@@ -633,6 +642,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /кому нельзя делать перманентный макияж/i,
       /разница перманентного макияжа и татуажа/i,
       /что такое перманентный макияж/i,
+      /заживают губы/i,
     ],
   },
 };

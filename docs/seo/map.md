@@ -49,6 +49,7 @@
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | ru | /ru/guide/depilation/best-method/ | published |
 | bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | ru | /ru/guide/depilation/bikini/ | published |
 | permanent-what-is | question | permanent-guide | permanentnyi-makiiazh-shcho-tse | ru | /ru/guide/permanent/what-is/ | published |
+| permanent-lips-healing | question | permanent-guide | permanentnyi-makiiazh-hub-zahoiennia | ru | /ru/guide/permanent/lips-healing/ | published |
 | permanent-vs-tattoo | question | permanent-guide | permanentnyi-makiiazh-chy-tatuazh | ru | /ru/guide/permanent/vs-tattoo/ | published |
 | makeup-hair-order | question | beauty-guide | makiiazh-i-zachiska-poriadok | ru | /ru/guide/beauty/makeup-hair-order/ | planned |
 | massage | service |  | masazh | ru | /ru/massage/ | published |
@@ -156,6 +157,9 @@
 | permanent-guide | permanent-what-is | что такое перманентный макияж простыми словами | ru | вниз к странице вопроса |
 | permanent-what-is | permanent-guide | перманентный макияж | ru | вверх к обзорной |
 | permanent-what-is | permanent | перманентный макияж киев | ru | ответ ведёт к услуге |
+| permanent-guide | permanent-lips-healing | как долго заживают губы после перманентного макияжа | ru | вниз к странице вопроса |
+| permanent-lips-healing | permanent-guide | перманентный макияж | ru | вверх к обзорной |
+| permanent-lips-healing | permanent | перманентный макияж киев | ru | ответ ведёт к услуге |
 | permanent-guide | permanent-contraindications | кому нельзя делать перманентный макияж | ru | вниз к странице вопроса |
 | permanent-contraindications | permanent-guide | перманентный макияж | ru | вверх к обзорной |
 | permanent-contraindications | permanent | перманентный макияж киев | ru | ответ ведёт к услуге |
