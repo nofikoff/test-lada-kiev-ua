@@ -356,7 +356,15 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     kind: 'article',
     category: 'permanent',
     slug: 'harm',
-    locales: ['uk'],
+    locales: ['uk', 'ru'],
+  },
+  {
+    locale: 'ru',
+    path: '/ru/guide/permanent/harm/',
+    kind: 'article',
+    category: 'permanent',
+    slug: 'harm',
+    locales: ['uk', 'ru'],
   },
   {
     locale: 'uk',
@@ -590,6 +598,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'permanent/vs-tattoo': [/в чём разница перманентного макияжа и татуажа/i],
     'permanent/what-is': [/что такое перманентный макияж/i, /простыми словами/i],
     'permanent/lips-healing': [/как долго заживают губы/i, /перманентн\S* макияж/i],
+    'permanent/harm': [/вреден ли перманентный макияж бровей/i],
   },
 };
 
@@ -643,6 +652,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /разница перманентного макияжа и татуажа/i,
       /что такое перманентный макияж/i,
       /заживают губы/i,
+      /вреден ли перманентный макияж/i,
     ],
   },
 };
