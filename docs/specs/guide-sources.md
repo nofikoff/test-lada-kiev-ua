@@ -392,3 +392,31 @@
 | брови заживают около месяца: корочки, шелушение, посветление | `studio-practice.md` §Brow permanent makeup, 3 |
 | коррекция через 28–60 дней: выравнивают цвет и добавляют плотность; на бровях — заживление, форма, пробелы, симметрия | прайс `permanent-*-touch-up`; текст категории §Коррекция и обновление; `studio-practice.md` §Brow permanent makeup, 4 |
 | брови при поверхностной работе — 2–3 года, глубже — дольше; позже работу можно обновлять, не делая заново | `studio-practice.md` §Brow permanent makeup, 5; текст категории §Коррекция и обновление |
+
+## massage-sessions
+
+Ответов студии о числе и частоте сеансов нет (автор, 2026-11-19), поэтому числа в статье — общие утверждения, а о студии — только то, что уже говорит текст категории. Страницы клиник названы по городу: киевская из них одна.
+
+### Sources
+
+| Утверждение | Источник | Цитата | Проверено | Статус |
+|---|---|---|---|---|
+| единого стандарта нет, число и частоту советует массажист или врач | [healthline.com — How Often Should You Get a Massage?](https://www.healthline.com/health/pain-relief/how-often-should-you-get-a-massage) | «There are no standard guidelines for the number of massages you can get, but a massage therapist or your doctor may be able to recommend a frequency and duration that work best for your needs.» | 2026-11-19 | проверен |
+| массаж после травмы делают чаще, расслабляющий — реже | там же | «Massages for injury are typically more frequent, while massages for pampering or relaxation purposes can occur less often.» | 2026-11-19 | проверен |
+| для массажа всего тела частота индивидуальна: кому-то хватает редких сеансов, кто-то ходит раз в неделю и чаще от стресса | там же | «Some people may find that infrequent massages help with muscular pains, while others may wish to have weekly, or indeed more frequent, therapies to help manage stress.» | 2026-11-19 | проверен |
+| в исследовании 2014 года глубокий массаж по 30 минут ежедневно 10 дней уменьшал боль (пересказ Healthline) | там же | «One older study from 2014 showed that deep tissue massage performed daily for 30 minutes for 10 days reduced pain in patients.» | 2026-11-19 | проверен |
+| хроническая боль в шее, 228 человек, 4 недели: 30 минут 2–3 раза в неделю не отличались от ожидания, 60 минут 2–3 раза в неделю чаще давали облегчение | Sherman et al., Ann Fam Med 2014, PMID 24615306, [абстракт через NCBI eutils](https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=24615306&rettype=abstract&retmode=text) | «30-minute treatments were not significantly better than the wait list control condition in terms of achieving a clinically meaningful improvement in neck dysfunction or pain, regardless of the frequency of treatments. In contrast, 60-minute treatments 2 and 3 times weekly significantly increased the likelihood of such improvement»; «we found multiple 60-minute massages per week more effective than fewer or shorter sessions for individuals with chronic neck pain» | 2026-11-19 | проверен; pubmed.ncbi.nlm.nih.gov отвечает `curl` кодом 203 без текста, абстракт взят из eutils |
+| шесть дополнительных еженедельных часовых сеансов — лучше через 12 недель, к 26-й неделе разница незначима | Cook et al., Spine J 2015, PMID 26096474, [абстракт через NCBI eutils](https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=26096474&rettype=abstract&retmode=text) | «Those receiving booster dose had improvements in both dysfunction and pain at 12 weeks»; «but those were nonsignificant at 26 weeks» | 2026-11-19 | проверен |
+| клиника в Трускавце: профилактический курс 10–12 сеансов раз в 3 месяца через день; классический 8–12 сеансов по 30–60 минут, через день или 2–3 раза в неделю; при сидячей работе между курсами — сеанс раз в одну-две недели | [pecherskykh-clinic.com.ua](https://pecherskykh-clinic.com.ua/blog/yak-chasto-potribno-prohodyty-kurs-masazhu-dlya-profilaktyky/) | «Рекомендація: курс масажу кожні 3 місяці , по 10–12 сеансів через день. Підтримка: між курсами — 1 сеанс раз на тиждень або раз на два тижні .»; «Класичний профілактичний курс складається з 8–12 сеансів , тривалістю 30–60 хвилин .»; «Сеанси зазвичай проводяться: через день , щоб тіло встигало відновитися; або 2–3 рази на тиждень — для більш м’якого впливу.» | 2026-11-19 | проверен |
+| та же клиника спортсменам: во время соревнований 1–2 сеанса в неделю, в межсезонье курс 10–15 процедур 3–4 раза в год, после тяжёлого периода — 3–5 расслабляющих | там же | «Після важкого періоду роботи або змагань варто додати 3–5 розслаблювальних сеансів.»; «Під час змагань: 1–2 сеанси на тиждень. У міжсезоння: повноцінний курс 10–15 процедур 3–4 рази на рік.» | 2026-11-19 | проверен |
+| салон в Харькове: курс 5–10 сеансов раз в полгода; курс 10–12 процедур ежедневно или с небольшими перерывами | [insay-spa.com.ua](https://insay-spa.com.ua/yak-chasto-robyty-masazh/) | «Лікарі дають усереднену рекомендацію раз на півроку проходити курс масажу з 5-10 сеансів через кожні 2-3 дні»; «Курс масажу складається із 10-12 процедур, робити їх можна щодня або з невеликими інтервалами.» | 2026-11-19 | проверен |
+| киевский кинезиоцентр: лечебный курс 8–10 сеансов 2–3 раза в неделю, мышцам нужны сутки-двое на восстановление | [kineziocenter.com](https://kineziocenter.com/massage/) | «Для стійкого лікувального ефекту зазвичай потрібен курс 8–10 сеансів із періодичністю 2–3 рази на тиждень.»; «У лікувальному курсі — зазвичай 2–3 сеанси на тиждень: мʼязам потрібна доба-дві на відновлення.» | 2026-11-19 | проверен |
+
+### Practice claims
+
+| Утверждение статьи | Источник в репозитории |
+|---|---|
+| длительность сеанса выбирает клиент — от короткого визита до полного часа | текст категории `src/content/services/uk/massage.md`, вступление |
+| при одной зоне можно взять локальный сеанс вместо массажа всего тела; шейно-воротниковая зона — у тех, кто весь день за монитором | текст категории §Локальні сеанси |
+| среди тех, кто ведёт сеансы, — Лада Новикова, физический реабилитолог по образованию | текст категории, вступление; [voice.md](voice.md) §Contract |
+| не знаете, какой сеанс выбрать, — опишите по телефону, подберём | текст категории §Як записатися |

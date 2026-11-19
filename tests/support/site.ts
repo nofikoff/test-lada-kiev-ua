@@ -350,6 +350,22 @@ export const GUIDE_PAGES: readonly GuidePageUnderTest[] = [
     slug: 'what-is',
     locales: ['ru'],
   },
+  {
+    locale: 'uk',
+    path: '/guide/massage/',
+    kind: 'hub',
+    category: 'massage',
+    locales: ['uk'],
+    heading: 'Масаж: відповіді на питання',
+  },
+  {
+    locale: 'uk',
+    path: '/guide/massage/sessions/',
+    kind: 'article',
+    category: 'massage',
+    slug: 'sessions',
+    locales: ['uk'],
+  },
 ];
 
 export const EXPERT_PAGES: readonly ExpertPageUnderTest[] = [
@@ -537,6 +553,7 @@ const GUIDE_QUERIES: Record<GuideLocale, Record<string, RegExp[]>> = {
     'permanent/vs-tattoo': [/яка різниця між татуажем та перманентним макіяжем/i],
     'permanent/lips-healing': [/як довго заживають губи/i, /перманентн\S* макіяж/i],
     'permanent/harm': [/чи шкідливий перманентний макіяж брів/i],
+    'massage/sessions': [/скільки сеансів масажу потрібно/i],
   },
   ru: {
     'depilation/vs-epilation': [/депиляция и эпиляция/i],
@@ -578,6 +595,7 @@ export const HUB_FORBIDDEN: Record<GuideLocale, Partial<Record<ServiceCategory, 
       /різниця між татуажем/i,
       /заживають губи/i,
     ],
+    massage: [/масаж\S* у Києві/i, /скільки сеансів масажу/i],
   },
   ru: {
     depilation: [
