@@ -48,6 +48,7 @@
 | depilation-vs-sugaring | question | depilation-guide | depiliatsiia-chy-shuharynh | ru | /ru/guide/depilation/vs-sugaring/ | published |
 | sugaring-what-is | question | depilation-guide | shuharynh-shcho-tse | ru | /ru/guide/depilation/what-is-sugaring/ | published |
 | depilation-aftercare | question | depilation-guide | depiliatsiia-pislia | ru | /ru/guide/depilation/aftercare/ | published |
+| sugaring-preparation | question | depilation-guide | shuharynh-pidhotovka | ru | /ru/guide/depilation/sugaring-preparation/ | published |
 | permanent-contraindications | question | permanent-guide | permanentnyi-makiiazh-protypokazannia | ru | /ru/guide/permanent/contraindications/ | published |
 | depilation-best-method | question | depilation-guide | depiliatsiia-yaka-krashcha | ru | /ru/guide/depilation/best-method/ | published |
 | bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | ru | /ru/guide/depilation/bikini/ | published |
@@ -164,6 +165,9 @@
 | depilation-guide | depilation-aftercare | что нельзя делать после депиляции | ru | вниз к странице вопроса |
 | depilation-aftercare | depilation-guide | депиляция | ru | вверх к обзорной |
 | depilation-aftercare | depilation | депиляция воском киев | ru | ответ ведёт к услуге |
+| depilation-guide | sugaring-preparation | сколько не бриться перед шугарингом | ru | вниз к странице вопроса |
+| sugaring-preparation | depilation-guide | депиляция | ru | вверх к обзорной |
+| sugaring-preparation | depilation-sugaring | шугаринг | ru | ответ ведёт к услуге шугаринга |
 | depilation-guide | depilation-best-method | какой самый лучший способ удаления волос | ru | вниз к странице вопроса |
 | depilation-best-method | depilation-guide | депиляция | ru | вверх к обзорной |
 | depilation-best-method | depilation | депиляция воском киев | ru | ответ ведёт к услуге |
