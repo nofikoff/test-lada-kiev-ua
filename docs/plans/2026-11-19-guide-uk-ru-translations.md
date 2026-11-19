@@ -17,7 +17,7 @@ By Search Console impressions of the existing version, 2026-08-19 … 2026-11-16
 | 7 | sugaring-what-is | uk | ru | 13 | `8506461` |
 | 8 | depilation-aftercare | uk | ru | 9 | `aae9a74` |
 | 9 | massage-sessions | uk | ru, with the ru hub massage-guide | 0 | `6f3c055` |
-| 10 | sugaring-preparation | uk | ru | 0 | |
+| 10 | sugaring-preparation | uk | ru | 0 | `5017a85` |
 | 11 | build stop: a guide article without its second language fails the build, plus its `test:invalid-data` case | — | — | — | |
 
 Planned pages (`massage-benefits`, `back-massage-frequency`, `lash-lamination-how-long`, `makeup-how-long`, `makeup-hair-order`) are written in both languages when their turn comes in `docs/seo/map.md`; they are not steps here.
@@ -49,3 +49,5 @@ Planned pages (`massage-benefits`, `back-massage-frequency`, `lash-lamination-ho
 - 2026-11-19 — step 8, `aae9a74`: ru `/ru/guide/depilation/aftercare/`. Gates green, full `test:e2e` 3635 passed; snapshots 375 and 1280 read.
 - 2026-11-19 — publish run 44611289115 for step 8 failed on the same CI step as step 1: `npx playwright install --with-deps chromium` past its 4-minute timeout. Second occurrence today; rerun of the failed job.
 - 2026-11-19 — step 9, `6f3c055`: ru hub `/ru/guide/massage/` (map row planned → published) and ru `/ru/guide/massage/sessions/`; `SERVICE_GUIDE_EDGES` gets the ru massage edge. Gates green, full `test:e2e` 3755 passed; snapshots of both pages at 375 and 1280 read.
+- 2026-11-19 — step 8 published (run 44611289115 attempt 2); the pair answers 200 with `hreflang` uk, ru, x-default.
+- 2026-11-19 — step 10, `5017a85`: ru `/ru/guide/depilation/sugaring-preparation/`. Gates green, full `test:e2e` 3815 passed (7.7 min under a load average near 40 from other processes); snapshots 375 and 1280 read.
