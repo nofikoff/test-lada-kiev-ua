@@ -13,7 +13,7 @@ By Search Console impressions of the existing version, 2026-08-19 … 2026-11-16
 | 3 | permanent-lips-healing | uk | ru | 76 | `985ed65` |
 | 4 | permanent-harm | uk | ru | 30 | `20ce7dd` |
 | 5 | permanent-how-long | uk | ru | 19 | `163c34c` |
-| 6 | permanent-aftercare | uk | ru, plus the ru harm → aftercare in-text link step 4 left out | 19 | |
+| 6 | permanent-aftercare | uk | ru, plus the ru harm → aftercare in-text link step 4 left out | 19 | `09a578c` |
 | 7 | sugaring-what-is | uk | ru | 13 | |
 | 8 | depilation-aftercare | uk | ru | 9 | |
 | 9 | massage-sessions | uk | ru, with the ru hub massage-guide | 0 | |
@@ -41,3 +41,5 @@ Planned pages (`massage-benefits`, `back-massage-frequency`, `lash-lamination-ho
 - 2026-11-19 — step 4, `20ce7dd`: ru `/ru/guide/permanent/harm/`. The uk closing link to aftercare is left out until ru aftercare exists (step 6 row). Gates green, full `test:e2e` 3389 passed; snapshots 375 and 1280 read.
 - 2026-11-19 — step 4 published (run 44599176628); the pair answers 200 with `hreflang` uk, ru, x-default.
 - 2026-11-19 — step 5, `163c34c`: ru `/ru/guide/permanent/how-long/`. Gates green, full `test:e2e` 3449 passed; snapshots 375 and 1280 read.
+- 2026-11-19 — step 5 published (run 44602045007); the pair answers 200 with `hreflang` uk, ru, x-default.
+- 2026-11-19 — step 6, `09a578c`: ru `/ru/guide/permanent/aftercare/`, the ru harm → aftercare link restored, `SERVICE_GUIDE_EDGES` gets the ru brows edge. Full `test:e2e` failed twice on timing, not on content: `tests/analytics.spec.ts:50` fulfils a `route.fetch` after its test ends (first run; "1 error was not a part of any test"), and on the second run, slowed to 11 min by snapshots taken from the same preview, `seo-contract.spec.ts:1158` hit its 30 s timeout. Both spec files alone: 836 passed; third full run on an idle machine: 3512 passed. The analytics race is a test defect, not fixed here.
