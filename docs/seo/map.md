@@ -16,6 +16,7 @@
 | depilation-vs-epilation | entity | depilation-guide | depiliatsiia-chy-epiliatsiia | uk | /guide/depilation/vs-epilation/ | published |
 | massage-sessions | question | massage-guide | masazh-seansy | uk | /guide/massage/sessions/ | published |
 | depilation-aftercare | question | depilation-guide | depiliatsiia-pislia | uk | /guide/depilation/aftercare/ | published |
+| bikini-depilation | question | depilation-guide | depiliatsiia-bikini-yak | uk | /guide/depilation/bikini/ | published |
 | permanent-aftercare | entity | permanent-guide | permanentnyi-makiiazh-dohliad | uk | /guide/permanent/aftercare/ | published |
 | permanent-how-long | question | permanent-guide | permanentnyi-makiiazh-skilky-trymaietsia | uk | /guide/permanent/how-long/ | published |
 | massage-benefits | question | massage-guide | masazh-koryst | uk | /guide/massage/benefits/ | planned |
@@ -87,6 +88,9 @@
 | depilation-guide | depilation-aftercare | що не можна робити після депіляції | uk | вниз к странице вопроса |
 | depilation-aftercare | depilation-guide | депіляція | uk | вверх к обзорной |
 | depilation-aftercare | depilation | депіляція київ | uk | ответ ведёт к услуге |
+| depilation-guide | bikini-depilation | як видаляють волосся в зоні глибокого бікіні | uk | вниз к странице вопроса |
+| bikini-depilation | depilation-guide | депіляція | uk | вверх к обзорной |
+| bikini-depilation | depilation | депіляція київ | uk | ответ ведёт к услуге |
 | depilation-guide | sugaring-what-is | що таке процедура шугаринг | uk | вниз к странице вопроса |
 | sugaring-what-is | depilation-guide | депіляція | uk | вверх к обзорной |
 | sugaring-what-is | depilation-sugaring | шугаринг | uk | ответ ведёт к услуге шугаринга |
