@@ -8,7 +8,7 @@ By Search Console impressions of the existing version, 2026-08-19 … 2026-11-16
 
 | # | page | has | adds | impressions | done |
 |---|---|---|---|---|---|
-| 1 | bikini-depilation | ru | uk | 293 | |
+| 1 | bikini-depilation | ru | uk | 293 | `9b52c1a` |
 | 2 | permanent-what-is | ru | uk | 157 | |
 | 3 | permanent-lips-healing | uk | ru | 76 | |
 | 4 | permanent-harm | uk | ru | 30 | |
@@ -31,3 +31,5 @@ Planned pages (`massage-benefits`, `back-massage-frequency`, `lash-lamination-ho
 5. Gates of `CLAUDE.md`, the full `test:e2e` included; snapshots at 375 and 1280.
 
 ## Progress log
+
+- 2026-11-19 — step 1, `9b52c1a`: uk `/guide/depilation/bikini/`. Gates green, full `test:e2e` 3209 passed; snapshots 375 and 1280 read. The shared `guide-sources.md` section needed no change. Not yet published: `main` reaches the site with the next `publish` run.
